@@ -1,0 +1,313 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nav-item {
+    width: calc(100% - 20px);
+    @apply mx-2.5 flex items-center gap-2 rounded-md py-1.5 pl-2 pr-4 text-left text-sm font-normal text-secondaryText transition-colors;
+  }
+
+  .message-bubble-user {
+    @apply max-w-[85%] rounded-3xl rounded-tr-sm bg-bgLight px-5 py-3 text-[14px] font-medium leading-relaxed text-primaryText;
+  }
+
+  .message-bubble-ai {
+    @apply max-w-[85%];
+  }
+}
+
+:root {
+  --chatui-color-canvas: #f0f4f9;
+  --chatui-color-surface: #ffffff;
+  --chatui-color-surface-muted: #f5f5f5;
+
+  --chatui-color-brand-primary: #14b886;
+  --chatui-color-brand-primary-hover: #0d9e6d;
+  --chatui-color-brand-primary-soft: #f0f9f6;
+  --chatui-color-brand-primary-soft-strong: #e8f7f2;
+
+  --chatui-color-text-primary: #1f1f1f;
+  --chatui-color-text-secondary: #444746;
+  --chatui-color-text-tertiary: #747775;
+  --chatui-color-text-muted: #8c8c8c;
+  --chatui-color-text-header: #8a94a0;
+  --chatui-color-text-strong: #1d2129;
+  --chatui-color-text-emphasis: #272e3b;
+
+  --chatui-color-border: #e0e0e0;
+  --chatui-color-border-soft: #d9d9d9;
+  --chatui-color-control-border-default: #0000001a;
+  --chatui-color-control-border-hover: #00000026;
+  --chatui-color-control-border: #c9cdd4;
+  --chatui-color-line-subtle: #edf1f5;
+  --chatui-color-line-soft: #f1f4f7;
+
+  --chatui-color-chat-skill-border: #cfe0ff;
+  --chatui-color-chat-skill-surface: #edf4ff;
+  --chatui-color-chat-skill-text: #2f7bff;
+  --chatui-color-chat-skill-text-muted: #6a8cc5;
+  --chatui-color-chat-skill-hover: #dce9ff;
+  --chatui-color-chat-reference-border: #c5f0d8;
+  --chatui-color-chat-reference-surface: #effff6;
+  --chatui-color-chat-reference-text: #16935a;
+  --chatui-color-chat-reference-text-muted: #5f8f73;
+  --chatui-color-chat-reference-text-hover: #137f49;
+  --chatui-color-chat-reference-hover: #dff7ea;
+  --chatui-color-chat-attachment-border: #dfe4ea;
+  --chatui-color-chat-attachment-icon-surface: #eef3f8;
+  --chatui-color-chat-attachment-text-muted: #9aa0a6;
+  --chatui-color-chat-attachment-hover: #eef2f6;
+  --chatui-color-chat-floating-surface: #2b313d;
+  --chatui-color-chat-popup-border: #e6ecf2;
+  --chatui-color-chat-menu-active: #f4f7fb;
+  --chatui-color-chat-menu-hover: #f8fafc;
+  --chatui-color-chat-menu-icon: #5f6b7a;
+  --chatui-color-chat-web-step: #8b5cf6;
+  --chatui-color-chat-tool-step: #f59e0b;
+  --chatui-color-chat-content-divider: #d1d5db;
+  --chatui-color-chat-content-muted: #4b5563;
+  --chatui-color-chat-code-border: #e6ecf2;
+  --chatui-color-chat-code-header-surface: #f7f9fc;
+  --chatui-color-chat-code-control-border: #dce4ee;
+  --chatui-color-chat-code-control-text: #4b5563;
+  --chatui-color-chat-code-control-hover: #f3f6fa;
+  --chatui-color-chat-code-control-border-hover: #cbd5e1;
+  --chatui-color-chat-code-success-text: #0f766e;
+  --chatui-color-chat-code-success-border: #5eead4;
+  --chatui-color-chat-code-success-surface: #f0fdfa;
+
+  --chatui-color-shell-nav-active: #e4eaf0;
+  --chatui-color-shell-chat-edit-border: #22c55e;
+  --chatui-color-shell-frame-border: #e0e0e080;
+  --chatui-color-shell-divider: #e0e0e0cc;
+  --chatui-color-shell-text-faint: #747775cc;
+  --chatui-color-shell-chat-badge-surface: #e4e7ec;
+  --chatui-color-shell-chat-badge-text: #667085;
+  --chatui-color-shell-avatar-surface: #22c55e;
+  --chatui-color-shell-history-hover: #f8fafc;
+  --chatui-color-shell-task-badge-surface: #f1f5f9;
+  --chatui-color-shell-task-badge-text: #7a869a;
+  --chatui-color-home-header-surface: #ffffffcc;
+
+  --chatui-color-auth-card-border: #ffffffe6;
+  --chatui-color-auth-card-surface: #ffffffb3;
+  --chatui-color-auth-text-muted: #6b7280;
+  --chatui-color-auth-text-default: #4b5563;
+  --chatui-color-auth-text-strong: #111827;
+  --chatui-color-auth-text-faint: #9ca3af;
+  --chatui-color-auth-link: #5f6368;
+  --chatui-color-auth-divider: #e5e7eb;
+  --chatui-color-auth-field-error: #f87171;
+  --chatui-color-auth-field-error-focus: #f871711a;
+  --chatui-color-auth-error-text: #ef4444;
+  --chatui-color-auth-success-pulse: #f0f9f6b3;
+  --chatui-color-auth-toast-surface: #ffffffe6;
+  --chatui-color-auth-toast-border: #f3f4f6;
+  --chatui-color-auth-toast-text: #1f2937;
+  --chatui-color-auth-particle-active: #14b886e6;
+  --chatui-color-auth-particle-idle: #14b88666;
+  --chatui-color-auth-particle-line: #14b886;
+  --chatui-auth-backdrop-center: radial-gradient(circle, #14b8860f 0%, #ffffff00 70%);
+  --chatui-auth-backdrop-corner: radial-gradient(circle, #14b8860d 0%, #ffffff00 60%);
+  --chatui-auth-title-gradient: linear-gradient(135deg, #202124 0%, #5f6368 100%);
+
+  --chatui-color-status-success: #00b42a;
+  --chatui-color-status-success-soft: #edf9f0;
+  --chatui-color-status-warning: #ff7d00;
+  --chatui-color-status-warning-soft: #fff5e8;
+  --chatui-color-status-danger: #f53f3f;
+  --chatui-color-status-danger-hover: #d32f2f;
+  --chatui-color-status-danger-soft: #fff1f0;
+
+  --chatui-color-scrollbar-thumb: #c4c7c5;
+  --chatui-color-scrollbar-thumb-hover: #a8aaaa;
+  --chatui-color-scrollbar-subtle: #edf2f7;
+  --chatui-color-scrollbar-subtle-hover: #e3e9f1;
+
+  --chatui-color-static-white: #ffffff;
+  --chatui-color-static-black: #000000;
+  --chatui-focus-ring-brand: #14b8861a;
+  --chatui-focus-ring-danger: #f53f3f1a;
+  --chatui-overlay-mask: #00000073;
+  --chatui-overlay-surface-80: #ffffffcc;
+  --chatui-shadow-sm: 0 2px 8px #00000005;
+  --chatui-shadow-md: 0 4px 20px #0000000d;
+  --chatui-shadow-lg: 0 8px 30px #00000014;
+  --chatui-shadow-chat-popup: 0 8px 24px #0f172a1f;
+  --chatui-shadow-chat-tooltip: 0 6px 18px #0f172a4d;
+  --chatui-shadow-chat-hint: 0 8px 20px #0f172a40;
+  --chatui-shadow-chat-code: 0 1px 2px #0f172a0a;
+  --chatui-shadow-auth-card: 0 20px 40px #0000000d, 0 1px 3px #00000005;
+  --chatui-shadow-shell-warning: 0 6px 20px #0f172a14;
+}
+
+@layer base {
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--chatui-color-canvas);
+    color: var(--chatui-color-text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+      sans-serif;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--chatui-color-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--chatui-color-scrollbar-thumb-hover);
+}
+
+.auto-hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.auto-hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.auto-hide-scrollbar.is-scrolling,
+.auto-hide-scrollbar.is-scrolling-thin {
+  scrollbar-width: thin;
+}
+
+.auto-hide-scrollbar.is-scrolling::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.auto-hide-scrollbar.is-scrolling-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.auto-hide-scrollbar.is-scrolling::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auto-hide-scrollbar.is-scrolling::-webkit-scrollbar-thumb {
+  background: var(--chatui-color-scrollbar-subtle);
+  border-radius: 999px;
+}
+
+.auto-hide-scrollbar.is-scrolling::-webkit-scrollbar-thumb:hover {
+  background: var(--chatui-color-scrollbar-subtle-hover);
+}
+
+/* GFM task lists and rich assistant content rendered by MessageItem. */
+.prose :where(ul.contains-task-list) {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose :where(li.task-list-item) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.prose :where(li.task-list-item > input[type="checkbox"]) {
+  margin-top: 0.3rem;
+}
+
+.prose :where(.katex-display) {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.3rem 0;
+}
+
+.prose :where(.katex) {
+  font-size: 1.02em;
+}
+
+.code-block-wrapper {
+  position: relative;
+  margin-top: 0.6em;
+  margin-bottom: 0.75em;
+  overflow: hidden;
+  border: 1px solid var(--chatui-color-chat-code-border);
+  border-radius: 12px;
+  background-color: var(--chatui-color-surface);
+  box-shadow: var(--chatui-shadow-chat-code);
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45em 0.8em;
+  border-bottom: 1px solid var(--chatui-color-chat-code-border);
+  background-color: var(--chatui-color-chat-code-header-surface);
+  color: var(--chatui-color-text-tertiary);
+  font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+  font-size: 12px;
+}
+
+.code-block-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--chatui-color-chat-code-control-border);
+  border-radius: 6px;
+  background-color: var(--chatui-color-surface);
+  color: var(--chatui-color-chat-code-control-text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.code-block-copy-btn:hover {
+  border-color: var(--chatui-color-chat-code-control-border-hover);
+  background-color: var(--chatui-color-chat-code-control-hover);
+}
+
+.code-block-copy-btn.copied {
+  border-color: var(--chatui-color-chat-code-success-border);
+  background-color: var(--chatui-color-chat-code-success-surface);
+  color: var(--chatui-color-chat-code-success-text);
+}
+
+.code-block-lang-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid var(--chatui-color-chat-code-control-border);
+  border-radius: 999px;
+  background-color: var(--chatui-color-surface);
+  color: var(--chatui-color-text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.code-block-content {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.diagram-block-body {
+  background-color: var(--chatui-color-surface);
+}
+
+.diagram-block-body .mermaid svg {
+  margin: 0 auto;
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ChatUI Style Check"
+  short_description: "Validate shared ChatUI theme and Tailwind colors"
+  default_prompt: "Use $check-chatui-styles to validate the shared ChatUI theme and Tailwind color mappings."

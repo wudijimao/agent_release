@@ -1,0 +1,348 @@
+import type {
+  ChatAttachmentRefDto,
+  ChatHistoryDetailResponse,
+} from "@bioagent/shared";
+import type {
+  ChatAttachment,
+  ChatMessage,
+  SearchStep,
+  StatusPhase,
+} from "@bioagent/chatui";
+
+import {
+  ApiError,
+  ChatStreamTimeoutError,
+  type ApiClient,
+} from "@/lib/api";
+
+export interface ChatSessionViewModel {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  messageIds: string[];
+}
+
+export interface ChatStreamViewState {
+  sessionId?: string;
+  messages: ChatMessage[];
+  statusPhase: StatusPhase;
+  searchSteps: SearchStep[];
+  hasReceivedAssistantChunk: boolean;
+  error?: string;
+}
+
+export class ChatStreamDisconnectedError extends Error {
+  constructor(options: { cause?: unknown } = {}) {
+    super("连接意外中断，未确认服务端完成回答，请重试。", options);
+    this.name = "ChatStreamDisconnectedError";
+  }
+}
+
+const CHAT_RECONCILIATION_RETRY_DELAYS_MS = [0, 250, 500, 1_000] as const;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+export function mapChatAttachmentRef(
+  attachment: ChatAttachmentRefDto,
+): ChatAttachment {
+  return {
+    id: attachment.id,
+    name: attachment.name,
+    mimeType: attachment.mimeType,
+    status: "ready",
+  };
+}
+
+export function mapChatHistoryDetail(
+  response: ChatHistoryDetailResponse,
+): ChatSessionViewModel {
+  return {
+    id: response.sessionId,
+    title: response.session.title?.trim() || "新对话",
+    messageIds: response.messages.map((message) => message.id),
+    messages: response.messages
+      .filter(
+        (message) =>
+          (message.role === "user" || message.role === "assistant") &&
+          typeof message.content === "string",
+      )
+      .map((message) => ({
+        role: message.role as "user" | "assistant",
+        content: message.content,
+        attachments: (message.attachmentRefs ?? []).map(mapChatAttachmentRef),
+      })),
+  };
+}
+
+async function fetchChatSessionDetail(
+  api: ApiClient,
+  sessionId: string,
+  signal?: AbortSignal,
+) {
+  return api.get<ChatHistoryDetailResponse>(
+    `/api/chat/history?sessionId=${encodeURIComponent(sessionId)}`,
+    { signal },
+  );
+}
+
+export async function loadChatSession(
+  api: ApiClient,
+  sessionId: string,
+  options: { signal?: AbortSignal } = {},
+) {
+  const response = await fetchChatSessionDetail(api, sessionId, options.signal);
+  return mapChatHistoryDetail(response);
+}
+
+function hasPersistedAssistantResponse(
+  response: ChatHistoryDetailResponse,
+  knownMessageIds: ReadonlySet<string>,
+  userContent: string,
+) {
+  const newMessages = response.messages.filter(
+    (message) => !knownMessageIds.has(message.id),
+  );
+  const normalizedUserContent = userContent.trim();
+
+  for (let index = newMessages.length - 1; index >= 0; index -= 1) {
+    const message = newMessages[index];
+    if (
+      message.role !== "user" ||
+      message.content.trim() !== normalizedUserContent
+    ) {
+      continue;
+    }
+
+    return newMessages.slice(index + 1).some(
+      (candidate) =>
+        candidate.role === "assistant" &&
+        (candidate.content.trim().length > 0 || Boolean(candidate.display)),
+    );
+  }
+
+  return false;
+}
+
+function isRetryableReconciliationError(error: unknown) {
+  return (
+    !(error instanceof ApiError) ||
+    error.status === 404 ||
+    error.status >= 500
+  );
+}
+
+function waitForReconciliationRetry(delayMs: number, signal?: AbortSignal) {
+  if (delayMs <= 0) {
+    signal?.throwIfAborted();
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason);
+      return;
+    }
+
+    const handleAbort = () => {
+      globalThis.clearTimeout(timeout);
+      reject(signal?.reason);
+    };
+    const timeout = globalThis.setTimeout(() => {
+      signal?.removeEventListener("abort", handleAbort);
+      resolve();
+    }, delayMs);
+    signal?.addEventListener("abort", handleAbort, { once: true });
+  });
+}
+
+export async function reconcileChatStream(
+  api: ApiClient,
+  sessionId: string,
+  options: {
+    userContent: string;
+    knownMessageIds?: readonly string[];
+    signal?: AbortSignal;
+    retryDelaysMs?: readonly number[];
+    wait?: (delayMs: number, signal?: AbortSignal) => Promise<void>;
+  },
+): Promise<ChatSessionViewModel> {
+  const knownMessageIds = new Set(options.knownMessageIds ?? []);
+  const retryDelaysMs =
+    options.retryDelaysMs?.length
+      ? options.retryDelaysMs
+      : CHAT_RECONCILIATION_RETRY_DELAYS_MS;
+  const wait = options.wait ?? waitForReconciliationRetry;
+  let lastError: unknown;
+
+  for (const delayMs of retryDelaysMs) {
+    await wait(delayMs, options.signal);
+
+    try {
+      const detail = await fetchChatSessionDetail(
+        api,
+        sessionId,
+        options.signal,
+      );
+      if (
+        hasPersistedAssistantResponse(
+          detail,
+          knownMessageIds,
+          options.userContent,
+        )
+      ) {
+        return mapChatHistoryDetail(detail);
+      }
+    } catch (error) {
+      options.signal?.throwIfAborted();
+      if (!isRetryableReconciliationError(error)) throw error;
+      lastError = error;
+    }
+  }
+
+  throw new ChatStreamDisconnectedError({ cause: lastError });
+}
+
+export function beginChatStream(
+  messages: readonly ChatMessage[],
+  userMessage: ChatMessage,
+): ChatStreamViewState {
+  return {
+    messages: [
+      ...messages,
+      userMessage,
+      { role: "assistant", content: "" },
+    ],
+    statusPhase: "thinking",
+    searchSteps: [],
+    hasReceivedAssistantChunk: false,
+  };
+}
+
+export function updateLatestUserMessageAttachments(
+  state: ChatStreamViewState,
+  attachments: ChatAttachment[],
+): ChatStreamViewState {
+  let userMessageIndex = -1;
+  for (let index = state.messages.length - 1; index >= 0; index -= 1) {
+    if (state.messages[index]?.role !== "user") continue;
+    userMessageIndex = index;
+    break;
+  }
+  if (userMessageIndex < 0) return state;
+
+  return {
+    ...state,
+    messages: state.messages.map((message, index) =>
+      index === userMessageIndex ? { ...message, attachments } : message,
+    ),
+  };
+}
+
+export function interruptChatStream(
+  state: ChatStreamViewState,
+): ChatStreamViewState {
+  const lastMessage = state.messages.at(-1);
+  const messages =
+    lastMessage?.role === "assistant" && !lastMessage.content
+      ? state.messages.slice(0, -1)
+      : state.messages;
+
+  return {
+    ...state,
+    messages,
+    error: undefined,
+  };
+}
+
+export function getChatStreamErrorMessage(
+  error: unknown,
+  fallback: string,
+): string {
+  if (error instanceof ChatStreamTimeoutError) {
+    return error.phase === "connect"
+      ? "连接对话服务超时，请重试。"
+      : "回答长时间没有更新，已停止生成，请重试。";
+  }
+
+  if (error instanceof ChatStreamDisconnectedError) return error.message;
+
+  return error instanceof Error ? error.message : fallback;
+}
+
+export function shouldReconcileChatStreamFailure(
+  error: unknown,
+  state: ChatStreamViewState,
+) {
+  return (
+    !state.error &&
+    !(error instanceof ApiError) &&
+    !(error instanceof ChatStreamTimeoutError) &&
+    !(error instanceof ChatStreamDisconnectedError)
+  );
+}
+
+export function reduceChatStreamEvent(
+  state: ChatStreamViewState,
+  eventType: string,
+  eventData: unknown,
+): ChatStreamViewState {
+  const payload = asRecord(eventData);
+  if (!payload) return state;
+
+  if (eventType === "meta" && typeof payload.sessionId === "string") {
+    return { ...state, sessionId: payload.sessionId };
+  }
+
+  if (eventType === "task_trace") {
+    const step = asRecord(payload.step);
+    const label =
+      typeof step?.title === "string"
+        ? step.title
+        : typeof step?.detail === "string"
+          ? step.detail
+          : "正在处理任务";
+    const category = typeof step?.category === "string" ? step.category : "";
+    const type: SearchStep["type"] = category.includes("web")
+      ? "web"
+      : category.includes("context") || category.includes("knowledge")
+        ? "knowledge"
+        : "tool";
+
+    return {
+      ...state,
+      statusPhase: "searching",
+      searchSteps: [...state.searchSteps, { type, label }],
+    };
+  }
+
+  if (eventType === "text" && typeof payload.content === "string") {
+    const messages = [...state.messages];
+    const lastIndex = messages.length - 1;
+    const lastMessage = messages[lastIndex];
+    if (lastMessage?.role !== "assistant") return state;
+
+    messages[lastIndex] = {
+      ...lastMessage,
+      content: `${lastMessage.content}${payload.content}`,
+    };
+    return {
+      ...state,
+      messages,
+      statusPhase: "generating",
+      hasReceivedAssistantChunk: true,
+    };
+  }
+
+  if (eventType === "error") {
+    return {
+      ...state,
+      error: typeof payload.error === "string" ? payload.error : "对话失败",
+    };
+  }
+
+  return state;
+}

@@ -1,0 +1,2 @@
+Chat attachment regression fixture.
+Verification marker: bioagent-chat-v2-2026-07-17.

@@ -1,0 +1,96 @@
+.button {
+  @apply inline-flex cursor-pointer select-none appearance-none items-center justify-center gap-2 whitespace-nowrap border border-solid font-medium antialiased transition-all duration-200 ease-in-out;
+}
+
+.primary {
+  @apply border-primary bg-primary text-white;
+}
+
+.primary:hover:not(.disabled) {
+  @apply border-primary-hover bg-primary-hover opacity-95;
+}
+
+.primary:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.secondary {
+  @apply border-borderSoft bg-surface text-primaryText;
+}
+
+.secondary:hover:not(.disabled) {
+  @apply border-controlBorder bg-surfaceMuted;
+}
+
+.ghost {
+  @apply border-transparent bg-transparent text-primaryText;
+}
+
+.ghost:hover:not(.disabled) {
+  @apply border-transparent bg-surfaceMuted;
+}
+
+.danger {
+  @apply border-danger bg-danger text-white;
+}
+
+.danger:hover:not(.disabled) {
+  @apply border-danger-hover bg-danger-hover;
+}
+
+.small {
+  @apply h-7 px-3 py-1 text-xs;
+}
+
+.medium {
+  @apply h-9 px-4 py-2 text-sm;
+}
+
+.large {
+  @apply h-11 px-6 py-3 text-base;
+}
+
+.roundedSquare {
+  @apply rounded-none;
+}
+
+.roundedSmall {
+  border-radius: 2px;
+}
+
+.roundedMedium,
+.roundedLarge {
+  @apply rounded-md;
+}
+
+.roundedFull,
+.loadingSpinner {
+  @apply rounded-full;
+}
+
+.loading {
+  @apply opacity-80;
+}
+
+.loadingSpinner {
+  @apply inline-block h-3.5 w-3.5 border-2 border-solid border-current border-t-transparent;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disabled {
+  @apply pointer-events-none cursor-not-allowed opacity-60;
+}
+
+.fullWidth {
+  @apply w-full;
+}
+
+.icon {
+  @apply inline-flex items-center justify-center;
+}
