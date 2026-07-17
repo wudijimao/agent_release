@@ -8,18 +8,14 @@ import {
   resolveChatBackendUrl,
 } from "./proxy";
 
-test("resolveChatBackendUrl uses the explicit backend before environment defaults", () => {
+test("resolveChatBackendUrl uses explicit configuration before the shared default", () => {
   assert.equal(
-    resolveChatBackendUrl({ backendUrl: "http://server/", nodeEnv: "development" }),
+    resolveChatBackendUrl({ backendUrl: "http://server/" }),
     "http://server/api/chat",
   );
   assert.equal(
-    resolveChatBackendUrl({ nodeEnv: "development" }),
+    resolveChatBackendUrl({}),
     "http://39.106.18.219/api/chat",
-  );
-  assert.equal(
-    resolveChatBackendUrl({ nodeEnv: "production" }),
-    "http://localhost:3000/api/chat",
   );
 });
 

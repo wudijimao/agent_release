@@ -1,5 +1,4 @@
-const DEVELOPMENT_BACKEND_URL = "http://39.106.18.219";
-const PRODUCTION_BACKEND_URL = "http://localhost:3000";
+const DEFAULT_BACKEND_URL = "http://39.106.18.219";
 
 const REQUEST_FORWARD_HEADERS = [
   "accept",
@@ -28,14 +27,11 @@ const RESPONSE_SKIP_HEADERS = new Set([
 export function resolveChatBackendUrl(input: {
   backendUrl?: string;
   apiUrl?: string;
-  nodeEnv?: string;
 }) {
   const baseUrl =
     input.backendUrl ||
     input.apiUrl ||
-    (input.nodeEnv === "development"
-      ? DEVELOPMENT_BACKEND_URL
-      : PRODUCTION_BACKEND_URL);
+    DEFAULT_BACKEND_URL;
 
   return `${baseUrl.replace(/\/+$/, "")}/api/chat`;
 }

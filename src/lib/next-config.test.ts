@@ -3,12 +3,12 @@ import test from "node:test";
 
 import {
   applicationSecurityHeaders,
-  buildDevelopmentRewrites,
+  buildBackendRewrites,
 } from "../../next.config";
 
-test("development rewrites expose health separately from API routes", () => {
+test("backend rewrites expose health separately from API routes in every environment", () => {
   assert.deepEqual(
-    buildDevelopmentRewrites("development", "http://backend.test/"),
+    buildBackendRewrites("http://backend.test/"),
     [
       {
         source: "/api/health",
@@ -20,7 +20,16 @@ test("development rewrites expose health separately from API routes", () => {
       },
     ],
   );
-  assert.deepEqual(buildDevelopmentRewrites("production"), []);
+  assert.deepEqual(buildBackendRewrites(), [
+    {
+      source: "/api/health",
+      destination: "http://39.106.18.219/health",
+    },
+    {
+      source: "/api/:path*",
+      destination: "http://39.106.18.219/api/:path*",
+    },
+  ]);
 });
 
 test("application responses carry the migrated security header policy", () => {

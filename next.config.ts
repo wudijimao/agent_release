@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const DEVELOPMENT_BACKEND_URL = "http://39.106.18.219";
+const DEFAULT_BACKEND_URL = "http://39.106.18.219";
 
 export const applicationSecurityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -16,12 +16,7 @@ export const applicationSecurityHeaders = [
   },
 ] as const;
 
-export function buildDevelopmentRewrites(
-  nodeEnv: string | undefined,
-  backendUrl = DEVELOPMENT_BACKEND_URL,
-) {
-  if (nodeEnv !== "development") return [];
-
+export function buildBackendRewrites(backendUrl = DEFAULT_BACKEND_URL) {
   const baseUrl = backendUrl.replace(/\/+$/, "");
   return [
     {
@@ -46,9 +41,10 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    return buildDevelopmentRewrites(
-      process.env.NODE_ENV,
-      process.env.BACKEND_URL || DEVELOPMENT_BACKEND_URL,
+    return buildBackendRewrites(
+      process.env.BIOAGENT_API_URL ||
+        process.env.BACKEND_URL ||
+        DEFAULT_BACKEND_URL,
     );
   },
 };

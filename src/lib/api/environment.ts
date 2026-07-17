@@ -1,4 +1,4 @@
-const DEFAULT_SERVER_API_URL = "http://localhost:3000";
+const DEFAULT_SERVER_API_URL = "http://39.106.18.219";
 
 export function normalizeApiBaseUrl(value: string) {
   return value.trim().replace(/\/+$/, "");
