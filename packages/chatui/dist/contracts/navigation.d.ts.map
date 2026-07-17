@@ -1,0 +1,1 @@
+{"version":3,"file":"navigation.d.ts","sourceRoot":"","sources":["../../src/contracts/navigation.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,iBAAiB;IAChC,IAAI,CAAC,IAAI,EAAE,MAAM,GAAG,IAAI,CAAC;IACzB,OAAO,CAAC,IAAI,EAAE,MAAM,GAAG,IAAI,CAAC;IAC5B,IAAI,IAAI,IAAI,CAAC;CACd"}
