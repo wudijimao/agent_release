@@ -5,7 +5,12 @@ import type { AuthResponse } from "@bioagent/shared";
 
 import { ApiError, type ApiClient } from "@/lib/api";
 
-import { getLoginErrorMessage, loginWithPassword } from "./auth";
+import {
+  changeCurrentPassword,
+  getChangePasswordErrorMessage,
+  getLoginErrorMessage,
+  loginWithPassword,
+} from "./auth";
 
 function createApiStub(
   post: ApiClient["post"],
@@ -82,5 +87,48 @@ test("login adapter translates known, rate-limited, server, and network failures
   assert.equal(
     getLoginErrorMessage(new TypeError("fetch failed")),
     "无法连接服务器，请检查网络后重试。",
+  );
+});
+
+test("change password adapter preserves invalid-current-password as a form error", async () => {
+  const calls: unknown[][] = [];
+  const api = createApiStub(async (...args: unknown[]) => {
+    calls.push(args);
+    return { ok: true, requiresLogin: true };
+  });
+
+  const result = await changeCurrentPassword(api, {
+    currentPassword: "old-secret",
+    newPassword: "new-secret",
+  });
+
+  assert.deepEqual(result, { ok: true, requiresLogin: true });
+  assert.deepEqual(calls, [
+    [
+      "/api/auth/change-password",
+      { currentPassword: "old-secret", newPassword: "new-secret" },
+      { handleUnauthorized: false },
+    ],
+  ]);
+});
+
+test("change password adapter translates password and service failures", () => {
+  assert.equal(
+    getChangePasswordErrorMessage(
+      new ApiError("INVALID_CURRENT_PASSWORD", "Invalid", 401),
+    ),
+    "当前密码不正确。",
+  );
+  assert.equal(
+    getChangePasswordErrorMessage(new ApiError("PASSWORD_REUSED", "Reused", 400)),
+    "新密码不能与当前密码相同。",
+  );
+  assert.equal(
+    getChangePasswordErrorMessage(new ApiError("RATE_LIMITED", "Limited", 429)),
+    "修改密码操作过于频繁，请稍后再试。",
+  );
+  assert.equal(
+    getChangePasswordErrorMessage(new ApiError("INTERNAL_ERROR", "Failed", 503)),
+    "密码服务暂时不可用，请稍后重试。",
   );
 });

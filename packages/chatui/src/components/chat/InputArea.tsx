@@ -26,6 +26,8 @@ export interface ChatSkillOption {
   badge: string;
   description: string;
   source: string;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 export interface ChatFileOption {
@@ -223,7 +225,8 @@ export const InputArea = ({
     setActiveFileIndex(-1);
   }, []);
 
-  const applySkillSelection = useCallback((skillId: string) => {
+  const applySkillSelection = useCallback((skill: ChatSkillOption) => {
+    if (skill.disabled) return;
     const textarea = textareaRef.current;
     const selectionStart = textarea?.selectionStart ?? val.length;
     const selectionEnd = textarea?.selectionEnd ?? selectionStart;
@@ -247,9 +250,9 @@ export const InputArea = ({
     })();
 
     setReferencedSkills((prev) => {
-      const key = `skill-${skillId}`;
+      const key = `skill-${skill.id}`;
       if (prev.some((item) => item.id === key)) return prev;
-      return [...prev, { id: key, type: 'skill', label: skillId }];
+      return [...prev, { id: key, type: 'skill', label: skill.id, sourceId: skill.id }];
     });
 
     setVal(next.value);
@@ -264,7 +267,7 @@ export const InputArea = ({
     });
   }, [val]);
 
-  const applyFileSelection = useCallback((fileName: string) => {
+  const applyFileSelection = useCallback((file: ChatFileOption) => {
     const textarea = textareaRef.current;
     const selectionStart = textarea?.selectionStart ?? val.length;
     const selectionEnd = textarea?.selectionEnd ?? selectionStart;
@@ -288,9 +291,9 @@ export const InputArea = ({
     })();
 
     setReferencedDocs((prev) => {
-      const key = `doc-${fileName}`;
+      const key = `doc-${file.id}`;
       if (prev.some((item) => item.id === key)) return prev;
-      return [...prev, { id: key, type: 'doc', label: fileName }];
+      return [...prev, { id: key, type: 'doc', label: file.name, sourceId: file.id }];
     });
 
     setVal(next.value);
@@ -552,7 +555,7 @@ export const InputArea = ({
                 event.preventDefault();
                 const targetSkill = activeSkillIndex >= 0 ? filteredSkills[activeSkillIndex] : undefined;
                 if (targetSkill) {
-                  applySkillSelection(targetSkill.id);
+                  applySkillSelection(targetSkill);
                 }
                 return;
               }
@@ -591,7 +594,7 @@ export const InputArea = ({
                 event.preventDefault();
                 const targetFile = activeFileIndex >= 0 ? filteredFiles[activeFileIndex] : undefined;
                 if (targetFile) {
-                  applyFileSelection(targetFile.name);
+                  applyFileSelection(targetFile);
                 }
                 return;
               }
@@ -629,10 +632,16 @@ export const InputArea = ({
                     <button
                       key={skill.id}
                       type="button"
+                      disabled={skill.disabled}
+                      title={skill.disabledReason}
                       className={`mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                        index === activeSkillIndex ? 'bg-chatMenuActive' : 'hover:bg-chatMenuHover'
+                        skill.disabled
+                          ? 'cursor-not-allowed opacity-50'
+                          : index === activeSkillIndex
+                            ? 'bg-chatMenuActive'
+                            : 'hover:bg-chatMenuHover'
                       }`}
-                      onClick={() => applySkillSelection(skill.id)}
+                      onClick={() => applySkillSelection(skill)}
                     >
                       <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded bg-chatAttachmentIconSurface text-[10px] font-semibold leading-none text-chatMenuIcon">
                         {skill.badge}
@@ -641,7 +650,9 @@ export const InputArea = ({
                         <span className="text-[13px] font-semibold text-primaryText">{skill.id}</span>
                         <span className="truncate text-[12px] text-tertiaryText">{skill.description}</span>
                       </span>
-                      <span className="shrink-0 text-[11px] text-tertiaryText">{skill.source}</span>
+                      <span className="shrink-0 text-[11px] text-tertiaryText">
+                        {skill.disabledReason || skill.source}
+                      </span>
                     </button>
                   ))
                 )}
@@ -677,7 +688,7 @@ export const InputArea = ({
                       className={`mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
                         index === activeFileIndex ? 'bg-chatMenuActive' : 'hover:bg-chatMenuHover'
                       }`}
-                      onClick={() => applyFileSelection(file.name)}
+                      onClick={() => applyFileSelection(file)}
                     >
                       <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded bg-chatAttachmentIconSurface text-chatMenuIcon">
                         <FileText size={11} />

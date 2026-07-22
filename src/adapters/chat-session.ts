@@ -1,19 +1,18 @@
 import type {
   ChatAttachmentRefDto,
   ChatHistoryDetailResponse,
+  HomeContextRef,
 } from "@bioagent/shared";
 import type {
   ChatAttachment,
   ChatMessage,
+  ChatReference,
+  InputSendPayload,
   SearchStep,
   StatusPhase,
 } from "@bioagent/chatui";
 
-import {
-  ApiError,
-  ChatStreamTimeoutError,
-  type ApiClient,
-} from "@/lib/api";
+import { ApiError, ChatStreamTimeoutError, type ApiClient } from "@/lib/api";
 
 export interface ChatSessionViewModel {
   id: string;
@@ -57,6 +56,22 @@ export function mapChatAttachmentRef(
   };
 }
 
+export function mapChatContextRef(
+  reference: HomeContextRef,
+): ChatReference | null {
+  if (reference.type === "attachment") return null;
+
+  const label = reference.title?.trim() || reference.summary?.trim();
+  if (!label) return null;
+
+  return {
+    id: `${reference.type}:${reference.id}`,
+    type: "doc",
+    label,
+    sourceId: reference.id,
+  };
+}
+
 export function mapChatHistoryDetail(
   response: ChatHistoryDetailResponse,
 ): ChatSessionViewModel {
@@ -70,11 +85,23 @@ export function mapChatHistoryDetail(
           (message.role === "user" || message.role === "assistant") &&
           typeof message.content === "string",
       )
-      .map((message) => ({
-        role: message.role as "user" | "assistant",
-        content: message.content,
-        attachments: (message.attachmentRefs ?? []).map(mapChatAttachmentRef),
-      })),
+      .map((message) => {
+        const references =
+          message.role === "user"
+            ? (message.contextRefsSnapshot ?? [])
+                .map(mapChatContextRef)
+                .filter(
+                  (reference): reference is ChatReference => reference !== null,
+                )
+            : [];
+
+        return {
+          role: message.role as "user" | "assistant",
+          content: message.content,
+          attachments: (message.attachmentRefs ?? []).map(mapChatAttachmentRef),
+          ...(references.length > 0 ? { references } : {}),
+        };
+      }),
   };
 }
 
@@ -117,11 +144,13 @@ function hasPersistedAssistantResponse(
       continue;
     }
 
-    return newMessages.slice(index + 1).some(
-      (candidate) =>
-        candidate.role === "assistant" &&
-        (candidate.content.trim().length > 0 || Boolean(candidate.display)),
-    );
+    return newMessages
+      .slice(index + 1)
+      .some(
+        (candidate) =>
+          candidate.role === "assistant" &&
+          (candidate.content.trim().length > 0 || Boolean(candidate.display)),
+      );
   }
 
   return false;
@@ -129,9 +158,7 @@ function hasPersistedAssistantResponse(
 
 function isRetryableReconciliationError(error: unknown) {
   return (
-    !(error instanceof ApiError) ||
-    error.status === 404 ||
-    error.status >= 500
+    !(error instanceof ApiError) || error.status === 404 || error.status >= 500
   );
 }
 
@@ -171,10 +198,9 @@ export async function reconcileChatStream(
   },
 ): Promise<ChatSessionViewModel> {
   const knownMessageIds = new Set(options.knownMessageIds ?? []);
-  const retryDelaysMs =
-    options.retryDelaysMs?.length
-      ? options.retryDelaysMs
-      : CHAT_RECONCILIATION_RETRY_DELAYS_MS;
+  const retryDelaysMs = options.retryDelaysMs?.length
+    ? options.retryDelaysMs
+    : CHAT_RECONCILIATION_RETRY_DELAYS_MS;
   const wait = options.wait ?? waitForReconciliationRetry;
   let lastError: unknown;
 
@@ -211,11 +237,7 @@ export function beginChatStream(
   userMessage: ChatMessage,
 ): ChatStreamViewState {
   return {
-    messages: [
-      ...messages,
-      userMessage,
-      { role: "assistant", content: "" },
-    ],
+    messages: [...messages, userMessage, { role: "assistant", content: "" }],
     statusPhase: "thinking",
     searchSteps: [],
     hasReceivedAssistantChunk: false,
@@ -240,6 +262,24 @@ export function updateLatestUserMessageAttachments(
       index === userMessageIndex ? { ...message, attachments } : message,
     ),
   };
+}
+
+export function buildChatRegeneratePayload(
+  messages: readonly ChatMessage[],
+  assistantIndex: number,
+): InputSendPayload | null {
+  for (let index = assistantIndex - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (message?.role !== "user" || !message.content.trim()) continue;
+
+    return {
+      content: message.content,
+      attachments: [],
+      references: [],
+    };
+  }
+
+  return null;
 }
 
 export function interruptChatStream(

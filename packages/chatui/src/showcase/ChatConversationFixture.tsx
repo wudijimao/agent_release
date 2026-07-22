@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   AppShell,
+  ChatComposerDock,
   ChatConversationViewport,
+  ChatWorkspaceFrame,
+  ChatWorkspaceHeader,
   InputArea,
   type AppShellChat,
   type ChatMessage,
   type InputSendPayload,
 } from '..';
-
-const logoUrl = new URL('../../../../src/assets/deptrace-logo.png', import.meta.url).href;
+import logoUrl from '../../../../src/assets/deptrace-logo.png';
 
 const initialChats: AppShellChat[] = [
   { id: 'chat-fixture', title: 'CRISPR 实验条件分析', date: '刚刚', count: 2 },
@@ -90,35 +92,32 @@ export function ChatConversationFixture() {
       onNavigate={setCurrentPath}
       onLogout={() => undefined}
     >
-      <div className="flex h-full w-full flex-col bg-white">
-        <header className="z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-6 backdrop-blur-sm">
-          <h1 className="truncate text-sm font-medium text-primaryText">CRISPR 实验条件分析</h1>
-        </header>
-
-        <div className="flex min-h-0 flex-1 flex-col">
-          <div className="relative min-h-0 flex-1">
-            <ChatConversationViewport
-              messages={messages}
-              isTyping={isTyping}
-              statusPhase="thinking"
-              scrollContainerRef={scrollContainerRef}
-              getMessageKey={(_message, index) => `fixture-message-${index}`}
-            />
-          </div>
-
-          <div className="mx-auto w-full max-w-[840px] shrink-0 bg-gradient-to-t from-white via-white to-transparent px-6 pb-6 pt-2">
-            <InputArea
-              onSend={handleSend}
-              onCancel={handleCancel}
-              disabled={isTyping}
-              isStreaming={isTyping}
-            />
-            <div className="mt-3 text-center text-xs text-tertiaryText">
-              AI 内容可能有误差，请在实验前核实。
-            </div>
-          </div>
+      <ChatWorkspaceFrame
+        header={<ChatWorkspaceHeader
+          isSidebarOpen
+          title="CRISPR 实验条件分析"
+          onOpenSidebar={() => undefined}
+        />}
+      >
+        <div className="relative min-h-0 flex-1">
+          <ChatConversationViewport
+            messages={messages}
+            isTyping={isTyping}
+            statusPhase="thinking"
+            scrollContainerRef={scrollContainerRef}
+            getMessageKey={(_message, index) => `fixture-message-${index}`}
+          />
         </div>
-      </div>
+
+        <ChatComposerDock>
+          <InputArea
+            onSend={handleSend}
+            onCancel={handleCancel}
+            disabled={isTyping}
+            isStreaming={isTyping}
+          />
+        </ChatComposerDock>
+      </ChatWorkspaceFrame>
     </AppShell>
   );
 }

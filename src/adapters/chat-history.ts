@@ -8,6 +8,19 @@ import type { ApiClient } from "@/lib/api";
 
 const DEFAULT_CHAT_TITLE = "新对话";
 
+function sortChatsByUpdatedAt(chats: readonly AppShellChat[]) {
+  return chats
+    .map((chat, index) => ({ chat, index }))
+    .sort((left, right) => {
+      const leftTime = left.chat.updatedAt ? Date.parse(left.chat.updatedAt) : 0;
+      const rightTime = right.chat.updatedAt ? Date.parse(right.chat.updatedAt) : 0;
+      const normalizedLeft = Number.isNaN(leftTime) ? 0 : leftTime;
+      const normalizedRight = Number.isNaN(rightTime) ? 0 : rightTime;
+      return normalizedRight - normalizedLeft || left.index - right.index;
+    })
+    .map(({ chat }) => chat);
+}
+
 function isSameLocalDay(left: Date, right: Date) {
   return (
     left.getFullYear() === right.getFullYear() &&
@@ -46,7 +59,48 @@ export function mapChatSessionToAppShell(
     title: session.title?.trim() || DEFAULT_CHAT_TITLE,
     date: formatChatSessionDate(session.updatedAt, now),
     count: 0,
+    updatedAt: session.updatedAt,
+    ...(session.projectId ? { projectId: session.projectId } : {}),
+    ...(session.isPinned ? { isPinned: true } : {}),
+    ...(session.sessionKind === "task" ? { isTaskConversation: true } : {}),
   };
+}
+
+export function touchAppShellChat(
+  chats: readonly AppShellChat[],
+  sessionId: string,
+  now = new Date(),
+) {
+  const updatedAt = now.toISOString();
+  return sortChatsByUpdatedAt(
+    chats.map((chat) => chat.id === sessionId
+      ? {
+          ...chat,
+          updatedAt,
+          date: formatChatSessionDate(updatedAt, now),
+        }
+      : chat),
+  );
+}
+
+export async function renameChatSession(
+  api: ApiClient,
+  sessionId: string,
+  title: string,
+) {
+  await api.patch(`/api/agent/sessions/${sessionId}`, { title });
+}
+
+export async function setChatSessionPinned(
+  api: ApiClient,
+  sessionId: string,
+  isPinned: boolean,
+) {
+  await api.patch(`/api/agent/sessions/${sessionId}`, { isPinned });
+}
+
+export async function deleteChatSession(api: ApiClient, sessionId: string) {
+  await api.delete(`/api/agent/sessions/${sessionId}`);
 }
 
 export async function loadAppShellChats(
@@ -59,7 +113,7 @@ export async function loadAppShellChats(
     { signal: options.signal },
   );
 
-  return response.items.map((session) =>
-    mapChatSessionToAppShell(session, options.now),
+  return sortChatsByUpdatedAt(
+    response.items.map((session) => mapChatSessionToAppShell(session, options.now)),
   );
 }

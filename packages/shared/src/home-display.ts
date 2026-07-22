@@ -44,6 +44,10 @@ import {
   normalizeHomeDraftEnvelope,
   type HomeDraftEnvelope,
 } from './home-draft.js';
+import type {
+  ProjectKnowledgeSection,
+  ProjectKnowledgeType,
+} from './projects.js';
 
 export interface HomeDisplayCitation {
   sourceType?: 'document' | 'wiki';
@@ -362,14 +366,20 @@ export interface ScheduledTaskResolution {
 export interface ScheduledTaskCreatePreviewCardPayload {
   draftEnvelope?: HomeDraftEnvelope;
   name: string;
+  taskType?: 'project_progress' | 'weekly_summary' | 'literature_tracking' | 'custom';
+  projectId?: string | null;
+  projectName?: string | null;
   prompt: string;
   promptSummary?: string;
   scheduleKind: ScheduledTaskScheduleKind;
   scheduleConfig: ScheduledTaskScheduleConfig;
+  scheduleStartAt?: string | null;
   scheduleLabel: string;
   timezone: string;
   titleTemplate: string;
   nextRunAt?: string;
+  sourceConfig?: Record<string, unknown>;
+  publishPolicy?: Record<string, unknown>;
   warnings: string[];
   confirmation?: ScheduledTaskResolution;
 }
@@ -425,6 +435,9 @@ export interface MiraArchivePreviewCardPayload {
   targetPath: string;
   targetParentNodeId?: string;
   targetWikiNodeId?: string;
+  projectId?: string | null;
+  projectKnowledgeType?: ProjectKnowledgeType | string;
+  projectKnowledgeSection?: ProjectKnowledgeSection | 'knowledge' | 'experiment' | 'data';
   mode: 'append' | 'create' | 'overwrite_proposal';
   title: string;
   topic?: string;
@@ -1632,14 +1645,24 @@ function normalizeScheduledTaskCreatePreviewPayload(value: unknown): ScheduledTa
   return {
     ...(draftEnvelope ? { draftEnvelope } : {}),
     name,
+    taskType: asEnumValue(
+      record.taskType,
+      ['project_progress', 'weekly_summary', 'literature_tracking', 'custom'] as const,
+      'custom',
+    ),
+    ...(asOptionalString(record.projectId) ? { projectId: asOptionalString(record.projectId) } : {}),
+    ...(asOptionalString(record.projectName) ? { projectName: asOptionalString(record.projectName) } : {}),
     prompt,
     ...(asOptionalString(record.promptSummary) ? { promptSummary: asOptionalString(record.promptSummary) } : {}),
     scheduleKind,
     scheduleConfig,
+    ...(asOptionalIsoString(record.scheduleStartAt) ? { scheduleStartAt: asOptionalIsoString(record.scheduleStartAt) } : {}),
     scheduleLabel,
     timezone: asOptionalString(record.timezone) || 'Asia/Shanghai',
     titleTemplate,
     ...(asOptionalIsoString(record.nextRunAt) ? { nextRunAt: asOptionalIsoString(record.nextRunAt) } : {}),
+    ...(asRecord(record.sourceConfig) ? { sourceConfig: asRecord(record.sourceConfig) || {} } : {}),
+    ...(asRecord(record.publishPolicy) ? { publishPolicy: asRecord(record.publishPolicy) || {} } : {}),
     warnings: asStringArray(record.warnings),
     ...(confirmation ? { confirmation } : {}),
   };
@@ -1824,6 +1847,9 @@ function normalizeMiraArchivePreviewPayload(value: unknown): MiraArchivePreviewC
     targetPath,
     targetParentNodeId: asOptionalString(record.targetParentNodeId),
     targetWikiNodeId: asOptionalString(record.targetWikiNodeId),
+    projectId: asOptionalString(record.projectId) || null,
+    projectKnowledgeType: asOptionalString(record.projectKnowledgeType),
+    projectKnowledgeSection: asOptionalString(record.projectKnowledgeSection) as MiraArchivePreviewCardPayload['projectKnowledgeSection'],
     mode: asEnumValue(record.mode, ['append', 'create', 'overwrite_proposal'] as const, 'append'),
     title,
     topic: asOptionalString(record.topic),

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { AppShell, ChatHomePage } from '..';
 import type { AppShellChat, ChatHomeProject, InputSendPayload } from '..';
-
-const logoUrl = new URL('../../../../src/assets/deptrace-logo.png', import.meta.url).href;
+import logoUrl from '../../../../src/assets/deptrace-logo.png';
 
 const initialProjects: ChatHomeProject[] = [
   { id: 'p-crispr', name: 'CRISPR实验优化' },

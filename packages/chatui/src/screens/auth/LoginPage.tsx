@@ -431,7 +431,7 @@ export default function LoginPage({ onLogin, onLoginSuccess, onNavigate }: Login
                   <UserPlus size={16} className="text-authTextFaint" />
                   加入实验室
                 </button>
-                <span className="h-4 w-px bg-[var(--color-line-subtle)]" aria-hidden="true" />
+                <span className="h-4 w-px bg-lineSubtle" aria-hidden="true" />
                 <button
                   type="button"
                   onClick={() => onNavigate('/register?mode=create-lab')}

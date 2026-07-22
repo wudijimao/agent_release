@@ -4,6 +4,7 @@ export interface AppShellChat {
     title: string;
     date: string;
     count: number;
+    updatedAt?: string;
     projectId?: string;
     isPinned?: boolean;
     taskId?: string;
@@ -17,6 +18,7 @@ export interface AppShellProject {
 export interface AppShellUser {
     name: string;
     avatarText: string;
+    avatarUrl?: string;
 }
 export interface AppShellChatActions {
     rename?: boolean;
@@ -45,7 +47,10 @@ export interface AppShellProps {
     }): void;
     onLogout(): void;
     onChatsChange?(chats: readonly AppShellChat[]): void;
+    onRenameChat?(chatId: string, title: string): void;
+    onTogglePinChat?(chatId: string, isPinned: boolean): void;
+    onShareChat?(chatId: string): void;
     onDeleteChat?(chatId: string): void;
 }
-export default function AppShell({ currentPath, projects, initialChats, logoUrl, user, children, initialAiUsageWarningActive, chatActions, onNavigate, onLogout, onChatsChange, onDeleteChat, }: AppShellProps): React.JSX.Element;
+export default function AppShell({ currentPath, projects, initialChats, logoUrl, user, children, initialAiUsageWarningActive, chatActions, onNavigate, onLogout, onChatsChange, onRenameChat, onTogglePinChat, onShareChat, onDeleteChat, }: AppShellProps): React.JSX.Element;
 //# sourceMappingURL=AppShell.d.ts.map

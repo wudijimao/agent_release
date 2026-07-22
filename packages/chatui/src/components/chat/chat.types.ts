@@ -15,6 +15,8 @@ export interface ChatReference {
   id: string;
   type: 'skill' | 'doc';
   label: string;
+  /** 宿主提供的稳定资源标识；UI 不解释也不请求该资源。 */
+  sourceId?: string;
 }
 
 export interface ChatMessage {

@@ -32,6 +32,8 @@ Keep `src/styles.css` as the component library's only source of owned color and 
 - Do not put color literals in `tailwind.config.ts`.
 - Do not reach into the prototype's `src/index.css` or `tailwind.config.ts`.
 - Preserve public component names, props, states, and observable interaction during migration.
+- High-fidelity prototype pages must import presentation components directly from `@bioagent/chatui`; do not reintroduce JSX implementations under the prototype host.
+- Files retained under the prototype's `src/components/chat` and `src/components/common` are compatibility paths only and must remain pure re-exports of the same public component names.
 
 ## Adding a Color
 
@@ -40,4 +42,4 @@ Keep `src/styles.css` as the component library's only source of owned color and 
 3. Run `corepack pnpm styles:check`.
 4. Verify all affected states in the component showcase.
 
-The deterministic checker is bundled at `scripts/check-theme-colors.mjs` inside this Skill.
+The deterministic color and prototype-boundary checkers are bundled in this Skill's `scripts` directory and both run through `styles:check`.

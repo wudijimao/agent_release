@@ -1,0 +1,70 @@
+.toggle {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 2px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--chatui-color-brand-primary);
+  outline-offset: 2px;
+}
+
+.toggleSmall {
+  width: 32px;
+  height: 18px;
+}
+
+.toggleMedium {
+  width: 40px;
+  height: 22px;
+}
+
+.toggleOff {
+  background-color: var(--chatui-color-control-border-default);
+}
+
+.toggleOn {
+  background-color: var(--chatui-color-brand-primary);
+}
+
+.toggleDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.thumb {
+  display: block;
+  border-radius: 50%;
+  background: var(--chatui-color-static-white);
+  box-shadow: var(--chatui-shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.thumbSmall {
+  width: 14px;
+  height: 14px;
+}
+
+.thumbMedium {
+  width: 18px;
+  height: 18px;
+}
+
+.thumbOffSmall,
+.thumbOffMedium {
+  transform: translateX(0);
+}
+
+.thumbOnSmall {
+  transform: translateX(14px);
+}
+
+.thumbOnMedium {
+  transform: translateX(18px);
+}

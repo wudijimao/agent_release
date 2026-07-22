@@ -1,7 +1,12 @@
 export { ComponentShowcase } from './ComponentShowcase';
 export { AttachmentStatusFixture } from './AttachmentStatusFixture';
 export { ChatConversationFixture } from './ChatConversationFixture';
+export { ChatTimelineFixture } from './ChatTimelineFixture';
+export { ChatShareFixture } from './ChatShareFixture';
+export { ChatWorkspacePanelsFixture } from './ChatWorkspacePanelsFixture';
 export { ChatHomePageFixture } from './ChatHomePageFixture';
 export { LoginPageFixture } from './LoginPageFixture';
+export { ForgotPasswordPageFixture } from './ForgotPasswordPageFixture';
 export { RegisterPageFixture } from './RegisterPageFixture';
 export { RichMessageFixture } from './RichMessageFixture';
+export { SkillPageFixture } from './SkillPageFixture';

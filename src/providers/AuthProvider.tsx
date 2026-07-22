@@ -1,7 +1,7 @@
 "use client";
 
 import { useNavigation } from "@bioagent/chatui";
-import type { CurrentUserResponse, LogoutResponse } from "@bioagent/shared";
+import type { CurrentUserResponse, LogoutResponse, User } from "@bioagent/shared";
 import {
   createContext,
   useCallback,
@@ -22,6 +22,7 @@ import {
   failedSessionState,
   initialSessionState,
   loadingSessionState,
+  replaceSessionUser,
   type AuthStatus,
   type SessionState,
 } from "./session-state";
@@ -31,6 +32,7 @@ export interface AuthContextValue {
   user: CurrentUserResponse["user"] | null;
   error: SessionState["error"];
   refreshSession(): Promise<CurrentUserResponse | null>;
+  updateUser(user: User): void;
   signOut(): Promise<void>;
 }
 
@@ -94,6 +96,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [api, navigation]);
 
+  const updateUser = useCallback((nextUser: User) => {
+    setState((current) => replaceSessionUser(current, nextUser));
+  }, []);
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -117,9 +123,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: state.data?.user ?? null,
       error: state.error,
       refreshSession,
+      updateUser,
       signOut,
     }),
-    [refreshSession, signOut, state.data?.user, state.error, state.status],
+    [refreshSession, signOut, state.data?.user, state.error, state.status, updateUser],
   );
   const controllerValue = useMemo<SessionController>(
     () => ({ state, setState, api, refreshSession }),

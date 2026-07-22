@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Folder, Clock3, Settings, Search, ChevronDown, ChevronRight, PanelLeftClose, Menu, SquarePen, MoreHorizontal, Pencil, Share2, Trash2, Pin, AlertTriangle } from 'lucide-react';
+import { Folder, Clock3, Settings, Search, ChevronDown, ChevronRight, PanelLeftClose, SquarePen, MoreHorizontal, Pencil, Share2, Trash2, Pin, AlertTriangle } from 'lucide-react';
 import { BaseActionMenu, BaseEmpty, BaseModal } from '../../components/common';
 import type { BaseActionMenuItem, BaseActionMenuProps } from '../../components/common';
 
@@ -8,6 +8,7 @@ export interface AppShellChat {
   title: string;
   date: string;
   count: number;
+  updatedAt?: string;
   projectId?: string;
   isPinned?: boolean;
   taskId?: string;
@@ -23,6 +24,7 @@ export interface AppShellProject {
 export interface AppShellUser {
   name: string;
   avatarText: string;
+  avatarUrl?: string;
 }
 
 export interface AppShellChatActions {
@@ -52,6 +54,9 @@ export interface AppShellProps {
   onNavigate(href: string, options?: { replace?: boolean }): void;
   onLogout(): void;
   onChatsChange?(chats: readonly AppShellChat[]): void;
+  onRenameChat?(chatId: string, title: string): void;
+  onTogglePinChat?(chatId: string, isPinned: boolean): void;
+  onShareChat?(chatId: string): void;
   onDeleteChat?(chatId: string): void;
 }
 
@@ -75,6 +80,9 @@ export default function AppShell({
   onNavigate,
   onLogout,
   onChatsChange,
+  onRenameChat,
+  onTogglePinChat,
+  onShareChat,
   onDeleteChat,
 }: AppShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -133,19 +141,18 @@ export default function AppShell({
   };
 
   const handleTogglePinChat = (chatId: string) => {
-    setChats((prev) => {
-      const target = prev.find((chat) => chat.id === chatId);
-      if (!target) return prev;
+    const target = chats.find((chat) => chat.id === chatId);
+    if (!target) return;
 
-      const toggledPinned = !target.isPinned;
+    const toggledPinned = !target.isPinned;
+    setChats((prev) => {
       const updated = prev.map((chat) =>
         chat.id === chatId ? { ...chat, isPinned: toggledPinned } : chat,
       );
 
-      const pinned = updated.filter((chat) => chat.isPinned);
-      const unpinned = updated.filter((chat) => !chat.isPinned);
-      return [...pinned, ...unpinned];
+      return updated;
     });
+    onTogglePinChat?.(chatId, toggledPinned);
     setChatMenuOpenId(null);
   };
 
@@ -167,6 +174,7 @@ export default function AppShell({
       setChats((prev) => prev.map((chat) => (
         chat.id === chatId ? { ...chat, title: nextTitle } : chat
       )));
+      onRenameChat?.(chatId, nextTitle);
     }
 
     cancelChatRename();
@@ -440,7 +448,8 @@ export default function AppShell({
               return;
             }
             if (item.key === 'share') {
-              onNavigate(`/chat/${chat.id}?share=1`);
+              if (onShareChat) onShareChat(chat.id);
+              else onNavigate(`/chat/${chat.id}?share=1`);
               setChatMenuOpenId(null);
               return;
             }
@@ -467,7 +476,7 @@ export default function AppShell({
       label: '项目',
       icon: <Folder size={14} />,
       path: '/projects',
-      isActive: currentPath === '/projects' || currentPath.startsWith('/project/'),
+      isActive: currentPath === '/projects' || currentPath.startsWith('/projects/'),
     },
     {
       label: '任务',
@@ -488,11 +497,8 @@ export default function AppShell({
     [chats],
   );
 
-  const timeSortedUnpinnedChats = useMemo(
-    () => chats
-      .filter((chat) => !chat.isPinned)
-      .slice()
-      .sort((a, b) => b.id.localeCompare(a.id)),
+  const recentUnpinnedChats = useMemo(
+    () => chats.filter((chat) => !chat.isPinned),
     [chats],
   );
 
@@ -504,8 +510,8 @@ export default function AppShell({
   const visibleTimeChats = useMemo(() => {
     if (sortMode !== 'time') return [];
     const availableSlots = Math.max(MAX_RECENT_CHATS - visiblePinnedChats.length, 0);
-    return timeSortedUnpinnedChats.slice(0, availableSlots);
-  }, [sortMode, timeSortedUnpinnedChats, visiblePinnedChats.length]);
+    return recentUnpinnedChats.slice(0, availableSlots);
+  }, [sortMode, recentUnpinnedChats, visiblePinnedChats.length]);
 
   const totalVisibleRecentChats = useMemo(
     () => visiblePinnedChats.length + visibleTimeChats.length,
@@ -518,21 +524,17 @@ export default function AppShell({
     return new Map(projects.map((project) => [project.id, project.name]));
   }, [projects]);
 
-  const allChatsSorted = useMemo(() => {
-    return chats.slice().sort((a, b) => b.id.localeCompare(a.id));
-  }, [chats]);
-
   const normalizedAllChatsKeyword = allChatsKeyword.trim().toLowerCase();
 
   const filteredAllChats = useMemo(() => {
-    if (!normalizedAllChatsKeyword) return allChatsSorted;
+    if (!normalizedAllChatsKeyword) return chats;
 
-    return allChatsSorted.filter((chat) => {
+    return chats.filter((chat) => {
       const projectName = chat.projectId ? (projectNameById.get(chat.projectId) ?? '未分组') : '未分组';
       const searchableText = `${chat.title} ${projectName} ${chat.date}`.toLowerCase();
       return searchableText.includes(normalizedAllChatsKeyword);
     });
-  }, [allChatsSorted, normalizedAllChatsKeyword, projectNameById]);
+  }, [chats, normalizedAllChatsKeyword, projectNameById]);
 
   useEffect(() => {
     if (!activeChat) return;
@@ -850,8 +852,10 @@ export default function AppShell({
               trigger={
                 <span className="flex w-full items-center justify-between p-2 rounded-full hover:bg-bgLight transition-colors cursor-pointer text-secondaryText">
                   <span className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-shellAvatarSurface text-sm font-medium text-white">
-                      {user.avatarText}
+                    <span className="flex h-8 w-8 overflow-hidden items-center justify-center rounded-full bg-shellAvatarSurface text-sm font-medium text-white">
+                      {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt={`${user.name}头像`} className="h-full w-full object-cover" />
+                      ) : user.avatarText}
                     </span>
                     <span className="text-sm font-normal">{user.name}</span>
                   </span>
@@ -883,17 +887,6 @@ export default function AppShell({
       <main className={`flex-1 h-full overflow-hidden relative p-2 md:p-3 transition-all duration-300 ${isSidebarOpen ? 'pl-0 md:pl-0' : 'pl-2 md:pl-3'}`}>
         <div className="relative h-full w-full overflow-hidden rounded-xl border border-shellFrameBorder bg-white shadow-sm md:rounded-2xl">
           <div className="flex h-full w-full">
-            {/* 展开侧边栏按钮 */}
-            {!isSidebarOpen && (
-              <button 
-                onClick={() => setIsSidebarOpen(true)} 
-                aria-label="展开边栏"
-                className="absolute left-4 top-4 z-30 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight"
-                title="展开边栏"
-              >
-                <Menu size={20} />
-              </button>
-            )}
             {typeof children === 'function'
               ? children({ isSidebarOpen, setIsSidebarOpen, chats, setChats, setAiUsageWarningActive })
               : children}

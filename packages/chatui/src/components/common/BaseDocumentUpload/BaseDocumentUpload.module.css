@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0;
+  text-align: center;
+}
+
+.uploadIcon { color: var(--chatui-color-brand-primary); }
+.uploadTitle { color: var(--chatui-color-text-primary); font-size: 16px; line-height: 24px; font-weight: 600; }
+.uploadDescription { color: var(--chatui-color-text-muted); font-size: 14px; line-height: 24px; }
+.fileList { display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+.fileItem { display: flex; align-items: center; gap: 8px; color: var(--chatui-color-text-primary); font-size: 14px; line-height: 20px; }
+.fileItemIcon { flex-shrink: 0; color: var(--chatui-color-text-muted); }
+.fileName { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.fileSize { color: var(--chatui-color-text-muted); font-size: 12px; line-height: 18px; }
+.removeButton { display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 4px; background: transparent; padding: 4px; color: var(--chatui-color-text-muted); cursor: pointer; transition: color 0.2s ease, background-color 0.2s ease; }
+.removeButton:hover { background: var(--chatui-color-surface-muted); color: var(--chatui-color-text-primary); }

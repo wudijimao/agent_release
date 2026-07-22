@@ -1,0 +1,59 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 12px;
+  background-color: var(--chatui-color-surface-muted);
+}
+
+.item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 10px;
+  color: var(--chatui-color-text-secondary);
+  background: transparent;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.item:hover:not(.itemActive):not(.itemDisabled) {
+  color: var(--chatui-color-text-primary);
+  background-color: var(--chatui-color-surface-muted);
+}
+
+.itemActive {
+  color: var(--chatui-color-text-primary);
+  background-color: var(--chatui-color-surface);
+  box-shadow: var(--chatui-shadow-segmented-active);
+}
+
+.itemDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sizeSmall .item {
+  padding: 3px 10px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.sizeMiddle .item {
+  padding: 4px 14px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.sizeLarge .item {
+  padding: 6px 18px;
+  font-size: 16px;
+  line-height: 24px;
+}

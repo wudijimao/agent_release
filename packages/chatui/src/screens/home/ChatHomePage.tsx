@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, Plus } from 'lucide-react';
 import { BaseActionMenu, BaseButton, BaseInput } from '../../components/common';
 import type { BaseActionMenuItem, BaseActionMenuProps } from '../../components/common';
-import { InputArea, QuickPrompts } from '../../components/chat';
-import type { InputSendPayload } from '../../components/chat';
+import { ChatWorkspaceHeader, InputArea, QuickPrompts } from '../../components/chat';
+import type { ChatFileOption, ChatSkillOption, InputSendPayload } from '../../components/chat';
 
 export interface ChatHomeProject {
   id: string;
@@ -15,8 +15,12 @@ export interface ChatHomePageProps {
   selectedProjectId?: string;
   disabled?: boolean;
   embedded?: boolean;
+  isSidebarOpen?: boolean;
+  skillOptions?: readonly ChatSkillOption[];
+  fileOptions?: readonly ChatFileOption[];
   onSelectProject(projectId: string | null): void;
   onCreateProject?(name: string): void;
+  onOpenSidebar?(): void;
   onSend(payload: string | InputSendPayload): void;
 }
 
@@ -25,8 +29,12 @@ export default function ChatHomePage({
   selectedProjectId,
   disabled = false,
   embedded = false,
+  isSidebarOpen = true,
+  skillOptions,
+  fileOptions,
   onSelectProject,
   onCreateProject,
+  onOpenSidebar,
   onSend,
 }: ChatHomePageProps) {
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
@@ -157,6 +165,8 @@ export default function ChatHomePage({
             <InputArea
               onSend={onSend}
               disabled={disabled}
+              skillOptions={skillOptions}
+              fileOptions={fileOptions}
               leadingControls={(
                 <BaseActionMenu
                   open={showProjectDropdown}
@@ -194,7 +204,10 @@ export default function ChatHomePage({
 
   return (
     <div className="flex h-full w-full flex-col bg-white">
-      <header className="z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-6 backdrop-blur-sm" />
+      <ChatWorkspaceHeader
+        isSidebarOpen={isSidebarOpen}
+        onOpenSidebar={onOpenSidebar ?? (() => undefined)}
+      />
       <div className="flex min-h-0 w-full flex-1 overflow-hidden">
         {content}
       </div>

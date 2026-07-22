@@ -8,3 +8,5 @@ export type {
   RegisterMode,
   RegisterPageProps,
 } from './RegisterPage';
+export { default as ForgotPasswordPage } from './ForgotPasswordPage';
+export type { ForgotPasswordActionResult, ForgotPasswordInput, ForgotPasswordPageProps } from './ForgotPasswordPage';

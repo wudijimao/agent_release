@@ -21,6 +21,8 @@ export interface ChatSkillOption {
     badge: string;
     description: string;
     source: string;
+    disabled?: boolean;
+    disabledReason?: string;
 }
 export interface ChatFileOption {
     id: string;

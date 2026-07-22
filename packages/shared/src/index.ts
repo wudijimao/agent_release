@@ -1,4 +1,8 @@
 // ============ 用户与团队 ============
+export * from './home-agent-types.js';
+export * from './admin.js';
+
+import type { HomeAgentType } from './home-agent-types.js';
 
 export type LabRole = 'admin' | 'pi' | 'postdoc' | 'student' | 'manager';
 
@@ -25,7 +29,24 @@ export interface LabMember {
   userId: string;
   role: LabRole;
   joinedAt: string;
-  user?: User;
+  user?: Pick<User, 'id' | 'email' | 'name' | 'avatarUrl'>;
+}
+
+export interface RegenerateLabInviteResponse {
+  inviteCode: string;
+}
+
+export interface UpdateLabMemberRoleRequest {
+  role: LabRole;
+}
+
+export interface UpdateLabMemberRoleResponse {
+  id: string;
+  role: LabRole;
+}
+
+export interface RemoveLabMemberResponse {
+  ok: true;
 }
 
 // ============ 认证 ============
@@ -42,6 +63,29 @@ export interface RegisterRequest {
   name: string;
   labName?: string;       // 创建新实验室
   inviteCode?: string;    // 加入现有实验室
+  emailVerificationCode?: string;
+}
+
+export interface EmailVerificationSendResponse {
+  emailMasked: string;
+  expiresInSeconds: number;
+  resendAfterSeconds: number;
+}
+
+export interface PasswordResetConfirmRequest {
+  email: string;
+  emailVerificationCode: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  ok: boolean;
+  requiresLogin: boolean;
 }
 
 export interface AuthResponse {
@@ -55,6 +99,10 @@ export interface CurrentUserResponse {
   labs: Lab[];
   activeLab: Lab | null;
   activeLabRole?: LabRole | null;
+}
+
+export interface UpdateCurrentUserAvatarResponse {
+  user: User;
 }
 
 export interface SetActiveLabRequest {
@@ -78,8 +126,24 @@ export interface ChatSessionListItem {
   id: string;
   title?: string | null;
   scene: ChatSessionScene;
+  projectId?: string | null;
+  sessionKind?: 'normal' | 'task';
+  agentType?: HomeAgentType;
+  isPinned?: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CreateAgentSessionRequest {
+  agentType: HomeAgentType;
+  projectId?: string | null;
+}
+
+export interface CreateAgentSessionResponse {
+  sessionId: string;
+  agentType: HomeAgentType;
+  projectId: string | null;
+  starterMessage?: unknown | null;
 }
 
 export interface ChatSessionListResponse {
@@ -829,6 +893,7 @@ export * from './experiment-time.js';
 export * from './home-rag.js';
 export * from './today-clues.js';
 export * from './presentation.js';
+export * from './projects.js';
 export * from './home-workflow-plan.js';
 export * from './memory-experience.js';
 export { normalizeMemoryConflictWizardPayload } from './memory.js';
@@ -841,4 +906,5 @@ export * from './pipeline-catalog.js';
 export * from './tracking.js';
 export * from './validation-package.js';
 export * from './structural-compute.js';
+export * from './scheduled-tasks.js';
 export * from './workflow-orchestration.js';

@@ -1,6 +1,9 @@
-import type { HomeContextRef } from './context-engineering.js';
-import type { HomeAssistantDisplay } from './home-display.js';
-import type { AttachmentFileKind } from './attachment-files.js';
+import type {
+  HomeContextRef,
+  HomeUnifiedResourceItem,
+} from "./context-engineering.js";
+import type { HomeAssistantDisplay } from "./home-display.js";
+import type { AttachmentFileKind } from "./attachment-files.js";
 
 export interface ChatSendRequest {
   message: string;
@@ -8,6 +11,11 @@ export interface ChatSendRequest {
   draftId?: string;
   selectedSkillSlugs?: string[];
   contextRefs?: HomeContextRef[];
+}
+
+export interface ChatResourceSearchResponse {
+  query: string;
+  items: HomeUnifiedResourceItem[];
 }
 
 export type ChatAttachmentKind = AttachmentFileKind;
@@ -24,7 +32,7 @@ export type ChatHistoryAttachmentRefDto = ChatAttachmentRefDto;
 
 export interface ChatAttachmentDto extends ChatAttachmentRefDto {
   fileSize: number;
-  status: 'ready' | 'deleted';
+  status: "ready" | "deleted";
   contextEnabled: boolean;
   contextDisabledAt?: string | null;
   url?: string;
@@ -76,9 +84,10 @@ export interface ChatAttachmentDeleteResponse {
 export interface ChatHistoryMessageDto {
   id: string;
   sessionId: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   attachmentRefs?: ChatHistoryAttachmentRefDto[] | null;
+  contextRefsSnapshot?: HomeContextRef[] | null;
   display?: HomeAssistantDisplay | null;
   createdAt: string;
 }
@@ -104,7 +113,7 @@ export interface ChatHistoryDetailResponse {
 }
 
 export interface ChatStreamMetaEvent {
-  type: 'meta';
+  type: "meta";
   runId: string;
   sessionId: string;
   selectedSkillSlugs?: string[];
@@ -112,32 +121,32 @@ export interface ChatStreamMetaEvent {
 }
 
 export interface ChatStreamTextEvent {
-  type: 'text';
+  type: "text";
   content: string;
 }
 
 export interface ChatStreamTaskTraceEvent {
-  type: 'task_trace';
+  type: "task_trace";
   step: unknown;
 }
 
 export interface ChatStreamDisplayStartEvent {
-  type: 'display_start';
+  type: "display_start";
   display: HomeAssistantDisplay;
 }
 
 export interface ChatStreamDisplayPatchEvent {
-  type: 'display_patch';
+  type: "display_patch";
   patch: Partial<HomeAssistantDisplay>;
 }
 
 export interface ChatStreamDisplayDoneEvent {
-  type: 'display_done';
+  type: "display_done";
   display: HomeAssistantDisplay;
 }
 
 export interface ChatStreamErrorEvent {
-  type: 'error';
+  type: "error";
   error: string;
 }
 

@@ -2,6 +2,12 @@
     "name":  "@bioagent/nextjs",
     "version":  "0.1.0",
     "private":  true,
+    "browserslist":  [
+                         "chrome 111",
+                         "edge 111",
+                         "firefox 111",
+                         "safari 16.4"
+                     ],
     "scripts":  {
                     "dev":  "next dev",
                     "build":  "corepack pnpm@9.0.0 --filter @bioagent/shared build \u0026\u0026 next build",
@@ -31,6 +37,6 @@
                         },
     "packageManager":  "pnpm@9.0.0",
     "engines":  {
-                    "node":  "\u003e=20.0.0"
+                    "node":  "\u003e=20.9.0"
                 }
 }

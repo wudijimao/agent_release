@@ -1,4 +1,4 @@
-import type { CurrentUserResponse } from "@bioagent/shared";
+import type { CurrentUserResponse, User } from "@bioagent/shared";
 
 import { ApiError } from "@/lib/api";
 
@@ -35,6 +35,14 @@ export function authenticatedSessionState(
     status: "authenticated",
     data,
     error: null,
+  };
+}
+
+export function replaceSessionUser(previous: SessionState, user: User): SessionState {
+  if (!previous.data) return previous;
+  return {
+    ...previous,
+    data: { ...previous.data, user },
   };
 }
 

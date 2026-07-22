@@ -9,6 +9,7 @@ import {
   authenticatedSessionState,
   buildLoginHref,
   failedSessionState,
+  replaceSessionUser,
 } from "./session-state";
 
 const session: CurrentUserResponse = {
@@ -46,4 +47,17 @@ test("login redirect preserves the full current location", () => {
   );
   assert.equal(buildLoginHref("/login"), null);
   assert.equal(buildLoginHref("/register"), null);
+});
+
+test("profile updates replace only the user without resetting authenticated state", () => {
+  const previous = authenticatedSessionState(session);
+  const next = replaceSessionUser(previous, {
+    ...session.user,
+    avatarUrl: "https://example.test/avatar.png",
+  });
+
+  assert.equal(next.status, "authenticated");
+  assert.equal(next.data?.user.avatarUrl, "https://example.test/avatar.png");
+  assert.equal(next.data?.labs, previous.data?.labs);
+  assert.equal(next.data?.activeLab, previous.data?.activeLab);
 });

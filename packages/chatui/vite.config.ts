@@ -3,7 +3,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const externalPackages = [
+  'antd',
   'classnames',
+  'dayjs',
   'highlight.js',
   'katex',
   'lucide-react',
