@@ -26,10 +26,11 @@ pnpm run release:check
 
 ## Docker 服务器部署
 
-发布仓库已包含独立 Docker 配置。服务器首次克隆、以后拉取新代码后，都在仓库根目录无参数执行：
+发布仓库已包含独立 Docker 配置。服务器安装并启动 Docker 后，首次克隆、以后更新代码都在仓库根目录执行：
 
 ```bash
-bash deploy.sh
+git pull --ff-only
+./deploy.sh
 ```
 
 脚本会依次：
