@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 
 const DEFAULT_BACKEND_URL = "http://39.106.18.219";
 
@@ -32,6 +33,14 @@ export function buildBackendRewrites(backendUrl = DEFAULT_BACKEND_URL) {
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  ...(process.env.NEXT_OUTPUT_STANDALONE === "1"
+    ? {
+        output: "standalone" as const,
+        outputFileTracingRoot: process.env.NEXT_OUTPUT_TRACING_ROOT
+          ? path.resolve(process.env.NEXT_OUTPUT_TRACING_ROOT)
+          : path.resolve(process.cwd(), "../.."),
+      }
+    : {}),
   async headers() {
     return [
       {
