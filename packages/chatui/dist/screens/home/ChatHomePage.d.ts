@@ -11,10 +11,13 @@ export interface ChatHomePageProps {
     isSidebarOpen?: boolean;
     skillOptions?: readonly ChatSkillOption[];
     fileOptions?: readonly ChatFileOption[];
+    uploadAccept?: string;
+    validateUploadFile?: (file: File) => string | null;
+    onUploadValidationError?: (message: string) => void;
     onSelectProject(projectId: string | null): void;
     onCreateProject?(name: string): void;
     onOpenSidebar?(): void;
     onSend(payload: string | InputSendPayload): void;
 }
-export default function ChatHomePage({ projects, selectedProjectId, disabled, embedded, isSidebarOpen, skillOptions, fileOptions, onSelectProject, onCreateProject, onOpenSidebar, onSend, }: ChatHomePageProps): import("react").JSX.Element;
+export default function ChatHomePage({ projects, selectedProjectId, disabled, embedded, isSidebarOpen, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, onSelectProject, onCreateProject, onOpenSidebar, onSend, }: ChatHomePageProps): import("react").JSX.Element;
 //# sourceMappingURL=ChatHomePage.d.ts.map

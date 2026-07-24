@@ -3,7 +3,7 @@ import test from "node:test";
 
 import type { ChatHistoryDetailResponse } from "@bioagent/shared";
 
-import { ChatStreamTimeoutError } from "@/lib/api";
+import { ApiError, ChatStreamTimeoutError } from "@/lib/api";
 
 import {
   beginChatStream,
@@ -39,6 +39,12 @@ const detail: ChatHistoryDetailResponse = {
       content: "问题",
       attachmentRefs: [
         { id: "file-1", name: "result.csv", mimeType: "text/csv", kind: "csv" },
+        {
+          id: "image-1",
+          name: "cells.jpg",
+          mimeType: "image/jpeg",
+          kind: "image",
+        },
       ],
       contextRefsSnapshot: [
         {
@@ -66,7 +72,19 @@ const detail: ChatHistoryDetailResponse = {
   ],
   runs: [],
   pendingMcpToolCalls: [],
-  attachments: [],
+  attachments: [
+    {
+      id: "image-1",
+      name: "cells.jpg",
+      mimeType: "image/jpeg",
+      kind: "image",
+      fileSize: 1024,
+      status: "ready",
+      contextEnabled: true,
+      url: "https://storage.test/cells.jpg",
+      createdAt: "2026-07-16T00:00:01Z",
+    },
+  ],
   currentContextRefs: null,
 };
 
@@ -85,6 +103,13 @@ test("mapChatHistoryDetail produces the UI view model and hides system messages"
             name: "result.csv",
             mimeType: "text/csv",
             status: "ready",
+          },
+          {
+            id: "image-1",
+            name: "cells.jpg",
+            mimeType: "image/jpeg",
+            status: "ready",
+            previewUrl: "https://storage.test/cells.jpg",
           },
         ],
         references: [
@@ -152,6 +177,49 @@ test("attachment mapper and stream updater keep transport DTOs outside the UI", 
   assert.equal(updated.messages[1]?.role, "assistant");
 });
 
+test("attachment mapper exposes a preview only for image attachment URLs", () => {
+  assert.deepEqual(
+    mapChatAttachmentRef({
+      id: "image-1",
+      name: "cells.png",
+      mimeType: "image/png",
+      kind: "image",
+      fileSize: 1024,
+      status: "ready",
+      contextEnabled: true,
+      url: "https://storage.test/cells.png",
+      createdAt: "2026-07-16T00:00:01Z",
+    }),
+    {
+      id: "image-1",
+      name: "cells.png",
+      mimeType: "image/png",
+      status: "ready",
+      previewUrl: "https://storage.test/cells.png",
+    },
+  );
+
+  assert.deepEqual(
+    mapChatAttachmentRef({
+      id: "file-1",
+      name: "notes.txt",
+      mimeType: "text/plain",
+      kind: "txt",
+      fileSize: 20,
+      status: "ready",
+      contextEnabled: true,
+      url: "https://storage.test/notes.txt",
+      createdAt: "2026-07-16T00:00:01Z",
+    }),
+    {
+      id: "file-1",
+      name: "notes.txt",
+      mimeType: "text/plain",
+      status: "ready",
+    },
+  );
+});
+
 test("regenerate payload reuses the closest previous user message without stale local files", () => {
   assert.deepEqual(
     buildChatRegeneratePayload(
@@ -204,17 +272,89 @@ test("loadChatSession calls the real history detail endpoint", async () => {
 
 test("stream reducer covers meta, task trace, text chunks, and errors", () => {
   let state = beginChatStream([], { role: "user", content: "问题" });
+  assert.equal(state.statusPhase, "analyzing");
+
   state = reduceChatStreamEvent(state, "meta", { sessionId: "session-2" });
   state = reduceChatStreamEvent(state, "task_trace", {
-    step: { title: "检索知识库", category: "context" },
+    step: {
+      title: "准备生成回复",
+      category: "generation",
+      status: "running",
+    },
   });
+  assert.equal(state.statusPhase, "analyzing");
+  assert.deepEqual(state.searchSteps, []);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      title: "分析任务和上下文",
+      category: "context",
+      status: "running",
+    },
+  });
+  assert.equal(state.statusPhase, "analyzing");
+  assert.deepEqual(state.searchSteps, [
+    { type: "tool", label: "分析任务和上下文" },
+  ]);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      title: "已完成上下文分析",
+      category: "context",
+      status: "completed",
+    },
+  });
+  assert.deepEqual(state.searchSteps, [
+    { type: "tool", label: "分析任务和上下文" },
+  ]);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      title: "检索知识库",
+      category: "retrieval",
+      status: "running",
+    },
+  });
+  assert.equal(state.statusPhase, "searching");
+  assert.deepEqual(state.searchSteps, [
+    { type: "knowledge", label: "检索知识库" },
+  ]);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      detail: "正在分析检索结果",
+      category: "tool",
+      status: "running",
+    },
+  });
+  assert.equal(state.statusPhase, "executing");
+  assert.deepEqual(state.searchSteps, [
+    { type: "tool", label: "正在分析检索结果" },
+  ]);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      title: "生成回复",
+      category: "generation",
+      status: "completed",
+    },
+  });
+  assert.equal(state.statusPhase, "executing");
+
   state = reduceChatStreamEvent(state, "text", { content: "答" });
   state = reduceChatStreamEvent(state, "text", { content: "案" });
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      title: "迟到的知识库检索",
+      category: "retrieval",
+      status: "running",
+    },
+  });
 
   assert.equal(state.sessionId, "session-2");
   assert.equal(state.statusPhase, "generating");
   assert.deepEqual(state.searchSteps, [
-    { type: "knowledge", label: "检索知识库" },
+    { type: "tool", label: "正在分析检索结果" },
   ]);
   assert.equal(state.messages.at(-1)?.content, "答案");
   assert.equal(state.hasReceivedAssistantChunk, true);
@@ -238,23 +378,41 @@ test("interruptChatStream removes only an empty assistant placeholder", () => {
   ]);
 });
 
-test("getChatStreamErrorMessage maps timeout phases to retryable notices", () => {
+test("getChatStreamErrorMessage reduces technical failures to four user-facing categories", () => {
   assert.equal(
     getChatStreamErrorMessage(
       new ChatStreamTimeoutError("connect"),
-      "fallback",
     ),
-    "连接对话服务超时，请重试。",
+    "AI 响应超时，请重试。",
   );
   assert.equal(
-    getChatStreamErrorMessage(new ChatStreamTimeoutError("idle"), "fallback"),
-    "回答长时间没有更新，已停止生成，请重试。",
+    getChatStreamErrorMessage(new ChatStreamTimeoutError("idle")),
+    "AI 响应超时，请重试。",
   );
   assert.equal(
-    getChatStreamErrorMessage(new Error("service failed"), "fallback"),
-    "service failed",
+    getChatStreamErrorMessage(
+      new Error(
+        "Generic driver upstream request failed: HTTP 502 Bad Gateway. "
+          + "Upstream model gateway returned Cloudflare 502 Bad Gateway. "
+          + 'Response preview: {"error_name":"origin_bad_gateway"}',
+      ),
+    ),
+    "AI 服务暂时不可用，请稍后重试。",
   );
-  assert.equal(getChatStreamErrorMessage(null, "fallback"), "fallback");
+  assert.equal(
+    getChatStreamErrorMessage(
+      new ApiError("STREAM_FAILED", "Too Many Requests", 429),
+    ),
+    "请求过于频繁，请稍后重试。",
+  );
+  assert.equal(
+    getChatStreamErrorMessage(new Error("service failed")),
+    "AI 服务异常，请稍后重试。",
+  );
+  assert.equal(
+    getChatStreamErrorMessage(null),
+    "AI 服务异常，请稍后重试。",
+  );
 });
 
 test("reconcileChatStream waits for the newly persisted assistant response", async () => {

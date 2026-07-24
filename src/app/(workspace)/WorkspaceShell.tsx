@@ -263,6 +263,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (href === "/skills") {
+      navigation.push("/chat/skills");
+      return;
+    }
+
     if (href === "/members" || href === "/projects" || href === "/system-settings" || href === "/tools") {
       navigation.push(href);
       return;
@@ -278,12 +283,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         initialChats={chats}
         logoUrl="/helia-logo.png"
         user={shellUser}
-        chatActions={{ rename: true, share: true, pin: true, delete: true }}
+        chatActions={{ rename: true, share: false, pin: true, delete: true }}
         onNavigate={handleNavigate}
         onLogout={() => void signOut()}
         onRenameChat={(sessionId, title) => void handleRenameChat(sessionId, title)}
         onTogglePinChat={(sessionId, isPinned) => void handleTogglePinChat(sessionId, isPinned)}
-        onShareChat={() => setNotice("分享对话功能正在接入服务端，入口已按高保真原型保留。")}
         onDeleteChat={(sessionId) => void handleDeleteChat(sessionId)}
       >
         {({ chats: shellChats, isSidebarOpen, setIsSidebarOpen, setChats: setShellChats }) => (

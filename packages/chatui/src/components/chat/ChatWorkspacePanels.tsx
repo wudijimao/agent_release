@@ -135,6 +135,7 @@ export interface ChatProjectExperimentItemViewModel {
 export interface ChatProjectFilesPanelProps {
   projectName?: string;
   searchQuery: string;
+  error?: string;
   knowledgeDocs: readonly ChatProjectKnowledgeItemViewModel[];
   experiments: readonly ChatProjectExperimentItemViewModel[];
   activePreviewKey: string | null;
@@ -147,6 +148,7 @@ export interface ChatProjectFilesPanelProps {
 export function ChatProjectFilesPanel({
   projectName = '未归属项目',
   searchQuery,
+  error,
   knowledgeDocs,
   experiments,
   activePreviewKey,
@@ -162,7 +164,7 @@ export function ChatProjectFilesPanel({
       <div
         role="separator"
         aria-orientation="vertical"
-        aria-label="调整项目附件与预览区域宽度"
+        aria-label="调整项目文件面板宽度"
         onMouseDown={onResizeStart}
         className="absolute -ml-1 left-0 top-0 z-10 h-full w-3 cursor-col-resize bg-transparent"
       />
@@ -183,7 +185,11 @@ export function ChatProjectFilesPanel({
 
           <section>
             <div className="space-y-1">
-              {totalItems === 0 ? (
+              {error ? (
+                <div className="rounded-lg bg-danger-soft px-3 py-2 text-xs text-danger" role="alert">
+                  {error}
+                </div>
+              ) : totalItems === 0 ? (
                 <div className="rounded-lg bg-bgLight px-3 py-2 text-xs text-secondaryText">
                   {searchQuery.trim() ? '未找到匹配的文件' : '暂无项目文件'}
                 </div>

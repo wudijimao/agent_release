@@ -2,10 +2,12 @@ import React from 'react';
 /**
  * 任务状态阶段枚举，对齐豆包的交互范式：
  *   thinking  → 模型正在推理
+ *   analyzing → 正在分析任务、上下文或规划
  *   searching → 正在检索知识库 / 网络
+ *   executing → 正在执行工具、技能或动作
  *   generating → 正在生成回复
  */
-export type StatusPhase = 'thinking' | 'searching' | 'generating';
+export type StatusPhase = 'thinking' | 'analyzing' | 'searching' | 'executing' | 'generating';
 export interface SearchStep {
     /** 步骤类型 */
     type: 'knowledge' | 'web' | 'tool';

@@ -20,6 +20,11 @@
   height: 18px;
 }
 
+.toggleRegular {
+  width: 36px;
+  height: 20px;
+}
+
 .toggleMedium {
   width: 40px;
   height: 22px;
@@ -51,18 +56,28 @@
   height: 14px;
 }
 
+.thumbRegular {
+  width: 16px;
+  height: 16px;
+}
+
 .thumbMedium {
   width: 18px;
   height: 18px;
 }
 
 .thumbOffSmall,
+.thumbOffRegular,
 .thumbOffMedium {
   transform: translateX(0);
 }
 
 .thumbOnSmall {
   transform: translateX(14px);
+}
+
+.thumbOnRegular {
+  transform: translateX(16px);
 }
 
 .thumbOnMedium {

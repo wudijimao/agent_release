@@ -33,22 +33,40 @@ export function getChangePasswordErrorMessage(error: unknown): string {
   }
 
   if (error.code === "INVALID_CURRENT_PASSWORD") {
-    return "当前密码不正确。";
+    return "当前密码不正确";
   }
 
   if (error.code === "PASSWORD_REUSED") {
-    return "新密码不能与当前密码相同。";
+    return "新密码不能与当前密码相同";
+  }
+
+  if (error.code === "HTTP_400" && error.status === 400) {
+    return "新密码至少需要 6 位";
+  }
+
+  if (error.code === "NOT_FOUND") {
+    return "用户不存在，请重新登录";
   }
 
   if (error.code === "RATE_LIMITED" || error.status === 429) {
-    return "修改密码操作过于频繁，请稍后再试。";
+    return "操作过于频繁，请稍后再试";
   }
 
   if (error.status >= 500) {
-    return "密码服务暂时不可用，请稍后重试。";
+    return "密码服务暂时不可用，请稍后重试";
   }
 
-  return error.message || "密码修改失败，请检查输入后重试。";
+  return "密码修改失败，请检查输入后重试";
+}
+
+export function getChangePasswordErrorField(
+  error: unknown,
+): "currentPassword" | "newPassword" | "form" {
+  if (!isApiError(error)) return "form";
+  if (error.code === "INVALID_CURRENT_PASSWORD") return "currentPassword";
+  if (error.code === "PASSWORD_REUSED") return "newPassword";
+  if (error.code === "HTTP_400" && error.status === 400) return "newPassword";
+  return "form";
 }
 
 export function getLoginErrorMessage(error: unknown): string {

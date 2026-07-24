@@ -4,10 +4,17 @@ import { Loader2, Search, Globe, BookOpen, ChevronDown, ChevronRight, Sparkles }
 /**
  * 任务状态阶段枚举，对齐豆包的交互范式：
  *   thinking  → 模型正在推理
+ *   analyzing → 正在分析任务、上下文或规划
  *   searching → 正在检索知识库 / 网络
+ *   executing → 正在执行工具、技能或动作
  *   generating → 正在生成回复
  */
-export type StatusPhase = 'thinking' | 'searching' | 'generating';
+export type StatusPhase =
+  | 'thinking'
+  | 'analyzing'
+  | 'searching'
+  | 'executing'
+  | 'generating';
 
 export interface SearchStep {
   /** 步骤类型 */
@@ -28,7 +35,9 @@ export interface ThinkingIndicatorProps {
 /* ── 阶段对应文案 ── */
 const PHASE_LABEL: Record<StatusPhase, string> = {
   thinking: '思考中…',
+  analyzing: '分析中…',
   searching: '搜索中…',
+  executing: '执行中…',
   generating: '生成中…',
 };
 
@@ -94,7 +103,7 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
             className="ml-0.5 inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[12px] text-tertiaryText hover:bg-bgLight hover:text-secondaryText transition-colors"
           >
             {expanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-            <span>{searchSteps.length} 条结果</span>
+            <span>{searchSteps.length} 条进度</span>
           </button>
         )}
       </div>

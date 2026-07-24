@@ -7,6 +7,12 @@ export interface ChangePasswordViewModel {
   newPassword: string;
 }
 
+export type ChangePasswordErrorField = 'currentPassword' | 'newPassword' | 'form';
+
+export type ChangePasswordActionResult =
+  | { ok: true }
+  | { ok: false; field: ChangePasswordErrorField; message: string };
+
 export interface SystemSettingsDetailPageProps {
   isSidebarOpen: boolean;
   avatarText?: string;
@@ -14,7 +20,7 @@ export interface SystemSettingsDetailPageProps {
   avatarUploading?: boolean;
   actionError?: string;
   onOpenSidebar(): void;
-  onChangePassword?(input: ChangePasswordViewModel): void | Promise<void>;
+  onChangePassword?(input: ChangePasswordViewModel): void | ChangePasswordActionResult | Promise<void | ChangePasswordActionResult>;
   onChangeAvatar?(file: File): void | Promise<void>;
 }
 
@@ -46,10 +52,18 @@ export function SystemSettingsDetailPage({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [localError, setLocalError] = useState('');
+  const [currentPasswordError, setCurrentPasswordError] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const passwordMismatch = confirmPassword.length > 0 && newPassword !== confirmPassword;
+  const newPasswordTooShort = newPassword.length > 0 && newPassword.trim().length < 6;
   const canSubmitPassword = Boolean(
-    currentPassword.trim() && newPassword.trim() && confirmPassword.trim() && !passwordMismatch && !submitting,
+    currentPassword.trim()
+      && newPassword.trim()
+      && confirmPassword.trim()
+      && !newPasswordTooShort
+      && !passwordMismatch
+      && !submitting,
   );
 
   const closePasswordModal = () => {
@@ -59,14 +73,24 @@ export function SystemSettingsDetailPage({
     setNewPassword('');
     setConfirmPassword('');
     setLocalError('');
+    setCurrentPasswordError('');
+    setNewPasswordError('');
   };
 
   const submitPassword = async () => {
     if (!canSubmitPassword) return;
     setSubmitting(true);
     setLocalError('');
+    setCurrentPasswordError('');
+    setNewPasswordError('');
     try {
-      await onChangePassword?.({ currentPassword: currentPassword.trim(), newPassword: newPassword.trim() });
+      const result = await onChangePassword?.({ currentPassword: currentPassword.trim(), newPassword: newPassword.trim() });
+      if (result && !result.ok) {
+        if (result.field === 'currentPassword') setCurrentPasswordError(result.message);
+        else if (result.field === 'newPassword') setNewPasswordError(result.message);
+        else setLocalError(result.message);
+        return;
+      }
       setShowPasswordModal(false);
       setCurrentPassword('');
       setNewPassword('');
@@ -128,8 +152,12 @@ export function SystemSettingsDetailPage({
       <BaseModal visible={showPasswordModal} title="修改密码" onClose={closePasswordModal} onCancel={closePasswordModal}
         onConfirm={() => void submitPassword()} cancelText="取消" okText={submitting ? '保存中…' : '保存'} okButtonProps={{ disabled: !canSubmitPassword }}>
         <div className="space-y-4">
-          <BaseInput label="当前密码" type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} placeholder="请输入当前密码" size="medium" disabled={submitting} />
-          <BaseInput label="新密码" type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} placeholder="请输入新密码" size="medium" disabled={submitting} />
+          <BaseInput label="当前密码" type="password" value={currentPassword} onChange={(event) => { setCurrentPassword(event.target.value); setCurrentPasswordError(''); setLocalError(''); }} placeholder="请输入当前密码" size="medium"
+            error={Boolean(currentPasswordError)} helperText={currentPasswordError || undefined} disabled={submitting} />
+          <BaseInput label="新密码" type="password" value={newPassword} onChange={(event) => { setNewPassword(event.target.value); setNewPasswordError(''); setLocalError(''); }} placeholder="请输入新密码" size="medium"
+            error={Boolean(newPasswordError) || newPasswordTooShort}
+            helperText={newPasswordError || (newPasswordTooShort ? '新密码至少需要 6 位' : undefined)}
+            disabled={submitting} />
           <BaseInput label="确认新密码" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="请再次输入新密码" size="medium"
             error={passwordMismatch} helperText={passwordMismatch ? '两次输入的新密码不一致' : undefined} disabled={submitting} />
           {localError && <div role="alert" className="text-sm text-danger">{localError}</div>}

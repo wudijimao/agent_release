@@ -103,7 +103,7 @@ export function ChatConversationFixture() {
           <ChatConversationViewport
             messages={messages}
             isTyping={isTyping}
-            statusPhase="thinking"
+            statusPhase="analyzing"
             scrollContainerRef={scrollContainerRef}
             getMessageKey={(_message, index) => `fixture-message-${index}`}
           />

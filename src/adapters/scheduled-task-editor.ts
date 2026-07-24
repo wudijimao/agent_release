@@ -46,8 +46,8 @@ export function createEmptyScheduledTaskDraft(now = new Date()): ScheduledTaskEd
   return {
     name: "",
     schedule: {
-      repeatMode: "weekly",
-      repeatSubValue: "mon",
+      repeatMode: "daily",
+      repeatSubValue: "",
       startDate: localDate(now),
       endDate: localDate(addMonths(now, 2)),
       runAt: "15:00",
@@ -61,7 +61,7 @@ export function scheduledTaskToEditorDraft(task: ScheduledTaskDto): ScheduledTas
   let repeatMode: ScheduledTaskRepeatMode;
   let repeatSubValue = "";
 
-  if (task.scheduleKind === "once") repeatMode = "none";
+  if (task.scheduleKind === "daily") repeatMode = "daily";
   else if (task.scheduleKind === "weekly") {
     repeatMode = "weekly";
     repeatSubValue = typeof task.scheduleConfig.weekday === "number"
@@ -74,20 +74,18 @@ export function scheduledTaskToEditorDraft(task: ScheduledTaskDto): ScheduledTas
     return null;
   }
 
-  const runAtValue = task.scheduleKind === "once" ? task.scheduleConfig.runAt : undefined;
-  const runAtDate = typeof runAtValue === "string" ? new Date(runAtValue) : null;
-  const hasRunAtDate = runAtDate && !Number.isNaN(runAtDate.getTime());
-
   return {
     name: task.name,
     schedule: {
       repeatMode,
       repeatSubValue,
-      startDate: hasRunAtDate ? localDate(runAtDate) : localDate(),
-      endDate: "",
-      runAt: task.scheduleKind === "once" && hasRunAtDate
-        ? `${String(runAtDate.getHours()).padStart(2, "0")}:${String(runAtDate.getMinutes()).padStart(2, "0")}`
-        : String(task.scheduleConfig.time ?? "09:00"),
+      startDate: typeof task.scheduleConfig.startDate === "string"
+        ? task.scheduleConfig.startDate
+        : localDate(),
+      endDate: typeof task.scheduleConfig.endDate === "string"
+        ? task.scheduleConfig.endDate
+        : "",
+      runAt: String(task.scheduleConfig.time ?? "09:00"),
       taskPrompt: task.prompt,
       projectId: null,
     },
@@ -96,7 +94,6 @@ export function scheduledTaskToEditorDraft(task: ScheduledTaskDto): ScheduledTas
 
 export function buildScheduledTaskRequest(
   draft: ScheduledTaskEditorDraft,
-  now = new Date(),
 ): ScheduledTaskRequestResult {
   const name = draft.name.trim();
   const prompt = draft.schedule.taskPrompt.trim();
@@ -111,21 +108,13 @@ export function buildScheduledTaskRequest(
   const { repeatMode, repeatSubValue, runAt, startDate, endDate } = draft.schedule;
   const rangeMetadata = { startDate: startDate || undefined, endDate: endDate || undefined };
 
-  if (repeatMode === "hourly") {
-    return { ok: false, error: "服务端暂不支持每小时定时任务，请选择其他触发方式。" };
-  }
-
-  if (repeatMode === "none") {
-    const runAtDate = new Date(`${startDate}T${runAt}:00+08:00`);
-    if (!startDate || Number.isNaN(runAtDate.getTime()) || runAtDate <= now) {
-      return { ok: false, error: "一次性任务的运行时间必须晚于当前时间。" };
-    }
+  if (repeatMode === "daily") {
     return {
       ok: true,
       request: {
         ...common,
-        scheduleKind: "once",
-        scheduleConfig: { ...rangeMetadata, runAt: runAtDate.toISOString() },
+        scheduleKind: "daily",
+        scheduleConfig: { ...rangeMetadata, time: runAt },
       },
     };
   }
@@ -141,6 +130,10 @@ export function buildScheduledTaskRequest(
         scheduleConfig: { ...rangeMetadata, time: runAt, weekday },
       },
     };
+  }
+
+  if (repeatMode !== "monthly") {
+    return { ok: false, error: "定时任务仅支持每天、每周和每月运行。" };
   }
 
   const dayOfMonth = Number(repeatSubValue);

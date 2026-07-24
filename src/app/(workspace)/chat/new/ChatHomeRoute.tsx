@@ -12,7 +12,7 @@ import {
   type ChatMessage,
   type InputSendPayload,
 } from "@bioagent/chatui";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   beginChatStream,
@@ -25,8 +25,13 @@ import {
   type ChatStreamViewState,
   updateLatestUserMessageAttachments,
 } from "@/adapters/chat-session";
-import { uploadChatAttachments } from "@/adapters/chat-attachments";
+import {
+  CHAT_ATTACHMENT_ACCEPT,
+  uploadChatAttachments,
+  validateChatAttachmentFile,
+} from "@/adapters/chat-attachments";
 import { resolveChatSendScope } from "@/adapters/chat-resources";
+import { createProject } from "@/adapters/projects";
 import { streamChat } from "@/lib/api";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
@@ -38,7 +43,14 @@ export function ChatHomeRoute() {
   const navigation = useNavigation();
   const api = useApiClient();
   const { activeLab } = useLab();
-  const { isSidebarOpen, openChat, openSidebar, refreshChats } = useChatShell();
+  const {
+    isSidebarOpen,
+    openChat,
+    openSidebar,
+    projects,
+    refreshChats,
+    refreshProjects,
+  } = useChatShell();
   const { catalog: resourceCatalog, error: resourceError } =
     useChatResourceCatalog();
   const [notice, setNotice] = useState("");
@@ -46,6 +58,11 @@ export function ChatHomeRoute() {
   const [streamState, setStreamState] = useState<ChatStreamViewState | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [lastPayload, setLastPayload] = useState<InputSendPayload | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>();
+  const selectableProjects = useMemo(
+    () => projects.filter((project) => project.selectable !== false),
+    [projects],
+  );
   const streamControllerRef = useRef<AbortController | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -110,6 +127,7 @@ export function ChatHomeRoute() {
           {
             message: payload.content.trim(),
             draftId: uploaded.draftId,
+            projectId: selectedProjectId,
             ...sendScope,
           },
           {
@@ -156,10 +174,7 @@ export function ChatHomeRoute() {
             reportedError = recoveryError;
           }
         }
-        const errorMessage = getChatStreamErrorMessage(
-          reportedError,
-          "新对话创建失败，请重试",
-        );
+        const errorMessage = getChatStreamErrorMessage(reportedError);
         setStreamState((current) => {
           if (!current) return current;
           const interrupted = interruptChatStream(current);
@@ -191,6 +206,7 @@ export function ChatHomeRoute() {
       openChat,
       refreshChats,
       resourceCatalog,
+      selectedProjectId,
     ],
   );
 
@@ -214,6 +230,32 @@ export function ChatHomeRoute() {
     setNotice("已停止生成，你可以重新发送或重试。");
     setIsStreaming(false);
   }, []);
+
+  const handleUploadValidationError = useCallback((message: string) => {
+    setNoticeRole("alert");
+    setNotice(message);
+  }, []);
+
+  const handleCreateProject = useCallback(
+    async (name: string) => {
+      setNotice("");
+      setNoticeRole("status");
+      try {
+        const created = await createProject(api, {
+          type: "personal",
+          name,
+        });
+        await refreshProjects();
+        setSelectedProjectId(created.id);
+      } catch (createError) {
+        setNoticeRole("alert");
+        setNotice(
+          createError instanceof Error ? createError.message : "项目创建失败",
+        );
+      }
+    },
+    [api, refreshProjects],
+  );
 
   return (
       <div className="relative flex h-full w-full">
@@ -265,19 +307,29 @@ export function ChatHomeRoute() {
                 isStreaming={isStreaming}
                 skillOptions={resourceCatalog.skills}
                 fileOptions={resourceCatalog.files}
+                uploadAccept={CHAT_ATTACHMENT_ACCEPT}
+                validateUploadFile={validateChatAttachmentFile}
+                onUploadValidationError={handleUploadValidationError}
               />
             </ChatComposerDock>
           </ChatWorkspaceFrame>
         ) : (
           <ChatHomePage
-            projects={[]}
+            projects={selectableProjects}
+            selectedProjectId={selectedProjectId}
             disabled={isStreaming}
             isSidebarOpen={isSidebarOpen}
             onOpenSidebar={openSidebar}
-            onSelectProject={() => undefined}
+            onSelectProject={(projectId) =>
+              setSelectedProjectId(projectId ?? undefined)
+            }
+            onCreateProject={(name) => void handleCreateProject(name)}
             onSend={handleSend}
             skillOptions={resourceCatalog.skills}
             fileOptions={resourceCatalog.files}
+            uploadAccept={CHAT_ATTACHMENT_ACCEPT}
+            validateUploadFile={validateChatAttachmentFile}
+            onUploadValidationError={handleUploadValidationError}
           />
         )}
         {!streamState && (notice || resourceError) && (

@@ -65,10 +65,10 @@ export const BaseActionMenu: React.FC<BaseActionMenuProps> = ({ trigger, items, 
       type="button"
       role="menuitem"
       className={classNames(
-        'flex w-full cursor-pointer items-center gap-3 rounded-lg border-0 bg-transparent px-4 py-2.5 text-left text-sm leading-5 transition-colors disabled:cursor-not-allowed disabled:opacity-50',
-        !item.danger && !item.active && 'text-primaryText hover:bg-surfaceMuted',
+        'flex w-full cursor-pointer items-center gap-3 rounded-lg border-0 px-4 py-2.5 text-left text-sm leading-5 transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        !item.danger && !item.active && 'bg-transparent text-primaryText hover:bg-surfaceMuted',
         !item.danger && item.active && 'bg-primary-soft font-medium text-primary',
-        item.danger && 'text-danger hover:bg-danger-soft',
+        item.danger && 'bg-transparent text-danger hover:bg-danger-soft',
       )}
       onClick={(event) => onItemClick?.(item, event)}
       disabled={item.disabled}

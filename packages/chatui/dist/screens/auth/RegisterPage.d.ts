@@ -14,6 +14,7 @@ export type RegisterActionResult = {
 } | {
     ok: false;
     message: string;
+    field?: 'password' | 'form';
 };
 export interface RegisterPageProps {
     mode?: RegisterMode;

@@ -34,15 +34,6 @@ export type {
   ChatProjectFilesPanelProps,
   ChatProjectKnowledgeItemViewModel,
 } from "./ChatWorkspacePanels";
-export {
-  ChatAttachmentManager,
-  ChatAttachmentManagerTrigger,
-} from "./ChatAttachmentManager";
-export type {
-  ChatAttachmentManagerProps,
-  ChatAttachmentManagerTriggerProps,
-  ManagedChatAttachment,
-} from "./ChatAttachmentManager";
 export { InputArea } from "./InputArea";
 export type {
   ChatFileOption,

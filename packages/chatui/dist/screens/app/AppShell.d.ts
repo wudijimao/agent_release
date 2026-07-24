@@ -14,6 +14,7 @@ export interface AppShellChat {
 export interface AppShellProject {
     id: string;
     name: string;
+    selectable?: boolean;
 }
 export interface AppShellUser {
     name: string;

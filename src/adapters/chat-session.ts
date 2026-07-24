@@ -1,4 +1,5 @@
 import type {
+  ChatAttachmentDto,
   ChatAttachmentRefDto,
   ChatHistoryDetailResponse,
   HomeContextRef,
@@ -48,11 +49,18 @@ function asRecord(value: unknown): Record<string, unknown> | null {
 export function mapChatAttachmentRef(
   attachment: ChatAttachmentRefDto,
 ): ChatAttachment {
+  const attachmentRecord = asRecord(attachment);
+  const previewUrl =
+    attachment.kind === "image" && typeof attachmentRecord?.url === "string"
+      ? attachmentRecord.url.trim()
+      : "";
+
   return {
     id: attachment.id,
     name: attachment.name,
     mimeType: attachment.mimeType,
     status: "ready",
+    ...(previewUrl ? { previewUrl } : {}),
   };
 }
 
@@ -75,6 +83,10 @@ export function mapChatContextRef(
 export function mapChatHistoryDetail(
   response: ChatHistoryDetailResponse,
 ): ChatSessionViewModel {
+  const attachmentDetails = new Map<string, ChatAttachmentDto>(
+    response.attachments.map((attachment) => [attachment.id, attachment]),
+  );
+
   return {
     id: response.sessionId,
     title: response.session.title?.trim() || "新对话",
@@ -98,7 +110,11 @@ export function mapChatHistoryDetail(
         return {
           role: message.role as "user" | "assistant",
           content: message.content,
-          attachments: (message.attachmentRefs ?? []).map(mapChatAttachmentRef),
+          attachments: (message.attachmentRefs ?? []).map((attachment) =>
+            mapChatAttachmentRef(
+              attachmentDetails.get(attachment.id) ?? attachment,
+            ),
+          ),
           ...(references.length > 0 ? { references } : {}),
         };
       }),
@@ -238,7 +254,7 @@ export function beginChatStream(
 ): ChatStreamViewState {
   return {
     messages: [...messages, userMessage, { role: "assistant", content: "" }],
-    statusPhase: "thinking",
+    statusPhase: "analyzing",
     searchSteps: [],
     hasReceivedAssistantChunk: false,
   };
@@ -298,19 +314,37 @@ export function interruptChatStream(
   };
 }
 
-export function getChatStreamErrorMessage(
-  error: unknown,
-  fallback: string,
-): string {
+export function getChatStreamErrorMessage(error: unknown): string {
   if (error instanceof ChatStreamTimeoutError) {
-    return error.phase === "connect"
-      ? "连接对话服务超时，请重试。"
-      : "回答长时间没有更新，已停止生成，请重试。";
+    return "AI 响应超时，请重试。";
   }
 
-  if (error instanceof ChatStreamDisconnectedError) return error.message;
+  if (error instanceof ChatStreamDisconnectedError) {
+    return "AI 服务暂时不可用，请稍后重试。";
+  }
 
-  return error instanceof Error ? error.message : fallback;
+  const status = error instanceof ApiError ? error.status : undefined;
+  const rawMessage = error instanceof Error ? error.message : "";
+
+  if (status === 429 || /\b(?:HTTP\s*)?429\b|rate.?limit|too many requests/i.test(rawMessage)) {
+    return "请求过于频繁，请稍后重试。";
+  }
+
+  if (status === 408 || /\b(?:HTTP\s*)?408\b|time(?:d)?\s*out/i.test(rawMessage)) {
+    return "AI 响应超时，请重试。";
+  }
+
+  if (
+    status === 502
+    || status === 503
+    || status === 504
+    || status === 529
+    || /\b(?:HTTP\s*)?(?:502|503|504|529)\b|bad gateway|origin_bad_gateway|network request failed/i.test(rawMessage)
+  ) {
+    return "AI 服务暂时不可用，请稍后重试。";
+  }
+
+  return "AI 服务异常，请稍后重试。";
 }
 
 export function shouldReconcileChatStreamFailure(
@@ -339,6 +373,14 @@ export function reduceChatStreamEvent(
 
   if (eventType === "task_trace") {
     const step = asRecord(payload.step);
+    const status = typeof step?.status === "string" ? step.status : "";
+    if (
+      state.hasReceivedAssistantChunk
+      || status !== "running"
+    ) {
+      return state;
+    }
+
     const label =
       typeof step?.title === "string"
         ? step.title
@@ -346,16 +388,25 @@ export function reduceChatStreamEvent(
           ? step.detail
           : "正在处理任务";
     const category = typeof step?.category === "string" ? step.category : "";
-    const type: SearchStep["type"] = category.includes("web")
-      ? "web"
-      : category.includes("context") || category.includes("knowledge")
-        ? "knowledge"
-        : "tool";
+    // 服务端会在工具调用前就发出 generation/running；它表示整轮生成任务已开始，
+    // 不是用户可见的“即将输出正文”。真正开始生成以首个 text 事件为准。
+    if (category === "generation") return state;
+
+    const statusPhase: StatusPhase =
+      category === "retrieval"
+        ? "searching"
+        : category === "tool" || category === "action"
+          ? "executing"
+          : "analyzing";
+    const type: SearchStep["type"] =
+      category === "retrieval" ? "knowledge" : "tool";
 
     return {
       ...state,
-      statusPhase: "searching",
-      searchSteps: [...state.searchSteps, { type, label }],
+      statusPhase,
+      // 产品策略：回复过程中只展示最新状态，避免任务轨迹持续占用对话空间。
+      // 若后续需要恢复完整执行轨迹，可改回在 state.searchSteps 后追加当前步骤。
+      searchSteps: [{ type, label }],
     };
   }
 

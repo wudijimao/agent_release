@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import {
   changeCurrentPassword,
+  getChangePasswordErrorField,
   getChangePasswordErrorMessage,
 } from "@/adapters/auth";
 import { updateCurrentUserAvatar } from "@/adapters/profile";
@@ -39,8 +40,13 @@ export function SystemSettingsRoute() {
           if (error instanceof Error && error.message.startsWith("密码已更新")) {
             throw error;
           }
-          throw new Error(getChangePasswordErrorMessage(error));
+          return {
+            ok: false,
+            field: getChangePasswordErrorField(error),
+            message: getChangePasswordErrorMessage(error),
+          } as const;
         }
+        return { ok: true } as const;
       }}
       onChangeAvatar={async (file) => {
         if (avatarUploading) return;

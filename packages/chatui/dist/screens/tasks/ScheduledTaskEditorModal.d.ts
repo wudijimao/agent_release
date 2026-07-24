@@ -1,9 +1,9 @@
 import React from 'react';
 export type ScheduledTaskEditorKind = 'schedule' | 'literature';
-export type ScheduledTaskFetchFrequency = 'daily' | 'weekly' | 'hourly';
+export type ScheduledTaskFetchFrequency = 'daily' | 'weekly' | 'monthly';
 export type ScheduledTaskSourceType = 'pubmed' | 'biorxiv';
 export type ScheduledTaskPubMedMatchMode = 'all' | 'any' | 'advanced';
-export type ScheduledTaskRepeatMode = 'none' | 'monthly' | 'weekly' | 'hourly';
+export type ScheduledTaskRepeatMode = 'daily' | 'weekly' | 'monthly';
 export interface LiteratureTaskEditorValue {
     topic: string;
     periodStart: string;

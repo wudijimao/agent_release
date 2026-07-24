@@ -19,6 +19,9 @@ export interface InputAreaProps {
   leadingControls?: React.ReactNode;
   skillOptions?: readonly ChatSkillOption[];
   fileOptions?: readonly ChatFileOption[];
+  uploadAccept?: string;
+  validateUploadFile?: (file: File) => string | null;
+  onUploadValidationError?: (message: string) => void;
 }
 
 export interface ChatSkillOption {
@@ -131,6 +134,9 @@ export const InputArea = ({
   leadingControls,
   skillOptions = CHAT_SKILL_OPTIONS,
   fileOptions = CHAT_FILE_OPTIONS,
+  uploadAccept,
+  validateUploadFile,
+  onUploadValidationError,
 }: InputAreaProps) => {
   const [val, setVal] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -330,11 +336,18 @@ export const InputArea = ({
     const selectedFiles = Array.from(event.target.files ?? []);
     if (selectedFiles.length === 0) return;
 
+    const acceptedFiles = selectedFiles.filter((file) => {
+      const validationError = validateUploadFile?.(file);
+      if (!validationError) return true;
+      onUploadValidationError?.(validationError);
+      return false;
+    });
+
     setUploadedFiles((prev) => {
       const seen = new Set(prev.map((file) => file.id));
       const merged = [...prev];
 
-      selectedFiles.forEach((file) => {
+      acceptedFiles.forEach((file) => {
         if (file.size > MAX_UPLOAD_FILE_SIZE) return;
         if (merged.length >= MAX_UPLOAD_COUNT) return;
 
@@ -357,7 +370,7 @@ export const InputArea = ({
     });
 
     event.target.value = '';
-  }, []);
+  }, [onUploadValidationError, validateUploadFile]);
 
   const handleRemoveUploadedFile = useCallback((fileId: string) => {
     setUploadedFiles((prev) => {
@@ -414,6 +427,7 @@ export const InputArea = ({
           ref={filePickerRef}
           type="file"
           multiple
+          accept={uploadAccept}
           className="pointer-events-none absolute h-0 w-0 opacity-0"
           onChange={handleFileUploadChange}
         />

@@ -168,7 +168,8 @@ export function ToolsRoute() {
       draft.name = template.name;
       draft.schedule.taskPrompt = template.prompt;
       draft.schedule.runAt = template.runAt;
-      if (templateId === "template-meeting-brief") draft.schedule.repeatSubValue = "fri";
+      draft.schedule.repeatMode = "weekly";
+      draft.schedule.repeatSubValue = templateId === "template-meeting-brief" ? "fri" : "mon";
     }
     setActionError("");
     setEditingTaskId(null);
@@ -180,7 +181,7 @@ export function ToolsRoute() {
     if (!task) return;
     const draft = scheduledTaskToEditorDraft(task);
     if (!draft) {
-      setActionError("高保真编辑器暂未提供“每天”选项，为避免改变原任务周期，当前不允许编辑每日任务。");
+      setActionError("当前仅支持编辑每天、每周和每月运行的定时任务。");
       return;
     }
     setActionError("");

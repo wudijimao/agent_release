@@ -80,7 +80,11 @@ test("streamChat sends the shared request contract to the local streaming proxy"
 
   const events = [];
   for await (const event of streamChat(
-    { message: "hello", sessionId: "session-1" },
+    {
+      message: "hello",
+      sessionId: "session-1",
+      projectId: "project-1",
+    },
     { fetch: fetchMock, labId: "lab-1" },
   )) {
     events.push(event);
@@ -90,7 +94,10 @@ test("streamChat sends the shared request contract to the local streaming proxy"
   assert.equal(calls[0].url, "/api/chat");
   assert.equal(calls[0].init?.method, "POST");
   assert.equal(new Headers(calls[0].init?.headers).get("X-Lab-Id"), "lab-1");
-  assert.equal(calls[0].init?.body, '{"message":"hello","sessionId":"session-1"}');
+  assert.equal(
+    calls[0].init?.body,
+    '{"message":"hello","sessionId":"session-1","projectId":"project-1"}',
+  );
   assert.deepEqual(events, [{ type: "text", data: { content: "A" } }]);
 });
 

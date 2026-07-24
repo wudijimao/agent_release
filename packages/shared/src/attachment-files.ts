@@ -70,8 +70,8 @@ export const ATTACHMENT_FILE_RULES: Record<AttachmentFileKind, AttachmentFileRul
   },
   image: {
     kind: 'image',
-    extensions: ['.jpg', '.jpeg', '.png', '.webp'],
-    acceptFragments: ['.jpg', '.jpeg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
+    extensions: ['.jpg', '.png', '.webp'],
+    acceptFragments: ['.jpg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
     matchesMimeType: (mimeType) =>
       ['image/jpeg', 'image/png', 'image/webp', 'application/octet-stream'].includes(mimeType),
     maxBytes: ATTACHMENT_IMAGE_MAX_BYTES,

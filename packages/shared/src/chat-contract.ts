@@ -8,6 +8,7 @@ import type { AttachmentFileKind } from "./attachment-files.js";
 export interface ChatSendRequest {
   message: string;
   sessionId?: string;
+  projectId?: string;
   draftId?: string;
   selectedSkillSlugs?: string[];
   contextRefs?: HomeContextRef[];
@@ -107,7 +108,7 @@ export interface ChatHistoryDetailResponse {
   messages: ChatHistoryMessageDto[];
   runs: unknown[];
   pendingMcpToolCalls: unknown[];
-  attachments: unknown[];
+  attachments: ChatAttachmentDto[];
   currentContextRefs: HomeContextRef[] | null;
   sessionSummary?: unknown;
 }

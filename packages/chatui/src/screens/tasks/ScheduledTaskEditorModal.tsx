@@ -8,10 +8,10 @@ import type { BaseActionMenuItem, BaseActionMenuProps } from '../../components/c
 const { RangePicker } = DatePicker;
 
 export type ScheduledTaskEditorKind = 'schedule' | 'literature';
-export type ScheduledTaskFetchFrequency = 'daily' | 'weekly' | 'hourly';
+export type ScheduledTaskFetchFrequency = 'daily' | 'weekly' | 'monthly';
 export type ScheduledTaskSourceType = 'pubmed' | 'biorxiv';
 export type ScheduledTaskPubMedMatchMode = 'all' | 'any' | 'advanced';
-export type ScheduledTaskRepeatMode = 'none' | 'monthly' | 'weekly' | 'hourly';
+export type ScheduledTaskRepeatMode = 'daily' | 'weekly' | 'monthly';
 
 export interface LiteratureTaskEditorValue {
   topic: string;
@@ -50,7 +50,7 @@ export interface ScheduledTaskEditorModalProps {
 }
 
 const frequencyOptions: Array<{ value: ScheduledTaskFetchFrequency; label: string }> = [
-  { value: 'daily', label: '每天' }, { value: 'weekly', label: '每周' }, { value: 'hourly', label: '每小时' },
+  { value: 'daily', label: '每天' }, { value: 'weekly', label: '每周' }, { value: 'monthly', label: '每月' },
 ];
 const sourceTypeMeta: Record<ScheduledTaskSourceType, { label: string; desc: string }> = {
   pubmed: { label: 'PubMed 文献', desc: '追踪正式发表论文' },
@@ -63,10 +63,9 @@ const weekdayOptions = [
   ['mon', '周一'], ['tue', '周二'], ['wed', '周三'], ['thu', '周四'], ['fri', '周五'], ['sat', '周六'], ['sun', '周日'],
 ].map(([value, label]) => ({ value, label }));
 const repeatOptions = [
-  { value: 'none', label: '不重复' },
+  { value: 'daily', label: '每天' },
   { value: 'weekly', label: '每周', children: weekdayOptions },
-  { value: 'monthly', label: '每月', children: Array.from({ length: 31 }, (_, index) => ({ value: String(index + 1), label: `${index + 1}号` })) },
-  { value: 'hourly', label: '每小时' },
+  { value: 'monthly', label: '每月', children: Array.from({ length: 28 }, (_, index) => ({ value: String(index + 1), label: `${index + 1}号` })) },
 ];
 
 export function ScheduledTaskEditorModal({
@@ -118,7 +117,7 @@ export function ScheduledTaskEditorModal({
               <div className="grid grid-cols-2 gap-2.5">
                 <Cascader value={repeatValue} options={repeatOptions} className="task-repeat-cascader w-full" classNames={{ popup: { root: 'task-repeat-cascader-popup' } }} placeholder="请选择重复方式"
                   onChange={(value) => {
-                    const repeatMode = String(value[0] ?? 'none') as ScheduledTaskRepeatMode;
+                    const repeatMode = String(value[0] ?? 'daily') as ScheduledTaskRepeatMode;
                     const subValue = value[1] ? String(value[1]) : '';
                     onScheduleChange({ ...scheduleValue, repeatMode, repeatSubValue: repeatMode === 'weekly'
                       ? subValue || (scheduleValue.repeatMode === 'weekly' ? scheduleValue.repeatSubValue : 'mon') || 'mon'

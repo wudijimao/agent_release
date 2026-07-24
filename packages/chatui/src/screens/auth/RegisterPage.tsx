@@ -17,7 +17,7 @@ export interface RegisterInput extends RegisterIdentityInput {
 
 export type RegisterActionResult =
   | { ok: true }
-  | { ok: false; message: string };
+  | { ok: false; message: string; field?: 'password' | 'form' };
 
 export interface RegisterPageProps {
   mode?: RegisterMode;
@@ -78,7 +78,8 @@ export default function RegisterPage({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<Extract<RegisterActionResult, { ok: false }> | null>(null);
+  const passwordTooShort = password.length > 0 && password.trim().length < 6;
 
   // ---- 验证码倒计时 ----
   useEffect(() => {
@@ -235,12 +236,12 @@ export default function RegisterPage({
     try {
       const result = await onSendVerificationCode(email.trim());
       if (!result.ok) {
-        setActionError(result.message);
+        setActionError(result);
         return;
       }
       setCountdown(60);
     } catch {
-      setActionError('操作失败，请稍后重试。');
+      setActionError({ ok: false, message: '操作失败，请稍后重试。' });
     } finally {
       setIsSubmitting(false);
     }
@@ -291,13 +292,13 @@ export default function RegisterPage({
         : await onVerifyIdentity(identity);
 
       if (!result.ok) {
-        setActionError(result.message);
+        setActionError(result);
         return;
       }
 
       goNext();
     } catch {
-      setActionError('操作失败，请稍后重试。');
+      setActionError({ ok: false, message: '操作失败，请稍后重试。' });
     } finally {
       setIsSubmitting(false);
     }
@@ -447,9 +448,18 @@ export default function RegisterPage({
                       }}
                       required
                       placeholder=" "
-                      className={inputClass}
+                      className={`${inputClass} ${
+                        actionError?.field === 'password' || passwordTooShort
+                          ? 'border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus'
+                          : ''
+                      }`}
                     />
                     <span className={labelClass}>设置密码</span>
+                    {(actionError?.field === 'password' || passwordTooShort) && (
+                      <span className="mt-1 block text-xs text-authErrorText">
+                        {actionError?.field === 'password' ? actionError.message : '密码至少需要 6 位'}
+                      </span>
+                    )}
                   </label>
                   <label className="relative block">
                     <input
@@ -475,9 +485,9 @@ export default function RegisterPage({
                 </>
               )}
 
-              {actionError && (
+              {actionError && actionError.field !== 'password' && (
                 <p role="alert" className="text-sm text-authErrorText">
-                  {actionError}
+                  {actionError.message}
                 </p>
               )}
 

@@ -907,4 +907,5 @@ export * from './tracking.js';
 export * from './validation-package.js';
 export * from './structural-compute.js';
 export * from './scheduled-tasks.js';
+export * from './skills.js';
 export * from './workflow-orchestration.js';

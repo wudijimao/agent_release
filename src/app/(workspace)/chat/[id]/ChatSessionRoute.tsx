@@ -2,32 +2,33 @@
 
 import {
   BaseButton,
-  ChatAttachmentManager,
-  ChatAttachmentManagerTrigger,
   ChatComposerDock,
   ChatConversationViewport,
+  ChatPreviewPanel,
+  ChatProjectFilesPanel,
   ChatWorkspaceFrame,
   ChatWorkspaceHeader,
+  ChatWorkspaceHeaderAction,
   ChatWorkspaceSidePanel,
   InputArea,
   useNavigation,
   type ChatMessage,
-  type AssistantFeedback,
+  type ChatPreviewItemViewModel,
   type InputSendPayload,
-  type ManagedChatAttachment,
 } from "@bioagent/chatui";
-import type { ChatAttachmentDto } from "@bioagent/shared";
+import { Folder } from "lucide-react";
 import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 
 import {
   beginChatStream,
-  buildChatRegeneratePayload,
   getChatStreamErrorMessage,
   interruptChatStream,
   loadChatSession,
@@ -39,12 +40,16 @@ import {
   updateLatestUserMessageAttachments,
 } from "@/adapters/chat-session";
 import {
-  deleteChatAttachment,
-  listChatAttachments,
-  updateChatAttachmentContext,
+  CHAT_ATTACHMENT_ACCEPT,
   uploadChatAttachments,
+  validateChatAttachmentFile,
 } from "@/adapters/chat-attachments";
 import { resolveChatSendScope } from "@/adapters/chat-resources";
+import {
+  loadProjectDetail,
+  mapProjectChatWorkspace,
+  type ProjectChatWorkspaceViewModel,
+} from "@/adapters/projects";
 import { streamChat } from "@/lib/api";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
@@ -82,22 +87,33 @@ function RouteStatus({
 
 const initialStreamState: ChatStreamViewState = {
   messages: [],
-  statusPhase: "thinking",
+  statusPhase: "analyzing",
   searchSteps: [],
   hasReceivedAssistantChunk: false,
 };
+
+const PANEL_MIN_WIDTH = 200;
+const PANEL_MAX_WIDTH = 440;
+const DEFAULT_PROJECT_PANEL_WIDTH = 260;
+const DEFAULT_PREVIEW_PANEL_WIDTH = 320;
 
 export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const navigation = useNavigation();
   const api = useApiClient();
   const {
+    chats,
     getCachedSession,
     isSidebarOpen,
     openSidebar,
+    projects,
     refreshChats,
     touchChat,
   } = useChatShell();
   const cachedSession = getCachedSession(sessionId);
+  const currentChat = chats.find((chat) => chat.id === sessionId);
+  const currentProject = projects.find(
+    (project) => project.id === currentChat?.projectId,
+  );
   const { activeLab } = useLab();
   const { status, error: authError, refreshSession } = useAuth();
   const { catalog: resourceCatalog, error: resourceError } =
@@ -114,14 +130,26 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const [pageError, setPageError] = useState("");
   const [streamNotice, setStreamNotice] = useState("");
   const [lastAttempt, setLastAttempt] = useState<StreamAttempt | null>(null);
-  const [attachments, setAttachments] = useState<ChatAttachmentDto[]>([]);
-  const [attachmentsLoading, setAttachmentsLoading] = useState(true);
-  const [attachmentsError, setAttachmentsError] = useState("");
-  const [pendingAttachmentId, setPendingAttachmentId] = useState<string>();
-  const [showAttachmentPanel, setShowAttachmentPanel] = useState(false);
-  const [feedbackByMessageKey, setFeedbackByMessageKey] = useState<
-    Record<string, AssistantFeedback>
-  >({});
+  const [projectWorkspace, setProjectWorkspace] =
+    useState<ProjectChatWorkspaceViewModel | null>(null);
+  const [projectPanelError, setProjectPanelError] = useState("");
+  const [showProjectPanel, setShowProjectPanel] = useState(false);
+  const [showPreviewPanel, setShowPreviewPanel] = useState(false);
+  const [fileSearchQuery, setFileSearchQuery] = useState("");
+  const [previewTabs, setPreviewTabs] = useState<ChatPreviewItemViewModel[]>([]);
+  const [activePreviewKey, setActivePreviewKey] = useState<string | null>(null);
+  const [projectPanelWidth, setProjectPanelWidth] = useState(
+    DEFAULT_PROJECT_PANEL_WIDTH,
+  );
+  const [previewPanelWidth, setPreviewPanelWidth] = useState(
+    DEFAULT_PREVIEW_PANEL_WIDTH,
+  );
+  const [resizingPanel, setResizingPanel] = useState<
+    "project" | "preview" | null
+  >(null);
+  const resizeStartXRef = useRef(0);
+  const resizeStartWidthRef = useRef(0);
+  const workspaceContainerRef = useRef<HTMLDivElement | null>(null);
   const streamControllerRef = useRef<AbortController | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const positionedSessionIdRef = useRef<string | null>(null);
@@ -135,6 +163,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (signal?.aborted) return;
         setTitle(session.title);
         setStreamState({ ...initialStreamState, messages: session.messages });
+        setShowProjectPanel(false);
+        setShowPreviewPanel(false);
+        setFileSearchQuery("");
+        setPreviewTabs([]);
+        setActivePreviewKey(null);
         persistedMessageIdsRef.current = session.messageIds;
         historyLoadedSessionIdRef.current = sessionId;
       } catch (loadError) {
@@ -149,27 +182,31 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     [api, sessionId],
   );
 
-  const loadAttachments = useCallback(
+  const loadProjectWorkspace = useCallback(
     async (signal?: AbortSignal) => {
-      setAttachmentsLoading(true);
-      setAttachmentsError("");
+      const projectId = currentChat?.projectId;
+      if (!projectId) {
+        setProjectWorkspace(null);
+        setProjectPanelError("");
+        return;
+      }
+
+      setProjectPanelError("");
+      setProjectWorkspace(null);
       try {
-        const response = await listChatAttachments(
-          api,
-          { sessionId },
-          signal ? { signal } : undefined,
-        );
-        if (!signal?.aborted) setAttachments(response.items);
+        const project = await loadProjectDetail(api, projectId);
+        if (!signal?.aborted) {
+          setProjectWorkspace(mapProjectChatWorkspace(project));
+        }
       } catch (loadError) {
         if (signal?.aborted) return;
-        setAttachmentsError(
-          loadError instanceof Error ? loadError.message : "附件加载失败",
+        setProjectWorkspace(null);
+        setProjectPanelError(
+          loadError instanceof Error ? loadError.message : "项目文件加载失败",
         );
-      } finally {
-        if (!signal?.aborted) setAttachmentsLoading(false);
       }
     },
-    [api, sessionId],
+    [api, currentChat?.projectId],
   );
 
   useEffect(() => {
@@ -186,11 +223,21 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     queueMicrotask(() => {
       if (!controller.signal.aborted) {
         void loadPage(controller.signal);
-        void loadAttachments(controller.signal);
       }
     });
     return () => controller.abort();
-  }, [loadAttachments, loadPage, status]);
+  }, [loadPage, status]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    const controller = new AbortController();
+    queueMicrotask(() => {
+      if (!controller.signal.aborted) {
+        void loadProjectWorkspace(controller.signal);
+      }
+    });
+    return () => controller.abort();
+  }, [loadProjectWorkspace, status]);
 
   useEffect(() => () => streamControllerRef.current?.abort(), []);
 
@@ -275,15 +322,6 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           signal: controller.signal,
         });
         uploadCompleted = true;
-        setAttachments((current) => {
-          const uploadedIds = new Set(
-            uploaded.attachments.map((item) => item.id),
-          );
-          return [
-            ...current.filter((item) => !uploadedIds.has(item.id)),
-            ...uploaded.attachments,
-          ];
-        });
         nextState = updateLatestUserMessageAttachments(
           nextState,
           uploaded.attachments.map(mapChatAttachmentRef),
@@ -364,10 +402,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             reportedError = recoveryError;
           }
         }
-        const errorMessage = getChatStreamErrorMessage(
-          reportedError,
-          "对话失败，请重试",
-        );
+        const errorMessage = getChatStreamErrorMessage(reportedError);
         setStreamState((current) => {
           const interrupted = interruptChatStream(current);
           return uploadCompleted
@@ -412,77 +447,102 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     setIsStreaming(false);
   }, []);
 
-  const handleFeedback = useCallback(
-    (messageKey: string, feedback: AssistantFeedback) => {
-      setFeedbackByMessageKey((current) => {
-        if (current[messageKey] === feedback) {
-          const next = { ...current };
-          delete next[messageKey];
-          return next;
-        }
-        return { ...current, [messageKey]: feedback };
-      });
-    },
-    [],
-  );
+  const normalizedFileSearchQuery = fileSearchQuery.trim().toLowerCase();
+  const displayedProjectContent = useMemo(() => {
+    const knowledgeDocs = projectWorkspace?.knowledgeDocs ?? [];
+    const experiments = projectWorkspace?.experiments ?? [];
+    if (!normalizedFileSearchQuery) return { knowledgeDocs, experiments };
 
-  const handleRegenerate = useCallback(
-    (assistantIndex: number) => {
-      if (isStreaming) return;
-      const payload = buildChatRegeneratePayload(
-        streamState.messages,
-        assistantIndex,
+    const matches = (value: string) =>
+      value.toLowerCase().includes(normalizedFileSearchQuery);
+    return {
+      knowledgeDocs: knowledgeDocs.filter(
+        (item) =>
+          matches(item.title) || item.tags.some((tag) => matches(tag)),
+      ),
+      experiments: experiments.filter(
+        (item) =>
+          matches(item.title)
+          || matches(item.status)
+          || item.tags.some((tag) => matches(tag)),
+      ),
+    };
+  }, [normalizedFileSearchQuery, projectWorkspace]);
+
+  const openPreviewItem = useCallback((item: ChatPreviewItemViewModel) => {
+    setPreviewTabs((current) => {
+      const existingIndex = current.findIndex((tab) => tab.key === item.key);
+      if (existingIndex < 0) return [...current, item];
+      return current.map((tab, index) => (index === existingIndex ? item : tab));
+    });
+    setActivePreviewKey(item.key);
+    setShowPreviewPanel(true);
+  }, []);
+
+  const openProjectFilePreview = useCallback(
+    (key: string) => {
+      const item = projectWorkspace?.previewItems.find(
+        (preview) => preview.key === key,
       );
-      if (payload) void runStream(payload);
+      if (item) openPreviewItem(item);
     },
-    [isStreaming, runStream, streamState.messages],
+    [openPreviewItem, projectWorkspace],
   );
 
-  const handleToggleAttachmentContext = useCallback(
-    async (attachment: ManagedChatAttachment, enabled: boolean) => {
-      setPendingAttachmentId(attachment.id);
-      setAttachmentsError("");
-      try {
-        const updated = await updateChatAttachmentContext(
-          api,
-          attachment.id,
-          enabled,
-        );
-        setAttachments((current) =>
-          current.map((item) => (item.id === updated.id ? updated : item)),
-        );
-      } catch (updateError) {
-        setAttachmentsError(
-          updateError instanceof Error
-            ? updateError.message
-            : "附件上下文更新失败",
-        );
-      } finally {
-        setPendingAttachmentId(undefined);
-      }
+  const closePreviewTab = useCallback((targetKey: string) => {
+    setPreviewTabs((current) => {
+      const closingIndex = current.findIndex((tab) => tab.key === targetKey);
+      if (closingIndex < 0) return current;
+      const next = current.filter((tab) => tab.key !== targetKey);
+      setActivePreviewKey((activeKey) => {
+        if (activeKey !== targetKey) return activeKey;
+        if (next.length === 0) {
+          setShowPreviewPanel(false);
+          return null;
+        }
+        return next[Math.min(closingIndex, next.length - 1)]?.key ?? null;
+      });
+      return next;
+    });
+  }, []);
+
+  const startPanelResize = useCallback(
+    (
+      panel: "project" | "preview",
+      event: ReactMouseEvent<HTMLDivElement>,
+    ) => {
+      resizeStartXRef.current = event.clientX;
+      resizeStartWidthRef.current =
+        panel === "project" ? projectPanelWidth : previewPanelWidth;
+      setResizingPanel(panel);
     },
-    [api],
+    [previewPanelWidth, projectPanelWidth],
   );
 
-  const handleDeleteAttachment = useCallback(
-    async (attachment: ManagedChatAttachment) => {
-      setPendingAttachmentId(attachment.id);
-      setAttachmentsError("");
-      try {
-        await deleteChatAttachment(api, attachment.id);
-        setAttachments((current) =>
-          current.filter((item) => item.id !== attachment.id),
-        );
-      } catch (deleteError) {
-        setAttachmentsError(
-          deleteError instanceof Error ? deleteError.message : "附件删除失败",
-        );
-      } finally {
-        setPendingAttachmentId(undefined);
-      }
-    },
-    [api],
-  );
+  useEffect(() => {
+    if (!resizingPanel) return;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const delta = resizeStartXRef.current - event.clientX;
+      const nextWidth = Math.max(
+        PANEL_MIN_WIDTH,
+        Math.min(PANEL_MAX_WIDTH, resizeStartWidthRef.current + delta),
+      );
+      if (resizingPanel === "project") setProjectPanelWidth(nextWidth);
+      else setPreviewPanelWidth(nextWidth);
+    };
+    const handleMouseUp = () => setResizingPanel(null);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [resizingPanel]);
 
   if (status === "loading" || status === "unauthenticated") {
     return <RouteStatus message="正在恢复登录状态…" />;
@@ -519,38 +579,70 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
   return (
     <ChatWorkspaceFrame
+      ref={workspaceContainerRef}
       header={
         <ChatWorkspaceHeader
           isSidebarOpen={isSidebarOpen}
           title={title}
-          divided={showAttachmentPanel}
+          divided={showProjectPanel || showPreviewPanel}
           onOpenSidebar={openSidebar}
-          actions={(
-            <ChatAttachmentManagerTrigger
-              active={showAttachmentPanel}
-              count={attachments.length}
-              onClick={() => setShowAttachmentPanel((current) => !current)}
+          actions={
+            <ChatWorkspaceHeaderAction
+              active={showProjectPanel}
+              icon={<Folder size={14} className="text-secondaryText" />}
+              label="项目"
+              onClick={() => setShowProjectPanel((current) => !current)}
             />
-          )}
+          }
         />
       }
       sidePanels={
-        <ChatWorkspaceSidePanel
-          open={showAttachmentPanel}
-          width={360}
-        >
-          <ChatAttachmentManager
-            attachments={attachments}
-            loading={attachmentsLoading}
-            error={attachmentsError}
-            pendingAttachmentId={pendingAttachmentId}
-            onClose={() => setShowAttachmentPanel(false)}
-            onToggleContext={(attachment, enabled) =>
-              void handleToggleAttachmentContext(attachment, enabled)
-            }
-            onDelete={(attachment) => void handleDeleteAttachment(attachment)}
-          />
-        </ChatWorkspaceSidePanel>
+        <>
+          <ChatWorkspaceSidePanel
+            open={showPreviewPanel}
+            width={previewPanelWidth}
+            resizing={resizingPanel === "preview"}
+          >
+            <ChatPreviewPanel
+              tabs={previewTabs}
+              activeKey={activePreviewKey}
+              onSelectTab={setActivePreviewKey}
+              onCloseTab={closePreviewTab}
+              onClose={() => {
+                setShowPreviewPanel(false);
+                setPreviewTabs([]);
+                setActivePreviewKey(null);
+              }}
+              onResizeStart={(event) => startPanelResize("preview", event)}
+            />
+          </ChatWorkspaceSidePanel>
+          <ChatWorkspaceSidePanel
+            open={showProjectPanel}
+            width={projectPanelWidth}
+            resizing={resizingPanel === "project"}
+          >
+            <ChatProjectFilesPanel
+              projectName={
+                projectWorkspace?.projectName
+                ?? currentProject?.name
+                ?? "未归属项目"
+              }
+              searchQuery={fileSearchQuery}
+              knowledgeDocs={displayedProjectContent.knowledgeDocs}
+              experiments={displayedProjectContent.experiments}
+              activePreviewKey={activePreviewKey}
+              error={projectPanelError}
+              onSearchQueryChange={setFileSearchQuery}
+              onOpenKnowledge={(id) =>
+                openProjectFilePreview(`knowledge:${id}`)
+              }
+              onOpenExperiment={(id) =>
+                openProjectFilePreview(`experiment:${id}`)
+              }
+              onResizeStart={(event) => startPanelResize("project", event)}
+            />
+          </ChatWorkspaceSidePanel>
+        </>
       }
     >
       <div className="relative min-h-0 flex-1">
@@ -560,17 +652,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           statusPhase={streamState.statusPhase}
           searchSteps={streamState.searchSteps}
           hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
+          contentMaxWidth={showPreviewPanel ? "100%" : 800}
           scrollContainerRef={scrollContainerRef}
-          feedbackByMessageKey={feedbackByMessageKey}
-          onFeedback={handleFeedback}
-          onRegenerate={handleRegenerate}
           getMessageKey={(_message: ChatMessage, index: number) =>
             `${sessionId}-${index}`
           }
         />
       </div>
 
-      <ChatComposerDock>
+      <ChatComposerDock maxWidth={showPreviewPanel ? "100%" : 840}>
         {(pageError || streamNotice || resourceError) && (
           <div
             role={pageError || resourceError ? "alert" : "status"}
@@ -601,6 +691,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           isStreaming={isStreaming}
           skillOptions={resourceCatalog.skills}
           fileOptions={resourceCatalog.files}
+          uploadAccept={CHAT_ATTACHMENT_ACCEPT}
+          validateUploadFile={validateChatAttachmentFile}
+          onUploadValidationError={setStreamNotice}
         />
       </ChatComposerDock>
     </ChatWorkspaceFrame>

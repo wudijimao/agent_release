@@ -666,12 +666,16 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               </div>
             )}
 
-            {!isPaperRecommendationMessage && msg.content && !streaming && actionKey && onFeedback && onRefresh && (
+            {!isPaperRecommendationMessage && msg.content && !streaming && (
               <AssistantActions
                 markdownContent={msg.content}
                 onRefresh={onRefresh}
                 feedback={feedback}
-                onFeedback={(type) => onFeedback(actionKey, type)}
+                onFeedback={
+                  actionKey && onFeedback
+                    ? (type) => onFeedback(actionKey, type)
+                    : undefined
+                }
                 disabled={streaming}
               />
             )}

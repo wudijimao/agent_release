@@ -15,6 +15,7 @@ import {
   updateChatAttachmentContext,
   uploadChatAttachment,
   uploadChatAttachments,
+  validateChatAttachmentFile,
 } from "./chat-attachments";
 
 const attachment: ChatAttachmentDto = {
@@ -117,6 +118,58 @@ test("uploadChatAttachment completes presign, object upload, and registration fo
     "Content-Type": "text/markdown",
   });
   assert.equal(objectUploads[0]?.init?.body, file);
+});
+
+test("chat attachment validation only accepts the supported filename extensions", () => {
+  const supportedNames = [
+    "notes.TXT",
+    "readme.md",
+    "data.csv",
+    "photo.jpg",
+    "figure.png",
+    "preview.webp",
+    "paper.pdf",
+    "report.docx",
+    "slides.pptx",
+    "results.xlsx",
+  ];
+
+  for (const name of supportedNames) {
+    assert.equal(
+      validateChatAttachmentFile(new File(["content"], name)),
+      null,
+      name,
+    );
+  }
+
+  for (const name of ["archive.zip", "photo.jpeg", "document.doc", "README"]) {
+    assert.match(
+      validateChatAttachmentFile(new File(["content"], name)) ?? "",
+      /仅支持/,
+      name,
+    );
+  }
+});
+
+test("uploadChatAttachment rejects an unsupported extension before requesting a presign", async () => {
+  const calls: ApiCall[] = [];
+  const api = createAttachmentApi({ calls });
+
+  await assert.rejects(
+    uploadChatAttachment({
+      api,
+      file: new File(["content"], "archive.zip", {
+        type: "application/zip",
+      }),
+    }),
+    (error: unknown) => {
+      assert.ok(error instanceof ChatAttachmentUploadError);
+      assert.equal(error.code, "ATTACHMENT_FILE_TYPE_UNSUPPORTED");
+      return true;
+    },
+  );
+
+  assert.deepEqual(calls, []);
 });
 
 test("uploadChatAttachment invokes an injected fetch as a function, not an object method", async () => {

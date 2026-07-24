@@ -12,6 +12,9 @@ import type {
 import type {
   AppShellChat,
   AppShellProject,
+  ChatPreviewItemViewModel,
+  ChatProjectExperimentItemViewModel,
+  ChatProjectKnowledgeItemViewModel,
   ProjectConversationViewModel,
   ProjectDetailViewModel,
   ProjectDocumentViewModel,
@@ -100,7 +103,11 @@ export async function removeProjectMember(
 export function mapProjectsToShell(
   projects: readonly ProjectSummary[],
 ): AppShellProject[] {
-  return projects.map((project) => ({ id: project.id, name: project.name }));
+  return projects.map((project) => ({
+    id: project.id,
+    name: project.name,
+    selectable: !project.isDefaultUnassigned,
+  }));
 }
 
 export function mapProjectsToList(
@@ -143,6 +150,72 @@ const KNOWLEDGE_SECTION_LABELS: Record<string, string> = {
   experiment: "实验",
   data: "数据",
 };
+
+export interface ProjectChatWorkspaceViewModel {
+  projectName: string;
+  knowledgeDocs: ChatProjectKnowledgeItemViewModel[];
+  experiments: ChatProjectExperimentItemViewModel[];
+  previewItems: ChatPreviewItemViewModel[];
+}
+
+export function mapProjectChatWorkspace(
+  project: ProjectDetail,
+): ProjectChatWorkspaceViewModel {
+  const knowledgeItems = [
+    ...project.sections.knowledge.knowledge,
+    ...project.sections.knowledge.data,
+  ];
+  const experimentItems = project.sections.knowledge.experiment;
+  const itemTags = (item: (typeof knowledgeItems)[number]) => {
+    const sectionLabel =
+      KNOWLEDGE_SECTION_LABELS[item.section] || item.section;
+    const typeLabel =
+      KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
+    return [sectionLabel, typeLabel];
+  };
+  const previewContent = (title: string, tags: readonly string[], updatedAt: string) =>
+    `文件标题：${title}\n分类：${tags.join(" / ")}\n更新时间：${updatedAt}`;
+
+  return {
+    projectName: project.name,
+    knowledgeDocs: knowledgeItems.map((item) => ({
+      id: item.id,
+      title: item.title,
+      tags: itemTags(item),
+    })),
+    experiments: experimentItems.map((item) => ({
+      id: item.id,
+      title: item.title,
+      status: KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType,
+      tags: itemTags(item),
+    })),
+    previewItems: [
+      ...knowledgeItems.map((item): ChatPreviewItemViewModel => {
+        const tags = itemTags(item);
+        return {
+          key: `knowledge:${item.id}`,
+          type: "knowledge",
+          title: item.title,
+          subtitle: `${project.name} · ${tags.join(" · ")}`,
+          content: previewContent(item.title, tags, item.updatedAt),
+        };
+      }),
+      ...experimentItems.map((item): ChatPreviewItemViewModel => {
+        const tags = itemTags(item);
+        const status =
+          KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
+        return {
+          key: `experiment:${item.id}`,
+          type: "experiment-log",
+          title: item.title,
+          subtitle: `${project.name} · ${tags.join(" · ")}`,
+          status,
+          content: previewContent(item.title, tags, item.updatedAt),
+        };
+      }),
+    ],
+  };
+}
 
 function permissionToUi(role: ProjectMemberSummary["role"]): ProjectMemberPermission {
   return role === "viewer" ? "浏览" : "编辑";

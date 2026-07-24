@@ -1,18 +1,32 @@
-import type {
-  ChatAttachmentContextRequest,
-  ChatAttachmentDeleteResponse,
-  ChatAttachmentDto,
-  ChatAttachmentListResponse,
-  ChatAttachmentPresignRequest,
-  ChatAttachmentPresignResponse,
-  ChatAttachmentRegisterRequest,
-  HomeContextRef,
+import {
+  ATTACHMENT_FILE_RULES,
+  type ChatAttachmentContextRequest,
+  type ChatAttachmentDeleteResponse,
+  type ChatAttachmentDto,
+  type ChatAttachmentListResponse,
+  type ChatAttachmentPresignRequest,
+  type ChatAttachmentPresignResponse,
+  type ChatAttachmentRegisterRequest,
+  type HomeContextRef,
 } from "@bioagent/shared";
 
 import type { ApiClient, ApiRequestOptions } from "@/lib/api";
 
 const CHAT_ATTACHMENTS_PATH = "/api/chat/attachments";
 const DEFAULT_MIME_TYPE = "application/octet-stream";
+
+export const CHAT_ATTACHMENT_ALLOWED_EXTENSIONS = [
+  ...ATTACHMENT_FILE_RULES.txt.extensions,
+  ...ATTACHMENT_FILE_RULES.md.extensions,
+  ...ATTACHMENT_FILE_RULES.csv.extensions,
+  ...ATTACHMENT_FILE_RULES.image.extensions,
+  ...ATTACHMENT_FILE_RULES.pdf.extensions,
+  ...ATTACHMENT_FILE_RULES.office.extensions,
+] satisfies readonly string[];
+export const CHAT_ATTACHMENT_ACCEPT =
+  CHAT_ATTACHMENT_ALLOWED_EXTENSIONS.join(",");
+export const CHAT_ATTACHMENT_ALLOWED_FORMATS_LABEL =
+  "TXT、Markdown、CSV、JPG、PNG、WEBP、PDF、DOCX、PPTX、XLSX";
 
 type ChatAttachmentApi = Pick<ApiClient, "delete" | "get" | "patch" | "post">;
 
@@ -27,6 +41,7 @@ export type ChatAttachmentListScope =
 
 export type ChatAttachmentUploadErrorCode =
   | "ATTACHMENT_DRAFT_ID_MISSING"
+  | "ATTACHMENT_FILE_TYPE_UNSUPPORTED"
   | "ATTACHMENT_OBJECT_UPLOAD_FAILED";
 
 export class ChatAttachmentUploadError extends Error {
@@ -75,6 +90,17 @@ function fileMimeType(file: File) {
   return file.type || DEFAULT_MIME_TYPE;
 }
 
+export function validateChatAttachmentFile(file: File): string | null {
+  const normalizedName = file.name.trim().toLowerCase();
+  const supported = CHAT_ATTACHMENT_ALLOWED_EXTENSIONS.some((extension) =>
+    normalizedName.endsWith(extension),
+  );
+
+  return supported
+    ? null
+    : `不支持“${file.name}”，仅支持 ${CHAT_ATTACHMENT_ALLOWED_FORMATS_LABEL} 文件`;
+}
+
 function buildListPath(scope: ChatAttachmentListScope) {
   const query = new URLSearchParams();
   if (scope.sessionId) query.set("sessionId", scope.sessionId);
@@ -121,6 +147,14 @@ export async function uploadChatAttachment({
   fetch: fetchImpl = (...args) => globalThis.fetch(...args),
   signal,
 }: UploadChatAttachmentOptions): Promise<UploadChatAttachmentResult> {
+  const validationError = validateChatAttachmentFile(file);
+  if (validationError) {
+    throw new ChatAttachmentUploadError(
+      "ATTACHMENT_FILE_TYPE_UNSUPPORTED",
+      validationError,
+    );
+  }
+
   const mimeType = fileMimeType(file);
   const presignRequest: ChatAttachmentPresignRequest = {
     ...scope,

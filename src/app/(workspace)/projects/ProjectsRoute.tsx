@@ -80,7 +80,7 @@ export function ProjectsRoute() {
         }
 
         const created = await createProject(api, {
-          type: "personal",
+          type: "team",
           name,
           description,
         });

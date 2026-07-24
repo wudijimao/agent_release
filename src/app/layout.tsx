@@ -4,8 +4,13 @@ import { AppProviders } from "@/providers/AppProviders";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BioAgent",
+  title: "Helia",
   description: "科研实验 AI 助手",
+  icons: {
+    icon: "/helia-logo.png",
+    shortcut: "/helia-logo.png",
+    apple: "/helia-logo.png",
+  },
 };
 
 export default function RootLayout({

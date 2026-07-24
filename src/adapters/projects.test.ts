@@ -15,7 +15,9 @@ import {
   createProjectConversation,
   loadProjectDetail,
   loadProjectsBootstrap,
+  mapProjectChatWorkspace,
   mapProjectDetail,
+  mapProjectMemberDirectory,
   mapProjectMembers,
   mapProjectsToList,
   mapProjectsToShell,
@@ -198,6 +200,27 @@ test("project detail mapper exposes only high-fidelity view models", () => {
       { id: "chat-1", title: "新对话", date: "2026-07-21T09:00:00.000Z" },
     ],
   });
+  assert.deepEqual(mapProjectChatWorkspace(detail), {
+    projectName: "肿瘤免疫项目",
+    knowledgeDocs: [
+      {
+        id: "knowledge-1",
+        title: "免疫检查点综述",
+        tags: ["知识", "文献解读"],
+      },
+    ],
+    experiments: [],
+    previewItems: [
+      {
+        key: "knowledge:knowledge-1",
+        type: "knowledge",
+        title: "免疫检查点综述",
+        subtitle: "肿瘤免疫项目 · 知识 · 文献解读",
+        content:
+          "文件标题：免疫检查点综述\n分类：知识 / 文献解读\n更新时间：2026-07-21T09:00:00.000Z",
+      },
+    ],
+  });
   assert.deepEqual(mapProjectMembers(detail.members), [
     {
       id: "user-1",
@@ -209,12 +232,32 @@ test("project detail mapper exposes only high-fidelity view models", () => {
   ]);
   assert.equal(permissionToApi("浏览"), "viewer");
   assert.equal(permissionToApi("编辑"), "member");
+  assert.deepEqual(
+    mapProjectMemberDirectory([
+      {
+        userId: "user-2",
+        user: { name: "周妍", email: "zhouyan@example.com" },
+      },
+    ]),
+    [
+      {
+        id: "user-2",
+        name: "周妍",
+        email: "zhouyan@example.com",
+      },
+    ],
+  );
 });
 
 test("projects view mapper keeps server counts and derives chat counts", () => {
   const projects = [
     project(),
-    project({ id: "project-2", description: "", knowledgeCount: 0 }),
+    project({
+      id: "project-2",
+      description: "",
+      knowledgeCount: 0,
+      isDefaultUnassigned: true,
+    }),
   ];
   const chats = [
     { id: "chat-1", title: "A", date: "今天", count: 1, projectId: "project-1" },
@@ -223,8 +266,16 @@ test("projects view mapper keeps server counts and derives chat counts", () => {
   ];
 
   assert.deepEqual(mapProjectsToShell(projects), [
-    { id: "project-1", name: "肿瘤免疫项目" },
-    { id: "project-2", name: "肿瘤免疫项目" },
+    {
+      id: "project-1",
+      name: "肿瘤免疫项目",
+      selectable: true,
+    },
+    {
+      id: "project-2",
+      name: "肿瘤免疫项目",
+      selectable: false,
+    },
   ]);
   assert.deepEqual(mapProjectsToList(projects, chats), [
     {

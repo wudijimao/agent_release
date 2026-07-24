@@ -15,6 +15,9 @@ export interface InputAreaProps {
     leadingControls?: React.ReactNode;
     skillOptions?: readonly ChatSkillOption[];
     fileOptions?: readonly ChatFileOption[];
+    uploadAccept?: string;
+    validateUploadFile?: (file: File) => string | null;
+    onUploadValidationError?: (message: string) => void;
 }
 export interface ChatSkillOption {
     id: string;
@@ -48,7 +51,7 @@ export declare const insertFileReference: (text: string, start: number, end: num
 };
 export declare const CHAT_FILE_OPTIONS: readonly ChatFileOption[];
 export declare const CHAT_RECENT_FILE_OPTIONS: readonly ChatFileOption[];
-export declare const InputArea: ({ onSend, disabled, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, }: InputAreaProps) => React.JSX.Element;
-declare const _default: React.MemoExoticComponent<({ onSend, disabled, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, }: InputAreaProps) => React.JSX.Element>;
+export declare const InputArea: ({ onSend, disabled, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element;
+declare const _default: React.MemoExoticComponent<({ onSend, disabled, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element>;
 export default _default;
 //# sourceMappingURL=InputArea.d.ts.map

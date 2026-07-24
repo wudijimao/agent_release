@@ -123,7 +123,7 @@ export function ChatConversationViewport({
             );
           })}
 
-          {isTyping && !(statusPhase === 'generating' && hasReceivedAssistantChunk) && (
+          {isTyping && !hasReceivedAssistantChunk && (
             <div className="flex w-full justify-center px-2">
               <div className="flex w-full max-w-[860px] justify-start px-1 md:px-2">
                 <ThinkingIndicator phase={statusPhase} searchSteps={[...searchSteps]} />

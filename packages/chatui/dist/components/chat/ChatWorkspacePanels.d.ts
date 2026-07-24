@@ -31,6 +31,7 @@ export interface ChatProjectExperimentItemViewModel {
 export interface ChatProjectFilesPanelProps {
     projectName?: string;
     searchQuery: string;
+    error?: string;
     knowledgeDocs: readonly ChatProjectKnowledgeItemViewModel[];
     experiments: readonly ChatProjectExperimentItemViewModel[];
     activePreviewKey: string | null;
@@ -39,5 +40,5 @@ export interface ChatProjectFilesPanelProps {
     onOpenExperiment(id: string): void;
     onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
-export declare function ChatProjectFilesPanel({ projectName, searchQuery, knowledgeDocs, experiments, activePreviewKey, onSearchQueryChange, onOpenKnowledge, onOpenExperiment, onResizeStart, }: ChatProjectFilesPanelProps): import("react").JSX.Element;
+export declare function ChatProjectFilesPanel({ projectName, searchQuery, error, knowledgeDocs, experiments, activePreviewKey, onSearchQueryChange, onOpenKnowledge, onOpenExperiment, onResizeStart, }: ChatProjectFilesPanelProps): import("react").JSX.Element;
 //# sourceMappingURL=ChatWorkspacePanels.d.ts.map

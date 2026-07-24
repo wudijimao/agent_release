@@ -1,6 +1,6 @@
 import type React from 'react';
 
-export type BaseToggleSize = 'small' | 'medium';
+export type BaseToggleSize = 'small' | 'regular' | 'medium';
 
 export interface BaseToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> {
   checked?: boolean;

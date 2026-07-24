@@ -13,7 +13,6 @@ import {
   BaseTable,
   BaseUpload,
   AssistantActions,
-  ChatAttachmentManager,
   InputArea,
   MessageItem,
   MessageList,
@@ -25,6 +24,7 @@ import {
   type ChatMessage,
   type ChatSkillOption,
 } from "..";
+import logoUrl from "../../../../src/assets/deptrace-logo.png";
 import { DesignSystemReference } from "./DesignSystemReference";
 
 interface ShowcaseSectionProps {
@@ -88,6 +88,12 @@ const demoUserMessage: ChatMessage = {
   content: "请帮我总结这份实验记录。",
   references: [{ id: "literature", type: "skill", label: "文献检索" }],
   attachments: [
+    {
+      id: "attachment-image",
+      name: "实验图片.png",
+      mimeType: "image/png",
+      previewUrl: logoUrl,
+    },
     { id: "attachment-1", name: "实验记录.md", mimeType: "text/markdown" },
   ],
 };
@@ -266,23 +272,6 @@ export function ComponentShowcase() {
   const [assistantFeedback, setAssistantFeedback] =
     useState<AssistantFeedback>();
   const [chatEvent, setChatEvent] = useState("等待交互");
-  const [managedAttachments, setManagedAttachments] = useState([
-    {
-      id: "managed-1",
-      name: "实验记录.md",
-      mimeType: "text/markdown",
-      fileSize: 18432,
-      contextEnabled: true,
-    },
-    {
-      id: "managed-2",
-      name: "测序结果汇总.xlsx",
-      mimeType:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      fileSize: 284672,
-      contextEnabled: false,
-    },
-  ]);
 
   const tableData = useMemo<TableRow[]>(
     () => [
@@ -799,11 +788,22 @@ export function ComponentShowcase() {
           <div className="space-y-5">
             <ThinkingIndicator phase="thinking" />
             <ThinkingIndicator
+              phase="analyzing"
+              searchSteps={[
+                { type: "tool", label: "分析任务和上下文" },
+              ]}
+            />
+            <ThinkingIndicator
               phase="searching"
               searchSteps={[
                 { type: "knowledge", label: "检索项目知识库" },
                 { type: "web", label: "查询最新研究资料" },
-                { type: "tool", label: "分析实验数据" },
+              ]}
+            />
+            <ThinkingIndicator
+              phase="executing"
+              searchSteps={[
+                { type: "tool", label: "执行实验数据分析工具" },
               ]}
             />
             <ThinkingIndicator phase="generating" />
@@ -834,35 +834,6 @@ export function ComponentShowcase() {
               feedback={assistantFeedback}
             />
           </div>
-        </ShowcaseSection>
-
-        <ShowcaseSection title="📎 ChatAttachmentManager - 会话附件管理">
-          <div className="ml-auto h-[520px] w-full max-w-[360px] overflow-hidden rounded-xl border border-shellFrameBorder bg-white">
-            <ChatAttachmentManager
-              attachments={managedAttachments}
-              onToggleContext={(target, enabled) => {
-                setManagedAttachments((items) =>
-                  items.map((item) =>
-                    item.id === target.id
-                      ? { ...item, contextEnabled: enabled }
-                      : item,
-                  ),
-                );
-                setChatEvent(
-                  `${enabled ? "启用" : "停用"}附件上下文：${target.name}`,
-                );
-              }}
-              onDelete={(target) => {
-                setManagedAttachments((items) =>
-                  items.filter((item) => item.id !== target.id),
-                );
-                setChatEvent(`删除附件：${target.name}`);
-              }}
-            />
-          </div>
-          <p className="mt-4 text-center text-sm text-secondaryText">
-            {chatEvent}
-          </p>
         </ShowcaseSection>
 
         <ShowcaseSection title="📚 MessageList - 消息列表组件">

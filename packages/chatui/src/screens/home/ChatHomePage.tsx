@@ -18,6 +18,9 @@ export interface ChatHomePageProps {
   isSidebarOpen?: boolean;
   skillOptions?: readonly ChatSkillOption[];
   fileOptions?: readonly ChatFileOption[];
+  uploadAccept?: string;
+  validateUploadFile?: (file: File) => string | null;
+  onUploadValidationError?: (message: string) => void;
   onSelectProject(projectId: string | null): void;
   onCreateProject?(name: string): void;
   onOpenSidebar?(): void;
@@ -32,6 +35,9 @@ export default function ChatHomePage({
   isSidebarOpen = true,
   skillOptions,
   fileOptions,
+  uploadAccept,
+  validateUploadFile,
+  onUploadValidationError,
   onSelectProject,
   onCreateProject,
   onOpenSidebar,
@@ -167,6 +173,9 @@ export default function ChatHomePage({
               disabled={disabled}
               skillOptions={skillOptions}
               fileOptions={fileOptions}
+              uploadAccept={uploadAccept}
+              validateUploadFile={validateUploadFile}
+              onUploadValidationError={onUploadValidationError}
               leadingControls={(
                 <BaseActionMenu
                   open={showProjectDropdown}
