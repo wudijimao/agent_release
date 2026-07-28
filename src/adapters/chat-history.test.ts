@@ -82,6 +82,33 @@ test("chat history adapter sorts newest sessions first and maps empty titles", a
   assert.equal(chats[1]?.date, "昨天 16:40");
 });
 
+test("task sessions preserve their task identity for the shared sidebar", () => {
+  assert.deepEqual(
+    mapChatSessionToAppShell(
+      {
+        id: "task-session-1",
+        title: "每周工作总结",
+        scene: "scheduled_task",
+        sessionKind: "task",
+        sourceTaskId: "task-1",
+        createdAt: "2026-07-16T01:00:00+08:00",
+        updatedAt: "2026-07-16T10:25:00+08:00",
+      },
+      now,
+    ),
+    {
+      id: "task-session-1",
+      title: "每周工作总结",
+      date: "今天 10:25",
+      count: 0,
+      updatedAt: "2026-07-16T10:25:00+08:00",
+      isTaskConversation: true,
+      source: "task",
+      taskId: "task-1",
+    },
+  );
+});
+
 test("touching an existing chat moves it to the newest local position", () => {
   const chats = [
     {

@@ -124,6 +124,7 @@ export interface ProjectTaskSummary {
   prompt?: string;
   scheduleKind: string;
   scheduleStartAt?: string | null;
+  scheduleEndAt?: string | null;
   nextRunAt?: string | null;
   lastRunAt?: string | null;
   lastRunStatus?: string | null;

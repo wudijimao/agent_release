@@ -10,3 +10,4 @@ export { ForgotPasswordPageFixture } from './ForgotPasswordPageFixture';
 export { RegisterPageFixture } from './RegisterPageFixture';
 export { RichMessageFixture } from './RichMessageFixture';
 export { SkillPageFixture } from './SkillPageFixture';
+export { ProjectDocumentEditorFixture } from './ProjectDocumentEditorFixture';

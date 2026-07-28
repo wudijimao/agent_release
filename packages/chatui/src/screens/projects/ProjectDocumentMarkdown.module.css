@@ -1,0 +1,350 @@
+.preview,
+.editor :global(.milkdown .ProseMirror) {
+  @apply max-w-none text-base leading-7 text-primaryText;
+}
+
+.preview > :first-child,
+.editor :global(.milkdown .ProseMirror > :first-child) {
+  margin-top: 0;
+}
+
+.preview > :last-child,
+.editor :global(.milkdown .ProseMirror > :last-child) {
+  margin-bottom: 0;
+}
+
+.preview p,
+.editor :global(.milkdown .ProseMirror p) {
+  @apply my-3 p-0 text-sm leading-7 text-primaryText;
+}
+
+.preview h1,
+.editor :global(.milkdown .ProseMirror h1) {
+  @apply mb-8 mt-0 p-0 text-[36px] font-extrabold leading-[40px] tracking-[-0.01em] text-primaryText;
+}
+
+.preview h2,
+.preview h3,
+.editor :global(.milkdown .ProseMirror h2),
+.editor :global(.milkdown .ProseMirror h3) {
+  @apply mb-2 mt-4 p-0 text-base font-semibold leading-6 tracking-[-0.01em] text-primaryText;
+}
+
+.preview h4,
+.editor :global(.milkdown .ProseMirror h4) {
+  @apply mb-2 mt-6 p-0 text-base font-semibold leading-6 tracking-[-0.01em] text-primaryText;
+}
+
+.preview h5,
+.preview h6,
+.editor :global(.milkdown .ProseMirror h5),
+.editor :global(.milkdown .ProseMirror h6) {
+  @apply mb-2 mt-4 p-0 text-sm font-semibold leading-6 tracking-[-0.01em] text-primaryText;
+}
+
+.preview strong,
+.editor :global(.milkdown .ProseMirror strong) {
+  @apply font-semibold text-primaryText;
+}
+
+.preview em,
+.editor :global(.milkdown .ProseMirror em) {
+  font-style: italic;
+}
+
+.preview del,
+.editor :global(.milkdown .ProseMirror del) {
+  @apply text-secondaryText;
+  text-decoration: line-through;
+}
+
+.preview ul,
+.preview ol,
+.editor :global(.milkdown .ProseMirror ul),
+.editor :global(.milkdown .ProseMirror ol) {
+  @apply my-5 pl-6;
+  list-style-position: outside;
+}
+
+.preview ul,
+.editor :global(.milkdown .ProseMirror ul) {
+  list-style-type: disc;
+}
+
+.preview ul:not(:global(.contains-task-list)) {
+  list-style: none;
+}
+
+.preview ul:not(:global(.contains-task-list)) > li {
+  position: relative;
+}
+
+.preview ul:not(:global(.contains-task-list)) > li::before {
+  position: absolute;
+  top: 11.5px;
+  left: -14.5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--chatui-color-text-secondary);
+  content: '';
+}
+
+.preview ol,
+.editor :global(.milkdown .ProseMirror ol) {
+  list-style: none;
+}
+
+.preview ol > li {
+  position: relative;
+}
+
+.preview ol > li::before {
+  position: absolute;
+  right: 100%;
+  width: 24px;
+  padding-right: 6px;
+  color: var(--chatui-color-text-secondary);
+  content: counter(list-item) '.';
+  font-size: 14px;
+  line-height: 28px;
+  text-align: right;
+}
+
+.editor :global(.milkdown .ProseMirror ul),
+.editor :global(.milkdown .ProseMirror ol) {
+  @apply pl-0;
+}
+
+.editor :global(.milkdown .milkdown-list-item-block > .list-item) {
+  gap: 0;
+}
+
+.editor :global(.milkdown .milkdown-list-item-block > .list-item > .label-wrapper) {
+  @apply h-7 w-6 shrink-0 text-secondaryText;
+}
+
+.editor :global(.milkdown .milkdown-list-item-block > .list-item > .label-wrapper .label) {
+  @apply flex h-7 w-6 items-center justify-end p-0 text-sm leading-7;
+}
+
+.editor
+  :global(
+    .milkdown
+      .milkdown-list-item-block
+      > .list-item
+      > .label-wrapper
+      .label.bullet
+  ) {
+  @apply justify-center;
+}
+
+.editor
+  :global(
+    .milkdown
+      .milkdown-list-item-block
+      > .list-item
+      > .label-wrapper
+      .label.bullet::before
+  ) {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--chatui-color-text-secondary);
+  content: '';
+}
+
+.editor
+  :global(
+    .milkdown
+      .milkdown-list-item-block
+      > .list-item
+      > .label-wrapper
+      .label.bullet
+      svg
+  ) {
+  display: none;
+}
+
+.editor :global(.milkdown .milkdown-list-item-block > .list-item > .label-wrapper .ordered) {
+  @apply pr-1.5 text-sm leading-7 text-secondaryText;
+}
+
+.editor :global(.milkdown .milkdown-list-item-block > .list-item > .label-wrapper svg) {
+  @apply block h-6 w-6 shrink-0 fill-current text-secondaryText;
+}
+
+.editor
+  :global(
+    .milkdown
+      .milkdown-list-item-block
+      > .list-item
+      > .children
+      > .content-dom
+      > p
+  ) {
+  @apply my-0;
+}
+
+.preview ul ul,
+.preview ul ol,
+.preview ol ul,
+.preview ol ol,
+.editor :global(.milkdown .ProseMirror ul ul),
+.editor :global(.milkdown .ProseMirror ul ol),
+.editor :global(.milkdown .ProseMirror ol ul),
+.editor :global(.milkdown .ProseMirror ol ol) {
+  @apply my-2;
+}
+
+.editor :global(.milkdown .ProseMirror ul ul),
+.editor :global(.milkdown .ProseMirror ul ol),
+.editor :global(.milkdown .ProseMirror ol ul),
+.editor :global(.milkdown .ProseMirror ol ol) {
+  @apply ml-6;
+}
+
+.preview li,
+.editor :global(.milkdown .ProseMirror li) {
+  @apply my-0 pl-0 text-sm leading-7 text-primaryText;
+}
+
+.preview li::marker,
+.editor :global(.milkdown .ProseMirror li::marker) {
+  color: var(--chatui-color-text-secondary);
+}
+
+.preview li > p,
+.editor :global(.milkdown .ProseMirror li > p) {
+  @apply my-0;
+}
+
+.preview :global(.contains-task-list),
+.editor :global(.milkdown .ProseMirror .contains-task-list) {
+  @apply pl-0;
+  list-style: none;
+}
+
+.preview :global(.task-list-item),
+.editor :global(.milkdown .ProseMirror .task-list-item) {
+  @apply pl-0;
+  list-style: none;
+}
+
+.preview input[type='checkbox'],
+.editor :global(.milkdown .ProseMirror input[type='checkbox']) {
+  @apply mr-2 h-4 w-4 align-[-2px] accent-primary;
+}
+
+.preview blockquote,
+.editor :global(.milkdown .ProseMirror blockquote) {
+  @apply my-8 border-0 border-l-2 border-lineSubtle py-0 pl-3 font-medium italic text-secondaryText;
+  quotes: '\201C' '\201D' '\2018' '\2019';
+}
+
+.preview blockquote p,
+.editor :global(.milkdown .ProseMirror blockquote p) {
+  @apply text-secondaryText;
+}
+
+.preview blockquote p:first-of-type::before,
+.editor :global(.milkdown .ProseMirror blockquote p:first-of-type::before) {
+  content: open-quote;
+}
+
+.preview blockquote p:last-of-type::after,
+.editor :global(.milkdown .ProseMirror blockquote p:last-of-type::after) {
+  content: close-quote;
+}
+
+.preview a,
+.editor :global(.milkdown .ProseMirror a) {
+  @apply font-medium text-primary no-underline hover:underline;
+}
+
+.preview code,
+.editor :global(.milkdown .ProseMirror code) {
+  @apply rounded-none bg-transparent p-0 font-mono text-[14px] font-semibold leading-[inherit] text-primaryText;
+}
+
+.preview code::before,
+.preview code::after,
+.editor :global(.milkdown .ProseMirror code::before),
+.editor :global(.milkdown .ProseMirror code::after) {
+  content: none;
+}
+
+.preview pre,
+.editor :global(.milkdown .ProseMirror pre) {
+  @apply my-6 overflow-x-auto rounded-[6px] border-0 bg-chatFloatingSurface px-4 py-3 text-sm font-normal leading-6 text-white;
+}
+
+.preview pre code,
+.editor :global(.milkdown .ProseMirror pre code) {
+  @apply border-0 bg-transparent p-0 font-mono text-sm font-normal leading-6 text-inherit;
+}
+
+.preview hr,
+.editor :global(.milkdown .ProseMirror hr) {
+  @apply my-5 h-px border-0 bg-lineSubtle p-0;
+}
+
+.preview table {
+  @apply my-8 w-full table-auto border-collapse text-sm leading-6;
+}
+
+.editor :global(.milkdown .milkdown-table-block) {
+  @apply my-8 overflow-x-auto;
+}
+
+.editor :global(.milkdown .milkdown-table-block table) {
+  @apply my-0 w-full table-auto border-collapse text-sm leading-6;
+}
+
+.preview th,
+.preview td,
+.editor :global(.milkdown .milkdown-table-block th),
+.editor :global(.milkdown .milkdown-table-block td) {
+  @apply border-0 px-2 py-2 text-left text-primaryText;
+}
+
+.preview th p,
+.preview td p,
+.editor :global(.milkdown .milkdown-table-block th p),
+.editor :global(.milkdown .milkdown-table-block td p) {
+  @apply my-0 text-sm leading-6;
+}
+
+.preview th,
+.editor :global(.milkdown .milkdown-table-block th) {
+  @apply border-b border-lineSubtle bg-transparent pb-2 align-bottom font-semibold;
+}
+
+.preview tbody tr,
+.editor :global(.milkdown .milkdown-table-block tbody tr) {
+  @apply border-b border-lineSubtle;
+}
+
+.preview tbody tr:last-child,
+.editor :global(.milkdown .milkdown-table-block tbody tr:last-child) {
+  @apply border-b-0;
+}
+
+.preview th:first-child,
+.preview td:first-child,
+.editor :global(.milkdown .milkdown-table-block th:first-child),
+.editor :global(.milkdown .milkdown-table-block td:first-child) {
+  @apply pl-0;
+}
+
+.preview th:last-child,
+.preview td:last-child,
+.editor :global(.milkdown .milkdown-table-block th:last-child),
+.editor :global(.milkdown .milkdown-table-block td:last-child) {
+  @apply pr-0;
+}
+
+.preview img,
+.editor :global(.milkdown .ProseMirror img) {
+  @apply my-8 h-auto max-w-full;
+}

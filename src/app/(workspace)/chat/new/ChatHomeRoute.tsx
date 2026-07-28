@@ -36,6 +36,12 @@ import { streamChat } from "@/lib/api";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
+const OLD_WEB_HOME_GUIDE_PROMPTS = [
+  "最近有哪些 CRISPR 新文献？",
+  "DpnI 还有库存吗？",
+  "帮我查一下 lab 里的 KRAS 质粒位置",
+] as const;
+
 import { useChatShell } from "../../WorkspaceShell";
 import { useChatResourceCatalog } from "../useChatResourceCatalog";
 
@@ -64,15 +70,8 @@ export function ChatHomeRoute() {
     [projects],
   );
   const streamControllerRef = useRef<AbortController | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => () => streamControllerRef.current?.abort(), []);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
-  }, [isStreaming, streamState?.messages, streamState?.searchSteps]);
 
   const runNewChat = useCallback(
     async (payload: InputSendPayload) => {
@@ -275,7 +274,6 @@ export function ChatHomeRoute() {
                 statusPhase={streamState.statusPhase}
                 searchSteps={streamState.searchSteps}
                 hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
-                scrollContainerRef={scrollContainerRef}
                 getMessageKey={(_message: ChatMessage, index: number) =>
                   `new-chat-${index}`
                 }
@@ -327,6 +325,7 @@ export function ChatHomeRoute() {
             onSend={handleSend}
             skillOptions={resourceCatalog.skills}
             fileOptions={resourceCatalog.files}
+            quickPrompts={OLD_WEB_HOME_GUIDE_PROMPTS}
             uploadAccept={CHAT_ATTACHMENT_ACCEPT}
             validateUploadFile={validateChatAttachmentFile}
             onUploadValidationError={handleUploadValidationError}

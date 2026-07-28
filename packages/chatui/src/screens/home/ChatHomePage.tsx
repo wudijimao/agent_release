@@ -18,6 +18,7 @@ export interface ChatHomePageProps {
   isSidebarOpen?: boolean;
   skillOptions?: readonly ChatSkillOption[];
   fileOptions?: readonly ChatFileOption[];
+  quickPrompts?: readonly string[];
   uploadAccept?: string;
   validateUploadFile?: (file: File) => string | null;
   onUploadValidationError?: (message: string) => void;
@@ -35,6 +36,7 @@ export default function ChatHomePage({
   isSidebarOpen = true,
   skillOptions,
   fileOptions,
+  quickPrompts,
   uploadAccept,
   validateUploadFile,
   onUploadValidationError,
@@ -205,7 +207,7 @@ export default function ChatHomePage({
             />
           </div>
 
-          <QuickPrompts onSelect={onSend} />
+          <QuickPrompts onSelect={onSend} prompts={quickPrompts} />
     </div>
   );
 

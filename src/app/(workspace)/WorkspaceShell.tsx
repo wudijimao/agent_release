@@ -27,11 +27,20 @@ import {
   touchAppShellChat,
 } from "@/adapters/chat-history";
 import {
+  loadAiUsageReminder,
+  shouldShowAiUsageReminder,
+} from "@/adapters/ai-usage";
+import {
   loadChatSession,
   type ChatSessionViewModel,
 } from "@/adapters/chat-session";
 import { loadProjectsBootstrap, mapProjectsToShell } from "@/adapters/projects";
+import {
+  canAccessWorkspacePath,
+  getWorkspaceAccess,
+} from "@/adapters/workspace-access";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
+import { useLab } from "@/providers/LabProvider";
 
 interface OpenChatOptions {
   replace?: boolean;
@@ -78,12 +87,19 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const navigation = useNavigation();
   const api = useApiClient();
   const { status, user, error, refreshSession, signOut } = useAuth();
+  const { activeLabRole } = useLab();
+  const workspaceAccess = useMemo(
+    () => getWorkspaceAccess(activeLabRole),
+    [activeLabRole],
+  );
+  const canAccessCurrentPath = canAccessWorkspacePath(pathname, workspaceAccess);
   const [chats, setChats] = useState<AppShellChat[]>([]);
   const [projects, setProjects] = useState<AppShellProject[]>([]);
   const [historyStatus, setHistoryStatus] = useState<"loading" | "ready">(
     "loading",
   );
   const [notice, setNotice] = useState("");
+  const [aiUsageWarningActive, setAiUsageWarningActive] = useState(false);
   const sessionCacheRef = useRef(new Map<string, ChatSessionViewModel>());
 
   const refreshChats = useCallback(async () => {
@@ -132,7 +148,9 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   }, [api, navigation, pathname, status]);
 
   useEffect(() => {
-    if (status !== "authenticated") return;
+    if (status !== "authenticated" || !workspaceAccess.canViewAiUsage) {
+      return;
+    }
 
     let cancelled = false;
     loadProjectsBootstrap(api)
@@ -141,6 +159,31 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       })
       .catch(() => {
         if (!cancelled) setProjects([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [api, status, workspaceAccess.canViewAiUsage]);
+
+  useEffect(() => {
+    if (status === "authenticated" && !canAccessCurrentPath) {
+      navigation.replace("/chat/new");
+    }
+  }, [canAccessCurrentPath, navigation, status]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+
+    let cancelled = false;
+    loadAiUsageReminder(api)
+      .then((summary) => {
+        if (!cancelled) {
+          setAiUsageWarningActive(shouldShowAiUsageReminder(summary));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setAiUsageWarningActive(false);
       });
 
     return () => {
@@ -250,7 +293,16 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     return <ShellStatus message="正在加载工作台…" />;
   }
 
+  if (!canAccessCurrentPath) {
+    return <ShellStatus message="正在返回工作台…" />;
+  }
+
   const handleNavigate = (href: string, options?: OpenChatOptions) => {
+    if (!canAccessWorkspacePath(href, workspaceAccess)) {
+      setNotice("当前账号无权访问该页面。");
+      return;
+    }
+
     if (href === "/chat/new") {
       if (options?.replace) navigation.replace(href);
       else navigation.push(href);
@@ -268,7 +320,13 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (href === "/members" || href === "/projects" || href === "/system-settings" || href === "/tools") {
+    if (
+      href === "/members" ||
+      href === "/projects" ||
+      href === "/system-settings" ||
+      href === "/tools" ||
+      href === "/ai-usage"
+    ) {
       navigation.push(href);
       return;
     }
@@ -283,6 +341,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         initialChats={chats}
         logoUrl="/helia-logo.png"
         user={shellUser}
+        aiUsageWarningActive={
+          workspaceAccess.canViewAiUsage && aiUsageWarningActive
+        }
+        canViewAiUsage={workspaceAccess.canViewAiUsage}
+        canManageMembers={workspaceAccess.canManageMembers}
         chatActions={{ rename: true, share: false, pin: true, delete: true }}
         onNavigate={handleNavigate}
         onLogout={() => void signOut()}

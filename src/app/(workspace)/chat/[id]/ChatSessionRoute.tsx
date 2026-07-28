@@ -6,6 +6,7 @@ import {
   ChatConversationViewport,
   ChatPreviewPanel,
   ChatProjectFilesPanel,
+  ChatTimelineNavigation,
   ChatWorkspaceFrame,
   ChatWorkspaceHeader,
   ChatWorkspaceHeaderAction,
@@ -14,6 +15,7 @@ import {
   useNavigation,
   type ChatMessage,
   type ChatPreviewItemViewModel,
+  type ChatTimelineItem,
   type InputSendPayload,
 } from "@bioagent/chatui";
 import { Folder } from "lucide-react";
@@ -96,6 +98,15 @@ const PANEL_MIN_WIDTH = 200;
 const PANEL_MAX_WIDTH = 440;
 const DEFAULT_PROJECT_PANEL_WIDTH = 260;
 const DEFAULT_PREVIEW_PANEL_WIDTH = 320;
+const CHAT_TIMELINE_MIN_ITEMS = 5;
+
+function normalizeTimelinePreview(content: string) {
+  const normalized = content.replace(/\s+/g, " ").trim();
+  if (!normalized) return "空白消息";
+  return normalized.length > 56
+    ? `${normalized.slice(0, 56)}...`
+    : normalized;
+}
 
 export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const navigation = useNavigation();
@@ -152,9 +163,97 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const workspaceContainerRef = useRef<HTMLDivElement | null>(null);
   const streamControllerRef = useRef<AbortController | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const messageElementRefs = useRef<(HTMLDivElement | null)[]>([]);
   const positionedSessionIdRef = useRef<string | null>(null);
   const historyLoadedSessionIdRef = useRef<string | null>(null);
   const persistedMessageIdsRef = useRef<string[]>([]);
+  const [timelineSelection, setTimelineSelection] = useState<{
+    sessionId: string;
+    messageIndex: number;
+  } | null>(null);
+
+  const chatTimelineItems = useMemo<ChatTimelineItem[]>(
+    () =>
+      streamState.messages.reduce<ChatTimelineItem[]>(
+        (items, message, messageIndex) => {
+          if (message.role !== "user") return items;
+          items.push({
+            messageIndex,
+            preview: normalizeTimelinePreview(message.content),
+          });
+          return items;
+        },
+        [],
+      ),
+    [streamState.messages],
+  );
+  const activeTimelineMessageIndex = useMemo(() => {
+    if (
+      timelineSelection?.sessionId === sessionId
+      && chatTimelineItems.some(
+        (item) => item.messageIndex === timelineSelection.messageIndex,
+      )
+    ) {
+      return timelineSelection.messageIndex;
+    }
+    return chatTimelineItems.at(-1)?.messageIndex ?? 0;
+  }, [chatTimelineItems, sessionId, timelineSelection]);
+  const updateTimelineSelection = useCallback(
+    (messageIndex: number) => {
+      setTimelineSelection((current) =>
+        current?.sessionId === sessionId
+        && current.messageIndex === messageIndex
+          ? current
+          : { sessionId, messageIndex },
+      );
+    },
+    [sessionId],
+  );
+
+  const syncActiveTimelineByScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container || chatTimelineItems.length === 0) return;
+
+    const firstMessageIndex = chatTimelineItems[0].messageIndex;
+    const lastMessageIndex =
+      chatTimelineItems[chatTimelineItems.length - 1].messageIndex;
+    const distanceToBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    if (container.scrollTop <= 2) {
+      updateTimelineSelection(firstMessageIndex);
+      return;
+    }
+
+    if (distanceToBottom <= 2) {
+      updateTimelineSelection(lastMessageIndex);
+      return;
+    }
+
+    const viewportAnchor =
+      container.scrollTop + Math.min(container.clientHeight * 0.35, 220);
+    let nextActiveMessageIndex = firstMessageIndex;
+
+    chatTimelineItems.forEach((item) => {
+      const anchorElement = messageElementRefs.current[item.messageIndex];
+      if (anchorElement && anchorElement.offsetTop <= viewportAnchor) {
+        nextActiveMessageIndex = item.messageIndex;
+      }
+    });
+    updateTimelineSelection(nextActiveMessageIndex);
+  }, [chatTimelineItems, updateTimelineSelection]);
+
+  const scrollToTimelineMessage = useCallback((messageIndex: number) => {
+    const container = scrollContainerRef.current;
+    const anchorElement = messageElementRefs.current[messageIndex];
+    if (!container || !anchorElement) return;
+
+    updateTimelineSelection(messageIndex);
+    container.scrollTo({
+      top: Math.max(anchorElement.offsetTop - 88, 0),
+      behavior: "smooth",
+    });
+  }, [updateTimelineSelection]);
 
   const loadPage = useCallback(
     async (signal?: AbortSignal) => {
@@ -268,8 +367,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       };
     }
 
-    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
-  }, [isStreaming, sessionId, streamState.messages, streamState.searchSteps]);
+  }, [sessionId, streamState.messages.length]);
+
+  useEffect(() => {
+    messageElementRefs.current.length = streamState.messages.length;
+  }, [streamState.messages.length]);
 
   const runStream = useCallback(
     async (payload: InputSendPayload, baseMessages = streamState.messages) => {
@@ -654,10 +756,22 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
           contentMaxWidth={showPreviewPanel ? "100%" : 800}
           scrollContainerRef={scrollContainerRef}
+          onScroll={syncActiveTimelineByScroll}
+          onMessageElement={(index, element) => {
+            messageElementRefs.current[index] = element;
+          }}
           getMessageKey={(_message: ChatMessage, index: number) =>
             `${sessionId}-${index}`
           }
         />
+
+        {chatTimelineItems.length >= CHAT_TIMELINE_MIN_ITEMS && (
+          <ChatTimelineNavigation
+            items={chatTimelineItems}
+            activeMessageIndex={activeTimelineMessageIndex}
+            onSelect={scrollToTimelineMessage}
+          />
+        )}
       </div>
 
       <ChatComposerDock maxWidth={showPreviewPanel ? "100%" : 840}>

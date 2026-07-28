@@ -13,6 +13,12 @@ export type ScheduledTaskRunStatus =
   | 'skipped'
   | 'failed';
 export type ScheduledTaskTriggerType = 'schedule' | 'manual';
+export type ScheduledTaskScope = 'personal' | 'project' | 'lab';
+export type ScheduledTaskType =
+  | 'project_progress'
+  | 'weekly_summary'
+  | 'literature_tracking'
+  | 'custom';
 
 export interface ScheduledTaskApiScheduleConfig extends Record<string, unknown> {
   time?: string;
@@ -27,11 +33,18 @@ export interface ScheduledTaskDto {
   ownerUserId: string;
   name: string;
   description: string | null;
+  projectId: string | null;
+  taskType: ScheduledTaskType;
+  templateKey: string | null;
+  mainSessionId: string | null;
+  scope: ScheduledTaskScope;
   status: ScheduledTaskStatus;
   prompt: string;
   timezone: string;
   scheduleKind: ScheduledTaskScheduleKind;
   scheduleConfig: ScheduledTaskApiScheduleConfig;
+  scheduleStartAt: string | null;
+  scheduleEndAt: string | null;
   nextRunAt: string | null;
   lastRunAt: string | null;
   lastRunStatus: ScheduledTaskRunStatus | null;
@@ -41,6 +54,8 @@ export interface ScheduledTaskDto {
   targetPath: string;
   titleTemplate: string | null;
   contextRefs: unknown[];
+  sourceConfig: Record<string, unknown>;
+  publishPolicy: Record<string, unknown>;
   toolPolicy: Record<string, unknown>;
   notificationConfig: Record<string, unknown>;
   createdAt: string;
@@ -51,15 +66,23 @@ export interface ScheduledTaskDto {
 export interface ScheduledTaskCreateRequest {
   name: string;
   description?: string;
+  projectId?: string | null;
+  taskType?: ScheduledTaskType;
+  templateKey?: string | null;
+  scope?: ScheduledTaskScope;
   prompt: string;
   timezone?: string;
   scheduleKind: ScheduledTaskScheduleKind;
+  scheduleStartAt?: string | null;
+  scheduleEndAt?: string | null;
   scheduleConfig: ScheduledTaskApiScheduleConfig;
   targetParentNodeId?: string | null;
   targetWikiNodeId?: string | null;
   targetPath?: string;
   titleTemplate?: string;
   contextRefs?: unknown[];
+  sourceConfig?: Record<string, unknown>;
+  publishPolicy?: Record<string, unknown>;
   toolPolicy?: Record<string, unknown>;
   notificationConfig?: Record<string, unknown>;
 }

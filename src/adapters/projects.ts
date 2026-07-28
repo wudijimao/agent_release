@@ -241,6 +241,7 @@ export function mapProjectDetail(project: ProjectDetail): {
     const sectionLabel = KNOWLEDGE_SECTION_LABELS[item.section] || item.section;
     return {
       id: item.id,
+      kbNodeId: item.kbNodeId,
       title: item.title,
       summary: `${sectionLabel} · ${typeLabel}`,
       tags: [sectionLabel, typeLabel],

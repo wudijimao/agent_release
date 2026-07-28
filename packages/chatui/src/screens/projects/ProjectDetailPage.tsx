@@ -12,6 +12,7 @@ export interface ProjectDetailViewModel extends Record<string, unknown> {
 
 export interface ProjectDocumentViewModel extends Record<string, unknown> {
   id: string;
+  kbNodeId: string;
   title: string;
   summary: string;
   tags: string[];
@@ -38,6 +39,9 @@ export interface ProjectDetailPageProps {
   onCreateDocument?(): void;
   onCreateConversation?(): void;
   onImportDocuments(files: File[]): void | Promise<void>;
+  documentImportAccept?: string;
+  documentImportMaxSize?: number;
+  documentImportDescription?: React.ReactNode;
   onUpdateProjectName(name: string): void | Promise<void>;
   onUpdateProjectDescription(description: string): void | Promise<void>;
 }
@@ -88,6 +92,7 @@ export function ProjectDetailPage({
   project, documents, conversations, memberCount, isSidebarOpen, onOpenSidebar, onBackToProjects,
   onOpenMemberManagement, onOpenDocument, onOpenConversation, onCreateDocument, onCreateConversation,
   onImportDocuments, onUpdateProjectName, onUpdateProjectDescription,
+  documentImportAccept, documentImportMaxSize, documentImportDescription,
   showMemberManagement = true,
 }: ProjectDetailPageProps) {
   const [activeTab, setActiveTab] = useState<ProjectDetailTab>('documents');
@@ -214,7 +219,7 @@ export function ProjectDetailPage({
 
             {activeTab === 'documents' && <div className="mt-3"><div className="flex items-start justify-between gap-3"><div ref={tagFilterRef} className="flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200" style={{ maxHeight: isTagExpanded || !showTagToggle ? undefined : `${TAG_COLLAPSED_MAX_HEIGHT}px` }}>{tagOptions.map((tag) => <button key={tag} type="button" onClick={() => setSelectedTag(tag)} className={`h-7 rounded-full border px-3 text-xs transition-colors ${selectedTag === tag ? 'border-primary bg-primary-soft text-primary' : 'border-lineSubtle bg-white text-secondaryText hover:border-controlBorder'}`}>{tag === 'all' ? '全部' : tag}</button>)}</div>{showTagToggle && <button type="button" onClick={() => setIsTagExpanded((value) => !value)} className="shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText">{isTagExpanded ? '收起' : '展开'}</button>}</div></div>}
 
-            {activeTab === 'documents' ? filteredDocuments.length ? <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">{filteredDocuments.map((item) => <button key={item.id} type="button" onClick={() => onOpenDocument(item.id)} className="rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm"><h3 className="truncate text-base font-medium text-primaryText">{item.title}</h3><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-secondaryText">{item.summary}</p>{item.tags.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={`${item.id}-${tag}`} className="inline-flex items-center rounded-lg bg-projectTagSurface px-3 py-1 text-xs text-secondaryText">{tag}</span>)}</div>}</button>)}</div>
+            {activeTab === 'documents' ? filteredDocuments.length ? <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">{filteredDocuments.map((item) => <button key={item.id} type="button" onClick={() => onOpenDocument(item.kbNodeId)} className="rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm"><h3 className="truncate text-base font-medium text-primaryText">{item.title}</h3><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-secondaryText">{item.summary}</p>{item.tags.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={`${item.id}-${tag}`} className="inline-flex items-center rounded-lg bg-projectTagSurface px-3 py-1 text-xs text-secondaryText">{tag}</span>)}</div>}</button>)}</div>
               : <div className="mt-4 rounded-lg border border-dashed border-borderSoft"><BaseEmpty description="暂无匹配的文档" /></div>
               : filteredConversations.length ? <div className="mt-4 space-y-2">{filteredConversations.map((item) => <button key={item.id} type="button" onClick={() => onOpenConversation(item.id)} className="-ml-2 w-[calc(100%+0.5rem)] rounded-lg px-2 py-3 text-left transition-colors hover:bg-projectConversationHover"><div className="truncate text-sm font-medium text-primaryText">{item.title}</div><div className="mt-1 text-xs text-tertiaryText">{formatProjectConversationDate(item.date, item.id)}</div></button>)}</div>
               : <div className="mt-4 rounded-lg border border-dashed border-borderSoft"><BaseEmpty description="暂无匹配的历史对话" /></div>}
@@ -224,7 +229,7 @@ export function ProjectDetailPage({
 
       <BaseModal visible={showImportModal} title="导入文档" width={500} maskClosable={false} cancelText="取消" okText={importing ? '导入中…' : '导入'}
         onCancel={() => { if (!importing) { setShowImportModal(false); setSelectedFiles([]); setImportError(''); } }} onConfirm={() => void submitImport()} okButtonProps={{ disabled: importing }} bodyClassName="!px-6 !py-5">
-        <div className="space-y-4"><BaseDocumentUpload value={selectedFiles} maxCount={5} maxSize={20 * 1024 * 1024} disabled={importing} onChange={setSelectedFiles} onError={(error) => setImportError(error.message)} />{importError && <div role="alert" className="text-sm text-danger">{importError}</div>}</div>
+        <div className="space-y-4"><BaseDocumentUpload value={selectedFiles} accept={documentImportAccept} maxCount={5} maxSize={documentImportMaxSize ?? 20 * 1024 * 1024} uploadDescription={documentImportDescription} disabled={importing} onChange={setSelectedFiles} onError={(error) => setImportError(error.message)} />{importError && <div role="alert" className="text-sm text-danger">{importError}</div>}</div>
       </BaseModal>
     </div>
   );

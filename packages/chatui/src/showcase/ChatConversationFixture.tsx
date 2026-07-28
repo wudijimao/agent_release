@@ -41,18 +41,11 @@ export function ChatConversationFixture() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [isTyping, setIsTyping] = useState(false);
   const [currentPath, setCurrentPath] = useState('/chat/chat-fixture');
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const replyTimerRef = useRef<number>();
 
   useEffect(() => () => {
     if (replyTimerRef.current) window.clearTimeout(replyTimerRef.current);
   }, []);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-  }, [messages, isTyping]);
 
   const handleSend = (payload: InputSendPayload) => {
     if (isTyping || !payload.content.trim()) return;
@@ -65,11 +58,18 @@ export function ChatConversationFixture() {
         attachments: payload.attachments,
         references: payload.references,
       },
+      { role: 'assistant', content: '' },
     ]);
     setIsTyping(true);
 
     replyTimerRef.current = window.setTimeout(() => {
-      setMessages((current) => [...current, { role: 'assistant', content: fixtureReply }]);
+      setMessages((current) =>
+        current.map((message, index) =>
+          index === current.length - 1 && message.role === 'assistant'
+            ? { ...message, content: fixtureReply }
+            : message,
+        ),
+      );
       setIsTyping(false);
     }, 700);
   };
@@ -104,7 +104,6 @@ export function ChatConversationFixture() {
             messages={messages}
             isTyping={isTyping}
             statusPhase="analyzing"
-            scrollContainerRef={scrollContainerRef}
             getMessageKey={(_message, index) => `fixture-message-${index}`}
           />
         </div>

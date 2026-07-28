@@ -51,6 +51,9 @@ export interface AppShellProps {
   user: AppShellUser;
   children: ReactNode | ((context: AppShellContentContext) => ReactNode);
   initialAiUsageWarningActive?: boolean;
+  aiUsageWarningActive?: boolean;
+  canViewAiUsage?: boolean;
+  canManageMembers?: boolean;
   chatActions?: AppShellChatActions;
   onNavigate(href: string, options?: { replace?: boolean }): void;
   onLogout(): void;
@@ -77,6 +80,9 @@ export default function AppShell({
   user,
   children,
   initialAiUsageWarningActive = false,
+  aiUsageWarningActive: controlledAiUsageWarningActive,
+  canViewAiUsage = true,
+  canManageMembers = true,
   chatActions = { rename: true, share: true, pin: true, delete: true },
   onNavigate,
   onLogout,
@@ -106,8 +112,10 @@ export default function AppShell({
   const [showAllChatsModal, setShowAllChatsModal] = useState(false);
   const [allChatsKeyword, setAllChatsKeyword] = useState('');
   const [isAllChatsModalScrolling, setIsAllChatsModalScrolling] = useState(false);
-  const [aiUsageWarningActive, setAiUsageWarningActive] = useState(initialAiUsageWarningActive);
+  const [internalAiUsageWarningActive, setAiUsageWarningActive] = useState(initialAiUsageWarningActive);
   const [aiUsageWarningDismissed, setAiUsageWarningDismissed] = useState(false);
+  const aiUsageWarningActive =
+    controlledAiUsageWarningActive ?? internalAiUsageWarningActive;
   const chatRenameInputRef = useRef<HTMLInputElement | null>(null);
   const sidebarScrollTimerRef = useRef<number | null>(null);
   const allChatsScrollTimerRef = useRef<number | null>(null);
@@ -348,14 +356,18 @@ export default function AppShell({
       key: 'skills',
       label: 'Skill',
     },
-    {
-      key: 'ai-usage',
-      label: 'AI用量',
-    },
-    {
-      key: 'members',
-      label: '成员管理',
-    },
+    ...(canViewAiUsage
+      ? [{
+          key: 'ai-usage',
+          label: 'AI用量',
+        }]
+      : []),
+    ...(canManageMembers
+      ? [{
+          key: 'members',
+          label: '成员管理',
+        }]
+      : []),
     {
       key: 'system-settings',
       label: '更多系统设置',
@@ -365,7 +377,7 @@ export default function AppShell({
       label: '退出登录',
       danger: true,
     },
-  ], []);
+  ], [canManageMembers, canViewAiUsage]);
 
   const handleSettingsMenuItemClick: BaseActionMenuProps['onItemClick'] = (item) => {
     setSettingsMenuOpen(false);

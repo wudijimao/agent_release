@@ -42,6 +42,37 @@ function addMonths(date: Date, months: number) {
   return result;
 }
 
+function dateInputInTimeZone(
+  value: string | null | undefined,
+  timezone = "Asia/Shanghai",
+) {
+  if (!value) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  try {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      timeZone: timezone,
+    }).formatToParts(date);
+    const part = (type: Intl.DateTimeFormatPartTypes) =>
+      parts.find((item) => item.type === type)?.value ?? "";
+    return `${part("year")}-${part("month")}-${part("day")}`;
+  } catch {
+    return value.slice(0, 10);
+  }
+}
+
+function scheduleBoundary(date: string, boundary: "start" | "end") {
+  if (!date) return null;
+  const time = boundary === "start" ? "00:00:00" : "23:59:59";
+  const parsed = new Date(`${date}T${time}+08:00`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+
 export function createEmptyScheduledTaskDraft(now = new Date()): ScheduledTaskEditorDraft {
   return {
     name: "",
@@ -79,15 +110,23 @@ export function scheduledTaskToEditorDraft(task: ScheduledTaskDto): ScheduledTas
     schedule: {
       repeatMode,
       repeatSubValue,
-      startDate: typeof task.scheduleConfig.startDate === "string"
-        ? task.scheduleConfig.startDate
-        : localDate(),
-      endDate: typeof task.scheduleConfig.endDate === "string"
-        ? task.scheduleConfig.endDate
-        : "",
+      startDate: dateInputInTimeZone(
+        task.scheduleStartAt ??
+          (typeof task.scheduleConfig.startDate === "string"
+            ? task.scheduleConfig.startDate
+            : null),
+        task.timezone,
+      ) || localDate(),
+      endDate: dateInputInTimeZone(
+        task.scheduleEndAt ??
+          (typeof task.scheduleConfig.endDate === "string"
+            ? task.scheduleConfig.endDate
+            : null),
+        task.timezone,
+      ),
       runAt: String(task.scheduleConfig.time ?? "09:00"),
       taskPrompt: task.prompt,
-      projectId: null,
+      projectId: task.projectId,
     },
   };
 }
@@ -106,15 +145,27 @@ export function buildScheduledTaskRequest(
     timezone: "Asia/Shanghai",
   };
   const { repeatMode, repeatSubValue, runAt, startDate, endDate } = draft.schedule;
-  const rangeMetadata = { startDate: startDate || undefined, endDate: endDate || undefined };
+  const scheduleStartAt = scheduleBoundary(startDate, "start");
+  const scheduleEndAt = scheduleBoundary(endDate, "end");
+  if (!scheduleStartAt) return { ok: false, error: "请选择任务起始日期。" };
+  if (!scheduleEndAt) return { ok: false, error: "请选择任务截止日期。" };
+  if (new Date(scheduleEndAt) <= new Date(scheduleStartAt)) {
+    return { ok: false, error: "截止日期必须晚于起始日期。" };
+  }
+  const scheduleMetadata = {
+    projectId: draft.schedule.projectId,
+    scheduleStartAt,
+    scheduleEndAt,
+  };
 
   if (repeatMode === "daily") {
     return {
       ok: true,
       request: {
         ...common,
+        ...scheduleMetadata,
         scheduleKind: "daily",
-        scheduleConfig: { ...rangeMetadata, time: runAt },
+        scheduleConfig: { time: runAt },
       },
     };
   }
@@ -126,8 +177,9 @@ export function buildScheduledTaskRequest(
       ok: true,
       request: {
         ...common,
+        ...scheduleMetadata,
         scheduleKind: "weekly",
-        scheduleConfig: { ...rangeMetadata, time: runAt, weekday },
+        scheduleConfig: { time: runAt, weekday },
       },
     };
   }
@@ -140,13 +192,14 @@ export function buildScheduledTaskRequest(
   if (!Number.isInteger(dayOfMonth) || dayOfMonth < 1 || dayOfMonth > 28) {
     return { ok: false, error: "服务端当前仅支持每月 1–28 日运行。" };
   }
-  const scheduleConfig: ScheduledTaskApiScheduleConfig = {
-    ...rangeMetadata,
-    time: runAt,
-    dayOfMonth,
-  };
+  const scheduleConfig: ScheduledTaskApiScheduleConfig = { time: runAt, dayOfMonth };
   return {
     ok: true,
-    request: { ...common, scheduleKind: "monthly", scheduleConfig },
+    request: {
+      ...common,
+      ...scheduleMetadata,
+      scheduleKind: "monthly",
+      scheduleConfig,
+    },
   };
 }

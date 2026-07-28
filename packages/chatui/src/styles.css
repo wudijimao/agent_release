@@ -217,6 +217,11 @@
   --chatui-color-project-conversation-hover: #f8fafc;
   --chatui-color-project-member-option-hover: #f7fafc;
   --chatui-color-project-member-permission-selected: #d2f5e8;
+  --chatui-color-document-menu-task: #6366f1;
+  --chatui-color-document-menu-image: #f5b400;
+  --chatui-color-document-menu-table: #25b7a6;
+  --chatui-color-document-menu-math: #444746;
+  --chatui-color-document-placeholder: #1f1f1f66;
   --chatui-color-ai-usage-card: #f2f3f566;
   --chatui-color-ai-usage-tooltip: #1d2129;
   --chatui-color-ai-usage-bar: #10b981;

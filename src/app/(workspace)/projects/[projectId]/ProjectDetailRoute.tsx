@@ -3,13 +3,31 @@
 import {
   BaseButton,
   ProjectDetailPage,
+  ProjectDocumentEditor,
+  ProjectDocumentPreview,
   ProjectMemberManagementModal,
   useNavigation,
 } from "@bioagent/chatui";
+import type { ProjectDocumentPreviewViewModel } from "@bioagent/chatui";
 import type { LabMember, ProjectDetail } from "@bioagent/shared";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { loadLabMembers } from "@/adapters/lab-members";
+import {
+  deleteProjectDocumentAttachment,
+  deleteProjectDocument,
+  getProjectDocumentAttachmentUrl,
+  loadProjectDocumentDetail,
+  updateProjectDocument,
+} from "@/adapters/project-document-detail";
+import {
+  createProjectDocument,
+  importProjectDocuments,
+  PROJECT_DOCUMENT_IMPORT_ACCEPT,
+  PROJECT_DOCUMENT_IMPORT_DESCRIPTION,
+  PROJECT_DOCUMENT_IMPORT_MAX_BYTES,
+  uploadProjectDocumentAttachments,
+} from "@/adapters/project-documents";
 import {
   addProjectMember,
   createProjectConversation,
@@ -25,6 +43,15 @@ import {
 import { useChatShell } from "@/app/(workspace)/WorkspaceShell";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
+
+interface ProjectDocumentDraft {
+  title: string;
+  markdown: string;
+}
+
+function savedDocumentTitle(title: string) {
+  return title.trim() || "未命名文档";
+}
 
 function RouteStatus({
   message,
@@ -62,6 +89,15 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [documentDraft, setDocumentDraft] =
+    useState<ProjectDocumentDraft | null>(null);
+  const [documentSaving, setDocumentSaving] = useState(false);
+  const [documentSaveError, setDocumentSaveError] = useState("");
+  const [documentPreview, setDocumentPreview] =
+    useState<ProjectDocumentPreviewViewModel | null>(null);
+  const [documentEditDraft, setDocumentEditDraft] =
+    useState<ProjectDocumentDraft | null>(null);
+  const [documentDirty, setDocumentDirty] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const activeLabId = activeLab?.id || "";
 
@@ -127,9 +163,255 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
     setDetail(project);
   };
 
+  const saveDocument = useCallback(
+    async ({
+      keepEditing,
+      showNotice,
+    }: {
+      keepEditing: boolean;
+      showNotice: boolean;
+    }) => {
+      if (documentSaving) {
+        throw new Error("文档正在保存，请稍后重试");
+      }
+
+      setDocumentSaving(true);
+      setDocumentSaveError("");
+      try {
+        if (documentDraft) {
+          const parentNodeId = detail?.defaultKbNodeId;
+          if (!parentNodeId) {
+            throw new Error(
+              "当前项目尚未创建默认知识库，暂时无法保存文档。",
+            );
+          }
+          const title = savedDocumentTitle(documentDraft.title);
+          const created = await createProjectDocument(api, {
+            projectId,
+            parentNodeId,
+            title,
+            markdown: documentDraft.markdown,
+          });
+          const preview = await loadProjectDocumentDetail(api, created.id);
+          setDetail(await loadProjectDetail(api, projectId));
+          if (keepEditing) {
+            setDocumentPreview(preview);
+            setDocumentEditDraft({
+              title,
+              markdown: documentDraft.markdown,
+            });
+          }
+          setDocumentDraft(null);
+          setDocumentDirty(false);
+          if (showNotice) setNotice("文档已保存到当前项目");
+          return preview;
+        }
+
+        if (documentPreview && documentEditDraft) {
+          const title = savedDocumentTitle(documentEditDraft.title);
+          await updateProjectDocument(api, {
+            kbNodeId: documentPreview.id,
+            title,
+            markdown: documentEditDraft.markdown,
+          });
+          const preview = await loadProjectDocumentDetail(
+            api,
+            documentPreview.id,
+          );
+          setDetail(await loadProjectDetail(api, projectId));
+          setDocumentPreview(preview);
+          if (keepEditing) {
+            setDocumentEditDraft({
+              title,
+              markdown: documentEditDraft.markdown,
+            });
+          } else {
+            setDocumentEditDraft(null);
+          }
+          setDocumentDirty(false);
+          if (showNotice) setNotice("文档已保存");
+          return preview;
+        }
+
+        return documentPreview;
+      } catch (saveError) {
+        setDocumentSaveError(
+          saveError instanceof Error ? saveError.message : "文档保存失败",
+        );
+        throw saveError;
+      } finally {
+        setDocumentSaving(false);
+      }
+    },
+    [
+      api,
+      detail,
+      documentDraft,
+      documentEditDraft,
+      documentPreview,
+      documentSaving,
+      projectId,
+    ],
+  );
+
+  const uploadEditorAttachments = async (files: File[]) => {
+    let preview = documentPreview;
+    if (documentDraft || documentDirty) {
+      preview = await saveDocument({
+        keepEditing: true,
+        showNotice: false,
+      });
+    }
+    if (!preview) throw new Error("文档尚未保存，无法上传附件");
+
+    await uploadProjectDocumentAttachments(api, {
+      nodeId: preview.id,
+      files,
+    });
+    setDocumentPreview(await loadProjectDocumentDetail(api, preview.id));
+  };
+
+  useEffect(() => {
+    if (!documentDirty || documentSaving) return;
+    const timer = window.setTimeout(() => {
+      void saveDocument({
+        keepEditing: true,
+        showNotice: false,
+      }).catch(() => undefined);
+    }, 3000);
+    return () => window.clearTimeout(timer);
+  }, [documentDirty, documentSaving, saveDocument]);
+
   if (loading) return <RouteStatus message="正在加载项目…" />;
   if (!detail || !view) {
     return <RouteStatus message={error || "项目不存在或已被删除"} onRetry={() => void load()} />;
+  }
+
+  if (documentDraft !== null) {
+    return (
+      <ProjectDocumentEditor
+        projectName={detail.name}
+        title={documentDraft.title}
+        initialMarkdown={documentDraft.markdown}
+        attachmentAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
+        saving={documentSaving}
+        saveError={documentSaveError}
+        onTitleChange={(title) => {
+          setDocumentDraft((current) =>
+            current ? { ...current, title } : current,
+          );
+          setDocumentDirty(true);
+        }}
+        onMarkdownChange={(markdown) => {
+          setDocumentDraft((current) =>
+            current ? { ...current, markdown } : current,
+          );
+          setDocumentDirty(true);
+        }}
+        onUploadAttachments={uploadEditorAttachments}
+        onSave={() => {
+          void saveDocument({
+            keepEditing: false,
+            showNotice: true,
+          }).catch(() => undefined);
+        }}
+        onClose={() => {
+          if (documentSaving) return;
+          setDocumentSaveError("");
+          setDocumentDraft(null);
+          setDocumentDirty(false);
+        }}
+      />
+    );
+  }
+
+  if (documentPreview && documentEditDraft !== null) {
+    return (
+      <ProjectDocumentEditor
+        projectName={detail.name}
+        title={documentEditDraft.title}
+        initialMarkdown={documentEditDraft.markdown}
+        updatedAt={documentPreview.updatedAt}
+        index={documentPreview.index}
+        attachments={documentPreview.attachments}
+        attachmentAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
+        saving={documentSaving}
+        saveError={documentSaveError}
+        onTitleChange={(title) => {
+          setDocumentEditDraft((current) =>
+            current ? { ...current, title } : current,
+          );
+          setDocumentDirty(true);
+        }}
+        onMarkdownChange={(markdown) => {
+          setDocumentEditDraft((current) =>
+            current ? { ...current, markdown } : current,
+          );
+          setDocumentDirty(true);
+        }}
+        onOpenAttachment={(attachmentId) => {
+          window.open(
+            getProjectDocumentAttachmentUrl(attachmentId),
+            "_blank",
+            "noopener,noreferrer",
+          );
+        }}
+        onUploadAttachments={uploadEditorAttachments}
+        onDeleteAttachment={async (attachmentId) => {
+          await deleteProjectDocumentAttachment(api, attachmentId);
+          setDocumentPreview(
+            await loadProjectDocumentDetail(api, documentPreview.id),
+          );
+        }}
+        onSave={() => {
+          void saveDocument({
+            keepEditing: false,
+            showNotice: true,
+          }).catch(() => undefined);
+        }}
+        onClose={() => {
+          if (documentSaving) return;
+          setDocumentSaveError("");
+          setDocumentEditDraft(null);
+          setDocumentDirty(false);
+        }}
+      />
+    );
+  }
+
+  if (documentPreview) {
+    return (
+      <ProjectDocumentPreview
+        projectName={detail.name}
+        document={documentPreview}
+        isSidebarOpen={isSidebarOpen}
+        onOpenSidebar={openSidebar}
+        onBackToProjects={() => navigation.push("/projects")}
+        onBackToProject={() => setDocumentPreview(null)}
+        onEdit={() => {
+          setDocumentSaveError("");
+          setDocumentEditDraft({
+            title: documentPreview.title,
+            markdown: documentPreview.markdown,
+          });
+          setDocumentDirty(false);
+        }}
+        onDelete={async () => {
+          await deleteProjectDocument(api, documentPreview.id);
+          await refreshDetail();
+          await refreshProjects();
+          setDocumentPreview(null);
+          setNotice("文档已删除");
+        }}
+        onOpenAttachment={(attachmentId) => {
+          window.open(
+            getProjectDocumentAttachmentUrl(attachmentId),
+            "_blank",
+            "noopener,noreferrer",
+          );
+        }}
+      />
+    );
   }
 
   const updateField = async (patch: { name?: string; description?: string }) => {
@@ -156,9 +438,25 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         onOpenSidebar={openSidebar}
         onBackToProjects={() => navigation.push("/projects")}
         onOpenMemberManagement={() => setMemberModalOpen(true)}
-        onOpenDocument={() => setNotice("服务端暂未提供项目文档详情页契约，已记录待接入。")}
+        onOpenDocument={async (kbNodeId) => {
+          setNotice("正在加载文档…");
+          try {
+            const preview = await loadProjectDocumentDetail(api, kbNodeId);
+            setDocumentPreview(preview);
+            setNotice("");
+          } catch (loadError) {
+            setNotice(
+              loadError instanceof Error ? loadError.message : "文档加载失败",
+            );
+          }
+        }}
         onOpenConversation={(sessionId) => navigation.push(`/chat/${sessionId}`)}
-        onCreateDocument={() => setNotice("服务端暂未提供项目内新建文档契约，已记录待接入。")}
+        onCreateDocument={() => {
+          setNotice("");
+          setDocumentSaveError("");
+          setDocumentDraft({ title: "", markdown: "" });
+          setDocumentDirty(false);
+        }}
         onCreateConversation={async () => {
           setNotice("");
           try {
@@ -169,8 +467,26 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             setNotice(mutationError instanceof Error ? mutationError.message : "项目对话创建失败");
           }
         }}
-        onImportDocuments={async () => {
-          throw new Error("服务端暂未提供项目文档上传契约，已记录待接入。");
+        documentImportAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
+        documentImportMaxSize={PROJECT_DOCUMENT_IMPORT_MAX_BYTES}
+        documentImportDescription={PROJECT_DOCUMENT_IMPORT_DESCRIPTION}
+        onImportDocuments={async (files) => {
+          const parentNodeId = detail.defaultKbNodeId;
+          if (!parentNodeId) {
+            throw new Error("当前项目尚未创建默认知识库，暂时无法导入文档");
+          }
+
+          await importProjectDocuments(api, {
+            projectId,
+            parentNodeId,
+            files,
+          });
+          await refreshDetail();
+          setNotice(
+            files.length > 1
+              ? `已导入 ${files.length} 个文档，正在后台识别内容`
+              : "文档已导入，正在后台识别内容",
+          );
         }}
         onUpdateProjectName={(name) => updateField({ name })}
         onUpdateProjectDescription={(description) => updateField({ description })}

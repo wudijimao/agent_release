@@ -52,13 +52,13 @@ function UsageAmountBarChart({ points, labels, totalAmount }: { points: number[]
   const labelStep = useMemo(() => points.length <= 10 ? 1 : Math.ceil(points.length / 6), [points.length]);
   const barGap = useMemo(() => points.length <= 1 ? 0 : Math.min(6, chartWidth / points.length / 2.5), [chartWidth, points.length]);
   const barWidth = useMemo(() => points.length === 0 ? 0 : Math.max(3, (chartWidth - (points.length - 1) * barGap) / points.length), [barGap, chartWidth, points.length]);
-  const formatAxisAmount = (value: number) => value >= 10_000 ? `￥${(value / 10_000).toFixed(1)}万` : `￥${formatNumber(value)}`;
+  const formatAxisAmount = (value: number) => value >= 10_000 ? `${(value / 10_000).toFixed(1)}万` : formatNumber(value);
 
   return (
     <div>
       <div className="mb-3">
         <div className="text-sm font-semibold text-primaryText">月度用量</div>
-        <div className="mt-1 text-xs text-tertiaryText">消耗金额<span className="ml-1 text-primaryText">￥{formatNumber(totalAmount)}</span></div>
+        <div className="mt-1 text-xs text-tertiaryText">Token 消耗<span className="ml-1 text-primaryText">{formatNumber(totalAmount)}</span></div>
       </div>
       <div className="relative h-[190px] w-full">
         <svg viewBox="0 0 1000 190" preserveAspectRatio="none" className="h-full w-full">
@@ -88,7 +88,7 @@ function UsageAmountBarChart({ points, labels, totalAmount }: { points: number[]
         {hoveredIndex !== null && (
           <div className="pointer-events-none absolute top-0 z-20 -translate-x-1/2 rounded-lg bg-aiUsageTooltip px-2.5 py-2 text-xs text-white shadow-md" style={{ left: `${((chartLeft + hoveredIndex * (barWidth + barGap) + barWidth / 2) / 1000) * 100}%` }}>
             <div className="text-tertiaryText">{labels[hoveredIndex]}</div>
-            <div className="mt-0.5 font-semibold text-aiUsageBar">￥{formatNumber(points[hoveredIndex])}</div>
+            <div className="mt-0.5 font-semibold text-aiUsageBar">{formatNumber(points[hoveredIndex])} Token</div>
           </div>
         )}
       </div>

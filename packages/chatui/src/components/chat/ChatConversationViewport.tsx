@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { MessageItem } from './MessageItem';
 import { ThinkingIndicator, type SearchStep, type StatusPhase } from './ThinkingIndicator';
@@ -44,6 +44,16 @@ function setForwardedRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
   }
 }
 
+interface ReservedTurnLayout {
+  assistantKey: string;
+  minHeight: number;
+}
+
+function readPixelValue(value: string) {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 export function ChatConversationViewport({
   messages,
   isTyping,
@@ -62,15 +72,123 @@ export function ChatConversationViewport({
   onMessageElement,
 }: ChatConversationViewportProps) {
   const isSelectionMode = Boolean(selection);
+  const internalScrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const messageElementsRef = useRef(new Map<number, HTMLDivElement>());
+  const positionedTurnKeyRef = useRef<string>();
+  const [reservedTurn, setReservedTurn] = useState<ReservedTurnLayout>();
+
+  let activeAssistantIndex = -1;
+  let activeUserIndex = -1;
+  if (isTyping) {
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      if (messages[index]?.role === 'user') {
+        activeUserIndex = index;
+        break;
+      }
+    }
+    for (let index = messages.length - 1; index > activeUserIndex; index -= 1) {
+      if (messages[index]?.role === 'assistant') {
+        activeAssistantIndex = index;
+        break;
+      }
+    }
+  }
+
+  const activeUserKey =
+    activeUserIndex >= 0 ? getMessageKey(messages[activeUserIndex], activeUserIndex) : undefined;
+  const activeAssistantKey =
+    activeAssistantIndex >= 0
+      ? getMessageKey(messages[activeAssistantIndex], activeAssistantIndex)
+      : undefined;
+  const activeTurnKey =
+    activeUserKey && activeAssistantKey ? `${activeUserKey}:${activeAssistantKey}` : undefined;
+
+  const setScrollContainer = useCallback(
+    (element: HTMLDivElement | null) => {
+      internalScrollContainerRef.current = element;
+      setForwardedRef(scrollContainerRef, element);
+    },
+    [scrollContainerRef],
+  );
+
+  useLayoutEffect(() => {
+    if (
+      !activeTurnKey ||
+      !activeAssistantKey ||
+      activeUserIndex < 0 ||
+      activeAssistantIndex < 0
+    ) {
+      return;
+    }
+
+    const container = internalScrollContainerRef.current;
+    const content = contentRef.current;
+    const userMessage = messageElementsRef.current.get(activeUserIndex);
+    if (!container || !content || !userMessage) return;
+
+    const updateReservedHeight = () => {
+      const containerStyle = window.getComputedStyle(container);
+      const contentStyle = window.getComputedStyle(content);
+      const availableHeight =
+        container.clientHeight -
+        readPixelValue(containerStyle.paddingTop) -
+        readPixelValue(containerStyle.paddingBottom);
+      const turnGap = readPixelValue(contentStyle.rowGap || contentStyle.gap);
+      const minHeight = Math.max(
+        0,
+        Math.floor(availableHeight - userMessage.offsetHeight - turnGap),
+      );
+
+      setReservedTurn((current) =>
+        current?.assistantKey === activeAssistantKey && current.minHeight === minHeight
+          ? current
+          : { assistantKey: activeAssistantKey, minHeight },
+      );
+    };
+
+    updateReservedHeight();
+
+    const resizeObserver = new ResizeObserver(updateReservedHeight);
+    resizeObserver.observe(container);
+    resizeObserver.observe(userMessage);
+    return () => resizeObserver.disconnect();
+  }, [
+    activeAssistantIndex,
+    activeAssistantKey,
+    activeTurnKey,
+    activeUserIndex,
+  ]);
+
+  useLayoutEffect(() => {
+    if (
+      !activeTurnKey ||
+      !activeAssistantKey ||
+      reservedTurn?.assistantKey !== activeAssistantKey ||
+      activeUserIndex < 0 ||
+      positionedTurnKeyRef.current === activeTurnKey
+    ) {
+      return;
+    }
+
+    const container = internalScrollContainerRef.current;
+    const userMessage = messageElementsRef.current.get(activeUserIndex);
+    if (!container || !userMessage) return;
+
+    container.scrollTo({ top: userMessage.offsetTop, behavior: 'auto' });
+    positionedTurnKeyRef.current = activeTurnKey;
+  }, [activeAssistantKey, activeTurnKey, activeUserIndex, reservedTurn]);
 
   return (
     <div className="relative h-full">
       <div
-        ref={(element) => setForwardedRef(scrollContainerRef, element)}
+        ref={setScrollContainer}
+        data-chat-scroll-container
         onScroll={onScroll}
         className="flex h-full flex-col items-center overflow-y-auto px-4 py-8 pt-20 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden"
       >
         <div
+          ref={contentRef}
           className={`flex w-full flex-col ${isSelectionMode ? 'gap-3' : 'gap-8'}`}
           style={{ maxWidth: contentMaxWidth }}
         >
@@ -81,8 +199,24 @@ export function ChatConversationViewport({
             return (
               <div
                 key={messageKey}
-                ref={(element) => onMessageElement?.(index, element)}
+                data-chat-message-index={index}
+                data-chat-turn-reserved={
+                  reservedTurn?.assistantKey === messageKey ? 'true' : undefined
+                }
+                ref={(element) => {
+                  if (element) {
+                    messageElementsRef.current.set(index, element);
+                  } else {
+                    messageElementsRef.current.delete(index);
+                  }
+                  onMessageElement?.(index, element);
+                }}
                 className={isSelectionMode ? 'flex w-full items-start gap-2' : undefined}
+                style={
+                  reservedTurn?.assistantKey === messageKey
+                    ? { minHeight: reservedTurn.minHeight }
+                    : undefined
+                }
               >
                 {selection && (
                   <button
@@ -116,14 +250,24 @@ export function ChatConversationViewport({
                     feedback={feedbackByMessageKey?.[messageKey]}
                     onFeedback={onFeedback}
                     onRefresh={onRegenerate ? () => onRegenerate(index) : undefined}
-                    isTyping={isTyping}
+                    isTyping={isTyping && index === activeAssistantIndex}
                   />
+                  {index === activeAssistantIndex &&
+                    isTyping &&
+                    !hasReceivedAssistantChunk && (
+                      <div className="flex w-full justify-start px-1 md:px-2">
+                        <ThinkingIndicator
+                          phase={statusPhase}
+                          searchSteps={[...searchSteps]}
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
             );
           })}
 
-          {isTyping && !hasReceivedAssistantChunk && (
+          {activeAssistantIndex < 0 && isTyping && !hasReceivedAssistantChunk && (
             <div className="flex w-full justify-center px-2">
               <div className="flex w-full max-w-[860px] justify-start px-1 md:px-2">
                 <ThinkingIndicator phase={statusPhase} searchSteps={[...searchSteps]} />

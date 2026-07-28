@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const externalPackages = [
+  '@milkdown/crepe',
   'antd',
   'classnames',
   'dayjs',

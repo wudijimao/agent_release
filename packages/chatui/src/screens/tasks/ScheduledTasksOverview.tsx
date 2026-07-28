@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { Menu, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Menu, MessageCircle, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { BaseActionMenu, BaseButton, BaseTable, BaseToggle } from '../../components/common';
 import type { BaseActionMenuItem, BaseTableColumn } from '../../components/common';
+import {
+  LiteratureSubscriptionsTable,
+  type LiteratureSubscriptionListItemViewModel,
+} from './LiteratureSubscriptionsTable';
 
 export interface ScheduledTaskTemplateViewModel extends Record<string, unknown> {
   id: string;
@@ -14,6 +18,8 @@ export interface ScheduledTaskListItemViewModel extends Record<string, unknown> 
   name: string;
   prompt: string;
   nextRun: string;
+  scheduleEnd?: string;
+  mainSessionId?: string;
   trigger: string;
   isEnabled: boolean;
   isToggleDisabled?: boolean;
@@ -26,12 +32,21 @@ export interface ScheduledTasksOverviewProps {
   loading?: boolean;
   error?: string;
   pendingTaskId?: string | null;
+  literatureSubscriptions?: LiteratureSubscriptionListItemViewModel[];
+  literatureLoading?: boolean;
+  pendingLiteratureId?: string | null;
   onOpenSidebar(): void;
   onCreateCustom(): void;
   onCreateFromTemplate(templateId: string): void;
   onToggleTask(taskId: string): void;
   onEditTask(taskId: string): void;
   onDeleteTask(taskId: string): void;
+  onOpenTaskChat?(sessionId: string): void;
+  onCreateLiterature?(): void;
+  onFetchLiterature?(subscriptionId: string): void;
+  onToggleLiterature?(subscriptionId: string): void;
+  onEditLiterature?(subscriptionId: string): void;
+  onDeleteLiterature?(subscriptionId: string): void;
   onRetry?(): void;
 }
 
@@ -58,12 +73,21 @@ export default function ScheduledTasksOverview({
   loading = false,
   error,
   pendingTaskId,
+  literatureSubscriptions = [],
+  literatureLoading = false,
+  pendingLiteratureId,
   onOpenSidebar,
   onCreateCustom,
   onCreateFromTemplate,
   onToggleTask,
   onEditTask,
   onDeleteTask,
+  onOpenTaskChat,
+  onCreateLiterature,
+  onFetchLiterature,
+  onToggleLiterature,
+  onEditLiterature,
+  onDeleteLiterature,
   onRetry,
 }: ScheduledTasksOverviewProps) {
   const [actionMenuTaskId, setActionMenuTaskId] = useState<string | null>(null);
@@ -90,7 +114,12 @@ export default function ScheduledTasksOverview({
         title: '下次运行',
         dataIndex: 'nextRun',
         width: '14%',
-        render: (nextRun) => <span className="text-secondaryText">{String(nextRun)}</span>,
+        render: (nextRun, task) => (
+          <span>
+            <span className="block text-secondaryText">{String(nextRun)}</span>
+            {task.scheduleEnd && <span className="mt-1 block text-xs text-tertiaryText">{task.scheduleEnd}</span>}
+          </span>
+        ),
       },
       {
         title: '触发方式',
@@ -119,6 +148,9 @@ export default function ScheduledTasksOverview({
         align: 'right',
         render: (_, task) => {
           const actionItems: BaseActionMenuItem[] = [
+            ...(task.mainSessionId && onOpenTaskChat
+              ? [{ key: 'chat', label: '打开对话', icon: <MessageCircle size={14} /> }]
+              : []),
             { key: 'edit', label: '编辑', icon: <Pencil size={14} /> },
             { key: 'delete', label: '删除', icon: <Trash2 size={14} />, danger: true },
           ];
@@ -134,7 +166,8 @@ export default function ScheduledTasksOverview({
               items={actionItems}
               onItemClick={(item) => {
                 setActionMenuTaskId(null);
-                if (item.key === 'edit') onEditTask(task.id);
+                if (item.key === 'chat' && task.mainSessionId) onOpenTaskChat?.(task.mainSessionId);
+                else if (item.key === 'edit') onEditTask(task.id);
                 else onDeleteTask(task.id);
               }}
             />
@@ -142,7 +175,7 @@ export default function ScheduledTasksOverview({
         },
       },
     ],
-    [actionMenuTaskId, onDeleteTask, onEditTask, onToggleTask, pendingTaskId],
+    [actionMenuTaskId, onDeleteTask, onEditTask, onOpenTaskChat, onToggleTask, pendingTaskId],
   );
 
   return (
@@ -189,6 +222,18 @@ export default function ScheduledTasksOverview({
               <BaseTable className="task-table-scroll w-full [&_table]:min-w-[940px]" columns={taskTableColumns} dataSource={tasks} rowKey="id" striped={false} loading={loading} />
             </div>
           </section>
+          {onCreateLiterature && onFetchLiterature && onToggleLiterature && onEditLiterature && onDeleteLiterature && (
+            <LiteratureSubscriptionsTable
+              items={literatureSubscriptions}
+              loading={literatureLoading}
+              pendingId={pendingLiteratureId}
+              onCreate={onCreateLiterature}
+              onFetch={onFetchLiterature}
+              onToggle={onToggleLiterature}
+              onEdit={onEditLiterature}
+              onDelete={onDeleteLiterature}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -191,6 +191,7 @@ test("project detail mapper exposes only high-fidelity view models", () => {
     documents: [
       {
         id: "knowledge-1",
+        kbNodeId: "node-1",
         title: "免疫检查点综述",
         summary: "知识 · 文献解读",
         tags: ["知识", "文献解读"],

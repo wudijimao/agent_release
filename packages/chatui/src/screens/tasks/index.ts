@@ -6,3 +6,4 @@ export type {
 } from './ScheduledTasksOverview';
 export * from './ScheduledTaskEditorModal';
 export * from './ScheduledTaskDeleteModal';
+export * from './LiteratureSubscriptionsTable';

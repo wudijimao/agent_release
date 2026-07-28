@@ -120,13 +120,21 @@ export interface LogoutResponse {
 
 // ============ 聊天会话 ============
 
-export type ChatSessionScene = 'home' | 'knowledge' | 'wiki' | 'budget' | 'experiment';
+export type ChatSessionScene =
+  | 'home'
+  | 'knowledge'
+  | 'wiki'
+  | 'budget'
+  | 'experiment'
+  | 'scheduled_task';
 
 export interface ChatSessionListItem {
   id: string;
   title?: string | null;
   scene: ChatSessionScene;
   projectId?: string | null;
+  sourceTaskId?: string | null;
+  sourceTaskRunId?: string | null;
   sessionKind?: 'normal' | 'task';
   agentType?: HomeAgentType;
   isPinned?: boolean;

@@ -16,11 +16,18 @@ function task(overrides: Partial<ScheduledTaskDto> = {}): ScheduledTaskDto {
     ownerUserId: "user-1",
     name: "每周工作总结",
     description: null,
+    projectId: null,
+    taskType: "custom",
+    templateKey: null,
+    mainSessionId: null,
+    scope: "personal",
     status: "active",
     prompt: "汇总项目关键进展",
     timezone: "Asia/Shanghai",
     scheduleKind: "weekly",
     scheduleConfig: { weekday: 5, time: "18:00" },
+    scheduleStartAt: null,
+    scheduleEndAt: null,
     nextRunAt: "2026-07-24T10:00:00.000Z",
     lastRunAt: null,
     lastRunStatus: null,
@@ -30,6 +37,8 @@ function task(overrides: Partial<ScheduledTaskDto> = {}): ScheduledTaskDto {
     targetPath: "",
     titleTemplate: null,
     contextRefs: [],
+    sourceConfig: {},
+    publishPolicy: {},
     toolPolicy: {},
     notificationConfig: {},
     createdAt: "2026-07-19T00:00:00.000Z",
@@ -95,4 +104,26 @@ test("mapScheduledTask maps status semantics without leaking DTO fields", () => 
   assert.equal(mapScheduledTask(task({ status: "paused" })).isEnabled, false);
   assert.equal(mapScheduledTask(task({ status: "error" })).isEnabled, false);
   assert.equal(mapScheduledTask(task({ status: "disabled" })).isEnabled, false);
+});
+
+test("mapScheduledTask exposes the cutoff and main task conversation", () => {
+  assert.deepEqual(
+    mapScheduledTask(
+      task({
+        mainSessionId: "session-1",
+        scheduleEndAt: "2026-09-19T15:59:59.000Z",
+      }),
+    ),
+    {
+      id: "task-1",
+      name: "每周工作总结",
+      prompt: "汇总项目关键进展",
+      nextRun: "7.24 18:00",
+      scheduleEnd: "截止 9.19 23:59",
+      mainSessionId: "session-1",
+      trigger: "每周五 18:00",
+      isEnabled: true,
+      isToggleDisabled: false,
+    },
+  );
 });

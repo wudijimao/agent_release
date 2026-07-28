@@ -374,6 +374,7 @@ export interface ScheduledTaskCreatePreviewCardPayload {
   scheduleKind: ScheduledTaskScheduleKind;
   scheduleConfig: ScheduledTaskScheduleConfig;
   scheduleStartAt?: string | null;
+  scheduleEndAt?: string | null;
   scheduleLabel: string;
   timezone: string;
   titleTemplate: string;
@@ -413,6 +414,7 @@ export interface ScheduledTaskListCardPayload {
     scheduleLabel: string;
     timezone?: string;
     nextRunAt?: string;
+    scheduleEndAt?: string;
     lastRunAt?: string;
     createdAt?: string;
     pendingDraft?: {
@@ -1657,6 +1659,7 @@ function normalizeScheduledTaskCreatePreviewPayload(value: unknown): ScheduledTa
     scheduleKind,
     scheduleConfig,
     ...(asOptionalIsoString(record.scheduleStartAt) ? { scheduleStartAt: asOptionalIsoString(record.scheduleStartAt) } : {}),
+    ...(asOptionalIsoString(record.scheduleEndAt) ? { scheduleEndAt: asOptionalIsoString(record.scheduleEndAt) } : {}),
     scheduleLabel,
     timezone: asOptionalString(record.timezone) || 'Asia/Shanghai',
     titleTemplate,
@@ -1720,6 +1723,7 @@ function normalizeScheduledTaskListItem(
     scheduleLabel: asString(record.scheduleLabel).trim() || '定时任务',
     ...(asOptionalString(record.timezone) ? { timezone: asOptionalString(record.timezone) } : {}),
     ...(asOptionalIsoString(record.nextRunAt) ? { nextRunAt: asOptionalIsoString(record.nextRunAt) } : {}),
+    ...(asOptionalIsoString(record.scheduleEndAt) ? { scheduleEndAt: asOptionalIsoString(record.scheduleEndAt) } : {}),
     ...(asOptionalIsoString(record.lastRunAt) ? { lastRunAt: asOptionalIsoString(record.lastRunAt) } : {}),
     ...(asOptionalIsoString(record.createdAt) ? { createdAt: asOptionalIsoString(record.createdAt) } : {}),
     ...(pendingDraft ? { pendingDraft } : {}),

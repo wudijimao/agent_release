@@ -62,7 +62,13 @@ export function mapChatSessionToAppShell(
     updatedAt: session.updatedAt,
     ...(session.projectId ? { projectId: session.projectId } : {}),
     ...(session.isPinned ? { isPinned: true } : {}),
-    ...(session.sessionKind === "task" ? { isTaskConversation: true } : {}),
+    ...(session.sessionKind === "task"
+      ? {
+          isTaskConversation: true,
+          source: "task",
+          ...(session.sourceTaskId ? { taskId: session.sourceTaskId } : {}),
+        }
+      : {}),
   };
 }
 

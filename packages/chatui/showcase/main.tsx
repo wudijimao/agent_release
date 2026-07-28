@@ -14,6 +14,7 @@ import {
   RegisterPageFixture,
   RichMessageFixture,
   SkillPageFixture,
+  ProjectDocumentEditorFixture,
 } from '../src/showcase';
 
 const searchParams = new URLSearchParams(window.location.search);
@@ -40,6 +41,8 @@ const content = screen === 'login'
     ? <RichMessageFixture />
   : screen === 'skills'
     ? <SkillPageFixture />
+  : screen === 'project-document-editor'
+    ? <ProjectDocumentEditorFixture />
     : <ComponentShowcase />;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

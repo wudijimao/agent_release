@@ -2,4 +2,5 @@ export { default as ScheduledTasksOverview, buildTaskPromptPreview } from './Sch
 export type { ScheduledTaskListItemViewModel, ScheduledTaskTemplateViewModel, ScheduledTasksOverviewProps, } from './ScheduledTasksOverview';
 export * from './ScheduledTaskEditorModal';
 export * from './ScheduledTaskDeleteModal';
+export * from './LiteratureSubscriptionsTable';
 //# sourceMappingURL=index.d.ts.map

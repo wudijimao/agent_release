@@ -1,6 +1,19 @@
 "use client";
 
 import {
+  createLiteratureSubscriptions,
+  deleteLiteratureSubscription,
+  EMPTY_LITERATURE_SUBSCRIPTION,
+  fetchLiteratureSubscription,
+  listLiteratureProjects,
+  listLiteratureSubscriptions,
+  loadLiteratureSubscriptionDraft,
+  mapLiteratureSubscriptions,
+  setLiteratureSubscriptionEnabled,
+  updateLiteratureSubscription,
+  type LiteratureSubscription,
+} from "@/adapters/literature-subscriptions";
+import {
   ScheduledTaskDeleteModal,
   ScheduledTaskEditorModal,
   ScheduledTasksOverview,
@@ -59,23 +72,18 @@ const TEMPLATE_PROMPTS: Record<string, { name: string; prompt: string; runAt: st
   },
 };
 
-const EMPTY_LITERATURE_VALUE: LiteratureTaskEditorValue = {
-  topic: "",
-  periodStart: "",
-  periodEnd: "",
-  frequency: "daily",
-  sourceType: "pubmed",
-  keywords: "",
-  pubmedMatchMode: "all",
-};
-
 function errorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
 }
 
 export function ToolsRoute() {
   const api = useApiClient();
-  const { isSidebarOpen, openSidebar } = useChatShell();
+  const {
+    isSidebarOpen,
+    openChat,
+    openSidebar,
+    projects,
+  } = useChatShell();
   const [tasks, setTasks] = useState<ScheduledTaskDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -85,6 +93,13 @@ export function ToolsRoute() {
   const [editorDraft, setEditorDraft] = useState<ScheduledTaskEditorDraft | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editorPending, setEditorPending] = useState(false);
+  const [subscriptions, setSubscriptions] = useState<LiteratureSubscription[]>([]);
+  const [literatureProjects, setLiteratureProjects] = useState<Array<{ id: string; name: string }>>([]);
+  const [literatureLoading, setLiteratureLoading] = useState(true);
+  const [literatureDraft, setLiteratureDraft] = useState<LiteratureTaskEditorValue | null>(null);
+  const [editingSubscriptionId, setEditingSubscriptionId] = useState<string | null>(null);
+  const [pendingLiteratureId, setPendingLiteratureId] = useState<string | null>(null);
+  const [deleteSubscriptionId, setDeleteSubscriptionId] = useState<string | null>(null);
 
   const loadTasks = useCallback(async () => {
     setLoading(true);
@@ -117,11 +132,59 @@ export function ToolsRoute() {
     };
   }, [api]);
 
-  const viewTasks = useMemo(() => mapScheduledTasks(tasks), [tasks]);
+  const loadSubscriptions = useCallback(async () => {
+    setLiteratureLoading(true);
+    try {
+      const [items, projectOptions] = await Promise.all([
+        listLiteratureSubscriptions(api),
+        listLiteratureProjects(api),
+      ]);
+      setSubscriptions(items);
+      setLiteratureProjects(projectOptions);
+    } catch (error) {
+      setActionError(errorMessage(error, "文献订阅加载失败"));
+    } finally {
+      setLiteratureLoading(false);
+    }
+  }, [api]);
 
-  const showPendingFlow = (message: string) => {
-    setActionError(message);
-  };
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      listLiteratureSubscriptions(api),
+      listLiteratureProjects(api),
+    ])
+      .then(([items, projectOptions]) => {
+        if (cancelled) return;
+        setSubscriptions(items);
+        setLiteratureProjects(projectOptions);
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setActionError(errorMessage(error, "文献订阅加载失败"));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLiteratureLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [api]);
+
+  const viewTasks = useMemo(() => mapScheduledTasks(tasks), [tasks]);
+  const viewSubscriptions = useMemo(
+    () => mapLiteratureSubscriptions(subscriptions),
+    [subscriptions],
+  );
+  const scheduledTaskProjects = useMemo(
+    () =>
+      projects
+        .filter((project) => project.selectable !== false)
+        .map((project) => ({ id: project.id, name: project.name })),
+    [projects],
+  );
 
   const toggleTask = async (taskId: string) => {
     const task = tasks.find((item) => item.id === taskId);
@@ -144,6 +207,9 @@ export function ToolsRoute() {
   };
 
   const taskPendingDeletion = tasks.find((task) => task.id === deleteTaskId);
+  const subscriptionPendingDeletion = subscriptions.find(
+    (subscription) => subscription.id === deleteSubscriptionId,
+  );
 
   const confirmDelete = async () => {
     if (!deleteTaskId) return;
@@ -215,6 +281,58 @@ export function ToolsRoute() {
     }
   };
 
+  const openCreateLiterature = () => {
+    setActionError("");
+    setEditingSubscriptionId(null);
+    setLiteratureDraft({ ...EMPTY_LITERATURE_SUBSCRIPTION });
+  };
+
+  const openEditLiterature = async (subscriptionId: string) => {
+    const subscription = subscriptions.find((item) => item.id === subscriptionId);
+    if (!subscription) return;
+    setPendingLiteratureId(subscriptionId);
+    setActionError("");
+    try {
+      setLiteratureDraft(
+        await loadLiteratureSubscriptionDraft(api, subscription),
+      );
+      setEditingSubscriptionId(subscriptionId);
+    } catch (error) {
+      setActionError(errorMessage(error, "文献订阅信息加载失败"));
+    } finally {
+      setPendingLiteratureId(null);
+    }
+  };
+
+  const confirmLiteratureEditor = async () => {
+    if (!literatureDraft || editorPending) return;
+    setEditorPending(true);
+    setActionError("");
+    try {
+      if (editingSubscriptionId) {
+        await updateLiteratureSubscription(
+          api,
+          editingSubscriptionId,
+          literatureDraft,
+        );
+      } else {
+        await createLiteratureSubscriptions(api, literatureDraft);
+      }
+      setLiteratureDraft(null);
+      setEditingSubscriptionId(null);
+      await loadSubscriptions();
+    } catch (error) {
+      setActionError(
+        errorMessage(
+          error,
+          editingSubscriptionId ? "文献订阅修改失败" : "文献订阅创建失败",
+        ),
+      );
+    } finally {
+      setEditorPending(false);
+    }
+  };
+
   return (
     <>
       <ScheduledTasksOverview
@@ -224,11 +342,14 @@ export function ToolsRoute() {
         loading={loading}
         error={loadError || actionError}
         pendingTaskId={pendingTaskId}
+        literatureSubscriptions={viewSubscriptions}
+        literatureLoading={literatureLoading}
+        pendingLiteratureId={pendingLiteratureId}
         onOpenSidebar={openSidebar}
         onCreateCustom={() => openCreateEditor()}
         onCreateFromTemplate={(templateId) => {
           if (templateId === "template-paper-track") {
-            showPendingFlow("文献追踪使用独立的订阅接口，暂不作为普通定时任务提交。");
+            openCreateLiterature();
             return;
           }
           openCreateEditor(templateId);
@@ -239,15 +360,57 @@ export function ToolsRoute() {
           setActionError("");
           setDeleteTaskId(taskId);
         }}
+        onOpenTaskChat={(sessionId) => void openChat(sessionId)}
         onRetry={loadError ? () => void loadTasks() : undefined}
+        onCreateLiterature={openCreateLiterature}
+        onFetchLiterature={async (subscriptionId) => {
+          setPendingLiteratureId(subscriptionId);
+          setActionError("");
+          try {
+            await fetchLiteratureSubscription(api, subscriptionId);
+            await loadSubscriptions();
+          } catch (error) {
+            setActionError(errorMessage(error, "文献抓取失败"));
+          } finally {
+            setPendingLiteratureId(null);
+          }
+        }}
+        onToggleLiterature={async (subscriptionId) => {
+          const subscription = subscriptions.find((item) => item.id === subscriptionId);
+          if (!subscription) return;
+          setPendingLiteratureId(subscriptionId);
+          setActionError("");
+          try {
+            const updated = await setLiteratureSubscriptionEnabled(
+              api,
+              subscription,
+              !subscription.enabled,
+            );
+            setSubscriptions((current) => current.map((item) => (
+              item.id === subscriptionId
+                ? { ...item, ...updated, enabled: !subscription.enabled }
+                : item
+            )));
+          } catch (error) {
+            setActionError(errorMessage(error, "文献订阅状态修改失败"));
+          } finally {
+            setPendingLiteratureId(null);
+          }
+        }}
+        onEditLiterature={(subscriptionId) => void openEditLiterature(subscriptionId)}
+        onDeleteLiterature={(subscriptionId) => {
+          setActionError("");
+          setDeleteSubscriptionId(subscriptionId);
+        }}
       />
       {editorDraft && (
         <ScheduledTaskEditorModal
           visible
           kind="schedule"
           editing={Boolean(editingTaskId)}
-          literatureValue={{ ...EMPTY_LITERATURE_VALUE, topic: editorDraft.name }}
+          literatureValue={{ ...EMPTY_LITERATURE_SUBSCRIPTION, topic: editorDraft.name }}
           scheduleValue={editorDraft.schedule}
+          projects={scheduledTaskProjects}
           onLiteratureChange={(value) => setEditorDraft((current) => current
             ? { ...current, name: value.topic }
             : current)}
@@ -262,6 +425,24 @@ export function ToolsRoute() {
           onConfirm={() => void confirmEditor()}
         />
       )}
+      {literatureDraft && (
+        <ScheduledTaskEditorModal
+          visible
+          kind="literature"
+          editing={Boolean(editingSubscriptionId)}
+          literatureValue={literatureDraft}
+          scheduleValue={createEmptyScheduledTaskDraft().schedule}
+          literatureProjects={literatureProjects}
+          onLiteratureChange={setLiteratureDraft}
+          onScheduleChange={() => undefined}
+          onCancel={() => {
+            if (editorPending) return;
+            setLiteratureDraft(null);
+            setEditingSubscriptionId(null);
+          }}
+          onConfirm={() => void confirmLiteratureEditor()}
+        />
+      )}
       <ScheduledTaskDeleteModal
         visible={Boolean(taskPendingDeletion)}
         description={
@@ -270,6 +451,28 @@ export function ToolsRoute() {
         confirmLoading={pendingTaskId === deleteTaskId}
         onCancel={() => setDeleteTaskId(null)}
         onConfirm={confirmDelete}
+      />
+      <ScheduledTaskDeleteModal
+        visible={Boolean(subscriptionPendingDeletion)}
+        description={
+          <>文献订阅“{subscriptionPendingDeletion?.name}”删除后将停止后续抓取，且无法恢复。</>
+        }
+        confirmLoading={pendingLiteratureId === deleteSubscriptionId}
+        onCancel={() => setDeleteSubscriptionId(null)}
+        onConfirm={async () => {
+          if (!deleteSubscriptionId) return;
+          setPendingLiteratureId(deleteSubscriptionId);
+          setActionError("");
+          try {
+            await deleteLiteratureSubscription(api, deleteSubscriptionId);
+            setSubscriptions((current) => current.filter((item) => item.id !== deleteSubscriptionId));
+            setDeleteSubscriptionId(null);
+          } catch (error) {
+            setActionError(errorMessage(error, "文献订阅删除失败"));
+          } finally {
+            setPendingLiteratureId(null);
+          }
+        }}
       />
     </>
   );

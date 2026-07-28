@@ -66,6 +66,15 @@ export function mapScheduledTask(task: ScheduledTaskDto): ScheduledTaskListItemV
     name: task.name,
     prompt: task.prompt,
     nextRun: formatScheduledTaskNextRun(task.nextRunAt, task.timezone),
+    ...(task.scheduleEndAt
+      ? {
+          scheduleEnd: `截止 ${formatScheduledTaskNextRun(
+            task.scheduleEndAt,
+            task.timezone,
+          )}`,
+        }
+      : {}),
+    ...(task.mainSessionId ? { mainSessionId: task.mainSessionId } : {}),
     trigger: formatScheduledTaskTrigger(task),
     ...statusView(task.status),
   };

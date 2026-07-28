@@ -42,6 +42,9 @@ export interface AppShellProps {
     user: AppShellUser;
     children: ReactNode | ((context: AppShellContentContext) => ReactNode);
     initialAiUsageWarningActive?: boolean;
+    aiUsageWarningActive?: boolean;
+    canViewAiUsage?: boolean;
+    canManageMembers?: boolean;
     chatActions?: AppShellChatActions;
     onNavigate(href: string, options?: {
         replace?: boolean;
@@ -53,5 +56,5 @@ export interface AppShellProps {
     onShareChat?(chatId: string): void;
     onDeleteChat?(chatId: string): void;
 }
-export default function AppShell({ currentPath, projects, initialChats, logoUrl, user, children, initialAiUsageWarningActive, chatActions, onNavigate, onLogout, onChatsChange, onRenameChat, onTogglePinChat, onShareChat, onDeleteChat, }: AppShellProps): React.JSX.Element;
+export default function AppShell({ currentPath, projects, initialChats, logoUrl, user, children, initialAiUsageWarningActive, aiUsageWarningActive: controlledAiUsageWarningActive, canViewAiUsage, canManageMembers, chatActions, onNavigate, onLogout, onChatsChange, onRenameChat, onTogglePinChat, onShareChat, onDeleteChat, }: AppShellProps): React.JSX.Element;
 //# sourceMappingURL=AppShell.d.ts.map

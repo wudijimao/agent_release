@@ -17,7 +17,11 @@ function task(overrides: Partial<ScheduledTaskDto> = {}) {
     id: "scheduled-task",
     name: "定时任务",
     prompt: "执行任务",
+    projectId: null,
+    timezone: "Asia/Shanghai",
     scheduleKind: "daily",
+    scheduleStartAt: null,
+    scheduleEndAt: null,
     scheduleConfig: { time: "09:00" },
     ...overrides,
   } as ScheduledTaskDto;
@@ -42,6 +46,8 @@ test("daily editor values map to the server schedule contract", () => {
   assert.equal(result.request.name, "每日实验汇总");
   assert.equal(result.request.scheduleKind, "daily");
   assert.equal(result.request.scheduleConfig.time, "18:00");
+  assert.equal(result.request.scheduleStartAt, "2026-07-18T16:00:00.000Z");
+  assert.equal(result.request.scheduleEndAt, "2026-09-19T15:59:59.000Z");
 });
 
 test("weekly editor values map to the server schedule contract", () => {
@@ -86,12 +92,10 @@ test("editor restores daily, weekly, and monthly server schedules", () => {
   assert.deepEqual(
     scheduledTaskToEditorDraft(task({
       scheduleKind: "weekly",
-      scheduleConfig: {
-        time: "18:00",
-        weekday: 5,
-        startDate: "2026-07-19",
-        endDate: "2026-09-19",
-      },
+      projectId: "project-1",
+      scheduleStartAt: "2026-07-18T16:00:00.000Z",
+      scheduleEndAt: "2026-09-19T15:59:59.000Z",
+      scheduleConfig: { time: "18:00", weekday: 5 },
     }))?.schedule,
     {
       repeatMode: "weekly",
@@ -100,7 +104,7 @@ test("editor restores daily, weekly, and monthly server schedules", () => {
       endDate: "2026-09-19",
       runAt: "18:00",
       taskPrompt: "执行任务",
-      projectId: null,
+      projectId: "project-1",
     },
   );
   assert.equal(
