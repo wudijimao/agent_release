@@ -313,7 +313,9 @@ export default function MemberManagementPage({
           </div>
           <div>
             <div className="mb-1.5 text-sm font-medium text-primaryText">归属项目</div>
-            <div className="rounded-md border border-borderSoft bg-surfaceMuted px-3 py-2 text-sm text-mutedText">项目归属接口暂未开放</div>
+            <div className="rounded-md border border-borderSoft bg-surfaceMuted px-3 py-2 text-sm text-secondaryText">
+              {selectedMember?.projectsLabel || '未参与项目'}
+            </div>
           </div>
           {actionError && <p className="text-sm text-danger">{actionError}</p>}
         </div>

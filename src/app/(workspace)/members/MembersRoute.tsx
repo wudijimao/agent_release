@@ -3,11 +3,11 @@
 import {
   MemberManagementPage,
 } from "@bioagent/chatui";
-import type { LabMember } from "@bioagent/shared";
+import type { AdminMemberUsageSummary } from "@bioagent/shared";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  loadLabMembers,
+  loadAdminMembers,
   regenerateLabInvite,
   removeLabMember,
   updateLabMemberRole,
@@ -22,7 +22,7 @@ export function MembersRoute() {
   const { user } = useAuth();
   const { activeLab, activeLabRole } = useLab();
   const { isSidebarOpen, openSidebar } = useChatShell();
-  const [members, setMembers] = useState<LabMember[]>([]);
+  const [members, setMembers] = useState<AdminMemberUsageSummary[]>([]);
   const [labName, setLabName] = useState(activeLab?.name || "");
   const [inviteCode, setInviteCode] = useState(activeLab?.inviteCode || "");
   const [loading, setLoading] = useState(true);
@@ -35,12 +35,12 @@ export function MembersRoute() {
     if (!activeLabId) return;
     let cancelled = false;
 
-    loadLabMembers(api, activeLabId)
+    setLabName(activeLab?.name || "");
+    setInviteCode(activeLab?.inviteCode || "");
+    loadAdminMembers(api)
       .then((result) => {
         if (cancelled) return;
-        setLabName(result.lab.name);
-        setInviteCode(result.lab.inviteCode || "");
-        setMembers(result.members);
+        setMembers(result);
         setError("");
       })
       .catch((loadError: unknown) => {
@@ -54,17 +54,15 @@ export function MembersRoute() {
     return () => {
       cancelled = true;
     };
-  }, [activeLabId, api]);
+  }, [activeLab?.inviteCode, activeLab?.name, activeLabId, api]);
 
   const retryLoad = async () => {
     if (!activeLabId) return;
     setLoading(true);
     setError("");
     try {
-      const result = await loadLabMembers(api, activeLabId);
-      setLabName(result.lab.name);
-      setInviteCode(result.lab.inviteCode || "");
-      setMembers(result.members);
+      const result = await loadAdminMembers(api);
+      setMembers(result);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "成员信息加载失败");
     } finally {

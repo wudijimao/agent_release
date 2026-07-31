@@ -2,7 +2,7 @@ import type {
   MemberManagementMember,
   MemberManagementRole,
 } from "@bioagent/chatui";
-import type { LabMember, LabRole } from "@bioagent/shared";
+import type { AdminMemberUsageSummary, LabMember, LabRole } from "@bioagent/shared";
 
 function roleLabel(role: LabRole): MemberManagementRole {
   return role === "admin" || role === "pi" ? "管理员" : "成员";
@@ -25,20 +25,26 @@ function formatJoinedAt(value: string) {
 }
 
 export function mapLabMembers(
-  members: readonly LabMember[],
+  members: readonly (LabMember | AdminMemberUsageSummary)[],
   currentUserId: string,
   canManage: boolean,
 ): MemberManagementMember[] {
   return members.flatMap((member) => {
     if (!member.user) return [];
+    const projects = (member as Partial<AdminMemberUsageSummary>).projects;
+    const projectsLabel = projects
+      ? projects.map((project) => project.name).join("、") || "未参与项目"
+      : undefined;
+
     return [{
       id: member.id,
       userId: member.userId,
       name: member.user.name,
       email: member.user.email,
-      avatarUrl: member.user.avatarUrl,
+      avatarUrl: member.user.avatarUrl || undefined,
       role: roleLabel(member.role),
       joinedAt: formatJoinedAt(member.joinedAt),
+      ...(projectsLabel ? { projectsLabel } : {}),
       canManage: canManage && member.userId !== currentUserId && member.role !== "pi",
     }];
   });

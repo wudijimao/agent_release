@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import type { Lab, LabMember } from "@bioagent/shared";
+import type { AdminMemberUsageSummary, Lab, LabMember } from "@bioagent/shared";
 
 import type { ApiClient } from "@/lib/api";
 
 import {
   loadLabMembers,
+  loadAdminMembers,
   regenerateLabInvite,
   removeLabMember,
   updateLabMemberRole,
@@ -35,11 +36,33 @@ const member: LabMember = {
   },
 };
 
+const adminMember: AdminMemberUsageSummary = {
+  ...member,
+  user: member.user!,
+  projects: [
+    {
+      id: "project-1",
+      name: "肿瘤免疫项目",
+      type: "team",
+      role: "member",
+      isDefaultUnassigned: false,
+    },
+  ],
+  monthTokenUsage: 120,
+  last7dTokenUsage: 30,
+};
+
 function createApi(calls: ApiCall[]) {
   return {
     async get<T>(path: string) {
       calls.push({ method: "GET", path });
-      return (path.endsWith("/members") ? [member] : lab) as T;
+      return (
+        path === "/api/admin/members"
+          ? [adminMember]
+          : path.endsWith("/members")
+            ? [member]
+            : lab
+      ) as T;
     },
     async post<T>(path: string, body?: unknown) {
       calls.push({ method: "POST", path, body });
@@ -64,6 +87,16 @@ test("loadLabMembers loads lab metadata and member list together", async () => {
   assert.deepEqual(calls, [
     { method: "GET", path: "/api/labs/lab%20%2F%201" },
     { method: "GET", path: "/api/labs/lab%20%2F%201/members" },
+  ]);
+});
+
+test("loadAdminMembers reads project memberships from the admin response", async () => {
+  const calls: ApiCall[] = [];
+  const result = await loadAdminMembers(createApi(calls));
+
+  assert.deepEqual(result, [adminMember]);
+  assert.deepEqual(calls, [
+    { method: "GET", path: "/api/admin/members" },
   ]);
 });
 

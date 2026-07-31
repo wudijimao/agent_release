@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import type { LabMember } from "@bioagent/shared";
+import type { AdminMemberUsageSummary, LabMember } from "@bioagent/shared";
 
 import { mapLabMembers } from "@/adapters/lab-members-view-model";
 
@@ -58,4 +58,34 @@ test("mapLabMembers maps server roles and protects self and PI operations", () =
 
 test("mapLabMembers hides mutation controls from non-admin users", () => {
   assert.equal(mapLabMembers(members, "user-self", false)[1]?.canManage, false);
+});
+
+test("mapLabMembers renders project names returned by the admin member API", () => {
+  const memberWithProjects: AdminMemberUsageSummary = {
+    ...members[1]!,
+    user: members[1]!.user!,
+    projects: [
+      {
+        id: "project-1",
+        name: "肿瘤免疫项目",
+        type: "team",
+        role: "member",
+        isDefaultUnassigned: false,
+      },
+      {
+        id: "project-2",
+        name: "CRISPR 筛选",
+        type: "team",
+        role: "viewer",
+        isDefaultUnassigned: false,
+      },
+    ],
+    monthTokenUsage: 0,
+    last7dTokenUsage: 0,
+  };
+
+  assert.equal(
+    mapLabMembers([memberWithProjects], "user-self", true)[0]?.projectsLabel,
+    "肿瘤免疫项目、CRISPR 筛选",
+  );
 });

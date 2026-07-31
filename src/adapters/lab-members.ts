@@ -1,4 +1,5 @@
 import type {
+  AdminMemberUsageSummary,
   Lab,
   LabMember,
   LabRole,
@@ -24,6 +25,10 @@ export async function loadLabMembers(api: LabMembersApi, labId: string) {
   ]);
 
   return { lab, members };
+}
+
+export function loadAdminMembers(api: LabMembersApi) {
+  return api.get<AdminMemberUsageSummary[]>("/api/admin/members");
 }
 
 export function regenerateLabInvite(api: LabMembersApi, labId: string) {

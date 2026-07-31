@@ -2,15 +2,15 @@ import { B as tt, a as ee, b as E, c as be, d as rt, e as F, f as le, g as ne, P
 import { A as Ur, i as Kr, j as Wr, k as Yr, l as qr, C as Qr, n as Xr, o as Jr, p as Zr, q as jr, r as Vr, s as ea, t as ta, u as ra, v as aa, w as sa, x as la, y as na, z as ia, D as oa, E as da, F as ca, I as ma, L as xa, M as ha, G as pa, H as ua, J as ba, Q as fa, R as ga, S as ya, T as Na, K as va, N as wa, O as Ta, U as ka } from "./SkillPage-Dv10Rj0g.js";
 import { jsxs as t, jsx as e, Fragment as pe } from "react/jsx-runtime";
 import nt, { useState as p, useMemo as A, useCallback as ke, useContext as it, createContext as ot, useEffect as te, useRef as fe } from "react";
-import { Inbox as dt, Paperclip as ct, X as mt, Pencil as Me, Trash2 as ie, HelpCircle as xt, MoreHorizontal as _e, Menu as K, Plus as oe, AlertCircle as ht, ShieldCheck as pt, RefreshCw as ut, MessageCircle as bt, Folder as ft, ChevronDown as ue, Check as Ce, Users as He, Search as gt, Upload as yt, FileText as Nt, CircleHelp as vt, ArrowLeft as wt, Play as Tt } from "lucide-react";
+import { Inbox as dt, Paperclip as ct, X as mt, Pencil as _e, Trash2 as ie, HelpCircle as xt, MoreHorizontal as Me, Menu as K, Plus as oe, AlertCircle as ht, ShieldCheck as pt, RefreshCw as ut, MessageCircle as bt, Folder as ft, ChevronDown as ue, Check as Ce, Users as He, Search as gt, Upload as yt, FileText as Nt, CircleHelp as vt, ArrowLeft as wt, Play as Tt } from "lucide-react";
 import Se from "classnames";
 import Qe from "react-markdown";
 import Xe from "remark-gfm";
 import { DatePicker as kt, Cascader as Ct, TimePicker as St, Radio as Fe, Select as Ne } from "antd";
 import ve from "dayjs";
-const Mt = "_wrapper_g5uno_1", _t = "_uploadContent_g5uno_7", zt = "_uploadIcon_g5uno_17", It = "_uploadTitle_g5uno_18", Pt = "_uploadDescription_g5uno_19", Dt = "_fileList_g5uno_20", At = "_fileItem_g5uno_21", Et = "_fileItemIcon_g5uno_22", Bt = "_fileName_g5uno_23", $t = "_fileSize_g5uno_24", Ot = "_removeButton_g5uno_25", G = {
-  wrapper: Mt,
-  uploadContent: _t,
+const _t = "_wrapper_g5uno_1", Mt = "_uploadContent_g5uno_7", zt = "_uploadIcon_g5uno_17", It = "_uploadTitle_g5uno_18", Pt = "_uploadDescription_g5uno_19", Dt = "_fileList_g5uno_20", At = "_fileItem_g5uno_21", Et = "_fileItemIcon_g5uno_22", Bt = "_fileName_g5uno_23", $t = "_fileSize_g5uno_24", Lt = "_removeButton_g5uno_25", G = {
+  wrapper: _t,
+  uploadContent: Mt,
   uploadIcon: zt,
   uploadTitle: It,
   uploadDescription: Pt,
@@ -19,14 +19,14 @@ const Mt = "_wrapper_g5uno_1", _t = "_uploadContent_g5uno_7", zt = "_uploadIcon_
   fileItemIcon: Et,
   fileName: Bt,
   fileSize: $t,
-  removeButton: Ot
-}, Lt = ".pdf,.doc,.docx,.txt,.md,.csv", Rt = 20 * 1024 * 1024, Ge = 5, Ue = (r, s) => r.name === s.name && r.size === s.size && r.lastModified === s.lastModified && r.type === s.type, Ht = (r) => r < 1024 ? `${r} B` : r < 1024 * 1024 ? `${(r / 1024).toFixed(1)} KB` : `${(r / (1024 * 1024)).toFixed(1)} MB`, ze = nt.forwardRef(
+  removeButton: Lt
+}, Ot = ".pdf,.doc,.docx,.txt,.md,.csv", Rt = 20 * 1024 * 1024, Ge = 5, Ue = (r, s) => r.name === s.name && r.size === s.size && r.lastModified === s.lastModified && r.type === s.type, Ht = (r) => r < 1024 ? `${r} B` : r < 1024 * 1024 ? `${(r / 1024).toFixed(1)} KB` : `${(r / (1024 * 1024)).toFixed(1)} MB`, ze = nt.forwardRef(
   ({
     value: r,
     defaultValue: s = [],
     onChange: o,
     onError: l,
-    accept: d = Lt,
+    accept: d = Ot,
     maxSize: N = Rt,
     maxCount: T = Ge,
     disabled: y = !1,
@@ -40,7 +40,7 @@ const Mt = "_wrapper_g5uno_1", _t = "_uploadContent_g5uno_7", zt = "_uploadIcon_
     }, z = (x) => {
       const c = [...b];
       if (Array.from(x).forEach((a) => {
-        c.some((_) => Ue(_, a)) || c.push(a);
+        c.some((M) => Ue(M, a)) || c.push(a);
       }), c.length > T) {
         l == null || l(new Error(`最多上传 ${T} 个文件，请删除后再继续添加`));
         return;
@@ -139,7 +139,7 @@ function Sr() {
     throw new Error("useNavigation must be used within NavigationProvider");
   return r;
 }
-function Mr({
+function _r({
   labName: r,
   members: s,
   inviteCode: o,
@@ -154,24 +154,24 @@ function Mr({
   onUpdateRole: m,
   onRemoveMember: i
 }) {
-  const [n, u] = p(!1), [v, b] = p(!1), [f, z] = p(!1), [x, c] = p(!1), [a, _] = p(null), [k, $] = p("成员"), [P, I] = p(null), [R, L] = p(null), [M, D] = p(1), [H, W] = p(10), X = s.filter((S) => S.role === "管理员").length, de = A(() => {
-    const S = (M - 1) * H;
+  const [n, u] = p(!1), [v, b] = p(!1), [f, z] = p(!1), [x, c] = p(!1), [a, M] = p(null), [k, $] = p("成员"), [P, I] = p(null), [R, O] = p(null), [_, D] = p(1), [H, W] = p(10), X = s.filter((S) => S.role === "管理员").length, de = A(() => {
+    const S = (_ - 1) * H;
     return s.slice(S, S + H);
-  }, [M, s, H]), U = A(
+  }, [_, s, H]), U = A(
     () => [
-      { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(Me, { size: 14 }) },
+      { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(_e, { size: 14 }) },
       { key: "remove", label: "移除", icon: /* @__PURE__ */ e(ie, { size: 14 }), danger: !0 }
     ],
     []
   );
   te(() => {
     const S = Math.max(1, Math.ceil(s.length / H));
-    M > S && D(S);
-  }, [M, s.length, H]);
+    _ > S && D(S);
+  }, [_, s.length, H]);
   const j = (S) => {
-    _(S), $(S.role), z(!0);
+    M(S), $(S.role), z(!0);
   }, ce = (S) => {
-    _(S), c(!0);
+    M(S), c(!0);
   }, V = async () => {
     if (o) {
       try {
@@ -213,11 +213,11 @@ function Mr({
         title: "姓名",
         dataIndex: "name",
         width: "25%",
-        render: (S, O) => /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center pr-2", children: [
-          /* @__PURE__ */ e("div", { className: "mr-3 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-lineSubtle bg-bgLight text-[11px] font-medium text-secondaryText", children: O.avatarUrl ? /* @__PURE__ */ e("img", { className: "h-full w-full object-cover", src: O.avatarUrl, alt: "" }) : O.name.slice(0, 2) }),
+        render: (S, L) => /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center pr-2", children: [
+          /* @__PURE__ */ e("div", { className: "mr-3 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-lineSubtle bg-bgLight text-[11px] font-medium text-secondaryText", children: L.avatarUrl ? /* @__PURE__ */ e("img", { className: "h-full w-full object-cover", src: L.avatarUrl, alt: "" }) : L.name.slice(0, 2) }),
           /* @__PURE__ */ t("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ e("p", { className: "truncate font-medium text-primaryText", children: O.name }),
-            /* @__PURE__ */ e("p", { className: "mt-0.5 truncate text-[13px] text-secondaryText", children: O.email })
+            /* @__PURE__ */ e("p", { className: "truncate font-medium text-primaryText", children: L.name }),
+            /* @__PURE__ */ e("p", { className: "mt-0.5 truncate text-[13px] text-secondaryText", children: L.email })
           ] })
         ] })
       },
@@ -245,17 +245,17 @@ function Mr({
         title: "操作",
         dataIndex: "id",
         width: "10%",
-        render: (S, O) => O.canManage ? /* @__PURE__ */ e(
+        render: (S, L) => L.canManage ? /* @__PURE__ */ e(
           ee,
           {
-            open: R === O.id,
-            onOpenChange: (Y) => L(Y ? O.id : null),
+            open: R === L.id,
+            onOpenChange: (Y) => O(Y ? L.id : null),
             placement: "bottom-end",
             width: 132,
-            trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(_e, { size: 16 }) }),
+            trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Me, { size: 16 }) }),
             items: U,
             onItemClick: (Y, me) => {
-              me.stopPropagation(), L(null), Y.key === "edit" ? j(O) : ce(O);
+              me.stopPropagation(), O(null), Y.key === "edit" ? j(L) : ce(L);
             }
           }
         ) : /* @__PURE__ */ e("span", { className: "text-mutedText", children: "—" })
@@ -311,14 +311,14 @@ function Mr({
         /* @__PURE__ */ e(
           rt,
           {
-            current: M,
+            current: _,
             total: s.length,
             pageSize: H,
             onChange: D,
             showSizeChanger: !0,
             pageSizeOptions: [5, 10, 20],
-            onShowSizeChange: (S, O) => {
-              W(O), D(1);
+            onShowSizeChange: (S, L) => {
+              W(L), D(1);
             }
           }
         )
@@ -330,7 +330,7 @@ function Mr({
     ] }) }),
     /* @__PURE__ */ t(F, { visible: n, title: "邀请新成员", width: 360, onCancel: () => u(!1), footer: null, bodyClassName: "!px-6 !py-5", children: [
       /* @__PURE__ */ e("h4", { className: "text-[17px] font-semibold text-primaryText", children: "邀请码" }),
-      /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-6 gap-2", children: (o || "------").split("").map((S, O) => /* @__PURE__ */ e("div", { className: "flex h-[44px] items-center justify-center rounded-lg bg-surfaceMuted text-[24px] font-medium text-primaryText", children: S }, `${S}-${O}`)) }),
+      /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-6 gap-2", children: (o || "------").split("").map((S, L) => /* @__PURE__ */ e("div", { className: "flex h-[44px] items-center justify-center rounded-lg bg-surfaceMuted text-[24px] font-medium text-primaryText", children: S }, `${S}-${L}`)) }),
       /* @__PURE__ */ e("p", { className: "mt-4 text-sm leading-6 text-tertiaryText", children: "请将6位数字邀请码分享给新成员，新成员加入后默认为成员，管理员可在成员列表中调整权限" }),
       T && /* @__PURE__ */ e("p", { className: "mt-3 text-sm text-danger", children: T }),
       /* @__PURE__ */ e(E, { type: "primary", size: "large", rounded: "large", fullWidth: !0, className: "mt-5", onClick: V, disabled: !o, children: v ? "已复制邀请码" : "复制邀请码" }),
@@ -346,7 +346,7 @@ function Mr({
       ] }),
       /* @__PURE__ */ t("div", { children: [
         /* @__PURE__ */ e("div", { className: "mb-1.5 text-sm font-medium text-primaryText", children: "归属项目" }),
-        /* @__PURE__ */ e("div", { className: "rounded-md border border-borderSoft bg-surfaceMuted px-3 py-2 text-sm text-mutedText", children: "项目归属接口暂未开放" })
+        /* @__PURE__ */ e("div", { className: "rounded-md border border-borderSoft bg-surfaceMuted px-3 py-2 text-sm text-secondaryText", children: (a == null ? void 0 : a.projectsLabel) || "未参与项目" })
       ] }),
       T && /* @__PURE__ */ e("p", { className: "text-sm text-danger", children: T })
     ] }) }),
@@ -435,7 +435,7 @@ function sr({
       render: (m, i) => {
         const n = [
           { key: "fetch", label: "立即抓取", icon: /* @__PURE__ */ e(ut, { size: 14 }) },
-          { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(Me, { size: 14 }) },
+          { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(_e, { size: 14 }) },
           { key: "delete", label: "删除", icon: /* @__PURE__ */ e(ie, { size: 14 }), danger: !0 }
         ];
         return /* @__PURE__ */ e(
@@ -447,7 +447,7 @@ function sr({
             width: 140,
             portal: !0,
             menuClassName: "!min-w-[140px]",
-            trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(_e, { size: 16 }) }),
+            trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Me, { size: 16 }) }),
             items: n,
             onItemClick: (u) => {
               g(null), u.key === "fetch" ? d(i.id) : u.key === "edit" ? T(i.id) : y(i.id);
@@ -486,7 +486,7 @@ function nr(r) {
   return d.join(`
 `);
 }
-function _r({
+function Mr({
   templates: r,
   tasks: s,
   isSidebarOpen: o,
@@ -510,7 +510,7 @@ function _r({
   onDeleteLiterature: c,
   onRetry: a
 }) {
-  const [_, k] = p(null), $ = A(
+  const [M, k] = p(null), $ = A(
     () => [
       {
         title: "任务名称",
@@ -562,29 +562,29 @@ function _r({
         render: (P, I) => {
           const R = [
             ...I.mainSessionId && v ? [{ key: "chat", label: "打开对话", icon: /* @__PURE__ */ e(bt, { size: 14 }) }] : [],
-            { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(Me, { size: 14 }) },
+            { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(_e, { size: 14 }) },
             { key: "delete", label: "删除", icon: /* @__PURE__ */ e(ie, { size: 14 }), danger: !0 }
           ];
           return /* @__PURE__ */ e(
             ee,
             {
-              open: _ === I.id,
-              onOpenChange: (L) => k(L ? I.id : null),
+              open: M === I.id,
+              onOpenChange: (O) => k(O ? I.id : null),
               placement: "bottom-end",
               width: 132,
               portal: !0,
               menuClassName: "!min-w-[132px]",
-              trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(_e, { size: 16 }) }),
+              trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Me, { size: 16 }) }),
               items: R,
-              onItemClick: (L) => {
-                k(null), L.key === "chat" && I.mainSessionId ? v == null || v(I.mainSessionId) : L.key === "edit" ? n(I.id) : u(I.id);
+              onItemClick: (O) => {
+                k(null), O.key === "chat" && I.mainSessionId ? v == null || v(I.mainSessionId) : O.key === "edit" ? n(I.id) : u(I.id);
               }
             }
           );
         }
       }
     ],
-    [_, u, n, v, i, N]
+    [M, u, n, v, i, N]
   );
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
@@ -738,7 +738,7 @@ function zr({
                   className: "task-period-picker w-full",
                   classNames: { popup: { root: "task-period-picker-popup" } },
                   value: [d.startDate ? ve(d.startDate, "YYYY-MM-DD") : null, d.endDate ? ve(d.endDate, "YYYY-MM-DD") : null],
-                  onChange: (a, [_, k]) => C({ ...d, startDate: _, endDate: k })
+                  onChange: (a, [M, k]) => C({ ...d, startDate: M, endDate: k })
                 }
               )
             ] }),
@@ -754,8 +754,8 @@ function zr({
                     classNames: { popup: { root: "task-repeat-cascader-popup" } },
                     placeholder: "请选择重复方式",
                     onChange: (a) => {
-                      const _ = String(a[0] ?? "daily"), k = a[1] ? String(a[1]) : "";
-                      C({ ...d, repeatMode: _, repeatSubValue: _ === "weekly" ? k || (d.repeatMode === "weekly" ? d.repeatSubValue : "mon") || "mon" : _ === "monthly" ? k || (d.repeatMode === "monthly" ? d.repeatSubValue : "1") || "1" : "" });
+                      const M = String(a[0] ?? "daily"), k = a[1] ? String(a[1]) : "";
+                      C({ ...d, repeatMode: M, repeatSubValue: M === "weekly" ? k || (d.repeatMode === "weekly" ? d.repeatSubValue : "mon") || "mon" : M === "monthly" ? k || (d.repeatMode === "monthly" ? d.repeatSubValue : "1") || "1" : "" });
                     }
                   }
                 ),
@@ -816,15 +816,15 @@ function zr({
           /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ e("div", { className: "mb-2 text-sm font-medium text-primaryText", children: "订阅来源" }),
             /* @__PURE__ */ e("div", { className: "grid grid-cols-2 gap-3", children: Object.keys(Ke).map((a) => {
-              const _ = Ke[a], k = l.sourceTypes.includes(a);
+              const M = Ke[a], k = l.sourceTypes.includes(a);
               return /* @__PURE__ */ t("button", { type: "button", onClick: () => {
                 const $ = o ? [a] : k ? l.sourceTypes.filter((P) => P !== a) : [...l.sourceTypes, a];
                 y({ ...l, sourceTypes: $ });
               }, className: `flex items-start gap-2.5 rounded-lg border px-3.5 py-3 text-left transition-colors ${k ? "border-primary bg-primary-soft-strong" : "border-borderGray bg-white hover:border-borderSoft"}`, children: [
                 /* @__PURE__ */ e("span", { className: `mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border ${k ? "border-primary bg-primary text-white" : "border-controlBorder text-transparent"}`, children: k && /* @__PURE__ */ e(Ce, { size: 11, strokeWidth: 3, "aria-hidden": "true" }) }),
                 /* @__PURE__ */ t("span", { children: [
-                  /* @__PURE__ */ e("span", { className: "block text-sm font-medium text-primaryText", children: _.label }),
-                  /* @__PURE__ */ e("span", { className: "mt-0.5 block text-[13px] text-secondaryText", children: _.desc })
+                  /* @__PURE__ */ e("span", { className: "block text-sm font-medium text-primaryText", children: M.label }),
+                  /* @__PURE__ */ e("span", { className: "mt-0.5 block text-[13px] text-secondaryText", children: M.desc })
                 ] })
               ] }, a);
             }) }),
@@ -865,14 +865,14 @@ function zr({
           /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ e("div", { className: "mb-2 text-sm font-medium text-primaryText", children: "关联项目" }),
             /* @__PURE__ */ e("div", { className: "max-h-[150px] space-y-1 overflow-y-auto rounded-lg border border-borderGray p-2", children: T.length > 0 ? T.map((a) => {
-              const _ = l.projectNodeIds.includes(a.id);
+              const M = l.projectNodeIds.includes(a.id);
               return /* @__PURE__ */ t("label", { className: "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-primaryText hover:bg-bgLight", children: [
                 /* @__PURE__ */ e(
                   "input",
                   {
                     type: "checkbox",
-                    checked: _,
-                    onChange: () => y({ ...l, projectNodeIds: _ ? l.projectNodeIds.filter((k) => k !== a.id) : [...l.projectNodeIds, a.id] }),
+                    checked: M,
+                    onChange: () => y({ ...l, projectNodeIds: M ? l.projectNodeIds.filter((k) => k !== a.id) : [...l.projectNodeIds, a.id] }),
                     className: "h-4 w-4 accent-primary"
                   }
                 ),
@@ -940,7 +940,7 @@ function Pr({
     m(""), n(""), v([]), f(""), g(!0);
   }, a = () => {
     z || (g(!1), f(""));
-  }, _ = async () => {
+  }, M = async () => {
     const k = w.trim();
     if (!k) {
       f("请输入项目名称");
@@ -1012,7 +1012,7 @@ function Pr({
         cancelText: "取消",
         onCancel: a,
         onConfirm: () => {
-          _();
+          M();
         },
         okButtonProps: { disabled: z },
         bodyClassName: "!px-6 !py-5",
@@ -1122,28 +1122,28 @@ function Dr({
   showMemberManagement: z = !0,
   onDeleteProject: x
 }) {
-  const [c, a] = p("documents"), [_, k] = p(""), [$, P] = p("all"), [I, R] = p(!1), [L, M] = p(!1), [D, H] = p(!1), [W, X] = p([]), [de, U] = p(""), [j, ce] = p(!1), [V, J] = p((r == null ? void 0 : r.name) ?? ""), [re, Z] = p((r == null ? void 0 : r.description) ?? ""), [ge, S] = p(!1), [O, Y] = p(!1), [me, ae] = p(""), [je, ye] = p(!1), [xe, Pe] = p(!1), [De, se] = p(""), Ae = fe(null);
+  const [c, a] = p("documents"), [M, k] = p(""), [$, P] = p("all"), [I, R] = p(!1), [O, _] = p(!1), [D, H] = p(!1), [W, X] = p([]), [de, U] = p(""), [j, ce] = p(!1), [V, J] = p((r == null ? void 0 : r.name) ?? ""), [re, Z] = p((r == null ? void 0 : r.description) ?? ""), [ge, S] = p(!1), [L, Y] = p(!1), [me, ae] = p(""), [je, ye] = p(!1), [xe, Pe] = p(!1), [De, se] = p(""), Ae = fe(null);
   te(() => {
     J((r == null ? void 0 : r.name) ?? ""), Z((r == null ? void 0 : r.description) ?? ""), S(!1), Y(!1), ae("");
   }, [r]);
   const Ee = A(() => ["all", ...Array.from(new Set(s.flatMap((h) => h.tags)))], [s]), Be = A(() => {
-    const h = _.trim().toLowerCase();
+    const h = M.trim().toLowerCase();
     return s.filter((B) => ($ === "all" || B.tags.includes($)) && (!h || [B.title, B.summary, ...B.tags].join(" ").toLowerCase().includes(h)));
-  }, [s, _, $]), $e = A(() => {
-    const h = _.trim().toLowerCase();
+  }, [s, M, $]), $e = A(() => {
+    const h = M.trim().toLowerCase();
     return h ? o.filter((B) => [B.title, B.date, Ye(B.date, B.id)].join(" ").toLowerCase().includes(h)) : o;
-  }, [o, _]);
+  }, [o, M]);
   te(() => {
     if (c !== "documents") return;
     const h = () => {
       const B = Ae.current;
-      if (!B) return M(!1);
+      if (!B) return _(!1);
       const Re = B.scrollHeight > We + 1;
-      M(Re), Re || R(!1);
+      _(Re), Re || R(!1);
     };
     return h(), window.addEventListener("resize", h), () => window.removeEventListener("resize", h);
   }, [c, Ee]);
-  const Oe = async () => {
+  const Le = async () => {
     const h = V.trim() || (r == null ? void 0 : r.name) || "";
     if (J(h), S(!1), h && h !== (r == null ? void 0 : r.name)) {
       ae("");
@@ -1153,7 +1153,7 @@ function Dr({
         J((r == null ? void 0 : r.name) ?? ""), ae(B instanceof Error ? B.message : "项目名称更新失败");
       }
     }
-  }, Le = async () => {
+  }, Oe = async () => {
     const h = re.trim() || (r == null ? void 0 : r.description) || "";
     if (Z(h), Y(!1), h && h !== (r == null ? void 0 : r.description)) {
       ae("");
@@ -1214,10 +1214,10 @@ function Dr({
           value: V,
           onChange: (h) => J(h.target.value),
           onBlur: () => {
-            Oe();
+            Le();
           },
           onKeyDown: (h) => {
-            h.key === "Enter" && (h.preventDefault(), Oe()), h.key === "Escape" && (J(r.name), S(!1));
+            h.key === "Enter" && (h.preventDefault(), Le()), h.key === "Escape" && (J(r.name), S(!1));
           },
           autoFocus: !0,
           className: "w-full max-w-[560px] rounded-md border border-primary bg-white px-2 py-1 text-2xl font-semibold text-primaryText outline-none"
@@ -1226,17 +1226,17 @@ function Dr({
         /* @__PURE__ */ e("h2", { className: "cursor-text text-2xl font-semibold text-primaryText", onClick: () => S(!0), children: V || r.name }),
         /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-max -translate-x-1/2 rounded-md bg-strongText px-2 py-1 text-xs text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100", children: "点击编辑项目名称" })
       ] }),
-      O ? /* @__PURE__ */ e(
+      L ? /* @__PURE__ */ e(
         "input",
         {
           type: "text",
           value: re,
           onChange: (h) => Z(h.target.value),
           onBlur: () => {
-            Le();
+            Oe();
           },
           onKeyDown: (h) => {
-            h.key === "Enter" && (h.preventDefault(), Le()), h.key === "Escape" && (Z(r.description), Y(!1));
+            h.key === "Enter" && (h.preventDefault(), Oe()), h.key === "Escape" && (Z(r.description), Y(!1));
           },
           autoFocus: !0,
           className: "mt-1 w-full max-w-[760px] rounded-md border border-lineSubtle bg-white px-2 py-1 text-sm text-tertiaryText outline-none focus:border-primary"
@@ -1267,7 +1267,7 @@ function Dr({
       /* @__PURE__ */ t("div", { className: "mt-4 flex flex-wrap items-center justify-between gap-3", children: [
         /* @__PURE__ */ t("div", { className: "relative w-full max-w-[320px]", children: [
           /* @__PURE__ */ e(gt, { size: 16, className: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-tertiaryText" }),
-          /* @__PURE__ */ e("input", { type: "text", value: _, onChange: (h) => k(h.target.value), placeholder: `搜索${c === "documents" ? "文档" : "历史对话"}`, className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none" })
+          /* @__PURE__ */ e("input", { type: "text", value: M, onChange: (h) => k(h.target.value), placeholder: `搜索${c === "documents" ? "文档" : "历史对话"}`, className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none" })
         ] }),
         /* @__PURE__ */ t("div", { className: "flex items-center gap-5", children: [
           /* @__PURE__ */ e(E, { type: "ghost", size: "small", rounded: "large", icon: c === "documents" ? /* @__PURE__ */ e(oe, { size: 16 }) : void 0, className: "!h-auto !gap-1 !border-transparent !bg-transparent !px-0 !py-0 !text-sm !font-semibold !text-primary hover:!bg-transparent hover:!text-primary-hover", onClick: c === "documents" ? w : m, children: c === "documents" ? "新建" : "发起对话" }),
@@ -1283,8 +1283,8 @@ function Dr({
         ] })
       ] }),
       c === "documents" && /* @__PURE__ */ e("div", { className: "mt-3", children: /* @__PURE__ */ t("div", { className: "flex items-start justify-between gap-3", children: [
-        /* @__PURE__ */ e("div", { ref: Ae, className: "flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200", style: { maxHeight: I || !L ? void 0 : `${We}px` }, children: Ee.map((h) => /* @__PURE__ */ e("button", { type: "button", onClick: () => P(h), className: `h-7 rounded-full border px-3 text-xs transition-colors ${$ === h ? "border-primary bg-primary-soft text-primary" : "border-lineSubtle bg-white text-secondaryText hover:border-controlBorder"}`, children: h === "all" ? "全部" : h }, h)) }),
-        L && /* @__PURE__ */ e("button", { type: "button", onClick: () => R((h) => !h), className: "shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText", children: I ? "收起" : "展开" })
+        /* @__PURE__ */ e("div", { ref: Ae, className: "flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200", style: { maxHeight: I || !O ? void 0 : `${We}px` }, children: Ee.map((h) => /* @__PURE__ */ e("button", { type: "button", onClick: () => P(h), className: `h-7 rounded-full border px-3 text-xs transition-colors ${$ === h ? "border-primary bg-primary-soft text-primary" : "border-lineSubtle bg-white text-secondaryText hover:border-controlBorder"}`, children: h === "all" ? "全部" : h }, h)) }),
+        O && /* @__PURE__ */ e("button", { type: "button", onClick: () => R((h) => !h), className: "shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText", children: I ? "收起" : "展开" })
       ] }) }),
       c === "documents" ? Be.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2", children: Be.map((h) => /* @__PURE__ */ t("button", { type: "button", onClick: () => C(h.kbNodeId), className: "rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm", children: [
         /* @__PURE__ */ e("h3", { className: "truncate text-base font-medium text-primaryText", children: h.title }),
@@ -1418,7 +1418,7 @@ function Ar({
               /* @__PURE__ */ e("p", { className: "text-sm text-danger", children: d }),
               C && /* @__PURE__ */ e(E, { type: "secondary", size: "small", className: "mt-3", onClick: C, children: "重新加载" })
             ] }) : o.length ? /* @__PURE__ */ e("div", { className: "grid gap-3 sm:grid-cols-2", children: o.map((c) => {
-              var _;
+              var M;
               const a = c.id === u;
               return /* @__PURE__ */ e(
                 "button",
@@ -1438,7 +1438,7 @@ function Ar({
                         a && /* @__PURE__ */ e(Ce, { size: 15, className: "ml-auto shrink-0 text-primary" })
                       ] }),
                       /* @__PURE__ */ e("p", { className: "mt-1 line-clamp-2 text-xs leading-4 text-tertiaryText", children: c.description }),
-                      (_ = c.structure) != null && _.length ? /* @__PURE__ */ e("div", { className: "mt-2 flex flex-wrap gap-1.5", children: c.structure.slice(0, 3).map((k) => /* @__PURE__ */ e("span", { className: "rounded-full bg-surface px-2 py-0.5 text-xs text-secondaryText", children: k }, k)) }) : null
+                      (M = c.structure) != null && M.length ? /* @__PURE__ */ e("div", { className: "mt-2 flex flex-wrap gap-1.5", children: c.structure.slice(0, 3).map((k) => /* @__PURE__ */ e("span", { className: "rounded-full bg-surface px-2 py-0.5 text-xs text-secondaryText", children: k }, k)) }) : null
                     ] })
                   ] })
                 },
@@ -1760,7 +1760,7 @@ function qe({ label: r, description: s, children: o }) {
     /* @__PURE__ */ e("div", { className: "flex shrink-0 items-center justify-end", children: o })
   ] });
 }
-function Or({
+function Lr({
   isSidebarOpen: r,
   avatarText: s = "研",
   avatarUrl: o,
@@ -1770,9 +1770,9 @@ function Or({
   onChangePassword: T,
   onChangeAvatar: y
 }) {
-  const [C, g] = p(!1), [w, m] = p(""), [i, n] = p(""), [u, v] = p(""), [b, f] = p(!1), [z, x] = p(""), [c, a] = p(""), [_, k] = p(""), $ = fe(null), P = u.length > 0 && i !== u, I = i.length > 0 && i.trim().length < 6, R = !!(w.trim() && i.trim() && u.trim() && !I && !P && !b), L = () => {
+  const [C, g] = p(!1), [w, m] = p(""), [i, n] = p(""), [u, v] = p(""), [b, f] = p(!1), [z, x] = p(""), [c, a] = p(""), [M, k] = p(""), $ = fe(null), P = u.length > 0 && i !== u, I = i.length > 0 && i.trim().length < 6, R = !!(w.trim() && i.trim() && u.trim() && !I && !P && !b), O = () => {
     b || (g(!1), m(""), n(""), v(""), x(""), a(""), k(""));
-  }, M = async () => {
+  }, _ = async () => {
     if (R) {
       f(!0), x(""), a(""), k("");
       try {
@@ -1846,10 +1846,10 @@ function Or({
       {
         visible: C,
         title: "修改密码",
-        onClose: L,
-        onCancel: L,
+        onClose: O,
+        onCancel: O,
         onConfirm: () => {
-          M();
+          _();
         },
         cancelText: "取消",
         okText: b ? "保存中…" : "保存",
@@ -1882,8 +1882,8 @@ function Or({
               },
               placeholder: "请输入新密码",
               size: "medium",
-              error: !!_ || I,
-              helperText: _ || (I ? "新密码至少需要 6 位" : void 0),
+              error: !!M || I,
+              helperText: M || (I ? "新密码至少需要 6 位" : void 0),
               disabled: b
             }
           ),
@@ -1907,7 +1907,7 @@ function Or({
     )
   ] });
 }
-function Lr({ onOpenAiUsage: r, onOpenMembers: s, onLogout: o }) {
+function Or({ onOpenAiUsage: r, onOpenMembers: s, onLogout: o }) {
   return /* @__PURE__ */ t("div", { className: "mx-auto max-w-2xl p-8", children: [
     /* @__PURE__ */ e("h1", { className: "mb-8 text-3xl font-bold", children: "⚙️ 系统设置" }),
     /* @__PURE__ */ t("div", { className: "overflow-hidden rounded-2xl border border-borderGray bg-surface shadow-sm", children: [
@@ -1938,10 +1938,10 @@ function ur({ points: r, labels: s, totalAmount: o }) {
           ] }, b);
         }),
         r.map((b, f) => {
-          const z = b / m * 138, x = 52 + f * (u + n), c = 156 - z, a = s[f] ?? "", _ = f % i === 0 || f === r.length - 1;
+          const z = b / m * 138, x = 52 + f * (u + n), c = 156 - z, a = s[f] ?? "", M = f % i === 0 || f === r.length - 1;
           return /* @__PURE__ */ t("g", { onMouseEnter: () => w(f), onMouseLeave: () => w(null), children: [
             /* @__PURE__ */ e("rect", { x: x.toFixed(2), y: c.toFixed(2), width: u.toFixed(2), height: Math.max(1, z).toFixed(2), rx: "1.5", fill: g === f ? "var(--chatui-color-ai-usage-bar-hover)" : "var(--chatui-color-ai-usage-bar)" }),
-            _ && /* @__PURE__ */ e("text", { x: (x + u / 2).toFixed(2), y: 170, textAnchor: "middle", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: a })
+            M && /* @__PURE__ */ e("text", { x: (x + u / 2).toFixed(2), y: 170, textAnchor: "middle", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: a })
           ] }, `${a}-${f}`);
         })
       ] }),
@@ -1970,14 +1970,14 @@ function Rr({
   onMemberChange: m,
   onMonthChange: i
 }) {
-  var R, L;
-  const [n, u] = p("analysis"), [v, b] = p(!1), [f, z] = p(!1), x = ((R = o.find((M) => M.value === d)) == null ? void 0 : R.label) ?? "全部成员", c = ((L = l.find((M) => M.value === N)) == null ? void 0 : L.label) ?? N, a = A(() => o.map((M) => ({ key: `member-${M.value}`, label: M.label, active: M.value === d })), [o, d]), _ = A(() => l.map((M) => ({ key: `month-${M.value}`, label: M.label, active: M.value === N })), [l, N]), k = ke((M) => {
-    m(M.key.replace("member-", "")), b(!1);
-  }, [m]), $ = ke((M) => {
-    i(M.key.replace("month-", "")), z(!1);
+  var R, O;
+  const [n, u] = p("analysis"), [v, b] = p(!1), [f, z] = p(!1), x = ((R = o.find((_) => _.value === d)) == null ? void 0 : R.label) ?? "全部成员", c = ((O = l.find((_) => _.value === N)) == null ? void 0 : O.label) ?? N, a = A(() => o.map((_) => ({ key: `member-${_.value}`, label: _.label, active: _.value === d })), [o, d]), M = A(() => l.map((_) => ({ key: `month-${_.value}`, label: _.label, active: _.value === N })), [l, N]), k = ke((_) => {
+    m(_.key.replace("member-", "")), b(!1);
+  }, [m]), $ = ke((_) => {
+    i(_.key.replace("month-", "")), z(!1);
   }, [i]), P = A(() => [
-    { title: "充值金额", dataIndex: "amount", width: "50%", render: (M) => /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: String(M) }) },
-    { title: "充值时间", dataIndex: "rechargeTime", width: "50%", render: (M) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(M) }) }
+    { title: "充值金额", dataIndex: "amount", width: "50%", render: (_) => /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: String(_) }) },
+    { title: "充值时间", dataIndex: "rechargeTime", width: "50%", render: (_) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(_) }) }
   ], []), I = "!min-w-[172px] !rounded-lg !border !border-borderGray !p-1.5 !shadow-md";
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-surface", children: [
     /* @__PURE__ */ e("header", { className: "z-10 flex h-16 shrink-0 items-center bg-homeHeaderSurface px-4 backdrop-blur-sm", children: /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
@@ -1989,20 +1989,20 @@ function Rr({
       ] })
     ] }) }),
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-10 pt-2 md:px-8 md:pb-12 md:pt-3 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px] space-y-5", children: [
-      /* @__PURE__ */ e("section", { className: "grid grid-cols-1 gap-3 md:grid-cols-3", children: s.map((M) => /* @__PURE__ */ e("div", { className: "h-[118px] rounded-xl bg-aiUsageCard px-4", children: /* @__PURE__ */ t("div", { className: "flex h-full flex-col justify-center", children: [
+      /* @__PURE__ */ e("section", { className: "grid grid-cols-1 gap-3 md:grid-cols-3", children: s.map((_) => /* @__PURE__ */ e("div", { className: "h-[118px] rounded-xl bg-aiUsageCard px-4", children: /* @__PURE__ */ t("div", { className: "flex h-full flex-col justify-center", children: [
         /* @__PURE__ */ t("div", { className: "flex items-center gap-1 text-sm text-tertiaryText", children: [
-          /* @__PURE__ */ e("span", { children: M.title }),
-          M.tooltip && /* @__PURE__ */ t("div", { className: "group relative inline-flex", children: [
+          /* @__PURE__ */ e("span", { children: _.title }),
+          _.tooltip && /* @__PURE__ */ t("div", { className: "group relative inline-flex", children: [
             /* @__PURE__ */ e(vt, { size: 14, className: "cursor-help text-tertiaryText opacity-80" }),
-            /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-max -translate-x-1/2 rounded-md bg-aiUsageTooltip px-2 py-1 text-xs text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100", children: M.tooltip })
+            /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-max -translate-x-1/2 rounded-md bg-aiUsageTooltip px-2 py-1 text-xs text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100", children: _.tooltip })
           ] })
         ] }),
         /* @__PURE__ */ t("div", { className: "mt-2 flex items-center gap-2", children: [
-          /* @__PURE__ */ e("div", { className: "overflow-hidden text-ellipsis whitespace-nowrap text-[30px] font-semibold leading-none text-primaryText", children: M.value }),
-          M.warningLabel && /* @__PURE__ */ e("span", { className: "inline-flex shrink-0 items-center rounded-full bg-danger-soft px-2 py-0.5 text-xs font-medium text-danger", children: M.warningLabel })
+          /* @__PURE__ */ e("div", { className: "overflow-hidden text-ellipsis whitespace-nowrap text-[30px] font-semibold leading-none text-primaryText", children: _.value }),
+          _.warningLabel && /* @__PURE__ */ e("span", { className: "inline-flex shrink-0 items-center rounded-full bg-danger-soft px-2 py-0.5 text-xs font-medium text-danger", children: _.warningLabel })
         ] }),
-        M.helper && /* @__PURE__ */ e("div", { className: "mt-2 text-sm text-tertiaryText", children: M.helper })
-      ] }) }, M.title)) }),
+        _.helper && /* @__PURE__ */ e("div", { className: "mt-2 text-sm text-tertiaryText", children: _.helper })
+      ] }) }, _.title)) }),
       /* @__PURE__ */ t("section", { className: "rounded-xl bg-surface", children: [
         /* @__PURE__ */ e("div", { className: "flex items-center justify-between border-b border-lineSubtle pt-3", children: /* @__PURE__ */ t("div", { className: "flex items-center gap-5", children: [
           /* @__PURE__ */ e("button", { type: "button", onClick: () => u("analysis"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "analysis" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "消耗分析" }),
@@ -2013,7 +2013,7 @@ function Rr({
             /* @__PURE__ */ e("span", { className: "truncate", children: x }),
             /* @__PURE__ */ e(ue, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${v ? "rotate-180" : ""}` })
           ] }) }),
-          /* @__PURE__ */ e(ee, { open: f, onOpenChange: z, items: _, onItemClick: $, placement: "bottom-start", width: 172, portal: !0, menuClassName: I, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
+          /* @__PURE__ */ e(ee, { open: f, onOpenChange: z, items: M, onItemClick: $, placement: "bottom-start", width: 172, portal: !0, menuClassName: I, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
             /* @__PURE__ */ e("span", { className: "truncate", children: c }),
             /* @__PURE__ */ e(ue, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${f ? "rotate-180" : ""}` })
           ] }) })
@@ -2099,7 +2099,7 @@ export {
   ma as InputArea,
   sr as LiteratureSubscriptionsTable,
   xa as LoginPage,
-  Mr as MemberManagementPage,
+  _r as MemberManagementPage,
   ha as MessageItem,
   pa as MessageList,
   ua as MiraDraftCard,
@@ -2116,10 +2116,10 @@ export {
   ga as RegisterPage,
   Ir as ScheduledTaskDeleteModal,
   zr as ScheduledTaskEditorModal,
-  _r as ScheduledTasksOverview,
-  Lr as SettingsPage,
+  Mr as ScheduledTasksOverview,
+  Or as SettingsPage,
   ya as SkillPage,
-  Or as SystemSettingsDetailPage,
+  Lr as SystemSettingsDetailPage,
   Na as ThinkingIndicator,
   Hr as ToolPage,
   nr as buildTaskPromptPreview,

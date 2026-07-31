@@ -44,6 +44,13 @@ export interface AdminMemberUsageSummary {
     name: string;
     avatarUrl?: string | null;
   };
+  projects: Array<{
+    id: string;
+    name: string;
+    type: 'team' | 'personal';
+    role: 'owner' | 'admin' | 'member' | 'viewer';
+    isDefaultUnassigned: boolean;
+  }>;
   monthTokenUsage: number;
   last7dTokenUsage: number;
 }
