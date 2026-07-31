@@ -57,6 +57,15 @@ export async function updateProject(
   );
 }
 
+export async function archiveProject(
+  api: ApiClient,
+  projectId: string,
+): Promise<{ ok: true }> {
+  return api.post<{ ok: true }>(
+    `/api/projects/${encodeURIComponent(projectId)}/archive`,
+  );
+}
+
 export async function createProjectConversation(
   api: ApiClient,
   projectId: string,
@@ -153,6 +162,7 @@ const KNOWLEDGE_SECTION_LABELS: Record<string, string> = {
 
 export interface ProjectChatWorkspaceViewModel {
   projectName: string;
+  defaultKbNodeId?: string | null;
   knowledgeDocs: ChatProjectKnowledgeItemViewModel[];
   experiments: ChatProjectExperimentItemViewModel[];
   previewItems: ChatPreviewItemViewModel[];
@@ -178,6 +188,9 @@ export function mapProjectChatWorkspace(
 
   return {
     projectName: project.name,
+    ...(project.defaultKbNodeId !== undefined
+      ? { defaultKbNodeId: project.defaultKbNodeId }
+      : {}),
     knowledgeDocs: knowledgeItems.map((item) => ({
       id: item.id,
       title: item.title,

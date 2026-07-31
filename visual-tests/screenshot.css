@@ -1,0 +1,8 @@
+/*
+ * Only removes unstable capture noise. Product colors and layout remain intact.
+ * The login canvas is animated with requestAnimationFrame and would otherwise
+ * produce a different bitmap on every retry.
+ */
+canvas {
+  visibility: hidden !important;
+}

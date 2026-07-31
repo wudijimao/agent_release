@@ -16,10 +16,20 @@ export interface ChatReference {
     /** 宿主提供的稳定资源标识；UI 不解释也不请求该资源。 */
     sourceId?: string;
 }
+export interface MiraDraftCardViewModel {
+    actionKey: string;
+    title: string;
+    targetLabel?: string;
+    summary?: string;
+    status: 'waiting' | 'saving' | 'saved' | 'error';
+    errorMessage?: string;
+}
 export interface ChatMessage {
+    id?: string;
     role: 'user' | 'assistant';
     content: string;
     attachments?: ChatAttachment[];
     references?: ChatReference[];
+    miraDraft?: MiraDraftCardViewModel;
 }
 //# sourceMappingURL=chat.types.d.ts.map

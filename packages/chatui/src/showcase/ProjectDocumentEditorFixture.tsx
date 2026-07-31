@@ -38,6 +38,8 @@ export function ProjectDocumentEditorFixture() {
         projectName="肿瘤免疫项目"
         title={title}
         initialMarkdown=""
+        createdByName="王平"
+        updatedByName="王平"
         updatedAt="2026.07.28 14:30"
         index={{
           status: 'indexed',
@@ -66,7 +68,6 @@ export function ProjectDocumentEditorFixture() {
             current.filter((attachment) => attachment.id !== attachmentId),
           );
         }}
-        onOpenAttachment={() => undefined}
         onSave={() => undefined}
         onClose={() => setClosed(true)}
       />

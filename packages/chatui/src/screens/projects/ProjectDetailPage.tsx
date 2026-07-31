@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Menu, Plus, Search, Upload, Users } from 'lucide-react';
+import { Menu, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
 import { BaseButton, BaseDocumentUpload, BaseEmpty, BaseModal } from '../../components/common';
 
 type ProjectDetailTab = 'documents' | 'chats';
@@ -44,6 +44,7 @@ export interface ProjectDetailPageProps {
   documentImportDescription?: React.ReactNode;
   onUpdateProjectName(name: string): void | Promise<void>;
   onUpdateProjectDescription(description: string): void | Promise<void>;
+  onDeleteProject?(): void | Promise<void>;
 }
 
 const TAG_COLLAPSED_MAX_HEIGHT = 84;
@@ -94,6 +95,7 @@ export function ProjectDetailPage({
   onImportDocuments, onUpdateProjectName, onUpdateProjectDescription,
   documentImportAccept, documentImportMaxSize, documentImportDescription,
   showMemberManagement = true,
+  onDeleteProject,
 }: ProjectDetailPageProps) {
   const [activeTab, setActiveTab] = useState<ProjectDetailTab>('documents');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -109,6 +111,9 @@ export function ProjectDetailPage({
   const [editingName, setEditingName] = useState(false);
   const [editingDescription, setEditingDescription] = useState(false);
   const [editError, setEditError] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingProject, setDeletingProject] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
   const tagFilterRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -179,6 +184,17 @@ export function ProjectDetailPage({
       setImportError(error instanceof Error ? error.message : '文档导入失败');
     } finally { setImporting(false); }
   };
+  const confirmDeleteProject = async () => {
+    if (!onDeleteProject || deletingProject) return;
+    setDeletingProject(true);
+    setDeleteError('');
+    try {
+      await onDeleteProject();
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : '项目删除失败');
+      setDeletingProject(false);
+    }
+  };
 
   return (
     <div className="flex h-full w-full flex-col bg-white">
@@ -190,7 +206,10 @@ export function ProjectDetailPage({
             <span className="text-tertiaryText">/</span><span className="font-medium text-primaryText">{nameDraft || project?.name || '详情'}</span>
           </div>
         </div>
-        {project && showMemberManagement && <button type="button" onClick={onOpenMemberManagement} className="inline-flex items-center gap-1.5 rounded-lg bg-transparent px-1 py-1 text-sm font-medium leading-5 text-secondaryText transition-colors hover:text-primaryText"><Users size={15} /><span>管理成员</span></button>}
+        {project && (showMemberManagement || onDeleteProject) && <div className="flex items-center gap-4">
+          {showMemberManagement && <button type="button" onClick={onOpenMemberManagement} className="inline-flex items-center gap-1.5 rounded-lg bg-transparent px-1 py-1 text-sm font-medium leading-5 text-secondaryText transition-colors hover:text-primaryText"><Users size={15} /><span>管理成员</span></button>}
+          {onDeleteProject && <button type="button" onClick={() => { setDeleteError(''); setShowDeleteModal(true); }} className="inline-flex items-center gap-1.5 rounded-lg bg-transparent px-1 py-1 text-sm font-medium leading-5 text-danger transition-colors hover:text-danger-hover"><Trash2 size={15} /><span>删除项目</span></button>}
+        </div>}
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10">
@@ -230,6 +249,30 @@ export function ProjectDetailPage({
       <BaseModal visible={showImportModal} title="导入文档" width={500} maskClosable={false} cancelText="取消" okText={importing ? '导入中…' : '导入'}
         onCancel={() => { if (!importing) { setShowImportModal(false); setSelectedFiles([]); setImportError(''); } }} onConfirm={() => void submitImport()} okButtonProps={{ disabled: importing }} bodyClassName="!px-6 !py-5">
         <div className="space-y-4"><BaseDocumentUpload value={selectedFiles} accept={documentImportAccept} maxCount={5} maxSize={documentImportMaxSize ?? 20 * 1024 * 1024} uploadDescription={documentImportDescription} disabled={importing} onChange={setSelectedFiles} onError={(error) => setImportError(error.message)} />{importError && <div role="alert" className="text-sm text-danger">{importError}</div>}</div>
+      </BaseModal>
+
+      <BaseModal
+        visible={showDeleteModal}
+        title="删除项目"
+        width={420}
+        maskClosable={false}
+        onCancel={() => {
+          if (!deletingProject) {
+            setShowDeleteModal(false);
+            setDeleteError('');
+          }
+        }}
+        footer={(
+          <div className="flex justify-end gap-2 border-t border-lineSoft px-5 py-3">
+            <BaseButton type="secondary" size="medium" disabled={deletingProject} onClick={() => { setShowDeleteModal(false); setDeleteError(''); }}>取消</BaseButton>
+            <BaseButton type="danger" size="medium" isLoading={deletingProject} onClick={() => void confirmDeleteProject()}>删除</BaseButton>
+          </div>
+        )}
+      >
+        <div className="space-y-3 text-sm leading-6 text-secondaryText">
+          <p>删除后，项目“{project?.name}”将不再显示。确认删除当前项目吗？</p>
+          {deleteError && <p role="alert" className="text-danger">{deleteError}</p>}
+        </div>
       </BaseModal>
     </div>
   );

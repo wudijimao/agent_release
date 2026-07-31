@@ -8,6 +8,7 @@ import 'highlight.js/styles/atom-one-light.css';
 import 'katex/dist/katex.min.css';
 import 'katex/contrib/mhchem';
 import AssistantActions from './AssistantActions';
+import { MiraDraftCard } from './MiraDraftCard';
 import type { AssistantFeedback, ChatMessage } from './chat.types';
 
 type MarkdownRemarkPlugin = NonNullable<Options['remarkPlugins']>[number];
@@ -32,6 +33,7 @@ export interface MessageItemProps {
   feedback?: AssistantFeedback;
   onFeedback?: (actionKey: string, type: AssistantFeedback) => void;
   onRefresh?: () => void;
+  onConfirmMiraDraft?: (actionKey: string) => void;
   isTyping?: boolean;
   isStreaming?: boolean;
 }
@@ -318,6 +320,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   feedback,
   onFeedback,
   onRefresh,
+  onConfirmMiraDraft,
   isTyping = false,
   isStreaming,
 }) => {
@@ -664,6 +667,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                   {msg.content}
                 </ReactMarkdown>
               </div>
+            )}
+
+            {msg.miraDraft && (
+              <MiraDraftCard draft={msg.miraDraft} onConfirm={onConfirmMiraDraft} />
             )}
 
             {!isPaperRecommendationMessage && msg.content && !streaming && (

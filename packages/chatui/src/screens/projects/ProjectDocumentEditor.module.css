@@ -46,20 +46,20 @@
   @apply block w-full border-0 bg-transparent p-0 text-2xl font-semibold leading-8 text-primaryText outline-none placeholder:font-normal placeholder:text-tertiaryText;
 }
 
-.milkdownHost {
-  @apply min-h-full;
-}
-
 .milkdownHost :global(.milkdown) {
-  min-height: 100%;
   background: transparent;
 }
 
 .milkdownHost :global(.milkdown .ProseMirror) {
-  @apply pb-40 pt-0 text-primaryText;
-  min-height: calc(100vh - 4rem);
+  @apply pb-0 pt-0 text-primaryText;
+  min-height: 28px;
   color: var(--chatui-color-text-primary);
   outline: none;
+}
+
+.milkdownHost
+  :global(.milkdown .ProseMirror > .prosemirror-virtual-cursor:first-child + *) {
+  margin-top: 0;
 }
 
 .milkdownHost
@@ -75,6 +75,13 @@
 .milkdownHost :global(.milkdown-slash-menu) {
   @apply overflow-visible rounded-[6px] border border-lineSubtle bg-surface shadow-sm;
   width: min(230px, calc(100vw - 12px));
+}
+
+.milkdownHost :global(.milkdown-slash-menu[data-chatui-placement]) {
+  position: fixed !important;
+  left: var(--chatui-block-menu-left) !important;
+  top: var(--chatui-block-menu-top) !important;
+  z-index: 50;
 }
 
 .milkdownHost :global(.milkdown-slash-menu .tab-group) {
@@ -117,44 +124,217 @@
   @apply h-6 w-6 fill-current text-primaryText;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child ul) {
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:nth-child(2) ul) {
   @apply px-3 pb-3;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li) {
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:nth-child(2) li) {
   @apply flex h-9 min-w-0 items-center gap-3 rounded-[6px] px-2 py-0;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li > span:last-child) {
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:nth-child(2) li > span:last-child) {
   @apply text-sm font-normal leading-5 text-primaryText;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li svg) {
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:nth-child(2) li svg) {
   @apply h-5 w-5 fill-current;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li.hover),
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li.active) {
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group li.hover),
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group li.active) {
+  @apply bg-surface;
+}
+
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group li[data-chatui-pointer-highlighted='true']) {
   @apply bg-primary-soft-strong;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li.chatui-selected) {
-  @apply bg-primary-soft-strong text-primary;
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group li[data-chatui-selected='true']) {
+  @apply bg-surface text-primary;
   box-shadow: inset 0 0 0 1px var(--chatui-color-brand-primary);
+}
+
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group li[data-chatui-selected='true'][data-chatui-pointer-highlighted='true']) {
+  @apply bg-primary-soft-strong;
 }
 
 .milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-task) {
   @apply fill-documentMenuTask text-documentMenuTask;
 }
 
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-image) {
-  @apply fill-documentMenuImage text-documentMenuImage;
-}
-
-.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-table) {
-  @apply fill-documentMenuTable text-documentMenuTable;
-}
-
 .milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-math) {
   @apply fill-documentMenuMath text-documentMenuMath;
+}
+
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child ul) {
+  @apply px-3 pb-3;
+}
+
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li) {
+  @apply flex h-9 min-w-0 items-center gap-3 rounded-[6px] px-2 py-0 text-danger;
+}
+
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li > span:last-child) {
+  @apply text-sm font-normal leading-5 text-danger;
+}
+
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li svg) {
+  @apply h-5 w-5 fill-none text-danger;
+}
+
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group:last-child li[data-chatui-pointer-highlighted='true']) {
+  @apply bg-danger-soft;
+}
+
+.milkdownHost
+  :global(.milkdown-block-handle .operation-item:first-child .milkdown-icon),
+.milkdownHost
+  :global(.milkdown-block-handle .operation-item:first-child .milkdown-icon svg) {
+  @apply fill-current text-primaryText;
+}
+
+.milkdownHost :global(.milkdown .milkdown-code-block) {
+  margin: 20px 0;
+  overflow: visible;
+  padding: 0;
+  border: 1px solid var(--chatui-color-chat-code-border);
+  border-radius: 12px;
+  background: var(--chatui-color-surface);
+  box-shadow: var(--chatui-shadow-chat-code);
+}
+
+.milkdownHost :global(.milkdown .milkdown-code-block.selected) {
+  outline: 1px solid var(--chatui-color-brand-primary);
+  outline-offset: 1px;
+}
+
+.milkdownHost :global(.milkdown .milkdown-code-block .tools) {
+  min-height: 40px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--chatui-color-chat-code-border);
+  border-radius: 11px 11px 0 0;
+  background: var(--chatui-color-chat-code-header-surface);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .tools .language-button) {
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--chatui-color-chat-code-control-border);
+  border-radius: 999px;
+  background: var(--chatui-color-surface);
+  color: var(--chatui-color-text-tertiary);
+  opacity: 1;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .tools .language-button:hover) {
+  border-color: var(--chatui-color-chat-code-control-border-hover);
+  background: var(--chatui-color-chat-code-control-hover);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .tools .language-button .expand-icon svg) {
+  @apply fill-none text-secondaryText;
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .tools .tools-button-group button) {
+  min-height: 26px;
+  padding: 3px 8px;
+  border: 1px solid var(--chatui-color-chat-code-control-border);
+  border-radius: 6px;
+  background: var(--chatui-color-surface);
+  color: var(--chatui-color-chat-code-control-text);
+  opacity: 1;
+  font-weight: 500;
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .tools .tools-button-group button:hover) {
+  border-color: var(--chatui-color-chat-code-control-border-hover);
+  background: var(--chatui-color-chat-code-control-hover);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .tools .tools-button-group button svg) {
+  @apply fill-current text-secondaryText;
+}
+
+.milkdownHost :global(.milkdown .milkdown-code-block .codemirror-host) {
+  overflow: hidden;
+  padding: 8px 0 10px;
+  border-radius: 0 0 11px 11px;
+  background: var(--chatui-color-surface);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .cm-editor),
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .cm-gutters) {
+  background: var(--chatui-color-surface);
+}
+
+.milkdownHost :global(.milkdown .milkdown-code-block .cm-scroller) {
+  color: var(--chatui-color-text-primary);
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.milkdownHost :global(.milkdown .milkdown-code-block .cm-gutters) {
+  padding-left: 4px;
+  border-right: 1px solid var(--chatui-color-line-subtle);
+  color: var(--chatui-color-text-tertiary);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .cm-activeLine),
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .cm-activeLineGutter) {
+  background: var(--chatui-color-chat-code-header-surface);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .language-picker .list-wrapper) {
+  border: 1px solid var(--chatui-color-line-subtle);
+  background: var(--chatui-color-surface);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .preview-panel) {
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--chatui-color-chat-code-border);
+  background: var(--chatui-color-surface);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .preview-panel .preview-label) {
+  margin: 10px 0 6px;
+  color: var(--chatui-color-text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .preview-panel .preview) {
+  min-height: 48px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--chatui-color-chat-code-header-surface);
+  color: var(--chatui-color-text-primary);
+}
+
+.milkdownHost
+  :global(.milkdown .milkdown-code-block .preview-panel .katex) {
+  font-size: 1.05em;
 }

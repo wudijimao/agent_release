@@ -1,29 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, Clock3, Download, FileText, Loader2, Menu, SearchX } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { BaseButton, BaseEmpty, BaseModal } from '../../components/common';
+import {
+  ProjectDocumentAttachments,
+  type ProjectDocumentAttachmentViewModel,
+} from './ProjectDocumentAttachments';
+import {
+  ProjectDocumentMetadata,
+  type ProjectDocumentIndexViewModel,
+} from './ProjectDocumentMetadata';
 import markdownStyles from './ProjectDocumentMarkdown.module.css';
-
-export interface ProjectDocumentAttachmentViewModel extends Record<string, unknown> {
-  id: string;
-  name: string;
-  mimeType: string;
-  sizeLabel: string;
-  status: 'ready' | 'processing' | 'failed';
-  statusLabel: string;
-}
-
-export interface ProjectDocumentIndexViewModel extends Record<string, unknown> {
-  status: 'disabled' | 'pending' | 'indexed';
-  statusLabel: string;
-  detail: string;
-}
 
 export interface ProjectDocumentPreviewViewModel extends Record<string, unknown> {
   id: string;
   title: string;
   markdown: string;
+  createdByName: string;
+  updatedByName: string;
   updatedAt: string;
   canEdit: boolean;
   attachments: ProjectDocumentAttachmentViewModel[];
@@ -39,14 +34,7 @@ export interface ProjectDocumentPreviewProps {
   onBackToProject(): void;
   onEdit(): void;
   onDelete(): void | Promise<void>;
-  onOpenAttachment(attachmentId: string): void;
 }
-
-const indexIcon = {
-  disabled: <SearchX size={14} />,
-  pending: <Clock3 size={14} />,
-  indexed: <CheckCircle2 size={14} />,
-};
 
 export function ProjectDocumentPreview({
   projectName,
@@ -57,7 +45,6 @@ export function ProjectDocumentPreview({
   onBackToProject,
   onEdit,
   onDelete,
-  onOpenAttachment,
 }: ProjectDocumentPreviewProps) {
   const [isContentScrolling, setIsContentScrolling] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
@@ -116,13 +103,12 @@ export function ProjectDocumentPreview({
         <div className="mx-auto flex h-full min-h-0 max-w-[1240px] flex-col">
           <section className="mb-4 shrink-0 px-[120px]">
             <h1 className="text-2xl font-semibold text-primaryText">{document.title}</h1>
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-tertiaryText">
-              <span>最近修改: {document.updatedAt}</span>
-              <span className="inline-flex items-center gap-1.5" title={document.index.detail}>
-                {indexIcon[document.index.status]}
-                {document.index.statusLabel}
-              </span>
-            </div>
+            <ProjectDocumentMetadata
+              createdByName={document.createdByName}
+              updatedByName={document.updatedByName}
+              updatedAt={document.updatedAt}
+              index={document.index}
+            />
             <div className="mt-4 h-px bg-lineSubtle" />
           </section>
 
@@ -137,29 +123,7 @@ export function ProjectDocumentPreview({
               </div>
             )}
 
-            <div className="mx-[120px] mb-6 mt-8 border-t border-lineSubtle pt-6">
-              <div className="text-sm font-medium text-primaryText">附件</div>
-              {document.attachments.length ? (
-                <div className="mt-3 flex flex-wrap gap-2.5">
-                  {document.attachments.map((attachment) => (
-                    <button
-                      key={attachment.id}
-                      type="button"
-                      onClick={() => onOpenAttachment(attachment.id)}
-                      className="inline-flex max-w-full items-center gap-2 rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText transition-colors hover:border-controlBorder hover:text-primaryText"
-                      title={`${attachment.statusLabel} · ${attachment.sizeLabel}`}
-                    >
-                      <FileText size={14} className="shrink-0" />
-                      <span className="max-w-72 truncate">{attachment.name}</span>
-                      <span className="text-xs text-tertiaryText">{attachment.sizeLabel}</span>
-                      {attachment.status === 'processing' ? <Loader2 size={12} className="animate-spin" /> : <Download size={13} />}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-2 text-sm text-tertiaryText">暂无附件</p>
-              )}
-            </div>
+            <ProjectDocumentAttachments attachments={document.attachments} />
           </section>
         </div>
       </div>

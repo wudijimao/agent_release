@@ -102,11 +102,29 @@ export interface ChatHistorySessionDto {
   updatedAt?: string;
 }
 
+export type ChatHistoryRunStatus =
+  | "queued"
+  | "running"
+  | "awaiting_clarification"
+  | "awaiting_confirmation"
+  | "awaiting_approval"
+  | "completed"
+  | "failed"
+  | "cancelled";
+
+export interface ChatHistoryRunDto {
+  id: string;
+  sessionId: string;
+  status: ChatHistoryRunStatus;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface ChatHistoryDetailResponse {
   session: ChatHistorySessionDto;
   sessionId: string;
   messages: ChatHistoryMessageDto[];
-  runs: unknown[];
+  runs: ChatHistoryRunDto[];
   pendingMcpToolCalls: unknown[];
   attachments: ChatAttachmentDto[];
   currentContextRefs: HomeContextRef[] | null;

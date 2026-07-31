@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 
 const externalPackages = [
   '@milkdown/crepe',
+  '@milkdown/kit',
   'antd',
   'classnames',
   'dayjs',

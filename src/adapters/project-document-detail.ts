@@ -1,4 +1,4 @@
-import type { KbAttachment, KbNodeDetail } from "@bioagent/shared";
+import type { KbAttachment, KbNodeDetail, KbVersion } from "@bioagent/shared";
 import type { ProjectDocumentPreviewViewModel } from "@bioagent/chatui";
 
 import type { ApiClient } from "@/lib/api";
@@ -7,6 +7,7 @@ import { markdownToKnowledgeDocument } from "./project-documents";
 interface ProjectDocumentDetailPayload {
   node: KbNodeDetail;
   attachments: KbAttachment[];
+  versions: KbVersion[];
   pageIndex: {
     indexingEnabled: boolean;
     chunkCount: number;
@@ -31,6 +32,34 @@ function inlineText(value: unknown): string {
   if ("content" in value) return inlineText(value.content);
   if ("children" in value) return inlineText(value.children);
   return "";
+}
+
+function tableToMarkdown(value: unknown): string {
+  if (!isRecord(value) || !Array.isArray(value.rows)) return "";
+  const rows = value.rows
+    .map((row) => {
+      if (!isRecord(row) || !Array.isArray(row.cells)) return [];
+      return row.cells.map((cell) =>
+        inlineText(cell)
+          .replace(/\|/g, "\\|")
+          .replace(/\r?\n/g, "<br>")
+          .trim(),
+      );
+    })
+    .filter((row) => row.length > 0);
+  if (!rows.length) return "";
+
+  const columnCount = Math.max(...rows.map((row) => row.length));
+  const normalizedRows = rows.map((row) => [
+    ...row,
+    ...Array.from({ length: columnCount - row.length }, () => ""),
+  ]);
+  const markdownRow = (row: string[]) => `| ${row.join(" | ")} |`;
+  return [
+    markdownRow(normalizedRows[0] ?? []),
+    markdownRow(Array.from({ length: columnCount }, () => "---")),
+    ...normalizedRows.slice(1).map(markdownRow),
+  ].join("\n");
 }
 
 function blockToMarkdown(block: unknown): string {
@@ -72,6 +101,8 @@ function blockToMarkdown(block: unknown): string {
       .join("\n");
   } else if (type === "divider" || type === "horizontalRule") {
     markdown = "---";
+  } else if (type === "table") {
+    markdown = tableToMarkdown(block.content);
   } else if (type === "image") {
     const url =
       (typeof props.url === "string" && props.url) ||
@@ -83,6 +114,14 @@ function blockToMarkdown(block: unknown): string {
   }
 
   return [markdown, children].filter(Boolean).join("\n");
+}
+
+function markdownListKind(block: unknown) {
+  if (!isRecord(block) || typeof block.type !== "string") return null;
+  if (block.type === "bulletListItem") return "unordered";
+  if (block.type === "checkListItem") return "task";
+  if (block.type === "numberedListItem") return "ordered";
+  return null;
 }
 
 export function knowledgeContentToMarkdown(
@@ -98,9 +137,23 @@ export function knowledgeContentToMarkdown(
       ? content.blocks
       : [];
   const markdown = blocks
-    .map(blockToMarkdown)
-    .filter(Boolean)
-    .join("\n\n")
+    .reduce<string[]>((parts, block, index) => {
+      const current = blockToMarkdown(block);
+      if (!current) return parts;
+
+      if (parts.length > 0) {
+        const previousKind = markdownListKind(blocks[index - 1]);
+        const currentKind = markdownListKind(block);
+        parts.push(
+          previousKind !== null && previousKind === currentKind
+            ? "\n"
+            : "\n\n",
+        );
+      }
+      parts.push(current);
+      return parts;
+    }, [])
+    .join("")
     .replace(/<br\s*\/?>/gi, "\n")
     .trim();
   return markdown || contentText.trim();
@@ -124,6 +177,13 @@ export function mapProjectDocumentDetail(
   payload: ProjectDocumentDetailPayload,
 ): ProjectDocumentPreviewViewModel {
   const { pageIndex } = payload;
+  const versions = [...payload.versions].sort(
+    (left, right) => left.versionNumber - right.versionNumber,
+  );
+  const createdByName =
+    versions[0]?.createdByName?.trim() || "未知成员";
+  const updatedByName =
+    versions.at(-1)?.createdByName?.trim() || createdByName;
   const index = !pageIndex.indexingEnabled
     ? {
         status: "disabled" as const,
@@ -149,6 +209,8 @@ export function mapProjectDocumentDetail(
       payload.node.content,
       payload.node.contentText,
     ),
+    createdByName,
+    updatedByName,
     updatedAt: formatUpdatedAt(payload.node.updatedAt),
     canEdit:
       payload.node.effectivePermission === "edit" ||

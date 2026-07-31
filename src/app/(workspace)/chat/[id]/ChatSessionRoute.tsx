@@ -52,6 +52,10 @@ import {
   mapProjectChatWorkspace,
   type ProjectChatWorkspaceViewModel,
 } from "@/adapters/projects";
+import {
+  confirmMiraDocumentDraft,
+  type MiraDocumentDraftAction,
+} from "@/adapters/mira-document-drafts";
 import { streamChat } from "@/lib/api";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
@@ -118,6 +122,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     openSidebar,
     projects,
     refreshChats,
+    refreshProjects,
     touchChat,
   } = useChatShell();
   const cachedSession = getCachedSession(sessionId);
@@ -137,7 +142,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     ...initialStreamState,
     messages: cachedSession?.messages ?? [],
   }));
+  const [miraDraftActions, setMiraDraftActions] = useState<
+    Record<string, MiraDocumentDraftAction>
+  >({});
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isRemoteReplying, setIsRemoteReplying] = useState(
+    cachedSession?.isReplying ?? false,
+  );
   const [pageError, setPageError] = useState("");
   const [streamNotice, setStreamNotice] = useState("");
   const [lastAttempt, setLastAttempt] = useState<StreamAttempt | null>(null);
@@ -258,10 +269,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const loadPage = useCallback(
     async (signal?: AbortSignal) => {
       try {
-        const session = await loadChatSession(api, sessionId, { signal });
+        const session = await loadChatSession(api, sessionId, {
+          signal,
+          projectName: currentProject?.name,
+        });
         if (signal?.aborted) return;
         setTitle(session.title);
         setStreamState({ ...initialStreamState, messages: session.messages });
+        setMiraDraftActions(session.miraDraftActions);
+        setIsRemoteReplying(session.isReplying);
         setShowProjectPanel(false);
         setShowPreviewPanel(false);
         setFileSearchQuery("");
@@ -271,6 +287,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         historyLoadedSessionIdRef.current = sessionId;
       } catch (loadError) {
         if (signal?.aborted) return;
+        setIsRemoteReplying(false);
         setPageError(
           loadError instanceof Error ? loadError.message : "对话加载失败",
         );
@@ -278,7 +295,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (!signal?.aborted) setPageStatus("ready");
       }
     },
-    [api, sessionId],
+    [api, currentProject, sessionId],
   );
 
   const loadProjectWorkspace = useCallback(
@@ -340,6 +357,59 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
   useEffect(() => () => streamControllerRef.current?.abort(), []);
 
+  useEffect(() => {
+    if (
+      status !== "authenticated" ||
+      !isRemoteReplying ||
+      isStreaming
+    ) {
+      return;
+    }
+
+    const controller = new AbortController();
+    let pollTimer: number | undefined;
+
+    const pollReplyState = async () => {
+      try {
+        const session = await loadChatSession(api, sessionId, {
+          signal: controller.signal,
+          projectName: currentProject?.name,
+        });
+        if (controller.signal.aborted) return;
+
+        setTitle(session.title);
+        setStreamState({ ...initialStreamState, messages: session.messages });
+        setMiraDraftActions(session.miraDraftActions);
+        setIsRemoteReplying(session.isReplying);
+        persistedMessageIdsRef.current = session.messageIds;
+        historyLoadedSessionIdRef.current = sessionId;
+
+        if (!session.isReplying) {
+          await refreshChats();
+          return;
+        }
+      } catch {
+        if (controller.signal.aborted) return;
+      }
+
+      pollTimer = window.setTimeout(pollReplyState, 1_500);
+    };
+
+    pollTimer = window.setTimeout(pollReplyState, 1_500);
+    return () => {
+      controller.abort();
+      if (pollTimer !== undefined) window.clearTimeout(pollTimer);
+    };
+  }, [
+    api,
+    currentProject?.name,
+    isRemoteReplying,
+    isStreaming,
+    refreshChats,
+    sessionId,
+    status,
+  ]);
+
   useLayoutEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -375,7 +445,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
   const runStream = useCallback(
     async (payload: InputSendPayload, baseMessages = streamState.messages) => {
-      if (isStreaming || !payload.content.trim()) return;
+      if (isStreaming || isRemoteReplying || !payload.content.trim()) return;
 
       streamControllerRef.current?.abort();
       const controller = new AbortController();
@@ -384,6 +454,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       setPageError("");
       setStreamNotice("");
       setIsStreaming(true);
+      setIsRemoteReplying(false);
       touchChat(sessionId);
 
       let nextState = beginChatStream(baseMessages, {
@@ -405,6 +476,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (historyLoadedSessionIdRef.current !== sessionId) {
           const baseline = await loadChatSession(api, sessionId, {
             signal: controller.signal,
+            projectName: currentProject?.name,
           });
           knownMessageIds = baseline.messageIds;
           persistedMessageIdsRef.current = baseline.messageIds;
@@ -462,12 +534,14 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           userContent: payload.content,
           knownMessageIds,
           signal: controller.signal,
+          projectName: currentProject?.name,
         });
         setTitle(reconciled.title);
         setStreamState({
           ...initialStreamState,
           messages: reconciled.messages,
         });
+        setMiraDraftActions(reconciled.miraDraftActions);
         persistedMessageIdsRef.current = reconciled.messageIds;
         historyLoadedSessionIdRef.current = resolvedSessionId;
         setLastAttempt(null);
@@ -487,6 +561,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
                 userContent: payload.content,
                 knownMessageIds,
                 signal: controller.signal,
+                projectName: currentProject?.name,
               },
             );
             setTitle(recovered.title);
@@ -494,6 +569,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               ...initialStreamState,
               messages: recovered.messages,
             });
+            setMiraDraftActions(recovered.miraDraftActions);
             persistedMessageIdsRef.current = recovered.messageIds;
             historyLoadedSessionIdRef.current = recovered.id;
             setLastAttempt(null);
@@ -529,6 +605,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     [
       activeLab?.id,
       api,
+      currentProject?.name,
+      isRemoteReplying,
       isStreaming,
       navigation,
       resourceCatalog,
@@ -548,6 +626,63 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     setStreamNotice("已停止生成，你可以重新发送或重试。");
     setIsStreaming(false);
   }, []);
+
+  const handleConfirmMiraDraft = useCallback(
+    async (actionKey: string) => {
+      const action = miraDraftActions[actionKey];
+      const projectId = currentChat?.projectId;
+      if (!action || !projectId) {
+        setStreamNotice("当前对话未归属项目，无法保存文档。");
+        return;
+      }
+
+      const updateDraftCard = (
+        patch: Partial<NonNullable<ChatMessage["miraDraft"]>>,
+      ) => {
+        setStreamState((current) => ({
+          ...current,
+          messages: current.messages.map((message) =>
+            message.miraDraft?.actionKey === actionKey
+              ? { ...message, miraDraft: { ...message.miraDraft, ...patch } }
+              : message,
+          ),
+        }));
+      };
+
+      updateDraftCard({ status: "saving", errorMessage: undefined });
+      setStreamNotice("");
+      try {
+        await confirmMiraDocumentDraft(api, action, {
+          projectId,
+          projectName:
+            projectWorkspace?.projectName ?? currentProject?.name ?? "当前项目",
+          parentNodeId: projectWorkspace?.defaultKbNodeId,
+        });
+        updateDraftCard({ status: "saved", errorMessage: undefined });
+        setMiraDraftActions((current) => {
+          const next = { ...current };
+          delete next[actionKey];
+          return next;
+        });
+        await Promise.all([loadProjectWorkspace(), refreshProjects()]);
+      } catch (error) {
+        updateDraftCard({
+          status: "error",
+          errorMessage:
+            error instanceof Error ? error.message : "文档保存失败，请重试。",
+        });
+      }
+    },
+    [
+      api,
+      currentChat,
+      currentProject,
+      loadProjectWorkspace,
+      miraDraftActions,
+      projectWorkspace,
+      refreshProjects,
+    ],
+  );
 
   const normalizedFileSearchQuery = fileSearchQuery.trim().toLowerCase();
   const displayedProjectContent = useMemo(() => {
@@ -750,7 +885,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       <div className="relative min-h-0 flex-1">
         <ChatConversationViewport
           messages={streamState.messages}
-          isTyping={isStreaming}
+          isTyping={isStreaming || isRemoteReplying}
           statusPhase={streamState.statusPhase}
           searchSteps={streamState.searchSteps}
           hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
@@ -761,8 +896,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             messageElementRefs.current[index] = element;
           }}
           getMessageKey={(_message: ChatMessage, index: number) =>
-            `${sessionId}-${index}`
+            _message.id ?? `${sessionId}-${index}`
           }
+          onConfirmMiraDraft={handleConfirmMiraDraft}
         />
 
         {chatTimelineItems.length >= CHAT_TIMELINE_MIN_ITEMS && (
@@ -801,7 +937,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         <InputArea
           onSend={(payload) => void runStream(payload)}
           onCancel={handleCancel}
-          disabled={isStreaming}
+          disabled={isStreaming || isRemoteReplying}
           isStreaming={isStreaming}
           skillOptions={resourceCatalog.skills}
           fileOptions={resourceCatalog.files}

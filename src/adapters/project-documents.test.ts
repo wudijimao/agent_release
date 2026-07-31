@@ -34,6 +34,9 @@ test("project document creation uses the atomic Wiki2 project contract", async (
   await createProjectDocument(api, {
     projectId: "project / 1",
     parentNodeId: "root-1",
+    templateId: "bio-experiment-record",
+    knowledgeType: "experiment_note",
+    section: "experiment",
     title: "实验记录",
     markdown: "实验记录\n\n正文",
   });
@@ -45,8 +48,9 @@ test("project document creation uses the atomic Wiki2 project contract", async (
   assert.equal(body.title, "实验记录");
   assert.equal(body.parentId, "root-1");
   assert.equal(body.projectId, "project / 1");
-  assert.equal(body.projectKnowledgeType, "other");
-  assert.equal(body.projectKnowledgeSection, "knowledge");
+  assert.equal(body.templateId, "bio-experiment-record");
+  assert.equal(body.projectKnowledgeType, "experiment_note");
+  assert.equal(body.projectKnowledgeSection, "experiment");
   assert.equal(body.projectVisibility, "project_default");
   assert.equal((body.content as { type?: string }).type, "kb-doc");
 });

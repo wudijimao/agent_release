@@ -7,6 +7,8 @@ import {
   inferAttachmentFileKind,
   isUnsupportedOfficeFileName,
   type KbAttachment,
+  type ProjectKnowledgeSection,
+  type ProjectKnowledgeType,
 } from "@bioagent/shared";
 
 import type { ApiClient } from "@/lib/api";
@@ -227,6 +229,9 @@ export async function createProjectDocument(
     parentNodeId: string;
     title: string;
     markdown: string;
+    templateId: string;
+    knowledgeType: ProjectKnowledgeType;
+    section: ProjectKnowledgeSection;
   },
 ) {
   const created = await api.post<CreatedKnowledgeNode>(
@@ -235,8 +240,9 @@ export async function createProjectDocument(
       title: input.title,
       parentId: input.parentNodeId,
       projectId: input.projectId,
-      projectKnowledgeType: "other",
-      projectKnowledgeSection: "knowledge",
+      templateId: input.templateId,
+      projectKnowledgeType: input.knowledgeType,
+      projectKnowledgeSection: input.section,
       projectVisibility: "project_default",
       content: markdownToKnowledgeDocument(input.markdown),
     },

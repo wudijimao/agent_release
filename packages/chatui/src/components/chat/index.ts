@@ -55,6 +55,8 @@ export {
 } from "./InputArea";
 export { MessageItem } from "./MessageItem";
 export type { MessageItemProps } from "./MessageItem";
+export { MiraDraftCard } from "./MiraDraftCard";
+export type { MiraDraftCardProps } from "./MiraDraftCard";
 export { MessageList } from "./MessageList";
 export type { MessageListProps } from "./MessageList";
 export { QuickPrompts, CHAT_QUICK_PROMPTS } from "./QuickPrompts";
@@ -70,4 +72,5 @@ export type {
   ChatAttachment,
   ChatMessage,
   ChatReference,
+  MiraDraftCardViewModel,
 } from "./chat.types";

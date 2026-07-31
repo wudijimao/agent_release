@@ -3,20 +3,25 @@
 import {
   BaseButton,
   ProjectDetailPage,
+  ProjectDocumentCreateModal,
   ProjectDocumentEditor,
   ProjectDocumentPreview,
   ProjectMemberManagementModal,
   useNavigation,
 } from "@bioagent/chatui";
 import type { ProjectDocumentPreviewViewModel } from "@bioagent/chatui";
-import type { LabMember, ProjectDetail } from "@bioagent/shared";
+import type {
+  LabMember,
+  ProjectDetail,
+  ProjectKnowledgeSection,
+  ProjectKnowledgeType,
+} from "@bioagent/shared";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { loadLabMembers } from "@/adapters/lab-members";
 import {
   deleteProjectDocumentAttachment,
   deleteProjectDocument,
-  getProjectDocumentAttachmentUrl,
   loadProjectDocumentDetail,
   updateProjectDocument,
 } from "@/adapters/project-document-detail";
@@ -29,7 +34,14 @@ import {
   uploadProjectDocumentAttachments,
 } from "@/adapters/project-documents";
 import {
+  loadProjectDocumentTemplates,
+  PROJECT_DOCUMENT_TYPE_OPTIONS,
+  projectDocumentSectionForType,
+  type ProjectDocumentTemplate,
+} from "@/adapters/project-document-templates";
+import {
   addProjectMember,
+  archiveProject,
   createProjectConversation,
   loadProjectDetail,
   mapProjectDetail,
@@ -44,9 +56,15 @@ import { useChatShell } from "@/app/(workspace)/WorkspaceShell";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
-interface ProjectDocumentDraft {
+interface ProjectDocumentContentDraft {
   title: string;
   markdown: string;
+}
+
+interface ProjectDocumentDraft extends ProjectDocumentContentDraft {
+  templateId: string;
+  knowledgeType: ProjectKnowledgeType;
+  section: ProjectKnowledgeSection;
 }
 
 function savedDocumentTitle(title: string) {
@@ -91,12 +109,19 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   const [notice, setNotice] = useState("");
   const [documentDraft, setDocumentDraft] =
     useState<ProjectDocumentDraft | null>(null);
+  const [documentCreateModalOpen, setDocumentCreateModalOpen] = useState(false);
+  const [documentTemplates, setDocumentTemplates] = useState<
+    ProjectDocumentTemplate[]
+  >([]);
+  const [documentTemplatesLoading, setDocumentTemplatesLoading] =
+    useState(false);
+  const [documentTemplatesError, setDocumentTemplatesError] = useState("");
   const [documentSaving, setDocumentSaving] = useState(false);
   const [documentSaveError, setDocumentSaveError] = useState("");
   const [documentPreview, setDocumentPreview] =
     useState<ProjectDocumentPreviewViewModel | null>(null);
   const [documentEditDraft, setDocumentEditDraft] =
-    useState<ProjectDocumentDraft | null>(null);
+    useState<ProjectDocumentContentDraft | null>(null);
   const [documentDirty, setDocumentDirty] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const activeLabId = activeLab?.id || "";
@@ -191,6 +216,9 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             parentNodeId,
             title,
             markdown: documentDraft.markdown,
+            templateId: documentDraft.templateId,
+            knowledgeType: documentDraft.knowledgeType,
+            section: documentDraft.section,
           });
           const preview = await loadProjectDocumentDetail(api, created.id);
           setDetail(await loadProjectDetail(api, projectId));
@@ -271,6 +299,27 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
     setDocumentPreview(await loadProjectDocumentDetail(api, preview.id));
   };
 
+  const loadDocumentTemplates = useCallback(async () => {
+    setDocumentTemplatesLoading(true);
+    setDocumentTemplatesError("");
+    try {
+      setDocumentTemplates(await loadProjectDocumentTemplates(api));
+    } catch (loadError) {
+      setDocumentTemplatesError(
+        loadError instanceof Error ? loadError.message : "文档模板加载失败",
+      );
+    } finally {
+      setDocumentTemplatesLoading(false);
+    }
+  }, [api]);
+
+  const openDocumentCreateModal = () => {
+    setNotice("");
+    setDocumentSaveError("");
+    setDocumentCreateModalOpen(true);
+    if (!documentTemplates.length) void loadDocumentTemplates();
+  };
+
   useEffect(() => {
     if (!documentDirty || documentSaving) return;
     const timer = window.setTimeout(() => {
@@ -331,6 +380,8 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         projectName={detail.name}
         title={documentEditDraft.title}
         initialMarkdown={documentEditDraft.markdown}
+        createdByName={documentPreview.createdByName}
+        updatedByName={documentPreview.updatedByName}
         updatedAt={documentPreview.updatedAt}
         index={documentPreview.index}
         attachments={documentPreview.attachments}
@@ -348,13 +399,6 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             current ? { ...current, markdown } : current,
           );
           setDocumentDirty(true);
-        }}
-        onOpenAttachment={(attachmentId) => {
-          window.open(
-            getProjectDocumentAttachmentUrl(attachmentId),
-            "_blank",
-            "noopener,noreferrer",
-          );
         }}
         onUploadAttachments={uploadEditorAttachments}
         onDeleteAttachment={async (attachmentId) => {
@@ -403,13 +447,6 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           setDocumentPreview(null);
           setNotice("文档已删除");
         }}
-        onOpenAttachment={(attachmentId) => {
-          window.open(
-            getProjectDocumentAttachmentUrl(attachmentId),
-            "_blank",
-            "noopener,noreferrer",
-          );
-        }}
       />
     );
   }
@@ -452,10 +489,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         }}
         onOpenConversation={(sessionId) => navigation.push(`/chat/${sessionId}`)}
         onCreateDocument={() => {
-          setNotice("");
-          setDocumentSaveError("");
-          setDocumentDraft({ title: "", markdown: "" });
-          setDocumentDirty(false);
+          openDocumentCreateModal();
         }}
         onCreateConversation={async () => {
           setNotice("");
@@ -490,6 +524,15 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         }}
         onUpdateProjectName={(name) => updateField({ name })}
         onUpdateProjectDescription={(description) => updateField({ description })}
+        onDeleteProject={
+          detail.permissions.canAdmin && !detail.isDefaultUnassigned
+            ? async () => {
+                await archiveProject(api, projectId);
+                await Promise.all([refreshProjects(), refreshChats()]);
+                navigation.replace("/projects");
+              }
+            : undefined
+        }
       />
 
       {detail.permissions.canAdmin && (
@@ -526,6 +569,37 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           }}
         />
       )}
+
+      <ProjectDocumentCreateModal
+        visible={documentCreateModalOpen}
+        typeOptions={PROJECT_DOCUMENT_TYPE_OPTIONS}
+        templates={documentTemplates}
+        loading={documentTemplatesLoading}
+        error={documentTemplatesError}
+        defaultKnowledgeType="other"
+        defaultTemplateId="blank"
+        onClose={() => {
+          if (documentTemplatesLoading) return;
+          setDocumentCreateModalOpen(false);
+        }}
+        onRetry={() => void loadDocumentTemplates()}
+        onContinue={({ knowledgeType, templateId }) => {
+          const template = documentTemplates.find(
+            (item) => item.id === templateId,
+          );
+          if (!template) return;
+          const typedKnowledgeType = knowledgeType as ProjectKnowledgeType;
+          setDocumentDraft({
+            title: template.id === "blank" ? "" : template.title,
+            markdown: template.markdown,
+            templateId: template.id,
+            knowledgeType: typedKnowledgeType,
+            section: projectDocumentSectionForType(typedKnowledgeType),
+          });
+          setDocumentDirty(false);
+          setDocumentCreateModalOpen(false);
+        }}
+      />
 
       {notice && (
         <div

@@ -11,6 +11,7 @@ import type { ApiClient } from "@/lib/api";
 
 import {
   addProjectMember,
+  archiveProject,
   createProject,
   createProjectConversation,
   loadProjectDetail,
@@ -127,6 +128,7 @@ test("project detail mutations use encoded project and member contracts", async 
   });
 
   await updateProject(api, "project/id", { name: "新名称" });
+  await archiveProject(api, "project/id");
   await createProjectConversation(api, "project/id");
   await addProjectMember(api, "project/id", { userId: "user-2", role: "member" });
   await updateProjectMember(api, "project/id", "member/id", { role: "viewer" });
@@ -134,6 +136,7 @@ test("project detail mutations use encoded project and member contracts", async 
 
   assert.deepEqual(calls, [
     ["patch", "/api/projects/project%2Fid", { name: "新名称" }],
+    ["post", "/api/projects/project%2Fid/archive"],
     ["post", "/api/chat/agent-sessions", { agentType: "general", projectId: "project/id" }],
     ["post", "/api/projects/project%2Fid/members", { userId: "user-2", role: "member" }],
     ["patch", "/api/projects/project%2Fid/members/member%2Fid", { role: "viewer" }],

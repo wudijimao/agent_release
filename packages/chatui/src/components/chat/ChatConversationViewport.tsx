@@ -28,6 +28,7 @@ export interface ChatConversationViewportProps {
   getMessageKey?(message: ChatMessage, index: number): string;
   onFeedback?(messageKey: string, feedback: AssistantFeedback): void;
   onRegenerate?(messageIndex: number): void;
+  onConfirmMiraDraft?(actionKey: string): void;
   onScroll?: React.UIEventHandler<HTMLDivElement>;
   scrollContainerRef?: React.Ref<HTMLDivElement>;
   onMessageElement?(messageIndex: number, element: HTMLDivElement | null): void;
@@ -67,6 +68,7 @@ export function ChatConversationViewport({
   getMessageKey = (_message, index) => String(index),
   onFeedback,
   onRegenerate,
+  onConfirmMiraDraft,
   onScroll,
   scrollContainerRef,
   onMessageElement,
@@ -250,6 +252,7 @@ export function ChatConversationViewport({
                     feedback={feedbackByMessageKey?.[messageKey]}
                     onFeedback={onFeedback}
                     onRefresh={onRegenerate ? () => onRegenerate(index) : undefined}
+                    onConfirmMiraDraft={onConfirmMiraDraft}
                     isTyping={isTyping && index === activeAssistantIndex}
                   />
                   {index === activeAssistantIndex &&

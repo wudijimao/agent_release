@@ -9,6 +9,7 @@ export interface MessageItemProps {
     feedback?: AssistantFeedback;
     onFeedback?: (actionKey: string, type: AssistantFeedback) => void;
     onRefresh?: () => void;
+    onConfirmMiraDraft?: (actionKey: string) => void;
     isTyping?: boolean;
     isStreaming?: boolean;
 }

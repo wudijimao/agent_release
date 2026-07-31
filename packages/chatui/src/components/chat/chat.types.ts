@@ -19,9 +19,20 @@ export interface ChatReference {
   sourceId?: string;
 }
 
+export interface MiraDraftCardViewModel {
+  actionKey: string;
+  title: string;
+  targetLabel?: string;
+  summary?: string;
+  status: 'waiting' | 'saving' | 'saved' | 'error';
+  errorMessage?: string;
+}
+
 export interface ChatMessage {
+  id?: string;
   role: 'user' | 'assistant';
   content: string;
   attachments?: ChatAttachment[];
   references?: ChatReference[];
+  miraDraft?: MiraDraftCardViewModel;
 }

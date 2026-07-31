@@ -75,11 +75,12 @@
   list-style: none;
 }
 
-.preview ul:not(:global(.contains-task-list)) > li {
+.preview ul > li:not(:global(.task-list-item)) {
   position: relative;
+  list-style: none;
 }
 
-.preview ul:not(:global(.contains-task-list)) > li::before {
+.preview ul > li:not(:global(.task-list-item))::before {
   position: absolute;
   top: 11.5px;
   left: -14.5px;
@@ -179,6 +180,30 @@
     .milkdown
       .milkdown-list-item-block
       > .list-item
+      > .label-wrapper
+      .label:is(.checked, .unchecked)
+  ) {
+  @apply relative justify-start;
+}
+
+.editor
+  :global(
+    .milkdown
+      .milkdown-list-item-block
+      > .list-item
+      > .label-wrapper
+      .label:is(.checked, .unchecked)
+      svg
+  ) {
+  @apply block h-5 w-5 shrink-0 fill-current;
+  color: var(--chatui-color-control-border);
+}
+
+.editor
+  :global(
+    .milkdown
+      .milkdown-list-item-block
+      > .list-item
       > .children
       > .content-dom
       > p
@@ -229,6 +254,12 @@
 .editor :global(.milkdown .ProseMirror .task-list-item) {
   @apply pl-0;
   list-style: none;
+}
+
+.preview
+  :global(.contains-task-list)
+  > li:not(:global(.task-list-item)) {
+  @apply ml-6;
 }
 
 .preview input[type='checkbox'],

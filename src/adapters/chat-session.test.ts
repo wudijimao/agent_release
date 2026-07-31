@@ -95,6 +95,7 @@ test("mapChatHistoryDetail produces the UI view model and hides system messages"
     messageIds: ["system-1", "user-1", "assistant-1"],
     messages: [
       {
+        id: "user-1",
         role: "user",
         content: "问题",
         attachments: [
@@ -121,9 +122,57 @@ test("mapChatHistoryDetail produces the UI view model and hides system messages"
           },
         ],
       },
-      { role: "assistant", content: "回答", attachments: [] },
+      { id: "assistant-1", role: "assistant", content: "回答", attachments: [] },
     ],
+    miraDraftActions: {},
+    isReplying: false,
   });
+});
+
+test("mapChatHistoryDetail restores a pending assistant turn for an active run", () => {
+  const activeDetail: ChatHistoryDetailResponse = {
+    ...detail,
+    messages: detail.messages.filter((message) => message.role !== "assistant"),
+    runs: [
+      {
+        id: "run-2",
+        sessionId: "session-1",
+        status: "running",
+        createdAt: "2026-07-16T00:00:03Z",
+      },
+    ],
+  };
+
+  const result = mapChatHistoryDetail(activeDetail);
+
+  assert.equal(result.isReplying, true);
+  assert.deepEqual(result.messages.at(-1), {
+    role: "assistant",
+    content: "",
+    attachments: [],
+  });
+});
+
+test("mapChatHistoryDetail treats only the latest queued or running run as replying", () => {
+  const completedDetail: ChatHistoryDetailResponse = {
+    ...detail,
+    runs: [
+      {
+        id: "run-2",
+        sessionId: "session-1",
+        status: "completed",
+        createdAt: "2026-07-16T00:00:03Z",
+      },
+      {
+        id: "run-1",
+        sessionId: "session-1",
+        status: "running",
+        createdAt: "2026-07-16T00:00:01Z",
+      },
+    ],
+  };
+
+  assert.equal(mapChatHistoryDetail(completedDetail).isReplying, false);
 });
 
 test("context mapper restores named Mira references and ignores attachment duplicates", () => {

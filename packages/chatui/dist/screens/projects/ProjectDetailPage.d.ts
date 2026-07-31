@@ -36,7 +36,8 @@ export interface ProjectDetailPageProps {
     documentImportDescription?: React.ReactNode;
     onUpdateProjectName(name: string): void | Promise<void>;
     onUpdateProjectDescription(description: string): void | Promise<void>;
+    onDeleteProject?(): void | Promise<void>;
 }
 export declare function formatProjectConversationDate(rawDate: string, conversationId: string, now?: Date): string;
-export declare function ProjectDetailPage({ project, documents, conversations, memberCount, isSidebarOpen, onOpenSidebar, onBackToProjects, onOpenMemberManagement, onOpenDocument, onOpenConversation, onCreateDocument, onCreateConversation, onImportDocuments, onUpdateProjectName, onUpdateProjectDescription, documentImportAccept, documentImportMaxSize, documentImportDescription, showMemberManagement, }: ProjectDetailPageProps): React.JSX.Element;
+export declare function ProjectDetailPage({ project, documents, conversations, memberCount, isSidebarOpen, onOpenSidebar, onBackToProjects, onOpenMemberManagement, onOpenDocument, onOpenConversation, onCreateDocument, onCreateConversation, onImportDocuments, onUpdateProjectName, onUpdateProjectDescription, documentImportAccept, documentImportMaxSize, documentImportDescription, showMemberManagement, onDeleteProject, }: ProjectDetailPageProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDetailPage.d.ts.map

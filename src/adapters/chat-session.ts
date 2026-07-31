@@ -14,12 +14,18 @@ import type {
 } from "@bioagent/chatui";
 
 import { ApiError, ChatStreamTimeoutError, type ApiClient } from "@/lib/api";
+import {
+  mapMiraDocumentDraft,
+  type MiraDocumentDraftAction,
+} from "@/adapters/mira-document-drafts";
 
 export interface ChatSessionViewModel {
   id: string;
   title: string;
   messages: ChatMessage[];
   messageIds: string[];
+  miraDraftActions: Record<string, MiraDocumentDraftAction>;
+  isReplying: boolean;
 }
 
 export interface ChatStreamViewState {
@@ -82,42 +88,71 @@ export function mapChatContextRef(
 
 export function mapChatHistoryDetail(
   response: ChatHistoryDetailResponse,
+  options: { projectName?: string } = {},
 ): ChatSessionViewModel {
   const attachmentDetails = new Map<string, ChatAttachmentDto>(
     response.attachments.map((attachment) => [attachment.id, attachment]),
   );
+  const latestRun = response.runs[0];
+  const isReplying =
+    latestRun?.status === "queued" || latestRun?.status === "running";
+
+  const miraDraftActions: Record<string, MiraDocumentDraftAction> = {};
+  const messages: ChatMessage[] = response.messages
+    .filter(
+      (message) =>
+        (message.role === "user" || message.role === "assistant") &&
+        typeof message.content === "string",
+    )
+    .map((message) => {
+      const references =
+        message.role === "user"
+          ? (message.contextRefsSnapshot ?? [])
+              .map(mapChatContextRef)
+              .filter(
+                (reference): reference is ChatReference => reference !== null,
+              )
+          : [];
+      const mappedDraft =
+        message.role === "assistant"
+          ? mapMiraDocumentDraft(message.display, message.id, options.projectName)
+          : null;
+      if (mappedDraft?.action) {
+        miraDraftActions[mappedDraft.action.actionKey] = mappedDraft.action;
+      }
+
+      return {
+        id: message.id,
+        role: message.role as "user" | "assistant",
+        content: message.content,
+        attachments: (message.attachmentRefs ?? []).map((attachment) =>
+          mapChatAttachmentRef(
+            attachmentDetails.get(attachment.id) ?? attachment,
+          ),
+        ),
+        ...(references.length > 0 ? { references } : {}),
+        ...(mappedDraft ? { miraDraft: mappedDraft.card } : {}),
+      };
+    });
 
   return {
     id: response.sessionId,
     title: response.session.title?.trim() || "新对话",
     messageIds: response.messages.map((message) => message.id),
-    messages: response.messages
-      .filter(
-        (message) =>
-          (message.role === "user" || message.role === "assistant") &&
-          typeof message.content === "string",
-      )
-      .map((message) => {
-        const references =
-          message.role === "user"
-            ? (message.contextRefsSnapshot ?? [])
-                .map(mapChatContextRef)
-                .filter(
-                  (reference): reference is ChatReference => reference !== null,
-                )
-            : [];
-
-        return {
-          role: message.role as "user" | "assistant",
-          content: message.content,
-          attachments: (message.attachmentRefs ?? []).map((attachment) =>
-            mapChatAttachmentRef(
-              attachmentDetails.get(attachment.id) ?? attachment,
-            ),
-          ),
-          ...(references.length > 0 ? { references } : {}),
-        };
-      }),
+    messages: messages
+      .concat(
+        isReplying &&
+          response.messages
+            .filter(
+              (message) =>
+                message.role === "user" || message.role === "assistant",
+            )
+            .at(-1)?.role === "user"
+          ? [{ role: "assistant" as const, content: "", attachments: [] }]
+          : [],
+      ),
+    miraDraftActions,
+    isReplying,
   };
 }
 
@@ -135,10 +170,10 @@ async function fetchChatSessionDetail(
 export async function loadChatSession(
   api: ApiClient,
   sessionId: string,
-  options: { signal?: AbortSignal } = {},
+  options: { signal?: AbortSignal; projectName?: string } = {},
 ) {
   const response = await fetchChatSessionDetail(api, sessionId, options.signal);
-  return mapChatHistoryDetail(response);
+  return mapChatHistoryDetail(response, { projectName: options.projectName });
 }
 
 function hasPersistedAssistantResponse(
@@ -209,6 +244,7 @@ export async function reconcileChatStream(
     userContent: string;
     knownMessageIds?: readonly string[];
     signal?: AbortSignal;
+    projectName?: string;
     retryDelaysMs?: readonly number[];
     wait?: (delayMs: number, signal?: AbortSignal) => Promise<void>;
   },
@@ -236,7 +272,7 @@ export async function reconcileChatStream(
           options.userContent,
         )
       ) {
-        return mapChatHistoryDetail(detail);
+        return mapChatHistoryDetail(detail, { projectName: options.projectName });
       }
     } catch (error) {
       options.signal?.throwIfAborted();
