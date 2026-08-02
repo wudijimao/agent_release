@@ -85,7 +85,17 @@ export function ChatWorkspacePanelsFixture() {
                   type: 'knowledge',
                   title: item.title,
                   subtitle: `CRISPR 基因编辑研究 · ${item.tags.join(' · ')}`,
-                  content: `文档标题：${item.title}\n标签：${item.tags.join(' / ')}\n\n摘要：固定预览内容。`,
+                  document: {
+                    id: item.id,
+                    title: item.title,
+                    markdown: '## 摘要\n\n固定预览内容。',
+                    createdByName: '王平',
+                    updatedByName: '王平',
+                    updatedAt: '2026.06.02 10:20',
+                    canEdit: false,
+                    attachments: [],
+                    index: { status: 'indexed', statusLabel: '索引已完成', detail: '展示数据' },
+                  },
                 });
               }}
               onOpenExperiment={(id) => {
@@ -96,7 +106,17 @@ export function ChatWorkspacePanelsFixture() {
                   type: 'experiment-log',
                   title: item.title,
                   subtitle: `CRISPR 基因编辑研究 · ${item.tags.join(' · ')}`,
-                  content: `实验标题：${item.title}\n标签：${item.tags.join(' / ')}\n\n摘要：固定预览内容。`,
+                  document: {
+                    id: item.id,
+                    title: item.title,
+                    markdown: '## 实验摘要\n\n固定预览内容。',
+                    createdByName: '王平',
+                    updatedByName: '王平',
+                    updatedAt: '2026.06.02 10:20',
+                    canEdit: false,
+                    attachments: [],
+                    index: { status: 'indexed', statusLabel: '索引已完成', detail: '展示数据' },
+                  },
                   status: item.status,
                 });
               }}

@@ -181,6 +181,7 @@ test("uploadChatAttachment invokes an injected fetch as a function, not an objec
     api,
     file: new File(["# notes"], "notes.md", { type: "text/markdown" }),
     fetch: async function (this: unknown) {
+      "use strict";
       assert.equal(this, undefined);
       fetchCalled = true;
       return new Response(null, { status: 200 });

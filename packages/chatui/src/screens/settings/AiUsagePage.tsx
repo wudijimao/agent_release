@@ -164,7 +164,23 @@ export function AiUsagePage({
               <BaseActionMenu open={memberMenuOpen} onOpenChange={setMemberMenuOpen} items={memberMenuItems} onItemClick={handleMemberClick} placement="bottom-start" width={172} portal menuClassName={menuClasses} listClassName="max-h-[240px] overflow-y-auto" trigger={<span className="inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary"><span className="truncate">{selectedMemberLabel}</span><ChevronDown size={16} className={`ml-2 shrink-0 text-secondaryText transition-transform ${memberMenuOpen ? 'rotate-180' : ''}`} /></span>} />
               <BaseActionMenu open={monthMenuOpen} onOpenChange={setMonthMenuOpen} items={monthMenuItems} onItemClick={handleMonthClick} placement="bottom-start" width={172} portal menuClassName={menuClasses} listClassName="max-h-[240px] overflow-y-auto" trigger={<span className="inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary"><span className="truncate">{selectedMonthLabel}</span><ChevronDown size={16} className={`ml-2 shrink-0 text-secondaryText transition-transform ${monthMenuOpen ? 'rotate-180' : ''}`} /></span>} />
             </div></div>}
-            {activeTab === 'analysis' ? <div className="py-4"><UsageAmountBarChart points={trendPoints} labels={trendLabels} totalAmount={trendTotal} /></div> : <div className="pb-5 pt-4"><div className="border-b border-borderGray bg-surface"><BaseTable className="task-table-scroll min-w-[760px]" columns={rechargeColumns} dataSource={rechargeRecords} rowKey="id" /></div></div>}
+            {activeTab === 'analysis' ? (
+              <div className="py-4">
+                <UsageAmountBarChart points={trendPoints} labels={trendLabels} totalAmount={trendTotal} />
+              </div>
+            ) : (
+              <div className="pb-5 pt-4">
+                {rechargeRecords.length > 0 ? (
+                  <div className="border-b border-borderGray bg-surface">
+                    <BaseTable className="task-table-scroll min-w-[760px]" columns={rechargeColumns} dataSource={rechargeRecords} rowKey="id" />
+                  </div>
+                ) : (
+                  <div className="flex min-h-[180px] items-center justify-center text-sm text-tertiaryText">
+                    暂无充值记录
+                  </div>
+                )}
+              </div>
+            )}
           </section>
         </div>
       </div>

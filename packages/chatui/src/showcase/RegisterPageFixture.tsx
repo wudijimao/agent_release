@@ -15,11 +15,11 @@ const wait = (duration: number) =>
 export function RegisterPageFixture({ mode = 'join-lab' }: { mode?: RegisterMode }) {
   const [event, setEvent] = useState('等待注册交互');
 
-  const handleSendVerificationCode = async (email: string) => {
-    setEvent(`正在发送验证码：${email}`);
+  const handleSendVerificationCode = async (phoneNumber: string) => {
+    setEvent(`正在发送短信验证码：${phoneNumber}`);
     await wait(1000);
-    setEvent(`验证码已发送：${email}`);
-    return { ok: true } as const;
+    setEvent(`短信验证码已发送：${phoneNumber}`);
+    return { ok: true, resendAfterSeconds: 60 } as const;
   };
 
   const handleVerifyIdentity = async (input: RegisterIdentityInput) => {

@@ -11,6 +11,11 @@ export interface User {
   email: string;
   name: string;
   avatarUrl?: string;
+  phoneCountryCode?: string | null;
+  phoneNumber?: string | null;
+  phoneE164?: string | null;
+  phoneMasked?: string | null;
+  phoneVerifiedAt?: string | null;
   createdAt: string;
 }
 
@@ -63,13 +68,36 @@ export interface RegisterRequest {
   name: string;
   labName?: string;       // 创建新实验室
   inviteCode?: string;    // 加入现有实验室
-  emailVerificationCode?: string;
+  phoneCountryCode?: string;
+  phoneNumber?: string;
+  phoneVerificationCode?: string;
 }
 
 export interface EmailVerificationSendResponse {
   emailMasked: string;
   expiresInSeconds: number;
   resendAfterSeconds: number;
+}
+
+export interface PhoneVerificationSendResponse {
+  phoneMasked: string;
+  expiresInSeconds: number;
+  resendAfterSeconds: number;
+}
+
+export interface PhonePasswordResetSendRequest {
+  phoneCountryCode: '86';
+  phoneNumber: string;
+}
+
+export interface PhonePasswordResetConfirmRequest extends PhonePasswordResetSendRequest {
+  phoneVerificationCode: string;
+  newPassword: string;
+}
+
+export interface PhonePasswordResetConfirmResponse {
+  ok: true;
+  requiresLogin: true;
 }
 
 export interface PasswordResetConfirmRequest {

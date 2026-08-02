@@ -1,7 +1,9 @@
 export type RegisterMode = 'join-lab' | 'create-lab';
 export interface RegisterIdentityInput {
     email: string;
-    verificationCode: string;
+    name: string;
+    phoneNumber: string;
+    phoneVerificationCode: string;
     mode: RegisterMode;
     inviteCode?: string;
     labName?: string;
@@ -11,6 +13,8 @@ export interface RegisterInput extends RegisterIdentityInput {
 }
 export type RegisterActionResult = {
     ok: true;
+    message?: string;
+    resendAfterSeconds?: number;
 } | {
     ok: false;
     message: string;
@@ -18,7 +22,7 @@ export type RegisterActionResult = {
 };
 export interface RegisterPageProps {
     mode?: RegisterMode;
-    onSendVerificationCode(email: string): Promise<RegisterActionResult>;
+    onSendVerificationCode(phoneNumber: string): Promise<RegisterActionResult>;
     onVerifyIdentity(input: RegisterIdentityInput): Promise<RegisterActionResult>;
     onRegister(input: RegisterInput): Promise<RegisterActionResult>;
     onEnterWorkspace(): void;

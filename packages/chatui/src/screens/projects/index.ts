@@ -20,6 +20,8 @@ export type {
   ProjectDocumentPreviewProps,
   ProjectDocumentPreviewViewModel,
 } from './ProjectDocumentPreview';
+export { ProjectDocumentPreviewContent } from './ProjectDocumentPreviewContent';
+export type { ProjectDocumentPreviewContentProps } from './ProjectDocumentPreviewContent';
 export { ProjectMemberManagementModal } from './ProjectMemberManagementModal';
 export type { ProjectMemberDirectoryItem, ProjectMemberManagementModalProps, ProjectMemberPermission, ProjectMemberViewModel } from './ProjectMemberManagementModal';
 export { ExperimentDetailPage } from './ExperimentDetailPage';

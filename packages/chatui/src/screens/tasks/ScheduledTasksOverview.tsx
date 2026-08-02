@@ -91,6 +91,15 @@ export default function ScheduledTasksOverview({
   onRetry,
 }: ScheduledTasksOverviewProps) {
   const [actionMenuTaskId, setActionMenuTaskId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'scheduled' | 'literature'>('scheduled');
+  const hasLiteratureSection = Boolean(
+    onCreateLiterature &&
+    onFetchLiterature &&
+    onToggleLiterature &&
+    onEditLiterature &&
+    onDeleteLiterature,
+  );
+  const visibleTab = hasLiteratureSection ? activeTab : 'scheduled';
 
   const taskTableColumns = useMemo<BaseTableColumn<ScheduledTaskListItemViewModel>[]>(
     () => [
@@ -191,13 +200,20 @@ export default function ScheduledTasksOverview({
             <span className="font-medium text-primaryText">任务</span>
           </div>
         </div>
-        <BaseButton type="primary" size="small" rounded="large" icon={<Plus size={14} />} className="shrink-0" onClick={onCreateCustom}>
+        <BaseButton
+          type="primary"
+          size="small"
+          rounded="large"
+          icon={<Plus size={14} />}
+          className="shrink-0"
+          onClick={onCreateCustom}
+        >
           新建任务
         </BaseButton>
       </header>
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10">
-        <div className="mx-auto max-w-[1240px] space-y-10">
+        <div className="mx-auto max-w-[1240px]">
           <section>
             <h2 className="text-2xl font-semibold text-primaryText">定时任务</h2>
             <div className="mt-6 grid grid-cols-1 gap-[18px] md:grid-cols-2 lg:grid-cols-3">
@@ -210,30 +226,59 @@ export default function ScheduledTasksOverview({
             </div>
           </section>
 
-          <section className="space-y-3">
-            <h2 className="text-[15px] font-medium text-primaryText">已设置任务</h2>
-            {error && (
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-danger bg-danger-soft px-4 py-3 text-sm text-danger">
-                <span>{error}</span>
-                {onRetry && <button type="button" className="font-medium underline" onClick={onRetry}>重新加载</button>}
+          <section className="mt-10">
+            {hasLiteratureSection && (
+              <div className="mb-5 flex items-center gap-6 border-b border-lineSubtle" role="tablist" aria-label="任务列表类型">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={visibleTab === 'scheduled'}
+                onClick={() => setActiveTab('scheduled')}
+                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${visibleTab === 'scheduled' ? 'border-primary text-primaryText' : 'border-transparent text-tertiaryText hover:text-secondaryText'}`}
+              >
+                定时任务
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={visibleTab === 'literature'}
+                onClick={() => setActiveTab('literature')}
+                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${visibleTab === 'literature' ? 'border-primary text-primaryText' : 'border-transparent text-tertiaryText hover:text-secondaryText'}`}
+              >
+                文献订阅
+              </button>
               </div>
             )}
-            <div className="border-b border-borderGray bg-white">
-              <BaseTable className="task-table-scroll w-full [&_table]:min-w-[940px]" columns={taskTableColumns} dataSource={tasks} rowKey="id" striped={false} loading={loading} />
-            </div>
+
+            {visibleTab === 'scheduled' ? (
+              <div className="space-y-3" role="tabpanel">
+                {!hasLiteratureSection && <h2 className="text-[15px] font-medium text-primaryText">已设置任务</h2>}
+                {error && (
+                  <div className="flex items-center justify-between gap-3 rounded-lg border border-danger bg-danger-soft px-4 py-3 text-sm text-danger">
+                    <span>{error}</span>
+                    {onRetry && <button type="button" className="font-medium underline" onClick={onRetry}>重新加载</button>}
+                  </div>
+                )}
+                <div className="border-b border-borderGray bg-white">
+                  <BaseTable className="task-table-scroll w-full [&_table]:min-w-[940px]" columns={taskTableColumns} dataSource={tasks} rowKey="id" striped={false} loading={loading} />
+                </div>
+              </div>
+            ) : (
+              onCreateLiterature && onFetchLiterature && onToggleLiterature && onEditLiterature && onDeleteLiterature && (
+                <div role="tabpanel">
+                  <LiteratureSubscriptionsTable
+                    items={literatureSubscriptions}
+                    loading={literatureLoading}
+                    pendingId={pendingLiteratureId}
+                    onFetch={onFetchLiterature}
+                    onToggle={onToggleLiterature}
+                    onEdit={onEditLiterature}
+                    onDelete={onDeleteLiterature}
+                  />
+                </div>
+              )
+            )}
           </section>
-          {onCreateLiterature && onFetchLiterature && onToggleLiterature && onEditLiterature && onDeleteLiterature && (
-            <LiteratureSubscriptionsTable
-              items={literatureSubscriptions}
-              loading={literatureLoading}
-              pendingId={pendingLiteratureId}
-              onCreate={onCreateLiterature}
-              onFetch={onFetchLiterature}
-              onToggle={onToggleLiterature}
-              onEdit={onEditLiterature}
-              onDelete={onDeleteLiterature}
-            />
-          )}
         </div>
       </div>
     </div>

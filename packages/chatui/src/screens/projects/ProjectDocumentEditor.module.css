@@ -6,36 +6,16 @@
   @apply z-10 flex h-16 shrink-0 items-center bg-homeHeaderSurface px-4 backdrop-blur-sm;
 }
 
-.closeButton {
-  @apply -ml-2 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary;
-}
-
-.breadcrumb {
-  @apply ml-2 flex min-w-0 items-center gap-2 text-sm;
-}
-
-.projectName {
-  @apply max-w-[240px] truncate text-tertiaryText;
-}
-
-.separator {
-  @apply shrink-0 text-tertiaryText;
-}
-
-.fileName {
-  @apply truncate font-medium text-primaryText;
-}
-
 .headerActions {
   @apply ml-auto flex shrink-0 items-center gap-3 pl-4;
 }
 
 .saveError {
-  @apply max-w-[320px] truncate text-xs text-danger;
+  @apply absolute left-1/2 top-3 z-20 max-w-[320px] -translate-x-1/2 truncate rounded-md bg-danger-soft px-3 py-2 text-xs text-danger;
 }
 
 .viewport {
-  @apply flex-1 overflow-hidden;
+  @apply relative flex-1 overflow-hidden;
 }
 
 .editorCanvas {

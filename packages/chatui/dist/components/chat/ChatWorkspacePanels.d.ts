@@ -1,12 +1,15 @@
 import type { MouseEvent } from 'react';
+import type { ProjectDocumentPreviewViewModel } from '../../screens/projects/ProjectDocumentPreview';
 export type ChatPreviewItemType = 'knowledge' | 'experiment-log';
 export interface ChatPreviewItemViewModel {
     key: string;
     type: ChatPreviewItemType;
     title: string;
     subtitle: string;
-    content: string;
     status?: string;
+    document?: ProjectDocumentPreviewViewModel;
+    loading?: boolean;
+    error?: string;
 }
 export interface ChatPreviewPanelProps {
     tabs: readonly ChatPreviewItemViewModel[];

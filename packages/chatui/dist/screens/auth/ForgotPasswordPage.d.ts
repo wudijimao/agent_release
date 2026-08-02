@@ -1,16 +1,18 @@
 export interface ForgotPasswordInput {
-    email: string;
-    verificationCode: string;
+    phoneNumber: string;
+    phoneVerificationCode: string;
     newPassword: string;
 }
 export type ForgotPasswordActionResult = {
     ok: true;
+    message?: string;
+    resendAfterSeconds?: number;
 } | {
     ok: false;
     message: string;
 };
 export interface ForgotPasswordPageProps {
-    onSendCode(email: string): Promise<ForgotPasswordActionResult>;
+    onSendCode(phoneNumber: string): Promise<ForgotPasswordActionResult>;
     onResetPassword(input: ForgotPasswordInput): Promise<ForgotPasswordActionResult>;
     onBackToLogin(options?: {
         replace?: boolean;

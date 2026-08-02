@@ -6,15 +6,15 @@ export function ForgotPasswordPageFixture() {
   return (
     <>
       <ForgotPasswordPage
-        onSendCode={async (email) => {
-          setEvent(`发送验证码：${email}`);
+        onSendCode={async (phoneNumber) => {
+          setEvent(`发送短信验证码：${phoneNumber}`);
           await new Promise((resolve) => window.setTimeout(resolve, 300));
-          return email.startsWith('error') ? { ok: false, message: '验证码发送失败。' } : { ok: true };
+          return phoneNumber.startsWith('130') ? { ok: false, message: '验证码发送失败。' } : { ok: true };
         }}
         onResetPassword={async (input: ForgotPasswordInput) => {
-          setEvent(`重置密码：${input.email}`);
+          setEvent(`重置密码：${input.phoneNumber}`);
           await new Promise((resolve) => window.setTimeout(resolve, 300));
-          return input.verificationCode === '000000' ? { ok: false, message: '验证码不正确。' } : { ok: true };
+          return input.phoneVerificationCode === '000000' ? { ok: false, message: '验证码不正确。' } : { ok: true };
         }}
         onBackToLogin={(options) => setEvent(`导航：/login${options?.replace ? '（替换）' : ''}`)}
       />

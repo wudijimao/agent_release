@@ -183,21 +183,18 @@ export function mapProjectChatWorkspace(
       KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
     return [sectionLabel, typeLabel];
   };
-  const previewContent = (title: string, tags: readonly string[], updatedAt: string) =>
-    `文件标题：${title}\n分类：${tags.join(" / ")}\n更新时间：${updatedAt}`;
-
   return {
     projectName: project.name,
     ...(project.defaultKbNodeId !== undefined
       ? { defaultKbNodeId: project.defaultKbNodeId }
       : {}),
     knowledgeDocs: knowledgeItems.map((item) => ({
-      id: item.id,
+      id: item.kbNodeId,
       title: item.title,
       tags: itemTags(item),
     })),
     experiments: experimentItems.map((item) => ({
-      id: item.id,
+      id: item.kbNodeId,
       title: item.title,
       status: KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType,
       tags: itemTags(item),
@@ -206,11 +203,10 @@ export function mapProjectChatWorkspace(
       ...knowledgeItems.map((item): ChatPreviewItemViewModel => {
         const tags = itemTags(item);
         return {
-          key: `knowledge:${item.id}`,
+          key: `knowledge:${item.kbNodeId}`,
           type: "knowledge",
           title: item.title,
           subtitle: `${project.name} · ${tags.join(" · ")}`,
-          content: previewContent(item.title, tags, item.updatedAt),
         };
       }),
       ...experimentItems.map((item): ChatPreviewItemViewModel => {
@@ -218,12 +214,11 @@ export function mapProjectChatWorkspace(
         const status =
           KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
         return {
-          key: `experiment:${item.id}`,
+          key: `experiment:${item.kbNodeId}`,
           type: "experiment-log",
           title: item.title,
           subtitle: `${project.name} · ${tags.join(" · ")}`,
           status,
-          content: previewContent(item.title, tags, item.updatedAt),
         };
       }),
     ],

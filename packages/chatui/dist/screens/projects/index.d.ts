@@ -12,6 +12,8 @@ export { ProjectDocumentMetadata } from './ProjectDocumentMetadata';
 export type { ProjectDocumentIndexViewModel, ProjectDocumentMetadataProps } from './ProjectDocumentMetadata';
 export { ProjectDocumentPreview } from './ProjectDocumentPreview';
 export type { ProjectDocumentPreviewProps, ProjectDocumentPreviewViewModel, } from './ProjectDocumentPreview';
+export { ProjectDocumentPreviewContent } from './ProjectDocumentPreviewContent';
+export type { ProjectDocumentPreviewContentProps } from './ProjectDocumentPreviewContent';
 export { ProjectMemberManagementModal } from './ProjectMemberManagementModal';
 export type { ProjectMemberDirectoryItem, ProjectMemberManagementModalProps, ProjectMemberPermission, ProjectMemberViewModel } from './ProjectMemberManagementModal';
 export { ExperimentDetailPage } from './ExperimentDetailPage';

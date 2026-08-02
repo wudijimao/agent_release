@@ -84,6 +84,7 @@ export interface ProjectMemberSummary {
     name: string;
     email: string;
     avatarUrl?: string | null;
+    phoneMasked?: string | null;
   };
 }
 

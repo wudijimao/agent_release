@@ -5,7 +5,9 @@ export type RegisterMode = 'join-lab' | 'create-lab';
 
 export interface RegisterIdentityInput {
   email: string;
-  verificationCode: string;
+  name: string;
+  phoneNumber: string;
+  phoneVerificationCode: string;
   mode: RegisterMode;
   inviteCode?: string;
   labName?: string;
@@ -16,12 +18,12 @@ export interface RegisterInput extends RegisterIdentityInput {
 }
 
 export type RegisterActionResult =
-  | { ok: true }
+  | { ok: true; message?: string; resendAfterSeconds?: number }
   | { ok: false; message: string; field?: 'password' | 'form' };
 
 export interface RegisterPageProps {
   mode?: RegisterMode;
-  onSendVerificationCode(email: string): Promise<RegisterActionResult>;
+  onSendVerificationCode(phoneNumber: string): Promise<RegisterActionResult>;
   onVerifyIdentity(input: RegisterIdentityInput): Promise<RegisterActionResult>;
   onRegister(input: RegisterInput): Promise<RegisterActionResult>;
   onEnterWorkspace(): void;
@@ -54,7 +56,7 @@ const createParticle = (width: number, height: number): Particle => {
   };
 };
 
-type RegisterStep = 'email' | 'password' | 'success';
+type RegisterStep = 'identity' | 'password' | 'success';
 
 export default function RegisterPage({
   mode = 'join-lab',
@@ -68,9 +70,11 @@ export default function RegisterPage({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const enterTimerRef = useRef<number | null>(null);
 
-  const [step, setStep] = useState<RegisterStep>('email');
+  const [step, setStep] = useState<RegisterStep>('identity');
   const [email, setEmail] = useState('');
-  const [verifyCode, setVerifyCode] = useState('');
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneVerificationCode, setPhoneVerificationCode] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [labName, setLabName] = useState('');
   const isCreateLabMode = mode === 'create-lab';
@@ -78,6 +82,7 @@ export default function RegisterPage({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [verificationMessage, setVerificationMessage] = useState('');
   const [actionError, setActionError] = useState<Extract<RegisterActionResult, { ok: false }> | null>(null);
   const passwordTooShort = password.length > 0 && password.trim().length < 6;
 
@@ -229,17 +234,18 @@ export default function RegisterPage({
 
   // ---- 发送验证码 ----
   const handleSendCode = async () => {
-    if (!email.trim() || countdown > 0) return;
+    if (!/^1[3-9]\d{9}$/.test(phoneNumber) || countdown > 0) return;
     setIsSubmitting(true);
     setActionError(null);
 
     try {
-      const result = await onSendVerificationCode(email.trim());
+      const result = await onSendVerificationCode(phoneNumber);
       if (!result.ok) {
         setActionError(result);
         return;
       }
-      setCountdown(60);
+      setCountdown(result.resendAfterSeconds ?? 60);
+      setVerificationMessage(result.message ?? '短信验证码已发送');
     } catch {
       setActionError({ ok: false, message: '操作失败，请稍后重试。' });
     } finally {
@@ -249,14 +255,16 @@ export default function RegisterPage({
 
   const getIdentityInput = (): RegisterIdentityInput => ({
     email: email.trim(),
-    verificationCode: verifyCode.trim(),
+    name: name.trim(),
+    phoneNumber,
+    phoneVerificationCode: phoneVerificationCode.trim(),
     mode,
     ...(isCreateLabMode ? { labName: labName.trim() } : { inviteCode: inviteCode.trim() }),
   });
 
   // ---- 步骤切换 ----
   const goNext = () => {
-    const order: RegisterStep[] = ['email', 'password', 'success'];
+    const order: RegisterStep[] = ['identity', 'password', 'success'];
     const idx = order.indexOf(step);
     if (idx < order.length - 1) setStep(order[idx + 1]);
   };
@@ -265,17 +273,17 @@ export default function RegisterPage({
   const canSubmitStep = useMemo(() => {
     if (isSubmitting) return false;
     switch (step) {
-      case 'email':
+      case 'identity':
         if (isCreateLabMode) {
-          return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && verifyCode.trim().length >= 6 && labName.trim().length > 0;
+          return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && name.trim().length > 0 && /^1[3-9]\d{9}$/.test(phoneNumber) && phoneVerificationCode.length === 6 && labName.trim().length > 0;
         }
-        return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && verifyCode.trim().length >= 6 && inviteCode.trim().length > 0;
+        return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && name.trim().length > 0 && /^1[3-9]\d{9}$/.test(phoneNumber) && phoneVerificationCode.length === 6 && inviteCode.trim().length > 0;
       case 'password':
         return password.trim().length >= 6 && password === confirmPassword;
       default:
         return false;
     }
-  }, [step, email, verifyCode, inviteCode, labName, isCreateLabMode, password, confirmPassword, isSubmitting]);
+  }, [step, email, name, phoneNumber, phoneVerificationCode, inviteCode, labName, isCreateLabMode, password, confirmPassword, isSubmitting]);
 
   // ---- 提交当前步骤 ----
   const handleSubmitStep = async (e: FormEvent) => {
@@ -306,12 +314,12 @@ export default function RegisterPage({
 
   // ---- 步骤描述 ----
   const stepTitle: Record<RegisterStep, string> = {
-    email: isCreateLabMode ? '创建实验室' : '验证您的邮箱',
+    identity: isCreateLabMode ? '创建实验室' : '注册并加入实验室',
     password: '设置登录密码',
     success: '',
   };
   const stepDesc: Record<RegisterStep, string> = {
-    email: '',
+    identity: '',
     password: '',
     success: '',
   };
@@ -351,8 +359,8 @@ export default function RegisterPage({
           {/* 步骤表单 */}
           {step !== 'success' && (
             <form onSubmit={handleSubmitStep} className="space-y-5">
-              {/* 步骤1：邮箱+验证码 */}
-              {step === 'email' && (
+              {/* 步骤1：账号信息与手机号验证 */}
+              {step === 'identity' && (
                 <>
                   <label className="relative block">
                     <input
@@ -369,27 +377,44 @@ export default function RegisterPage({
                     />
                     <span className={labelClass}>邮箱</span>
                   </label>
+                  <label className="relative block">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        setActionError(null);
+                      }}
+                      required
+                      placeholder=" "
+                      autoComplete="name"
+                      className={inputClass}
+                    />
+                    <span className={labelClass}>姓名</span>
+                  </label>
                   <div className="flex gap-3">
                     <label className="relative block flex-1">
                       <input
-                        type="text"
-                        value={verifyCode}
+                        type="tel"
+                        inputMode="numeric"
+                        value={phoneNumber}
                         onChange={(e) => {
-                          setVerifyCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                          setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 11));
+                          setVerificationMessage('');
                           setActionError(null);
                         }}
                         required
                         placeholder=" "
-                        autoComplete="off"
-                        maxLength={6}
+                        autoComplete="tel"
+                        maxLength={11}
                         className={inputClass}
                       />
-                      <span className={labelClass}>验证码</span>
+                      <span className={labelClass}>手机号</span>
                     </label>
                     <button
                       type="button"
                       onClick={handleSendCode}
-                      disabled={countdown > 0 || isSubmitting}
+                      disabled={countdown > 0 || isSubmitting || !/^1[3-9]\d{9}$/.test(phoneNumber)}
                       className={`h-14 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium transition-all ${
                         countdown > 0
                           ? 'cursor-not-allowed border border-controlBorderDefault bg-surface text-authTextFaint'
@@ -399,6 +424,24 @@ export default function RegisterPage({
                       {countdown > 0 ? `${countdown}s后获取` : '获取验证码'}
                     </button>
                   </div>
+                  <label className="relative block">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={phoneVerificationCode}
+                      onChange={(e) => {
+                        setPhoneVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                        setActionError(null);
+                      }}
+                      required
+                      placeholder=" "
+                      autoComplete="one-time-code"
+                      maxLength={6}
+                      className={inputClass}
+                    />
+                    <span className={labelClass}>短信验证码</span>
+                  </label>
+                  {verificationMessage && <p className="text-xs text-primary">{verificationMessage}</p>}
                   {isCreateLabMode ? (
                     <label className="relative block">
                       <input

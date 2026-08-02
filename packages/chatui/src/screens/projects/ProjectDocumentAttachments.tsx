@@ -14,6 +14,7 @@ export interface ProjectDocumentAttachmentViewModel extends Record<string, unkno
 
 export interface ProjectDocumentAttachmentsProps {
   attachments: ProjectDocumentAttachmentViewModel[];
+  className?: string;
   uploading?: boolean;
   deletingAttachmentId?: string | null;
   unavailableHint?: string;
@@ -24,6 +25,7 @@ export interface ProjectDocumentAttachmentsProps {
 
 export function ProjectDocumentAttachments({
   attachments,
+  className = 'mx-[120px] mb-6 mt-8 border-t border-lineSubtle pt-6',
   uploading = false,
   deletingAttachmentId,
   unavailableHint,
@@ -32,7 +34,7 @@ export function ProjectDocumentAttachments({
   onDeleteAttachment,
 }: ProjectDocumentAttachmentsProps) {
   return (
-    <div className="mx-[120px] mb-6 mt-8 border-t border-lineSubtle pt-6">
+    <div className={className}>
       <div className="flex items-start justify-between gap-3">
         <div className="text-sm font-medium text-primaryText">附件</div>
         {onRequestUpload && (

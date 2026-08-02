@@ -9,6 +9,8 @@ export interface ChatWorkspaceSidePanelProps {
     open: boolean;
     width: number | string;
     resizing?: boolean;
+    overlay?: boolean;
+    overlayRight?: number | string;
     children: React.ReactNode;
 }
 export declare const ChatWorkspaceSidePanel: React.ForwardRefExoticComponent<ChatWorkspaceSidePanelProps & React.RefAttributes<HTMLElement>>;

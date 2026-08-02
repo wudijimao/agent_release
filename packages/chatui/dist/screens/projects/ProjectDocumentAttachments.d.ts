@@ -9,6 +9,7 @@ export interface ProjectDocumentAttachmentViewModel extends Record<string, unkno
 }
 export interface ProjectDocumentAttachmentsProps {
     attachments: ProjectDocumentAttachmentViewModel[];
+    className?: string;
     uploading?: boolean;
     deletingAttachmentId?: string | null;
     unavailableHint?: string;
@@ -16,5 +17,5 @@ export interface ProjectDocumentAttachmentsProps {
     onRequestUpload?(): void;
     onDeleteAttachment?(attachmentId: string): void;
 }
-export declare function ProjectDocumentAttachments({ attachments, uploading, deletingAttachmentId, unavailableHint, error, onRequestUpload, onDeleteAttachment, }: ProjectDocumentAttachmentsProps): React.JSX.Element;
+export declare function ProjectDocumentAttachments({ attachments, className, uploading, deletingAttachmentId, unavailableHint, error, onRequestUpload, onDeleteAttachment, }: ProjectDocumentAttachmentsProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentAttachments.d.ts.map

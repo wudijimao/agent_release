@@ -208,7 +208,7 @@ test("project detail mapper exposes only high-fidelity view models", () => {
     projectName: "肿瘤免疫项目",
     knowledgeDocs: [
       {
-        id: "knowledge-1",
+        id: "node-1",
         title: "免疫检查点综述",
         tags: ["知识", "文献解读"],
       },
@@ -216,12 +216,10 @@ test("project detail mapper exposes only high-fidelity view models", () => {
     experiments: [],
     previewItems: [
       {
-        key: "knowledge:knowledge-1",
+        key: "knowledge:node-1",
         type: "knowledge",
         title: "免疫检查点综述",
         subtitle: "肿瘤免疫项目 · 知识 · 文献解读",
-        content:
-          "文件标题：免疫检查点综述\n分类：知识 / 文献解读\n更新时间：2026-07-21T09:00:00.000Z",
       },
     ],
   });

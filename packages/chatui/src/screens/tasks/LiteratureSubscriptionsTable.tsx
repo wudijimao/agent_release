@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { MoreHorizontal, Pencil, RefreshCw, Trash2 } from 'lucide-react';
-import { BaseActionMenu, BaseButton, BaseTable, BaseToggle } from '../../components/common';
+import { BaseActionMenu, BaseTable, BaseToggle } from '../../components/common';
 import type { BaseActionMenuItem, BaseTableColumn } from '../../components/common';
 
 export interface LiteratureSubscriptionListItemViewModel extends Record<string, unknown> {
@@ -19,7 +19,6 @@ export interface LiteratureSubscriptionsTableProps {
   items: LiteratureSubscriptionListItemViewModel[];
   loading?: boolean;
   pendingId?: string | null;
-  onCreate(): void;
   onFetch(id: string): void;
   onToggle(id: string): void;
   onEdit(id: string): void;
@@ -30,7 +29,6 @@ export function LiteratureSubscriptionsTable({
   items,
   loading = false,
   pendingId,
-  onCreate,
   onFetch,
   onToggle,
   onEdit,
@@ -100,14 +98,7 @@ export function LiteratureSubscriptionsTable({
   ], [actionMenuId, onDelete, onEdit, onFetch, onToggle, pendingId]);
 
   return (
-    <section className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-[15px] font-medium text-primaryText">文献订阅</h2>
-          <p className="mt-1 text-xs text-tertiaryText">按来源和关键词定期抓取文献，字段与旧版知识追踪保持一致。</p>
-        </div>
-        <BaseButton type="secondary" size="small" onClick={onCreate}>新建订阅</BaseButton>
-      </div>
+    <section>
       <div className="border-b border-borderGray bg-white">
         <BaseTable className="task-table-scroll w-full [&_table]:min-w-[1080px]" columns={columns}
           dataSource={items} rowKey="id" striped={false} loading={loading} />

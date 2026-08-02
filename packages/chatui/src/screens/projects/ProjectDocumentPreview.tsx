@@ -1,17 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Menu } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { BaseButton, BaseEmpty, BaseModal } from '../../components/common';
-import {
-  ProjectDocumentAttachments,
-  type ProjectDocumentAttachmentViewModel,
-} from './ProjectDocumentAttachments';
-import {
-  ProjectDocumentMetadata,
-  type ProjectDocumentIndexViewModel,
-} from './ProjectDocumentMetadata';
-import markdownStyles from './ProjectDocumentMarkdown.module.css';
+import { BaseButton, BaseModal } from '../../components/common';
+import type { ProjectDocumentAttachmentViewModel } from './ProjectDocumentAttachments';
+import type { ProjectDocumentIndexViewModel } from './ProjectDocumentMetadata';
+import { ProjectDocumentPreviewContent } from './ProjectDocumentPreviewContent';
 
 export interface ProjectDocumentPreviewViewModel extends Record<string, unknown> {
   id: string;
@@ -46,22 +38,9 @@ export function ProjectDocumentPreview({
   onEdit,
   onDelete,
 }: ProjectDocumentPreviewProps) {
-  const [isContentScrolling, setIsContentScrolling] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
-  const contentScrollTimerRef = useRef<number | null>(null);
-
-  useEffect(() => () => {
-    if (contentScrollTimerRef.current !== null) window.clearTimeout(contentScrollTimerRef.current);
-  }, []);
-
-  const handleContentScroll = () => {
-    setIsContentScrolling(true);
-    if (contentScrollTimerRef.current !== null) window.clearTimeout(contentScrollTimerRef.current);
-    contentScrollTimerRef.current = window.setTimeout(() => setIsContentScrolling(false), 700);
-  };
-
   const confirmDelete = async () => {
     setDeleting(true);
     setDeleteError('');
@@ -101,30 +80,7 @@ export function ProjectDocumentPreview({
 
       <div className="min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10">
         <div className="mx-auto flex h-full min-h-0 max-w-[1240px] flex-col">
-          <section className="mb-4 shrink-0 px-[120px]">
-            <h1 className="text-2xl font-semibold text-primaryText">{document.title}</h1>
-            <ProjectDocumentMetadata
-              createdByName={document.createdByName}
-              updatedByName={document.updatedByName}
-              updatedAt={document.updatedAt}
-              index={document.index}
-            />
-            <div className="mt-4 h-px bg-lineSubtle" />
-          </section>
-
-          <section onScroll={handleContentScroll} className={`auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${isContentScrolling ? 'is-scrolling' : ''}`}>
-            {document.markdown.trim() ? (
-              <div className={`${markdownStyles.preview} px-[120px]`}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{document.markdown}</ReactMarkdown>
-              </div>
-            ) : (
-              <div className="mx-[120px] rounded-lg border border-dashed border-borderSoft">
-                <BaseEmpty description="正文暂无内容" />
-              </div>
-            )}
-
-            <ProjectDocumentAttachments attachments={document.attachments} />
-          </section>
+          <ProjectDocumentPreviewContent document={document} />
         </div>
       </div>
 

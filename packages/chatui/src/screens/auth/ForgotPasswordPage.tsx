@@ -2,15 +2,17 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
 export interface ForgotPasswordInput {
-  email: string;
-  verificationCode: string;
+  phoneNumber: string;
+  phoneVerificationCode: string;
   newPassword: string;
 }
 
-export type ForgotPasswordActionResult = { ok: true } | { ok: false; message: string };
+export type ForgotPasswordActionResult =
+  | { ok: true; message?: string; resendAfterSeconds?: number }
+  | { ok: false; message: string };
 
 export interface ForgotPasswordPageProps {
-  onSendCode(email: string): Promise<ForgotPasswordActionResult>;
+  onSendCode(phoneNumber: string): Promise<ForgotPasswordActionResult>;
   onResetPassword(input: ForgotPasswordInput): Promise<ForgotPasswordActionResult>;
   onBackToLogin(options?: { replace?: boolean }): void;
 }
@@ -36,13 +38,14 @@ export default function ForgotPasswordPage({ onSendCode, onResetPassword, onBack
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const loginTimerRef = useRef<number | null>(null);
-  const [step, setStep] = useState<'email' | 'success'>('email');
-  const [email, setEmail] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
+  const [step, setStep] = useState<'phone' | 'success'>('phone');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneVerificationCode, setPhoneVerificationCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [verificationMessage, setVerificationMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -151,18 +154,19 @@ export default function ForgotPasswordPage({ onSendCode, onResetPassword, onBack
     if (loginTimerRef.current !== null) window.clearTimeout(loginTimerRef.current);
   }, []);
 
-  const canSubmit = useMemo(() => email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && verificationCode.length >= 6 && password.length >= 6 && password === confirmPassword, [confirmPassword, email, password, verificationCode]);
+  const canSubmit = useMemo(() => /^1[3-9]\d{9}$/.test(phoneNumber) && phoneVerificationCode.length === 6 && password.length >= 6 && password === confirmPassword, [confirmPassword, password, phoneNumber, phoneVerificationCode]);
   const inputClass = 'peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus';
   const labelClass = 'pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary';
 
   const sendCode = async () => {
-    if (!email.trim() || countdown > 0 || isSubmitting) return;
+    if (!/^1[3-9]\d{9}$/.test(phoneNumber) || countdown > 0 || isSubmitting) return;
     setIsSubmitting(true);
     setError(null);
     try {
-      const result = await onSendCode(email.trim());
+      const result = await onSendCode(phoneNumber);
       if (!result.ok) { setError(result.message); return; }
-      setCountdown(60);
+      setCountdown(result.resendAfterSeconds ?? 60);
+      setVerificationMessage(result.message ?? '短信验证码已发送');
     } catch {
       setError('验证码发送失败，请稍后重试。');
     } finally {
@@ -176,7 +180,7 @@ export default function ForgotPasswordPage({ onSendCode, onResetPassword, onBack
     setIsSubmitting(true);
     setError(null);
     try {
-      const result = await onResetPassword({ email: email.trim(), verificationCode, newPassword: password });
+      const result = await onResetPassword({ phoneNumber, phoneVerificationCode, newPassword: password });
       if (!result.ok) { setError(result.message); return; }
       setStep('success');
     } catch {
@@ -198,15 +202,16 @@ export default function ForgotPasswordPage({ onSendCode, onResetPassword, onBack
       <div className="relative z-10 mx-auto flex h-full w-full max-w-md items-center justify-center px-4">
         <div className="w-full rounded-3xl border border-authCardBorder bg-authCardSurface p-10 shadow-authCard backdrop-blur-[20px]">
           <div className="mb-8 text-center"><h1 className="bg-authTitle bg-clip-text text-4xl font-semibold tracking-[-0.02em] text-transparent">Helia</h1><p className="mt-2 text-sm text-authTextMuted">重置您的登录密码。</p></div>
-          {step === 'email' ? (
+          {step === 'phone' ? (
             <>
               <div className="mb-6"><h2 className="text-lg font-semibold text-primaryText">重置您的密码</h2></div>
               <form onSubmit={submit} className="space-y-5">
-                <label className="relative block"><input type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(null); }} required placeholder=" " autoComplete="off" className={inputClass} /><span className={labelClass}>邮箱</span></label>
                 <div className="flex gap-3">
-                  <label className="relative block flex-1"><input type="text" value={verificationCode} onChange={(event) => { setVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6)); setError(null); }} required placeholder=" " autoComplete="off" maxLength={6} className={inputClass} /><span className={labelClass}>验证码</span></label>
-                  <button type="button" onClick={sendCode} disabled={countdown > 0 || isSubmitting} className={`h-14 whitespace-nowrap rounded-xl border border-controlBorderDefault bg-surface px-4 py-2 text-sm font-medium transition-all ${countdown > 0 ? 'cursor-not-allowed text-authTextFaint' : 'text-authTextDefault'}`}>{countdown > 0 ? `${countdown}s后获取` : '获取验证码'}</button>
+                  <label className="relative block flex-1"><input type="tel" inputMode="numeric" value={phoneNumber} onChange={(event) => { setPhoneNumber(event.target.value.replace(/\D/g, '').slice(0, 11)); setVerificationMessage(''); setError(null); }} required placeholder=" " autoComplete="tel" maxLength={11} className={inputClass} /><span className={labelClass}>手机号</span></label>
+                  <button type="button" onClick={sendCode} disabled={countdown > 0 || isSubmitting || !/^1[3-9]\d{9}$/.test(phoneNumber)} className={`h-14 whitespace-nowrap rounded-xl border border-controlBorderDefault bg-surface px-4 py-2 text-sm font-medium transition-all ${countdown > 0 ? 'cursor-not-allowed text-authTextFaint' : 'text-authTextDefault'}`}>{countdown > 0 ? `${countdown}s后获取` : '获取验证码'}</button>
                 </div>
+                <label className="relative block"><input type="text" inputMode="numeric" value={phoneVerificationCode} onChange={(event) => { setPhoneVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6)); setError(null); }} required placeholder=" " autoComplete="one-time-code" maxLength={6} className={inputClass} /><span className={labelClass}>短信验证码</span></label>
+                {verificationMessage && <p className="text-xs text-primary">{verificationMessage}</p>}
                 <label className="relative block"><input type="password" value={password} onChange={(event) => { setPassword(event.target.value); setError(null); }} required placeholder=" " className={inputClass} /><span className={labelClass}>新密码</span></label>
                 <label className="relative block"><input type="password" value={confirmPassword} onChange={(event) => { setConfirmPassword(event.target.value); setError(null); }} required placeholder=" " className={`${inputClass} ${confirmPassword.length > 0 && password !== confirmPassword ? 'border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus' : ''}`} /><span className={labelClass}>确认新密码</span>{confirmPassword.length > 0 && password !== confirmPassword && <span className="mt-1 block text-xs text-authErrorText">两次输入的密码不一致</span>}</label>
                 {error && <p role="alert" className="text-sm text-authErrorText">{error}</p>}

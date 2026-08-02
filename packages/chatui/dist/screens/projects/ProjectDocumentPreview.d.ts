@@ -1,6 +1,6 @@
 import React from 'react';
-import { type ProjectDocumentAttachmentViewModel } from './ProjectDocumentAttachments';
-import { type ProjectDocumentIndexViewModel } from './ProjectDocumentMetadata';
+import type { ProjectDocumentAttachmentViewModel } from './ProjectDocumentAttachments';
+import type { ProjectDocumentIndexViewModel } from './ProjectDocumentMetadata';
 export interface ProjectDocumentPreviewViewModel extends Record<string, unknown> {
     id: string;
     title: string;

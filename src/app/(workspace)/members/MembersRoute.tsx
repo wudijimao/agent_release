@@ -23,20 +23,24 @@ export function MembersRoute() {
   const { activeLab, activeLabRole } = useLab();
   const { isSidebarOpen, openSidebar } = useChatShell();
   const [members, setMembers] = useState<AdminMemberUsageSummary[]>([]);
-  const [labName, setLabName] = useState(activeLab?.name || "");
-  const [inviteCode, setInviteCode] = useState(activeLab?.inviteCode || "");
+  const [regeneratedInvite, setRegeneratedInvite] = useState<{
+    labId: string;
+    inviteCode: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
   const canManage = activeLabRole === "admin" || activeLabRole === "pi";
   const activeLabId = activeLab?.id || "";
+  const labName = activeLab?.name || "";
+  const inviteCode = regeneratedInvite?.labId === activeLabId
+    ? regeneratedInvite.inviteCode
+    : activeLab?.inviteCode || "";
 
   useEffect(() => {
     if (!activeLabId) return;
     let cancelled = false;
 
-    setLabName(activeLab?.name || "");
-    setInviteCode(activeLab?.inviteCode || "");
     loadAdminMembers(api)
       .then((result) => {
         if (cancelled) return;
@@ -54,7 +58,7 @@ export function MembersRoute() {
     return () => {
       cancelled = true;
     };
-  }, [activeLab?.inviteCode, activeLab?.name, activeLabId, api]);
+  }, [activeLabId, api]);
 
   const retryLoad = async () => {
     if (!activeLabId) return;
@@ -92,7 +96,7 @@ export function MembersRoute() {
         setActionError("");
         try {
           const result = await regenerateLabInvite(api, activeLabId);
-          setInviteCode(result.inviteCode);
+          setRegeneratedInvite({ labId: activeLabId, inviteCode: result.inviteCode });
         } catch (mutationError) {
           setActionError(mutationError instanceof Error ? mutationError.message : "邀请码生成失败");
           throw mutationError;

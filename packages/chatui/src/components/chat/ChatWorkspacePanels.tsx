@@ -1,5 +1,7 @@
 import type { MouseEvent } from 'react';
 import { FileText, FlaskConical, Search, X } from 'lucide-react';
+import { ProjectDocumentPreviewContent } from '../../screens/projects/ProjectDocumentPreviewContent';
+import type { ProjectDocumentPreviewViewModel } from '../../screens/projects/ProjectDocumentPreview';
 
 export type ChatPreviewItemType = 'knowledge' | 'experiment-log';
 
@@ -8,8 +10,10 @@ export interface ChatPreviewItemViewModel {
   type: ChatPreviewItemType;
   title: string;
   subtitle: string;
-  content: string;
   status?: string;
+  document?: ProjectDocumentPreviewViewModel;
+  loading?: boolean;
+  error?: string;
 }
 
 export interface ChatPreviewPanelProps {
@@ -32,7 +36,7 @@ export function ChatPreviewPanel({
   const activeItem = tabs.find((tab) => tab.key === activeKey) ?? null;
 
   return (
-    <div className="relative flex h-full w-full min-w-0 flex-col border-l border-chatWorkspaceDivider bg-white">
+    <div data-testid="chat-document-preview" className="relative flex h-full w-full min-w-0 flex-col border-l border-chatWorkspaceDivider bg-white">
       <div
         role="separator"
         aria-orientation="vertical"
@@ -89,26 +93,15 @@ export function ChatPreviewPanel({
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-2">
+      <div className="min-h-0 flex-1 overflow-hidden pb-4 pt-2">
         {activeItem ? (
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <h3 className="break-words text-base font-semibold text-primaryText">{activeItem.title}</h3>
-              {activeItem.type === 'knowledge' && (
-                <div className="text-xs text-tertiaryText">{activeItem.subtitle}</div>
-              )}
-              {activeItem.status && (
-                <div className="inline-flex items-center rounded-full bg-bgLight px-2 py-1 text-xs text-secondaryText">
-                  {activeItem.status}
-                </div>
-              )}
+          activeItem.document ? (
+            <ProjectDocumentPreviewContent document={activeItem.document} layout="panel" />
+          ) : (
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText">
+              {activeItem.loading ? '正在加载文档…' : activeItem.error || '文档暂时无法预览'}
             </div>
-            <div className="rounded-xl border border-borderGray bg-chatPreviewContentSurface p-3">
-              <p className="whitespace-pre-line break-words text-sm leading-6 text-secondaryText">
-                {activeItem.content}
-              </p>
-            </div>
-          </div>
+          )
         ) : (
           <div className="flex h-full items-center justify-center px-4 text-center text-sm text-secondaryText">
             点击右侧项目文件内容可在此处预览

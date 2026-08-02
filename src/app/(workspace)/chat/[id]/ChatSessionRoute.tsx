@@ -28,6 +28,7 @@ import {
   useState,
   type MouseEvent as ReactMouseEvent,
 } from "react";
+import { flushSync } from "react-dom";
 
 import {
   beginChatStream,
@@ -56,12 +57,17 @@ import {
   confirmMiraDocumentDraft,
   type MiraDocumentDraftAction,
 } from "@/adapters/mira-document-drafts";
+import { loadProjectDocumentDetail } from "@/adapters/project-document-detail";
 import { streamChat } from "@/lib/api";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
 import { useChatShell } from "../../WorkspaceShell";
 import { useChatResourceCatalog } from "../useChatResourceCatalog";
+import {
+  clampChatPreviewWidth,
+  resolveChatPreviewLayout,
+} from "../chat-preview-layout";
 
 type PageStatus = "loading" | "ready";
 
@@ -101,8 +107,19 @@ const initialStreamState: ChatStreamViewState = {
 const PANEL_MIN_WIDTH = 200;
 const PANEL_MAX_WIDTH = 440;
 const DEFAULT_PROJECT_PANEL_WIDTH = 260;
-const DEFAULT_PREVIEW_PANEL_WIDTH = 320;
+const DEFAULT_PREVIEW_PANEL_WIDTH = 520;
 const CHAT_TIMELINE_MIN_ITEMS = 5;
+
+function measureWorkspaceWidth(container: HTMLDivElement | null) {
+  if (!container) return 0;
+  let measuredWidth = container.getBoundingClientRect().width;
+  let ancestor = container.parentElement;
+  while (ancestor && ancestor.tagName !== "MAIN") {
+    measuredWidth = Math.max(measuredWidth, ancestor.getBoundingClientRect().width);
+    ancestor = ancestor.parentElement;
+  }
+  return measuredWidth;
+}
 
 function normalizeTimelinePreview(content: string) {
   const normalized = content.replace(/\s+/g, " ").trim();
@@ -172,6 +189,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const resizeStartXRef = useRef(0);
   const resizeStartWidthRef = useRef(0);
   const workspaceContainerRef = useRef<HTMLDivElement | null>(null);
+  const [workspaceWidth, setWorkspaceWidth] = useState(0);
   const streamControllerRef = useRef<AbortController | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const messageElementRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -713,18 +731,65 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       return current.map((tab, index) => (index === existingIndex ? item : tab));
     });
     setActivePreviewKey(item.key);
-    setShowPreviewPanel(true);
-  }, []);
+    setShowPreviewPanel((current) => {
+      if (!current) {
+        const layout = resolveChatPreviewLayout(
+          measureWorkspaceWidth(workspaceContainerRef.current) || workspaceWidth,
+          showProjectPanel ? projectPanelWidth : 0,
+        );
+        setPreviewPanelWidth(layout.defaultWidth);
+      }
+      return true;
+    });
+  }, [projectPanelWidth, showProjectPanel, workspaceWidth]);
 
   const openProjectFilePreview = useCallback(
-    (key: string) => {
+    async (key: string) => {
       const item = projectWorkspace?.previewItems.find(
         (preview) => preview.key === key,
       );
-      if (item) openPreviewItem(item);
+      if (!item) return;
+
+      openPreviewItem({ ...item, loading: true, error: undefined, document: undefined });
+      try {
+        const document = await loadProjectDocumentDetail(
+          api,
+          key.slice(key.indexOf(":") + 1),
+        );
+        openPreviewItem({ ...item, document, loading: false, error: undefined });
+      } catch (loadError) {
+        openPreviewItem({
+          ...item,
+          loading: false,
+          error: loadError instanceof Error ? loadError.message : "文档加载失败",
+        });
+      }
     },
-    [openPreviewItem, projectWorkspace],
+    [api, openPreviewItem, projectWorkspace],
   );
+
+  const previewLayout = useMemo(
+    () => resolveChatPreviewLayout(
+      workspaceWidth,
+      showProjectPanel ? projectPanelWidth : 0,
+      previewPanelWidth,
+    ),
+    [previewPanelWidth, projectPanelWidth, showProjectPanel, workspaceWidth],
+  );
+  const effectivePreviewPanelWidth = clampChatPreviewWidth(
+    previewPanelWidth,
+    previewLayout,
+  );
+
+  useLayoutEffect(() => {
+    const container = workspaceContainerRef.current;
+    if (!container) return;
+    const updateWidth = () => setWorkspaceWidth(measureWorkspaceWidth(container));
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [pageStatus]);
 
   const closePreviewTab = useCallback((targetKey: string) => {
     setPreviewTabs((current) => {
@@ -748,12 +813,23 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       panel: "project" | "preview",
       event: ReactMouseEvent<HTMLDivElement>,
     ) => {
+      event.preventDefault();
+      const renderedPanelWidth =
+        event.currentTarget.closest("aside")?.getBoundingClientRect().width;
+      const startWidth = renderedPanelWidth && renderedPanelWidth > 0
+        ? renderedPanelWidth
+        : panel === "project"
+          ? projectPanelWidth
+          : effectivePreviewPanelWidth;
       resizeStartXRef.current = event.clientX;
-      resizeStartWidthRef.current =
-        panel === "project" ? projectPanelWidth : previewPanelWidth;
-      setResizingPanel(panel);
+      resizeStartWidthRef.current = startWidth;
+      flushSync(() => {
+        if (panel === "project") setProjectPanelWidth(startWidth);
+        else setPreviewPanelWidth(startWidth);
+        setResizingPanel(panel);
+      });
     },
-    [previewPanelWidth, projectPanelWidth],
+    [effectivePreviewPanelWidth, projectPanelWidth],
   );
 
   useEffect(() => {
@@ -761,12 +837,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
     const handleMouseMove = (event: MouseEvent) => {
       const delta = resizeStartXRef.current - event.clientX;
-      const nextWidth = Math.max(
-        PANEL_MIN_WIDTH,
-        Math.min(PANEL_MAX_WIDTH, resizeStartWidthRef.current + delta),
-      );
-      if (resizingPanel === "project") setProjectPanelWidth(nextWidth);
-      else setPreviewPanelWidth(nextWidth);
+      const requestedWidth = resizeStartWidthRef.current + delta;
+      if (resizingPanel === "project") {
+        setProjectPanelWidth(Math.max(
+          PANEL_MIN_WIDTH,
+          Math.min(PANEL_MAX_WIDTH, requestedWidth),
+        ));
+      } else {
+        setPreviewPanelWidth(clampChatPreviewWidth(requestedWidth, previewLayout));
+      }
     };
     const handleMouseUp = () => setResizingPanel(null);
     document.body.style.cursor = "col-resize";
@@ -779,7 +858,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [resizingPanel]);
+  }, [previewLayout, resizingPanel]);
 
   if (status === "loading" || status === "unauthenticated") {
     return <RouteStatus message="正在恢复登录状态…" />;
@@ -837,8 +916,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         <>
           <ChatWorkspaceSidePanel
             open={showPreviewPanel}
-            width={previewPanelWidth}
+            width={effectivePreviewPanelWidth}
             resizing={resizingPanel === "preview"}
+            overlay={previewLayout.overlay}
+            overlayRight={showProjectPanel ? projectPanelWidth : 0}
           >
             <ChatPreviewPanel
               tabs={previewTabs}
@@ -871,10 +952,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               error={projectPanelError}
               onSearchQueryChange={setFileSearchQuery}
               onOpenKnowledge={(id) =>
-                openProjectFilePreview(`knowledge:${id}`)
+                void openProjectFilePreview(`knowledge:${id}`)
               }
               onOpenExperiment={(id) =>
-                openProjectFilePreview(`experiment:${id}`)
+                void openProjectFilePreview(`experiment:${id}`)
               }
               onResizeStart={(event) => startPanelResize("project", event)}
             />

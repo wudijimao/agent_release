@@ -43,6 +43,7 @@ export interface AdminMemberUsageSummary {
     email: string;
     name: string;
     avatarUrl?: string | null;
+    phoneMasked?: string | null;
   };
   projects: Array<{
     id: string;

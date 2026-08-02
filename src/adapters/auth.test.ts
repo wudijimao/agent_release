@@ -7,10 +7,16 @@ import { ApiError, type ApiClient } from "@/lib/api";
 
 import {
   changeCurrentPassword,
+  confirmPhonePasswordReset,
   getChangePasswordErrorField,
   getChangePasswordErrorMessage,
   getLoginErrorMessage,
+  getPhoneAuthErrorMessage,
   loginWithPassword,
+  registerWithPhone,
+  sendPhonePasswordReset,
+  sendRegisterPhoneVerification,
+  validateRegistrationIdentity,
 } from "./auth";
 
 function createApiStub(
@@ -89,6 +95,77 @@ test("login adapter translates known, rate-limited, server, and network failures
     getLoginErrorMessage(new TypeError("fetch failed")),
     "无法连接服务器，请检查网络后重试。",
   );
+});
+
+test("phone auth adapter uses the registration and password reset contracts", async () => {
+  const calls: unknown[][] = [];
+  const api = createApiStub(async (...args: unknown[]) => {
+    calls.push(args);
+    if (args[0] === "/api/auth/account-status") return { exists: false };
+    if (args[0] === "/api/auth/invite-status") return { lab: { id: "lab-1", name: "实验室" } };
+    if (String(args[0]).endsWith("/send")) {
+      return { phoneMasked: "138****5678", expiresInSeconds: 300, resendAfterSeconds: 60 };
+    }
+    if (args[0] === "/api/auth/password-reset/phone/confirm") {
+      return { ok: true, requiresLogin: true };
+    }
+    return { user: { id: "user-1" }, labs: [] };
+  });
+
+  await sendRegisterPhoneVerification(api, "13812345678");
+  await validateRegistrationIdentity(api, {
+    email: "researcher@example.test",
+    inviteCode: "123456",
+  });
+  await registerWithPhone(api, {
+    email: "researcher@example.test",
+    password: "secret123",
+    name: "研究员",
+    inviteCode: "123456",
+    phoneCountryCode: "86",
+    phoneNumber: "13812345678",
+    phoneVerificationCode: "123456",
+  });
+  await sendPhonePasswordReset(api, {
+    phoneCountryCode: "86",
+    phoneNumber: "13812345678",
+  });
+  await confirmPhonePasswordReset(api, {
+    phoneCountryCode: "86",
+    phoneNumber: "13812345678",
+    phoneVerificationCode: "123456",
+    newPassword: "new-secret",
+  });
+
+  assert.deepEqual(calls, [
+    ["/api/auth/phone-verification/send", { phoneCountryCode: "86", phoneNumber: "13812345678", purpose: "register" }, { handleUnauthorized: false }],
+    ["/api/auth/account-status", { email: "researcher@example.test" }, { handleUnauthorized: false }],
+    ["/api/auth/invite-status", { inviteCode: "123456" }, { handleUnauthorized: false }],
+    ["/api/auth/register", {
+      email: "researcher@example.test",
+      password: "secret123",
+      name: "研究员",
+      inviteCode: "123456",
+      phoneCountryCode: "86",
+      phoneNumber: "13812345678",
+      phoneVerificationCode: "123456",
+    }, { handleUnauthorized: false }],
+    ["/api/auth/password-reset/phone/send", { phoneCountryCode: "86", phoneNumber: "13812345678" }, { handleUnauthorized: false }],
+    ["/api/auth/password-reset/phone/confirm", {
+      phoneCountryCode: "86",
+      phoneNumber: "13812345678",
+      phoneVerificationCode: "123456",
+      newPassword: "new-secret",
+    }, { handleUnauthorized: false }],
+  ]);
+});
+
+test("phone auth errors map server codes to actionable Chinese messages", () => {
+  assert.equal(getPhoneAuthErrorMessage(new ApiError("INVALID_PHONE", "bad", 400), "fallback"), "请输入有效的中国大陆手机号。");
+  assert.equal(getPhoneAuthErrorMessage(new ApiError("PHONE_EXISTS", "bad", 400), "fallback"), "该手机号已绑定其他账号。");
+  assert.equal(getPhoneAuthErrorMessage(new ApiError("PHONE_VERIFICATION_INVALID", "bad", 400), "fallback"), "短信验证码无效或已过期。");
+  assert.equal(getPhoneAuthErrorMessage(new ApiError("PHONE_VERIFICATION_LOCKED", "bad", 429), "fallback"), "验证码错误次数过多，请重新获取。");
+  assert.equal(getPhoneAuthErrorMessage(new ApiError("INVALID_INVITE", "bad", 400), "fallback"), "邀请码无效，请检查后重试。");
 });
 
 test("change password adapter preserves invalid-current-password as a form error", async () => {

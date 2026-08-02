@@ -22,5 +22,5 @@ export interface ProjectDocumentEditorProps {
     onSave(): void;
     onClose(): void;
 }
-export declare function ProjectDocumentEditor({ projectName, title, initialMarkdown, createdByName, updatedByName, updatedAt, index, attachments, attachmentAccept, attachmentUnavailableHint, saving, saveError, onTitleChange, onMarkdownChange, onUploadAttachments, onDeleteAttachment, onSave, onClose, }: ProjectDocumentEditorProps): React.JSX.Element;
+export declare function ProjectDocumentEditor({ title, initialMarkdown, createdByName, updatedByName, updatedAt, index, attachments, attachmentAccept, attachmentUnavailableHint, saving, saveError, onTitleChange, onMarkdownChange, onUploadAttachments, onDeleteAttachment, onSave, onClose, }: ProjectDocumentEditorProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentEditor.d.ts.map

@@ -15,7 +15,6 @@ import {
   paragraphSchema,
   setBlockTypeCommand,
 } from '@milkdown/kit/preset/commonmark';
-import { X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { BaseButton } from '../../components/common';
@@ -120,7 +119,6 @@ export interface ProjectDocumentEditorProps {
 }
 
 export function ProjectDocumentEditor({
-  projectName,
   title,
   initialMarkdown = '',
   createdByName,
@@ -949,27 +947,19 @@ export function ProjectDocumentEditor({
     }
   };
 
-  const displayTitle = title.trim() || '未命名文档';
-
   return (
     <section className={styles.shell} aria-label="项目文档编辑器">
       <header className={styles.header}>
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label="关闭文档编辑器"
-          title="关闭"
-        >
-          <X size={20} />
-        </button>
-        <div className={styles.breadcrumb}>
-          <span className={styles.projectName}>{projectName}</span>
-          <span className={styles.separator} aria-hidden="true">/</span>
-          <span className={styles.fileName}>{displayTitle}</span>
-        </div>
         <div className={styles.headerActions}>
-          {saveError && <span className={styles.saveError}>{saveError}</span>}
+          <BaseButton
+            type="secondary"
+            size="small"
+            rounded="large"
+            disabled={saving}
+            onClick={onClose}
+          >
+            取消
+          </BaseButton>
           <BaseButton
             type="primary"
             size="small"
@@ -985,6 +975,7 @@ export function ProjectDocumentEditor({
       <div
         className={`${styles.viewport} min-h-0 px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10`}
       >
+        {saveError && <div className={styles.saveError}>{saveError}</div>}
         <div className={styles.editorCanvas}>
           <section className="mb-4 shrink-0 px-[120px]">
             <input

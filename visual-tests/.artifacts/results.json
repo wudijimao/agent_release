@@ -5,7 +5,10 @@
       "E:\\project\\bioagent\\node_modules\\.pnpm\\@playwright+test@1.62.0\\node_modules\\@playwright\\test\\cli.js",
       "test",
       "-c",
-      "E:\\project\\bioagent\\packages\\nextjs\\visual-tests\\playwright.config.ts"
+      "E:\\project\\bioagent\\packages\\nextjs\\visual-tests\\playwright.config.ts",
+      "visual-tests/specs/normal/chat.spec.ts",
+      "--grep",
+      "CHAT-13"
     ],
     "configFile": "E:\\project\\bioagent\\packages\\nextjs\\visual-tests\\playwright.config.ts",
     "rootDir": "E:/project/bioagent/packages/nextjs/visual-tests/specs",
@@ -67,20 +70,20 @@
   },
   "suites": [
     {
-      "title": "normal\\auth.spec.ts",
-      "file": "normal/auth.spec.ts",
+      "title": "normal\\chat.spec.ts",
+      "file": "normal/chat.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "正常状态 / 登录",
-          "file": "normal/auth.spec.ts",
-          "line": 8,
+          "title": "正常状态 / 会话页",
+          "file": "normal/chat.spec.ts",
+          "line": 418,
           "column": 6,
           "specs": [
             {
-              "title": "登录页默认状态保持稳定",
+              "title": "CHAT-13 项目文件面板打开文档预览并可关闭",
               "ok": true,
               "tags": [],
               "tests": [
@@ -95,12 +98,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1484,
+                      "duration": 3971,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-07-29T10:21:12.580Z",
+                      "startTime": "2026-08-02T08:06:19.886Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -108,179 +111,9 @@
                   "status": "expected"
                 }
               ],
-              "id": "75e869c8f5550b3d9e87-8dc5a2aefb4dd72fd3ef",
-              "file": "normal/auth.spec.ts",
-              "line": 9,
-              "column": 7
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "resilience\\api-error.spec.ts",
-      "file": "resilience/api-error.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "异常韧性 / 接口错误",
-          "file": "resilience/api-error.spec.ts",
-          "line": 10,
-          "column": 6,
-          "specs": [
-            {
-              "title": "会话接口错误时展示可重试页面",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 807,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-07-29T10:21:14.382Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "8235df8575bb1615e2e4-9f3b29f6a2801b38c8a7",
-              "file": "resilience/api-error.spec.ts",
-              "line": 11,
-              "column": 7
-            },
-            {
-              "title": "登录接口错误时展示用户可理解的错误",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 1169,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-07-29T10:21:15.198Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "8235df8575bb1615e2e4-94480446ce3522f252b1",
-              "file": "resilience/api-error.spec.ts",
-              "line": 24,
-              "column": 7
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "resilience\\slow-network.spec.ts",
-      "file": "resilience/slow-network.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "异常韧性 / 慢网络",
-          "file": "resilience/slow-network.spec.ts",
-          "line": 10,
-          "column": 6,
-          "specs": [
-            {
-              "title": "会话接口缓慢时展示恢复状态",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 674,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-07-29T10:21:16.379Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "adef8eec32ca509a6f5c-f19fb5f02bb42a69fb73",
-              "file": "resilience/slow-network.spec.ts",
-              "line": 15,
-              "column": 7
-            },
-            {
-              "title": "登录接口缓慢时按钮展示提交中状态",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 935,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-07-29T10:21:17.062Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "adef8eec32ca509a6f5c-7a32edee8d0777b7bfda",
-              "file": "resilience/slow-network.spec.ts",
-              "line": 41,
+              "id": "0f2cdb69dc5879e78079-dd163767ca7ab24a7111",
+              "file": "normal/chat.spec.ts",
+              "line": 538,
               "column": 7
             }
           ]
@@ -290,9 +123,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-07-29T10:21:12.037Z",
-    "duration": 6275.884,
-    "expected": 5,
+    "startTime": "2026-08-02T08:06:18.926Z",
+    "duration": 5696.1669999999995,
+    "expected": 1,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
