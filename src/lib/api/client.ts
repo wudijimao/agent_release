@@ -7,6 +7,7 @@ import {
 
 import { ApiError } from "./api-error";
 import { getDefaultApiBaseUrl, normalizeApiBaseUrl } from "./environment";
+import { createClientId } from "@/lib/client-id";
 
 const MAX_REQUEST_ID_LENGTH = 128;
 
@@ -42,11 +43,7 @@ function normalizeRequestId(value: string | null | undefined) {
 }
 
 function createRequestId() {
-  if (typeof globalThis.crypto?.randomUUID === "function") {
-    return `next-${globalThis.crypto.randomUUID()}`;
-  }
-
-  return `next-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return createClientId("next");
 }
 
 function ensureRequestId(headers: Headers) {

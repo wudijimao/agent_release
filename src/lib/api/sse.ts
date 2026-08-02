@@ -6,6 +6,7 @@ import {
 } from "@bioagent/shared";
 
 import { ApiError } from "./api-error";
+import { createClientId } from "@/lib/client-id";
 
 export interface StreamChatOptions {
   fetch?: typeof fetch;
@@ -36,11 +37,7 @@ export class ChatStreamTimeoutError extends Error {
 }
 
 function createRequestId() {
-  if (typeof globalThis.crypto?.randomUUID === "function") {
-    return `next-chat-${globalThis.crypto.randomUUID()}`;
-  }
-
-  return `next-chat-${Date.now().toString(36)}`;
+  return createClientId("next-chat");
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {

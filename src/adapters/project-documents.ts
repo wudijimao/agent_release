@@ -12,6 +12,7 @@ import {
 } from "@bioagent/shared";
 
 import type { ApiClient } from "@/lib/api";
+import { createClientId } from "@/lib/client-id";
 
 type ProjectDocumentCreateApi = Pick<ApiClient, "post">;
 type ProjectDocumentImportApi = Pick<ApiClient, "delete" | "post">;
@@ -119,7 +120,7 @@ function block(
   props?: Record<string, unknown>,
 ): KnowledgeBlock {
   return {
-    id: globalThis.crypto.randomUUID(),
+    id: createClientId(),
     type,
     ...(props ? { props } : {}),
     ...(content === undefined ? {} : { content }),
