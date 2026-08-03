@@ -62,6 +62,7 @@ export function ChatHomeRoute() {
   const api = useApiClient();
   const { activeLab } = useLab();
   const {
+    defaultProjectId,
     isSidebarOpen,
     openChat,
     openSidebar,
@@ -89,6 +90,13 @@ export function ChatHomeRoute() {
   const runNewChat = useCallback(
     async (payload: InputSendPayload) => {
       if (isStreaming || !payload.content.trim()) return;
+
+      const targetProjectId = selectedProjectId ?? defaultProjectId;
+      if (!targetProjectId) {
+        setNoticeRole("alert");
+        setNotice("未能加载未归属项目，请刷新后重试");
+        return;
+      }
 
       streamControllerRef.current?.abort();
       const controller = new AbortController();
@@ -139,7 +147,7 @@ export function ChatHomeRoute() {
           {
             message: payload.content.trim(),
             draftId: uploaded.draftId,
-            projectId: selectedProjectId,
+            projectId: targetProjectId,
             ...sendScope,
           },
           {
@@ -213,6 +221,7 @@ export function ChatHomeRoute() {
     [
       activeLab?.id,
       api,
+      defaultProjectId,
       isStreaming,
       navigation,
       openChat,
@@ -257,9 +266,13 @@ export function ChatHomeRoute() {
       setNoticeRole("status");
       setIsCreatingScenario(true);
       try {
+        const targetProjectId = selectedProjectId ?? defaultProjectId;
+        if (!targetProjectId) {
+          throw new Error("未能加载未归属项目，请刷新后重试");
+        }
         const created = await createAgentSession(api, {
           agentType: scenario.agentType,
-          projectId: selectedProjectId ?? null,
+          projectId: targetProjectId,
         });
         await refreshChats();
         await openChat(created.sessionId);
@@ -274,7 +287,15 @@ export function ChatHomeRoute() {
         setIsCreatingScenario(false);
       }
     },
-    [api, isCreatingScenario, isStreaming, openChat, refreshChats, selectedProjectId],
+    [
+      api,
+      defaultProjectId,
+      isCreatingScenario,
+      isStreaming,
+      openChat,
+      refreshChats,
+      selectedProjectId,
+    ],
   );
 
   const handleCreateProject = useCallback(

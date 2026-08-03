@@ -51,6 +51,7 @@ interface ChatShellContextValue {
   openSidebar(): void;
   chats: readonly AppShellChat[];
   projects: readonly AppShellProject[];
+  defaultProjectId?: string;
   getCachedSession(sessionId: string): ChatSessionViewModel | undefined;
   openChat(sessionId: string, options?: OpenChatOptions): Promise<void>;
   refreshChats(): Promise<void>;
@@ -95,6 +96,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const canAccessCurrentPath = canAccessWorkspacePath(pathname, workspaceAccess);
   const [chats, setChats] = useState<AppShellChat[]>([]);
   const [projects, setProjects] = useState<AppShellProject[]>([]);
+  const [defaultProjectId, setDefaultProjectId] = useState<string>();
   const [historyStatus, setHistoryStatus] = useState<"loading" | "ready">(
     "loading",
   );
@@ -119,6 +121,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const refreshProjects = useCallback(async () => {
     const payload = await loadProjectsBootstrap(api);
     setProjects(mapProjectsToShell(payload.projects));
+    setDefaultProjectId(payload.defaultProject.id);
   }, [api]);
 
   useEffect(() => {
@@ -148,23 +151,27 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   }, [api, navigation, pathname, status]);
 
   useEffect(() => {
-    if (status !== "authenticated" || !workspaceAccess.canViewAiUsage) {
-      return;
-    }
+    if (status !== "authenticated") return;
 
     let cancelled = false;
     loadProjectsBootstrap(api)
       .then((payload) => {
-        if (!cancelled) setProjects(mapProjectsToShell(payload.projects));
+        if (!cancelled) {
+          setProjects(mapProjectsToShell(payload.projects));
+          setDefaultProjectId(payload.defaultProject.id);
+        }
       })
       .catch(() => {
-        if (!cancelled) setProjects([]);
+        if (!cancelled) {
+          setProjects([]);
+          setDefaultProjectId(undefined);
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [api, status, workspaceAccess.canViewAiUsage]);
+  }, [api, status]);
 
   useEffect(() => {
     if (status === "authenticated" && !canAccessCurrentPath) {
@@ -222,12 +229,13 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const contextValue = useMemo<Omit<ChatShellContextValue, "isSidebarOpen" | "openSidebar" | "chats" | "touchChat">>(
     () => ({
       projects,
+      defaultProjectId,
       getCachedSession: (sessionId) => sessionCacheRef.current.get(sessionId),
       openChat,
       refreshChats,
       refreshProjects,
     }),
-    [openChat, projects, refreshChats, refreshProjects],
+    [defaultProjectId, openChat, projects, refreshChats, refreshProjects],
   );
 
   const shellUser = useMemo(
