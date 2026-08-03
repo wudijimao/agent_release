@@ -18,7 +18,8 @@ export interface ChatHomePageProps {
     onSelectProject(projectId: string | null): void;
     onCreateProject?(name: string): void;
     onOpenSidebar?(): void;
+    onSelectQuickPrompt?(prompt: string): void;
     onSend(payload: string | InputSendPayload): void;
 }
-export default function ChatHomePage({ projects, selectedProjectId, disabled, embedded, isSidebarOpen, skillOptions, fileOptions, quickPrompts, uploadAccept, validateUploadFile, onUploadValidationError, onSelectProject, onCreateProject, onOpenSidebar, onSend, }: ChatHomePageProps): import("react").JSX.Element;
+export default function ChatHomePage({ projects, selectedProjectId, disabled, embedded, isSidebarOpen, skillOptions, fileOptions, quickPrompts, uploadAccept, validateUploadFile, onUploadValidationError, onSelectProject, onCreateProject, onOpenSidebar, onSelectQuickPrompt, onSend, }: ChatHomePageProps): import("react").JSX.Element;
 //# sourceMappingURL=ChatHomePage.d.ts.map

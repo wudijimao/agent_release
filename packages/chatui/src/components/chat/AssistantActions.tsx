@@ -4,6 +4,7 @@ import type { AssistantFeedback } from './chat.types';
 
 export interface AssistantActionsProps {
   markdownContent: string;
+  copyLabel?: string;
   onRefresh?: () => void;
   feedback?: AssistantFeedback;
   onFeedback?: (type: AssistantFeedback) => void;
@@ -12,6 +13,7 @@ export interface AssistantActionsProps {
 
 export const AssistantActions: React.FC<AssistantActionsProps> = ({
   markdownContent,
+  copyLabel = '复制 Markdown',
   onRefresh,
   feedback,
   onFeedback,
@@ -44,7 +46,7 @@ export const AssistantActions: React.FC<AssistantActionsProps> = ({
         className={`h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors ${
           copied ? 'bg-bgLight text-primaryText' : 'hover:bg-bgLight'
         }`}
-        title={copied ? '已复制 Markdown' : '复制 Markdown'}
+        title={copied ? '已复制' : copyLabel}
       >
         {copied ? <Check size={15} /> : <Copy size={15} />}
       </button>

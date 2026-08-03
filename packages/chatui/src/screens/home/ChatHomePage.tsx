@@ -25,6 +25,7 @@ export interface ChatHomePageProps {
   onSelectProject(projectId: string | null): void;
   onCreateProject?(name: string): void;
   onOpenSidebar?(): void;
+  onSelectQuickPrompt?(prompt: string): void;
   onSend(payload: string | InputSendPayload): void;
 }
 
@@ -43,6 +44,7 @@ export default function ChatHomePage({
   onSelectProject,
   onCreateProject,
   onOpenSidebar,
+  onSelectQuickPrompt,
   onSend,
 }: ChatHomePageProps) {
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
@@ -207,7 +209,11 @@ export default function ChatHomePage({
             />
           </div>
 
-          <QuickPrompts onSelect={onSend} prompts={quickPrompts} />
+          <QuickPrompts
+            onSelect={onSelectQuickPrompt ?? onSend}
+            prompts={quickPrompts}
+            disabled={disabled}
+          />
     </div>
   );
 

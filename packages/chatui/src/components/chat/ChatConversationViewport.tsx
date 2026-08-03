@@ -19,6 +19,8 @@ export interface ChatConversationViewportProps {
   messages: readonly ChatMessage[];
   isTyping: boolean;
   statusPhase?: StatusPhase;
+  statusLabel?: string;
+  statusVisible?: boolean;
   searchSteps?: readonly SearchStep[];
   hasReceivedAssistantChunk?: boolean;
   contentMaxWidth?: number | string;
@@ -29,6 +31,10 @@ export interface ChatConversationViewportProps {
   onFeedback?(messageKey: string, feedback: AssistantFeedback): void;
   onRegenerate?(messageIndex: number): void;
   onConfirmMiraDraft?(actionKey: string): void;
+  onPreviewMiraDraft?(actionKey: string): void;
+  onCancelMiraDraft?(actionKey: string): void;
+  pendingDisplayActionKey?: string;
+  onDisplayCardAction?(actionKey: string, actionId: string): void;
   onScroll?: React.UIEventHandler<HTMLDivElement>;
   scrollContainerRef?: React.Ref<HTMLDivElement>;
   onMessageElement?(messageIndex: number, element: HTMLDivElement | null): void;
@@ -59,6 +65,8 @@ export function ChatConversationViewport({
   messages,
   isTyping,
   statusPhase = 'thinking',
+  statusLabel,
+  statusVisible,
   searchSteps = [],
   hasReceivedAssistantChunk = false,
   contentMaxWidth = 800,
@@ -69,6 +77,10 @@ export function ChatConversationViewport({
   onFeedback,
   onRegenerate,
   onConfirmMiraDraft,
+  onPreviewMiraDraft,
+  onCancelMiraDraft,
+  pendingDisplayActionKey,
+  onDisplayCardAction,
   onScroll,
   scrollContainerRef,
   onMessageElement,
@@ -79,6 +91,15 @@ export function ChatConversationViewport({
   const messageElementsRef = useRef(new Map<number, HTMLDivElement>());
   const positionedTurnKeyRef = useRef<string>();
   const [reservedTurn, setReservedTurn] = useState<ReservedTurnLayout>();
+  const hasPersistentStatus =
+    statusPhase === 'awaiting_clarification' ||
+    statusPhase === 'awaiting_confirmation' ||
+    statusPhase === 'awaiting_approval' ||
+    statusPhase === 'warning' ||
+    statusPhase === 'failed';
+  const shouldShowStatus =
+    (isTyping && (statusVisible ?? !hasReceivedAssistantChunk)) ||
+    (statusVisible === true && hasPersistentStatus);
 
   let activeAssistantIndex = -1;
   let activeUserIndex = -1;
@@ -253,14 +274,17 @@ export function ChatConversationViewport({
                     onFeedback={onFeedback}
                     onRefresh={onRegenerate ? () => onRegenerate(index) : undefined}
                     onConfirmMiraDraft={onConfirmMiraDraft}
+                    onPreviewMiraDraft={onPreviewMiraDraft}
+                    onCancelMiraDraft={onCancelMiraDraft}
+                    pendingDisplayActionKey={pendingDisplayActionKey}
+                    onDisplayCardAction={onDisplayCardAction}
                     isTyping={isTyping && index === activeAssistantIndex}
                   />
-                  {index === activeAssistantIndex &&
-                    isTyping &&
-                    !hasReceivedAssistantChunk && (
+                  {index === activeAssistantIndex && shouldShowStatus && (
                       <div className="flex w-full justify-start px-1 md:px-2">
                         <ThinkingIndicator
                           phase={statusPhase}
+                          label={statusLabel}
                           searchSteps={[...searchSteps]}
                         />
                       </div>
@@ -270,10 +294,14 @@ export function ChatConversationViewport({
             );
           })}
 
-          {activeAssistantIndex < 0 && isTyping && !hasReceivedAssistantChunk && (
+          {activeAssistantIndex < 0 && shouldShowStatus && (
             <div className="flex w-full justify-center px-2">
               <div className="flex w-full max-w-[860px] justify-start px-1 md:px-2">
-                <ThinkingIndicator phase={statusPhase} searchSteps={[...searchSteps]} />
+                <ThinkingIndicator
+                  phase={statusPhase}
+                  label={statusLabel}
+                  searchSteps={[...searchSteps]}
+                />
               </div>
             </div>
           )}

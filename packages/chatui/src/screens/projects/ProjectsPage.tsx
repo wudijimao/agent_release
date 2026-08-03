@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, Plus } from 'lucide-react';
-import { BaseButton, BaseDocumentUpload, BaseInput, BaseModal } from '../../components/common';
+import { BaseButton, BaseInput, BaseModal } from '../../components/common';
 
 export interface ProjectListItemViewModel extends Record<string, unknown> {
   id: string;
@@ -13,7 +13,6 @@ export interface ProjectListItemViewModel extends Record<string, unknown> {
 export interface CreateProjectViewModel {
   name: string;
   description: string;
-  documents: File[];
 }
 
 export interface ProjectsPageProps {
@@ -40,14 +39,12 @@ export function ProjectsPage({
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
-  const [projectDocuments, setProjectDocuments] = useState<File[]>([]);
   const [createError, setCreateError] = useState('');
   const [creating, setCreating] = useState(false);
 
   const openCreateModal = () => {
     setProjectName('');
     setProjectDescription('');
-    setProjectDocuments([]);
     setCreateError('');
     setShowCreateModal(true);
   };
@@ -70,7 +67,6 @@ export function ProjectsPage({
       await onCreateProject({
         name,
         description: projectDescription.trim(),
-        documents: projectDocuments,
       });
       setShowCreateModal(false);
     } catch (submitError) {
@@ -145,11 +141,6 @@ export function ProjectsPage({
             <div className="text-sm font-medium text-primaryText">项目描述（选填）</div>
             <textarea value={projectDescription} onChange={(event) => setProjectDescription(event.target.value)} placeholder="请输入项目描述" rows={4} disabled={creating}
               className="w-full resize-none rounded-lg border border-borderGray bg-white px-3 py-2 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" />
-          </section>
-          <section className="space-y-2">
-            <div className="text-sm font-medium text-primaryText">项目文档（选填）</div>
-            <BaseDocumentUpload value={projectDocuments} maxCount={5} maxSize={20 * 1024 * 1024} disabled={creating}
-              onChange={setProjectDocuments} onError={(uploadError) => setCreateError(uploadError.message)} />
           </section>
           {createError && <div role="alert" className="text-sm text-danger">{createError}</div>}
         </div>

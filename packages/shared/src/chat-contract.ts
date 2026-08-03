@@ -120,12 +120,24 @@ export interface ChatHistoryRunDto {
   updatedAt?: string;
 }
 
+export interface PendingMcpToolCallDto {
+  id: string;
+  status: "pending_confirmation" | "pending_approval";
+  riskLevel: "read" | "write_low" | "write_high";
+  dataTypes: string[];
+  inputSummary?: string | null;
+  expiresAt?: string | null;
+  approvalRequestId?: string | null;
+  toolName: string;
+  serverName: string;
+}
+
 export interface ChatHistoryDetailResponse {
   session: ChatHistorySessionDto;
   sessionId: string;
   messages: ChatHistoryMessageDto[];
   runs: ChatHistoryRunDto[];
-  pendingMcpToolCalls: unknown[];
+  pendingMcpToolCalls: PendingMcpToolCallDto[];
   attachments: ChatAttachmentDto[];
   currentContextRefs: HomeContextRef[] | null;
   sessionSummary?: unknown;

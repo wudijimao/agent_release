@@ -12,6 +12,7 @@ import {
   type ChatMessage,
   type InputSendPayload,
 } from "@bioagent/chatui";
+import type { HomeAgentType } from "@bioagent/shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -31,16 +32,27 @@ import {
   validateChatAttachmentFile,
 } from "@/adapters/chat-attachments";
 import { resolveChatSendScope } from "@/adapters/chat-resources";
+import { createAgentSession } from "@/adapters/chat-sessions";
 import { createProject } from "@/adapters/projects";
 import { streamChat } from "@/lib/api";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
-const OLD_WEB_HOME_GUIDE_PROMPTS = [
-  "最近有哪些 CRISPR 新文献？",
-  "DpnI 还有库存吗？",
-  "帮我查一下 lab 里的 KRAS 质粒位置",
-] as const;
+interface HomeAgentScenario {
+  agentType: Exclude<HomeAgentType, "general">;
+  label: string;
+}
+
+const HOME_AGENT_SCENARIOS: readonly HomeAgentScenario[] = [
+  { agentType: "experiment_note", label: "整理实验笔记" },
+  { agentType: "experiment_design", label: "设计实验方案" },
+  { agentType: "literature_review", label: "文献解读" },
+  { agentType: "weekly_summary", label: "每周工作总结" },
+];
+
+const HOME_AGENT_SCENARIO_LABELS = HOME_AGENT_SCENARIOS.map(
+  (scenario) => scenario.label,
+);
 
 import { useChatShell } from "../../WorkspaceShell";
 import { useChatResourceCatalog } from "../useChatResourceCatalog";
@@ -63,6 +75,7 @@ export function ChatHomeRoute() {
   const [noticeRole, setNoticeRole] = useState<"status" | "alert">("status");
   const [streamState, setStreamState] = useState<ChatStreamViewState | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isCreatingScenario, setIsCreatingScenario] = useState(false);
   const [lastPayload, setLastPayload] = useState<InputSendPayload | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string>();
   const selectableProjects = useMemo(
@@ -235,6 +248,35 @@ export function ChatHomeRoute() {
     setNotice(message);
   }, []);
 
+  const handleStartScenario = useCallback(
+    async (label: string) => {
+      const scenario = HOME_AGENT_SCENARIOS.find((item) => item.label === label);
+      if (!scenario || isStreaming || isCreatingScenario) return;
+
+      setNotice("");
+      setNoticeRole("status");
+      setIsCreatingScenario(true);
+      try {
+        const created = await createAgentSession(api, {
+          agentType: scenario.agentType,
+          projectId: selectedProjectId ?? null,
+        });
+        await refreshChats();
+        await openChat(created.sessionId);
+      } catch (createError) {
+        setNoticeRole("alert");
+        setNotice(
+          createError instanceof Error
+            ? createError.message
+            : "场景会话创建失败",
+        );
+      } finally {
+        setIsCreatingScenario(false);
+      }
+    },
+    [api, isCreatingScenario, isStreaming, openChat, refreshChats, selectedProjectId],
+  );
+
   const handleCreateProject = useCallback(
     async (name: string) => {
       setNotice("");
@@ -272,6 +314,8 @@ export function ChatHomeRoute() {
                 messages={streamState.messages}
                 isTyping={isStreaming}
                 statusPhase={streamState.statusPhase}
+                statusLabel={streamState.statusLabel}
+                statusVisible={streamState.statusVisible}
                 searchSteps={streamState.searchSteps}
                 hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
                 getMessageKey={(_message: ChatMessage, index: number) =>
@@ -315,7 +359,7 @@ export function ChatHomeRoute() {
           <ChatHomePage
             projects={selectableProjects}
             selectedProjectId={selectedProjectId}
-            disabled={isStreaming}
+            disabled={isStreaming || isCreatingScenario}
             isSidebarOpen={isSidebarOpen}
             onOpenSidebar={openSidebar}
             onSelectProject={(projectId) =>
@@ -323,9 +367,10 @@ export function ChatHomeRoute() {
             }
             onCreateProject={(name) => void handleCreateProject(name)}
             onSend={handleSend}
+            onSelectQuickPrompt={(label) => void handleStartScenario(label)}
             skillOptions={resourceCatalog.skills}
             fileOptions={resourceCatalog.files}
-            quickPrompts={OLD_WEB_HOME_GUIDE_PROMPTS}
+            quickPrompts={HOME_AGENT_SCENARIO_LABELS}
             uploadAccept={CHAT_ATTACHMENT_ACCEPT}
             validateUploadFile={validateChatAttachmentFile}
             onUploadValidationError={handleUploadValidationError}

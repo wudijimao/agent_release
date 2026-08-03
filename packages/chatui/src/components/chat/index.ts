@@ -1,6 +1,8 @@
 export { AssistantActions } from "./AssistantActions";
 export type { AssistantActionsProps } from "./AssistantActions";
 export { ChatConversationViewport } from "./ChatConversationViewport";
+export { ChatDisplayCard } from "./ChatDisplayCard";
+export type { ChatDisplayCardProps } from "./ChatDisplayCard";
 export type {
   ChatConversationScrollbar,
   ChatConversationSelection,
@@ -27,6 +29,7 @@ export { ChatShareControls } from "./ChatShareControls";
 export type { ChatShareControlsProps } from "./ChatShareControls";
 export { ChatPreviewPanel, ChatProjectFilesPanel } from "./ChatWorkspacePanels";
 export type {
+  ChatPreviewActionViewModel,
   ChatPreviewItemType,
   ChatPreviewItemViewModel,
   ChatPreviewPanelProps,
@@ -70,6 +73,9 @@ export type {
 export type {
   AssistantFeedback,
   ChatAttachment,
+  ChatDisplayCardAction,
+  ChatDisplayCardLink,
+  ChatDisplayCardViewModel,
   ChatMessage,
   ChatReference,
   MiraDraftCardViewModel,

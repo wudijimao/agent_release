@@ -8,6 +8,7 @@ import 'highlight.js/styles/atom-one-light.css';
 import 'katex/dist/katex.min.css';
 import 'katex/contrib/mhchem';
 import AssistantActions from './AssistantActions';
+import { ChatDisplayCard } from './ChatDisplayCard';
 import { MiraDraftCard } from './MiraDraftCard';
 import type { AssistantFeedback, ChatMessage } from './chat.types';
 
@@ -34,6 +35,10 @@ export interface MessageItemProps {
   onFeedback?: (actionKey: string, type: AssistantFeedback) => void;
   onRefresh?: () => void;
   onConfirmMiraDraft?: (actionKey: string) => void;
+  onPreviewMiraDraft?: (actionKey: string) => void;
+  onCancelMiraDraft?: (actionKey: string) => void;
+  pendingDisplayActionKey?: string;
+  onDisplayCardAction?: (actionKey: string, actionId: string) => void;
   isTyping?: boolean;
   isStreaming?: boolean;
 }
@@ -321,6 +326,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   onFeedback,
   onRefresh,
   onConfirmMiraDraft,
+  onPreviewMiraDraft,
+  onCancelMiraDraft,
+  pendingDisplayActionKey,
+  onDisplayCardAction,
   isTyping = false,
   isStreaming,
 }) => {
@@ -551,9 +560,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
     <div className="flex w-full justify-center px-2">
       <div className={`flex w-full max-w-[860px] px-1 md:px-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
         {isUser ? (
-          <div className="message-bubble-user">
-            {((msg.references && msg.references.length > 0) || (msg.attachments && msg.attachments.length > 0)) && (
-              <div className="mb-2 flex flex-wrap gap-2">
+          <div className="flex w-full flex-col items-end gap-1">
+            <div className="message-bubble-user">
+              {((msg.references && msg.references.length > 0) || (msg.attachments && msg.attachments.length > 0)) && (
+                <div className="mb-2 flex flex-wrap gap-2">
                 {msg.references?.map((reference) => (
                   <div
                     key={reference.id}
@@ -603,9 +613,17 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                     )}
                   </div>
                 ))}
-              </div>
+                </div>
+              )}
+              <p className="whitespace-pre-wrap">{msg.content}</p>
+            </div>
+
+            {msg.content && (
+              <AssistantActions
+                markdownContent={msg.content}
+                copyLabel="复制消息"
+              />
             )}
-            <p className="whitespace-pre-wrap">{msg.content}</p>
           </div>
         ) : (
           <div className="flex w-full min-w-0 max-w-[85%] flex-col items-start gap-2">
@@ -670,7 +688,20 @@ export const MessageItem: React.FC<MessageItemProps> = ({
             )}
 
             {msg.miraDraft && (
-              <MiraDraftCard draft={msg.miraDraft} onConfirm={onConfirmMiraDraft} />
+              <MiraDraftCard
+                draft={msg.miraDraft}
+                onPreview={onPreviewMiraDraft}
+                onConfirm={onConfirmMiraDraft}
+                onCancel={onCancelMiraDraft}
+              />
+            )}
+
+            {msg.displayCard && (
+              <ChatDisplayCard
+                card={msg.displayCard}
+                actionPending={pendingDisplayActionKey === msg.displayCard.actionKey}
+                onAction={onDisplayCardAction}
+              />
             )}
 
             {!isPaperRecommendationMessage && msg.content && !streaming && (

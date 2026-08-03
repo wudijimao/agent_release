@@ -10,6 +10,10 @@ export interface MessageItemProps {
     onFeedback?: (actionKey: string, type: AssistantFeedback) => void;
     onRefresh?: () => void;
     onConfirmMiraDraft?: (actionKey: string) => void;
+    onPreviewMiraDraft?: (actionKey: string) => void;
+    onCancelMiraDraft?: (actionKey: string) => void;
+    pendingDisplayActionKey?: string;
+    onDisplayCardAction?: (actionKey: string, actionId: string) => void;
     isTyping?: boolean;
     isStreaming?: boolean;
 }

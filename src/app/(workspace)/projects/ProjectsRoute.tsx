@@ -74,11 +74,7 @@ export function ProjectsRoute() {
       onOpenSidebar={openSidebar}
       onRetry={() => void load()}
       onOpenProject={(projectId) => navigation.push(`/projects/${projectId}`)}
-      onCreateProject={async ({ name, description, documents }) => {
-        if (documents.length > 0) {
-          throw new Error("服务端暂不支持在创建项目时直接上传文档，请先创建项目。");
-        }
-
+      onCreateProject={async ({ name, description }) => {
         const created = await createProject(api, {
           type: "team",
           name,

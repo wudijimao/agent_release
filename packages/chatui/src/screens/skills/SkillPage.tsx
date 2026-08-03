@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Menu, Plus, Search } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 
 export type SkillRiskLevel = 'low' | 'medium' | 'high';
 export type SkillTab = 'installed' | 'uninstalled';
@@ -21,7 +21,6 @@ export interface SkillPageProps {
   error?: string;
   pendingSkillIds?: readonly string[];
   onOpenSidebar(): void;
-  onCreateSkill(): void;
   onInstall(skillIds: string[]): void;
   onUninstall(skillIds: string[]): void;
   onRetry?(): void;
@@ -41,7 +40,6 @@ export function SkillPage({
   error,
   pendingSkillIds = [],
   onOpenSidebar,
-  onCreateSkill,
   onInstall,
   onUninstall,
   onRetry,
@@ -75,19 +73,11 @@ export function SkillPage({
 
   return (
     <div className="relative flex h-full w-full flex-col bg-surface">
-      <header className="z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm">
+      <header className="z-10 flex h-16 shrink-0 items-center bg-homeHeaderSurface px-4 backdrop-blur-sm">
         <div className="flex min-w-0 items-center gap-3">
           {!isSidebarOpen && <button type="button" onClick={onOpenSidebar} className="-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight" title="展开边栏"><Menu size={20} /></button>}
           <div className="flex items-center gap-2 text-sm"><span className="text-tertiaryText">系统设置</span><span className="text-tertiaryText">/</span><span className="font-medium text-primaryText">Skill</span></div>
         </div>
-        <button
-          type="button"
-          className="inline-flex h-7 shrink-0 items-center justify-center gap-2 rounded-md border border-skillCreate bg-skillCreate px-3 py-1 text-xs font-medium text-white transition-all hover:border-skillCreateHover hover:bg-skillCreateHover"
-          onClick={onCreateSkill}
-        >
-          <Plus size={14} />
-          新建 Skill
-        </button>
       </header>
 
       <div className={`flex-1 overflow-y-scroll px-4 pt-4 md:px-8 md:pt-6 lg:px-10 ${isBatchMode ? 'pb-32' : 'pb-12'}`}>

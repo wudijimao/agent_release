@@ -54,7 +54,9 @@ import {
   type ProjectChatWorkspaceViewModel,
 } from "@/adapters/projects";
 import {
+  cancelMiraDocumentDraft,
   confirmMiraDocumentDraft,
+  mapMiraDocumentDraftPreview,
   type MiraDocumentDraftAction,
 } from "@/adapters/mira-document-drafts";
 import { loadProjectDocumentDetail } from "@/adapters/project-document-detail";
@@ -100,8 +102,10 @@ function RouteStatus({
 const initialStreamState: ChatStreamViewState = {
   messages: [],
   statusPhase: "analyzing",
+  statusVisible: false,
   searchSteps: [],
   hasReceivedAssistantChunk: false,
+  deferredActions: {},
 };
 
 const PANEL_MIN_WIDTH = 200;
@@ -158,10 +162,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const [streamState, setStreamState] = useState<ChatStreamViewState>(() => ({
     ...initialStreamState,
     messages: cachedSession?.messages ?? [],
+    statusVisible: cachedSession?.isReplying ?? false,
   }));
   const [miraDraftActions, setMiraDraftActions] = useState<
     Record<string, MiraDocumentDraftAction>
   >({});
+  const [pendingDisplayActionKey, setPendingDisplayActionKey] = useState<string>();
+  const [pendingMiraActionKey, setPendingMiraActionKey] = useState<string>();
   const [isStreaming, setIsStreaming] = useState(false);
   const [isRemoteReplying, setIsRemoteReplying] = useState(
     cachedSession?.isReplying ?? false,
@@ -293,7 +300,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         });
         if (signal?.aborted) return;
         setTitle(session.title);
-        setStreamState({ ...initialStreamState, messages: session.messages });
+        setStreamState({
+          ...initialStreamState,
+          messages: session.messages,
+          statusVisible: session.isReplying,
+          deferredActions: session.deferredActions,
+        });
         setMiraDraftActions(session.miraDraftActions);
         setIsRemoteReplying(session.isReplying);
         setShowProjectPanel(false);
@@ -396,7 +408,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (controller.signal.aborted) return;
 
         setTitle(session.title);
-        setStreamState({ ...initialStreamState, messages: session.messages });
+        setStreamState({
+          ...initialStreamState,
+          messages: session.messages,
+          statusVisible: session.isReplying,
+          deferredActions: session.deferredActions,
+        });
         setMiraDraftActions(session.miraDraftActions);
         setIsRemoteReplying(session.isReplying);
         persistedMessageIdsRef.current = session.messageIds;
@@ -545,6 +562,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           nextState = reduceChatStreamEvent(nextState, event.type, event.data);
           if (nextState.sessionId) resolvedSessionId = nextState.sessionId;
           setStreamState(nextState);
+          if (nextState.miraDraftActions) {
+            setMiraDraftActions((current) => ({
+              ...current,
+              ...nextState.miraDraftActions,
+            }));
+          }
           if (nextState.error) throw new Error(nextState.error);
         }
 
@@ -558,6 +581,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         setStreamState({
           ...initialStreamState,
           messages: reconciled.messages,
+          deferredActions: reconciled.deferredActions,
         });
         setMiraDraftActions(reconciled.miraDraftActions);
         persistedMessageIdsRef.current = reconciled.messageIds;
@@ -586,6 +610,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             setStreamState({
               ...initialStreamState,
               messages: recovered.messages,
+              deferredActions: recovered.deferredActions,
             });
             setMiraDraftActions(recovered.miraDraftActions);
             persistedMessageIdsRef.current = recovered.messageIds;
@@ -647,11 +672,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
   const handleConfirmMiraDraft = useCallback(
     async (actionKey: string) => {
+      if (pendingMiraActionKey) return false;
       const action = miraDraftActions[actionKey];
       const projectId = currentChat?.projectId;
       if (!action || !projectId) {
         setStreamNotice("当前对话未归属项目，无法保存文档。");
-        return;
+        return false;
       }
 
       const updateDraftCard = (
@@ -668,6 +694,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       };
 
       updateDraftCard({ status: "saving", errorMessage: undefined });
+      setPendingMiraActionKey(actionKey);
       setStreamNotice("");
       try {
         await confirmMiraDocumentDraft(api, action, {
@@ -683,12 +710,16 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           return next;
         });
         await Promise.all([loadProjectWorkspace(), refreshProjects()]);
+        return true;
       } catch (error) {
         updateDraftCard({
           status: "error",
           errorMessage:
             error instanceof Error ? error.message : "文档保存失败，请重试。",
         });
+        return false;
+      } finally {
+        setPendingMiraActionKey(undefined);
       }
     },
     [
@@ -697,6 +728,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       currentProject,
       loadProjectWorkspace,
       miraDraftActions,
+      pendingMiraActionKey,
       projectWorkspace,
       refreshProjects,
     ],
@@ -807,6 +839,114 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       return next;
     });
   }, []);
+
+  const handlePreviewMiraDraft = useCallback(
+    (actionKey: string) => {
+      const action = miraDraftActions[actionKey];
+      if (!action) return;
+      openPreviewItem(
+        mapMiraDocumentDraftPreview(
+          action,
+          projectWorkspace?.projectName ?? currentProject?.name ?? "当前项目",
+        ),
+      );
+    },
+    [currentProject?.name, miraDraftActions, openPreviewItem, projectWorkspace?.projectName],
+  );
+
+  const handleCancelMiraDraft = useCallback(
+    async (actionKey: string) => {
+      if (pendingMiraActionKey) return;
+      const action = miraDraftActions[actionKey];
+      if (!action) return;
+
+      setPendingMiraActionKey(actionKey);
+      setStreamNotice("");
+      try {
+        await cancelMiraDocumentDraft(api, action);
+        setStreamState((current) => ({
+          ...current,
+          messages: current.messages.map((message) =>
+            message.miraDraft?.actionKey === actionKey
+              ? {
+                  ...message,
+                  miraDraft: {
+                    ...message.miraDraft,
+                    status: "error",
+                    errorMessage: "草稿已取消",
+                    previewable: false,
+                    actionable: false,
+                  },
+                }
+              : message,
+          ),
+        }));
+        setMiraDraftActions((current) => {
+          const next = { ...current };
+          delete next[actionKey];
+          return next;
+        });
+        closePreviewTab(`draft:${actionKey}`);
+      } catch (error) {
+        setStreamNotice(error instanceof Error ? error.message : "草稿取消失败，请重试。");
+      } finally {
+        setPendingMiraActionKey(undefined);
+      }
+    },
+    [api, closePreviewTab, miraDraftActions, pendingMiraActionKey],
+  );
+
+  const handleDisplayCardAction = useCallback(
+    async (actionKey: string, actionId: string) => {
+      if (pendingDisplayActionKey) return;
+      const action = streamState.deferredActions?.[actionKey];
+      if (!action) return;
+      if (actionId !== "confirm" && actionId !== "cancel") return;
+      if (
+        action.kind === "mcp"
+        && actionId === "confirm"
+        && action.status !== "pending_confirmation"
+      ) return;
+      if (action.kind === "route" && actionId === "cancel" && !action.cancelPath) return;
+
+      setPendingDisplayActionKey(actionKey);
+      setStreamNotice("");
+      try {
+        if (action.kind === "mcp") {
+          await api.post(
+            `/api/mcp/tool-calls/${encodeURIComponent(action.toolCallId)}/${actionId}`,
+          );
+        } else {
+          await api.post(
+            actionId === "confirm" ? action.confirmPath : action.cancelPath!,
+            actionId === "confirm" ? action.confirmBody : undefined,
+          );
+        }
+        await loadPage();
+        setStreamNotice(actionId === "confirm" ? "操作已确认执行" : "操作已取消");
+      } catch (error) {
+        setStreamNotice(error instanceof Error ? error.message : "操作失败，请重试。");
+      } finally {
+        setPendingDisplayActionKey(undefined);
+      }
+    },
+    [api, loadPage, pendingDisplayActionKey, streamState.deferredActions],
+  );
+
+  const handlePreviewAction = useCallback(
+    (itemKey: string, actionId: string) => {
+      if (!itemKey.startsWith("draft:")) return;
+      const actionKey = itemKey.slice("draft:".length);
+      if (actionId === "confirm") {
+        void handleConfirmMiraDraft(actionKey).then((confirmed) => {
+          if (confirmed) closePreviewTab(itemKey);
+        });
+      } else if (actionId === "cancel") {
+        void handleCancelMiraDraft(actionKey);
+      }
+    },
+    [closePreviewTab, handleCancelMiraDraft, handleConfirmMiraDraft],
+  );
 
   const startPanelResize = useCallback(
     (
@@ -931,6 +1071,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
                 setPreviewTabs([]);
                 setActivePreviewKey(null);
               }}
+              pendingActionKey={
+                pendingMiraActionKey ? `draft:${pendingMiraActionKey}` : undefined
+              }
+              onAction={handlePreviewAction}
               onResizeStart={(event) => startPanelResize("preview", event)}
             />
           </ChatWorkspaceSidePanel>
@@ -968,6 +1112,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           messages={streamState.messages}
           isTyping={isStreaming || isRemoteReplying}
           statusPhase={streamState.statusPhase}
+          statusLabel={streamState.statusLabel}
+          statusVisible={streamState.statusVisible}
           searchSteps={streamState.searchSteps}
           hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
           contentMaxWidth={showPreviewPanel ? "100%" : 800}
@@ -980,6 +1126,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             _message.id ?? `${sessionId}-${index}`
           }
           onConfirmMiraDraft={handleConfirmMiraDraft}
+          onPreviewMiraDraft={handlePreviewMiraDraft}
+          onCancelMiraDraft={handleCancelMiraDraft}
+          pendingDisplayActionKey={pendingDisplayActionKey}
+          onDisplayCardAction={handleDisplayCardAction}
         />
 
         {chatTimelineItems.length >= CHAT_TIMELINE_MIN_ITEMS && (

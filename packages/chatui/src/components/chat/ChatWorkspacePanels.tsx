@@ -1,9 +1,16 @@
 import type { MouseEvent } from 'react';
 import { FileText, FlaskConical, Search, X } from 'lucide-react';
+import { BaseButton } from '../common';
 import { ProjectDocumentPreviewContent } from '../../screens/projects/ProjectDocumentPreviewContent';
 import type { ProjectDocumentPreviewViewModel } from '../../screens/projects/ProjectDocumentPreview';
 
-export type ChatPreviewItemType = 'knowledge' | 'experiment-log';
+export type ChatPreviewItemType = 'knowledge' | 'experiment-log' | 'draft';
+
+export interface ChatPreviewActionViewModel {
+  id: string;
+  label: string;
+  tone?: 'primary' | 'secondary' | 'danger';
+}
 
 export interface ChatPreviewItemViewModel {
   key: string;
@@ -14,6 +21,7 @@ export interface ChatPreviewItemViewModel {
   document?: ProjectDocumentPreviewViewModel;
   loading?: boolean;
   error?: string;
+  actions?: readonly ChatPreviewActionViewModel[];
 }
 
 export interface ChatPreviewPanelProps {
@@ -22,6 +30,8 @@ export interface ChatPreviewPanelProps {
   onSelectTab(key: string): void;
   onCloseTab(key: string): void;
   onClose(): void;
+  pendingActionKey?: string;
+  onAction?(itemKey: string, actionId: string): void;
   onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
 
@@ -31,6 +41,8 @@ export function ChatPreviewPanel({
   onSelectTab,
   onCloseTab,
   onClose,
+  pendingActionKey,
+  onAction,
   onResizeStart,
 }: ChatPreviewPanelProps) {
   const activeItem = tabs.find((tab) => tab.key === activeKey) ?? null;
@@ -59,7 +71,7 @@ export function ChatPreviewPanel({
                       : 'text-secondaryText hover:bg-chatPanelItemSurface'
                   }`}
                 >
-                  {tab.type === 'knowledge' ? (
+                  {tab.type === 'knowledge' || tab.type === 'draft' ? (
                     <FileText size={14} className="shrink-0 text-tertiaryText" />
                   ) : (
                     <FlaskConical size={14} className="shrink-0 text-tertiaryText" />
@@ -82,15 +94,28 @@ export function ChatPreviewPanel({
             );
           })}
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-full p-1.5 text-secondaryText transition-colors hover:bg-bgLight"
-          title="关闭预览"
-          aria-label="关闭预览"
-        >
-          <X size={14} />
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          {activeItem?.actions?.map((action) => (
+            <BaseButton
+              key={action.id}
+              type={action.tone ?? 'secondary'}
+              size="small"
+              disabled={pendingActionKey === activeItem.key || !onAction}
+              onClick={() => onAction?.(activeItem.key, action.id)}
+            >
+              {action.label}
+            </BaseButton>
+          ))}
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full p-1.5 text-secondaryText transition-colors hover:bg-bgLight"
+            title="关闭预览"
+            aria-label="关闭预览"
+          >
+            <X size={14} />
+          </button>
+        </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-hidden pb-4 pt-2">

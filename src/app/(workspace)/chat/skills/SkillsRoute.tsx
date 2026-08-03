@@ -88,7 +88,6 @@ export function SkillsRoute() {
         error={loadError}
         pendingSkillIds={pendingSkillIds}
         onOpenSidebar={openSidebar}
-        onCreateSkill={() => setActionNotice("新建 Skill 暂缺服务端接口与流程定义，当前先保留高保真入口。")}
         onInstall={(skillIds) => void mutateSkills(skillIds, true)}
         onUninstall={(skillIds) => void mutateSkills(skillIds, false)}
         onRetry={() => void load()}

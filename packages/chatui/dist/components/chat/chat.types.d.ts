@@ -23,6 +23,27 @@ export interface MiraDraftCardViewModel {
     summary?: string;
     status: 'waiting' | 'saving' | 'saved' | 'error';
     errorMessage?: string;
+    previewable?: boolean;
+    actionable?: boolean;
+}
+export interface ChatDisplayCardLink {
+    label: string;
+    href: string;
+}
+export interface ChatDisplayCardAction {
+    id: string;
+    label: string;
+    tone?: 'primary' | 'secondary' | 'danger';
+}
+export interface ChatDisplayCardViewModel {
+    kind: 'clarification' | 'confirmation' | 'approval' | 'result' | 'warning' | 'blocked' | 'info';
+    title: string;
+    summary?: string;
+    items?: string[];
+    links?: ChatDisplayCardLink[];
+    statusLabel?: string;
+    actionKey?: string;
+    actions?: ChatDisplayCardAction[];
 }
 export interface ChatMessage {
     id?: string;
@@ -31,5 +52,6 @@ export interface ChatMessage {
     attachments?: ChatAttachment[];
     references?: ChatReference[];
     miraDraft?: MiraDraftCardViewModel;
+    displayCard?: ChatDisplayCardViewModel;
 }
 //# sourceMappingURL=chat.types.d.ts.map

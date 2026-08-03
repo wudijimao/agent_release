@@ -1,12 +1,12 @@
-import { B as Ve, a as ee, b as A, c as be, d as et, e as F, f as se, g as he, P as tt } from "./SkillPage-CPyc9NQ7.js";
-import { A as Gr, h as Fr, i as Ur, j as Kr, k as Wr, C as Yr, l as qr, m as Qr, n as Xr, o as Jr, p as Zr, q as jr, r as Vr, s as ea, t as ta, u as ra, v as aa, w as sa, x as la, y as na, z as ia, F as oa, I as da, L as ca, M as ma, D as xa, E as ha, G as pa, H as ua, J as ba, Q as fa, R as ga, S as ya, T as Na, K as va, N as wa, O as Ta, U as ka } from "./SkillPage-CPyc9NQ7.js";
+import { B as Ve, a as ee, b as A, c as be, d as et, e as F, f as se, g as he, P as tt } from "./SkillPage-Bvfk6X0q.js";
+import { A as Gr, h as Fr, i as Ur, j as Kr, k as Wr, C as Yr, l as qr, m as Qr, n as Xr, o as Jr, p as Zr, q as jr, r as Vr, s as ea, t as ta, u as ra, v as aa, w as sa, x as la, y as na, z as ia, D as oa, F as da, I as ca, L as ma, M as xa, E as ha, G as pa, H as ua, J as ba, K as fa, Q as ga, R as ya, S as Na, T as va, N as wa, O as Ta, U as ka, V as Ca } from "./SkillPage-Bvfk6X0q.js";
 import { jsxs as t, jsx as e, Fragment as pe } from "react/jsx-runtime";
 import rt, { useState as p, useMemo as P, useCallback as Te, useContext as at, createContext as st, useEffect as le, useRef as Se } from "react";
-import { Inbox as lt, Paperclip as nt, X as it, Pencil as _e, Trash2 as ne, HelpCircle as ot, MoreHorizontal as Me, Menu as W, Plus as ie, AlertCircle as dt, ShieldCheck as ct, RefreshCw as mt, MessageCircle as xt, Folder as ht, ChevronDown as ue, Check as ke, Users as Re, Search as pt, Upload as ut, FileText as bt, CircleHelp as ft, ArrowLeft as gt, Play as yt } from "lucide-react";
+import { Inbox as lt, Paperclip as nt, X as it, Pencil as _e, Trash2 as ne, HelpCircle as ot, MoreHorizontal as Me, Menu as W, Plus as ie, AlertCircle as dt, ShieldCheck as ct, RefreshCw as mt, MessageCircle as xt, Folder as ht, ChevronDown as ue, Check as ke, Users as He, Search as pt, Upload as ut, FileText as bt, CircleHelp as ft, ArrowLeft as gt, Play as yt } from "lucide-react";
 import Ce from "classnames";
 import Nt from "react-markdown";
 import vt from "remark-gfm";
-import { DatePicker as wt, Cascader as Tt, TimePicker as kt, Radio as Ge, Select as ye } from "antd";
+import { DatePicker as wt, Cascader as Tt, TimePicker as kt, Radio as Re, Select as ye } from "antd";
 import Ne from "dayjs";
 const Ct = "_wrapper_g5uno_1", St = "_uploadContent_g5uno_7", _t = "_uploadIcon_g5uno_17", Mt = "_uploadTitle_g5uno_18", zt = "_uploadDescription_g5uno_19", It = "_fileList_g5uno_20", Pt = "_fileItem_g5uno_21", Dt = "_fileItemIcon_g5uno_22", At = "_fileName_g5uno_23", Et = "_fileSize_g5uno_24", $t = "_removeButton_g5uno_25", U = {
   wrapper: Ct,
@@ -20,7 +20,7 @@ const Ct = "_wrapper_g5uno_1", St = "_uploadContent_g5uno_7", _t = "_uploadIcon_
   fileName: At,
   fileSize: Et,
   removeButton: $t
-}, Bt = ".pdf,.doc,.docx,.txt,.md,.csv", Ot = 20 * 1024 * 1024, Fe = 5, Ue = (r, l) => r.name === l.name && r.size === l.size && r.lastModified === l.lastModified && r.type === l.type, Lt = (r) => r < 1024 ? `${r} B` : r < 1024 * 1024 ? `${(r / 1024).toFixed(1)} KB` : `${(r / (1024 * 1024)).toFixed(1)} MB`, ze = rt.forwardRef(
+}, Bt = ".pdf,.doc,.docx,.txt,.md,.csv", Ot = 20 * 1024 * 1024, Ge = 5, Fe = (r, l) => r.name === l.name && r.size === l.size && r.lastModified === l.lastModified && r.type === l.type, Lt = (r) => r < 1024 ? `${r} B` : r < 1024 * 1024 ? `${(r / 1024).toFixed(1)} KB` : `${(r / (1024 * 1024)).toFixed(1)} MB`, qe = rt.forwardRef(
   ({
     value: r,
     defaultValue: l = [],
@@ -28,41 +28,41 @@ const Ct = "_wrapper_g5uno_1", St = "_uploadContent_g5uno_7", _t = "_uploadIcon_
     onError: s,
     accept: o = Bt,
     maxSize: v = Ot,
-    maxCount: k = Fe,
+    maxCount: T = Ge,
     disabled: N = !1,
-    className: _,
+    className: S,
     uploadTitle: g = "点击或拖拽文件到此上传",
-    uploadDescription: u = `支持单文件或批量上传，单次最多 ${Fe} 个，单个文件不超过 20MB`,
+    uploadDescription: u = `支持单文件或批量上传，单次最多 ${Ge} 个，单个文件不超过 20MB`,
     uploadIcon: c
   }, m) => {
-    const [n, f] = p(l), w = r !== void 0, T = P(() => (w ? r : n) ?? [], [n, w, r]), y = (h) => {
-      w || f(h), i == null || i(h);
-    }, I = (h) => {
-      const d = [...T];
+    const [n, b] = p(l), y = r !== void 0, w = P(() => (y ? r : n) ?? [], [n, y, r]), k = (h) => {
+      y || b(h), i == null || i(h);
+    }, z = (h) => {
+      const d = [...w];
       if (Array.from(h).forEach((a) => {
-        d.some((z) => Ue(z, a)) || d.push(a);
-      }), d.length > k) {
-        s == null || s(new Error(`最多上传 ${k} 个文件，请删除后再继续添加`));
+        d.some((M) => Fe(M, a)) || d.push(a);
+      }), d.length > T) {
+        s == null || s(new Error(`最多上传 ${T} 个文件，请删除后再继续添加`));
         return;
       }
-      y(d);
+      k(d);
     };
-    return /* @__PURE__ */ t("div", { className: Ce(U.wrapper, _), children: [
-      /* @__PURE__ */ e(Ve, { ref: m, accept: o, multiple: !0, disabled: N, maxSize: v, maxCount: k, onChange: I, onError: s, children: /* @__PURE__ */ t("div", { className: U.uploadContent, children: [
+    return /* @__PURE__ */ t("div", { className: Ce(U.wrapper, S), children: [
+      /* @__PURE__ */ e(Ve, { ref: m, accept: o, multiple: !0, disabled: N, maxSize: v, maxCount: T, onChange: z, onError: s, children: /* @__PURE__ */ t("div", { className: U.uploadContent, children: [
         c ?? /* @__PURE__ */ e(lt, { size: 30, strokeWidth: 2.2, className: U.uploadIcon }),
         /* @__PURE__ */ e("div", { className: U.uploadTitle, children: g }),
         /* @__PURE__ */ e("div", { className: U.uploadDescription, children: u })
       ] }) }),
-      T.length > 0 && /* @__PURE__ */ e("div", { className: U.fileList, children: T.map((h, d) => /* @__PURE__ */ t("div", { className: U.fileItem, children: [
+      w.length > 0 && /* @__PURE__ */ e("div", { className: U.fileList, children: w.map((h, d) => /* @__PURE__ */ t("div", { className: U.fileItem, children: [
         /* @__PURE__ */ e(nt, { size: 14, className: U.fileItemIcon }),
         /* @__PURE__ */ e("span", { className: U.fileName, children: h.name }),
         /* @__PURE__ */ e("span", { className: U.fileSize, children: Lt(h.size) }),
-        /* @__PURE__ */ e("button", { type: "button", onClick: () => y(T.filter((a) => !Ue(a, h))), className: U.removeButton, "aria-label": `移除文件 ${h.name}`, disabled: N, children: /* @__PURE__ */ e(it, { size: 14 }) })
+        /* @__PURE__ */ e("button", { type: "button", onClick: () => k(w.filter((a) => !Fe(a, h))), className: U.removeButton, "aria-label": `移除文件 ${h.name}`, disabled: N, children: /* @__PURE__ */ e(it, { size: 14 }) })
       ] }, `${h.name}-${h.lastModified}-${d}`)) })
     ] });
   }
 );
-ze.displayName = "BaseDocumentUpload";
+qe.displayName = "BaseDocumentUpload";
 const Ht = "_toggle_198gd_1", Rt = "_toggleSmall_198gd_18", Gt = "_toggleRegular_198gd_23", Ft = "_toggleMedium_198gd_28", Ut = "_toggleOff_198gd_33", Kt = "_toggleOn_198gd_37", Wt = "_toggleDisabled_198gd_41", Yt = "_thumb_198gd_46", qt = "_thumbSmall_198gd_54", Qt = "_thumbRegular_198gd_59", Xt = "_thumbMedium_198gd_64", Jt = "_thumbOffSmall_198gd_69", Zt = "_thumbOffRegular_198gd_70", jt = "_thumbOffMedium_198gd_71", Vt = "_thumbOnSmall_198gd_75", er = "_thumbOnRegular_198gd_79", tr = "_thumbOnMedium_198gd_83", q = {
   toggle: Ht,
   toggleSmall: Rt,
@@ -81,19 +81,19 @@ const Ht = "_toggle_198gd_1", Rt = "_toggleSmall_198gd_18", Gt = "_toggleRegular
   thumbOnSmall: Vt,
   thumbOnRegular: er,
   thumbOnMedium: tr
-}, Ie = ({
+}, ze = ({
   checked: r,
   defaultChecked: l = !1,
   size: i = "medium",
   disabled: s = !1,
   onChange: o,
   className: v,
-  ...k
+  ...T
 }) => {
-  const [N, _] = p(l), g = r !== void 0, u = g ? r : N, c = `${i.charAt(0).toUpperCase()}${i.slice(1)}`, m = Te(() => {
+  const [N, S] = p(l), g = r !== void 0, u = g ? r : N, c = `${i.charAt(0).toUpperCase()}${i.slice(1)}`, m = Te(() => {
     if (s) return;
-    const w = !u;
-    g || _(w), o == null || o(w);
+    const y = !u;
+    g || S(y), o == null || o(y);
   }, [s, u, g, o]), n = P(
     () => Ce(
       q.toggle,
@@ -103,7 +103,7 @@ const Ht = "_toggle_198gd_1", Rt = "_toggleSmall_198gd_18", Gt = "_toggleRegular
       v
     ),
     [v, s, u, c]
-  ), f = P(
+  ), b = P(
     () => Ce(
       q.thumb,
       q[`thumb${c}`],
@@ -114,18 +114,18 @@ const Ht = "_toggle_198gd_1", Rt = "_toggleSmall_198gd_18", Gt = "_toggleRegular
   return /* @__PURE__ */ e(
     "button",
     {
-      ...k,
+      ...T,
       type: "button",
       role: "switch",
       "aria-checked": u,
       className: n,
       onClick: m,
       disabled: s,
-      children: /* @__PURE__ */ e("span", { className: f })
+      children: /* @__PURE__ */ e("span", { className: b })
     }
   );
 };
-Ie.displayName = "BaseToggle";
+ze.displayName = "BaseToggle";
 const Qe = st(null);
 function Tr({
   adapter: r,
@@ -146,18 +146,18 @@ function Cr({
   isSidebarOpen: s,
   loading: o = !1,
   error: v,
-  actionError: k,
+  actionError: T,
   canManage: N = !1,
-  onOpenSidebar: _,
+  onOpenSidebar: S,
   onRetry: g,
   onRegenerateInvite: u,
   onUpdateRole: c,
   onRemoveMember: m
 }) {
-  const [n, f] = p(!1), [w, T] = p(!1), [y, I] = p(!1), [h, d] = p(!1), [a, z] = p(null), [C, $] = p("成员"), [B, E] = p(null), [O, R] = p(null), [b, S] = p(1), [H, G] = p(10), X = l.filter((M) => M.role === "管理员").length, oe = P(() => {
-    const M = (b - 1) * H;
-    return l.slice(M, M + H);
-  }, [b, l, H]), K = P(
+  const [n, b] = p(!1), [y, w] = p(!1), [k, z] = p(!1), [h, d] = p(!1), [a, M] = p(null), [I, L] = p("成员"), [$, E] = p(null), [B, R] = p(null), [f, C] = p(1), [H, G] = p(10), X = l.filter((_) => _.role === "管理员").length, oe = P(() => {
+    const _ = (f - 1) * H;
+    return l.slice(_, _ + H);
+  }, [f, l, H]), K = P(
     () => [
       { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(_e, { size: 14 }) },
       { key: "remove", label: "移除", icon: /* @__PURE__ */ e(ne, { size: 14 }), danger: !0 }
@@ -165,27 +165,27 @@ function Cr({
     []
   );
   le(() => {
-    const M = Math.max(1, Math.ceil(l.length / H));
-    b > M && S(M);
-  }, [b, l.length, H]);
-  const j = (M) => {
-    z(M), $(M.role), I(!0);
-  }, de = (M) => {
-    z(M), d(!0);
+    const _ = Math.max(1, Math.ceil(l.length / H));
+    f > _ && C(_);
+  }, [f, l.length, H]);
+  const j = (_) => {
+    M(_), L(_.role), z(!0);
+  }, de = (_) => {
+    M(_), d(!0);
   }, V = async () => {
     if (i) {
       try {
         await navigator.clipboard.writeText(i);
       } catch {
-        const M = document.createElement("textarea");
-        M.value = i, M.style.position = "fixed", M.style.opacity = "0", document.body.appendChild(M), M.focus(), M.select(), document.execCommand("copy"), document.body.removeChild(M);
+        const _ = document.createElement("textarea");
+        _.value = i, _.style.position = "fixed", _.style.opacity = "0", document.body.appendChild(_), _.focus(), _.select(), document.execCommand("copy"), document.body.removeChild(_);
       }
-      T(!0), window.setTimeout(() => T(!1), 1500);
+      w(!0), window.setTimeout(() => w(!1), 1500);
     }
   }, J = async () => {
     E("invite");
     try {
-      await u(), T(!1);
+      await u(), w(!1);
     } finally {
       E(null);
     }
@@ -193,7 +193,7 @@ function Cr({
     if (a) {
       E("edit");
       try {
-        await c(a.id, C), I(!1);
+        await c(a.id, I), z(!1);
       } finally {
         E(null);
       }
@@ -213,11 +213,11 @@ function Cr({
         title: "姓名",
         dataIndex: "name",
         width: "25%",
-        render: (M, L) => /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center pr-2", children: [
-          /* @__PURE__ */ e("div", { className: "mr-3 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-lineSubtle bg-bgLight text-[11px] font-medium text-secondaryText", children: L.avatarUrl ? /* @__PURE__ */ e("img", { className: "h-full w-full object-cover", src: L.avatarUrl, alt: "" }) : L.name.slice(0, 2) }),
+        render: (_, O) => /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center pr-2", children: [
+          /* @__PURE__ */ e("div", { className: "mr-3 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-lineSubtle bg-bgLight text-[11px] font-medium text-secondaryText", children: O.avatarUrl ? /* @__PURE__ */ e("img", { className: "h-full w-full object-cover", src: O.avatarUrl, alt: "" }) : O.name.slice(0, 2) }),
           /* @__PURE__ */ t("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ e("p", { className: "truncate font-medium text-primaryText", children: L.name }),
-            /* @__PURE__ */ e("p", { className: "mt-0.5 truncate text-[13px] text-secondaryText", children: L.email })
+            /* @__PURE__ */ e("p", { className: "truncate font-medium text-primaryText", children: O.name }),
+            /* @__PURE__ */ e("p", { className: "mt-0.5 truncate text-[13px] text-secondaryText", children: O.email })
           ] })
         ] })
       },
@@ -233,47 +233,47 @@ function Cr({
         title: "加入时间",
         dataIndex: "joinedAt",
         width: "18%",
-        render: (M) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(M) })
+        render: (_) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(_) })
       },
       {
         title: "归属项目",
         dataIndex: "projectsLabel",
         width: "31%",
-        render: (M) => /* @__PURE__ */ e("span", { className: "block truncate text-secondaryText", title: String(M || "暂未提供"), children: String(M || "暂未提供") })
+        render: (_) => /* @__PURE__ */ e("span", { className: "block truncate text-secondaryText", title: String(_ || "暂未提供"), children: String(_ || "暂未提供") })
       },
       {
         title: "操作",
         dataIndex: "id",
         width: "10%",
-        render: (M, L) => L.canManage ? /* @__PURE__ */ e(
+        render: (_, O) => O.canManage ? /* @__PURE__ */ e(
           ee,
           {
-            open: O === L.id,
-            onOpenChange: (Y) => R(Y ? L.id : null),
+            open: B === O.id,
+            onOpenChange: (Y) => R(Y ? O.id : null),
             placement: "bottom-end",
             width: 132,
             trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Me, { size: 16 }) }),
             items: K,
             onItemClick: (Y, ce) => {
-              ce.stopPropagation(), R(null), Y.key === "edit" ? j(L) : de(L);
+              ce.stopPropagation(), R(null), Y.key === "edit" ? j(O) : de(O);
             }
           }
         ) : /* @__PURE__ */ e("span", { className: "text-mutedText", children: "—" })
       }
     ],
-    [O, K]
+    [B, K]
   );
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
       /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
-        !s && /* @__PURE__ */ e("button", { type: "button", onClick: _, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
+        !s && /* @__PURE__ */ e("button", { type: "button", onClick: S, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
         /* @__PURE__ */ t("div", { className: "flex items-center gap-2 text-sm", children: [
           /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "系统设置" }),
           /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
           /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: "成员管理" })
         ] })
       ] }),
-      N && /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", icon: /* @__PURE__ */ e(ie, { size: 14 }), className: "shrink-0", onClick: () => f(!0), children: "邀请新成员" })
+      N && /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", icon: /* @__PURE__ */ e(ie, { size: 14 }), className: "shrink-0", onClick: () => b(!0), children: "邀请新成员" })
     ] }),
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px] space-y-6", children: [
       /* @__PURE__ */ t("div", { className: "flex items-center gap-2.5", children: [
@@ -311,14 +311,14 @@ function Cr({
         /* @__PURE__ */ e(
           et,
           {
-            current: b,
+            current: f,
             total: l.length,
             pageSize: H,
-            onChange: S,
+            onChange: C,
             showSizeChanger: !0,
             pageSizeOptions: [5, 10, 20],
-            onShowSizeChange: (M, L) => {
-              G(L), S(1);
+            onShowSizeChange: (_, O) => {
+              G(O), C(1);
             }
           }
         )
@@ -328,29 +328,29 @@ function Cr({
         /* @__PURE__ */ e("span", { children: "所有成员均已纳入实验室合规性审计流水线" })
       ] })
     ] }) }),
-    /* @__PURE__ */ t(F, { visible: n, title: "邀请新成员", width: 360, onCancel: () => f(!1), footer: null, bodyClassName: "!px-6 !py-5", children: [
+    /* @__PURE__ */ t(F, { visible: n, title: "邀请新成员", width: 360, onCancel: () => b(!1), footer: null, bodyClassName: "!px-6 !py-5", children: [
       /* @__PURE__ */ e("h4", { className: "text-[17px] font-semibold text-primaryText", children: "邀请码" }),
-      /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-6 gap-2", children: (i || "------").split("").map((M, L) => /* @__PURE__ */ e("div", { className: "flex h-[44px] items-center justify-center rounded-lg bg-surfaceMuted text-[24px] font-medium text-primaryText", children: M }, `${M}-${L}`)) }),
+      /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-6 gap-2", children: (i || "------").split("").map((_, O) => /* @__PURE__ */ e("div", { className: "flex h-[44px] items-center justify-center rounded-lg bg-surfaceMuted text-[24px] font-medium text-primaryText", children: _ }, `${_}-${O}`)) }),
       /* @__PURE__ */ e("p", { className: "mt-4 text-sm leading-6 text-tertiaryText", children: "请将6位数字邀请码分享给新成员，新成员加入后默认为成员，管理员可在成员列表中调整权限" }),
-      k && /* @__PURE__ */ e("p", { className: "mt-3 text-sm text-danger", children: k }),
-      /* @__PURE__ */ e(A, { type: "primary", size: "large", rounded: "large", fullWidth: !0, className: "mt-5", onClick: V, disabled: !i, children: w ? "已复制邀请码" : "复制邀请码" }),
-      /* @__PURE__ */ e("button", { type: "button", onClick: J, disabled: B === "invite", className: "mt-3 block w-full bg-transparent text-center text-sm font-semibold text-primary transition-opacity hover:opacity-80 disabled:opacity-50", children: B === "invite" ? "正在生成..." : "重新生成邀请码" })
+      T && /* @__PURE__ */ e("p", { className: "mt-3 text-sm text-danger", children: T }),
+      /* @__PURE__ */ e(A, { type: "primary", size: "large", rounded: "large", fullWidth: !0, className: "mt-5", onClick: V, disabled: !i, children: y ? "已复制邀请码" : "复制邀请码" }),
+      /* @__PURE__ */ e("button", { type: "button", onClick: J, disabled: $ === "invite", className: "mt-3 block w-full bg-transparent text-center text-sm font-semibold text-primary transition-opacity hover:opacity-80 disabled:opacity-50", children: $ === "invite" ? "正在生成..." : "重新生成邀请码" })
     ] }),
-    /* @__PURE__ */ e(F, { visible: y && !!a, title: "编辑成员信息", width: 560, maskClosable: !1, cancelText: "取消", okText: "保存修改", confirmLoading: B === "edit", onCancel: () => I(!1), onConfirm: te, bodyClassName: "!px-6 !py-5", children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ e(F, { visible: k && !!a, title: "编辑成员信息", width: 560, maskClosable: !1, cancelText: "取消", okText: "保存修改", confirmLoading: $ === "edit", onCancel: () => z(!1), onConfirm: te, bodyClassName: "!px-6 !py-5", children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
       /* @__PURE__ */ t("div", { children: [
         /* @__PURE__ */ e("div", { className: "mb-2 text-sm font-medium text-primaryText", children: "团队角色" }),
-        /* @__PURE__ */ e("div", { className: "flex flex-wrap items-center gap-8", children: ["成员", "管理员"].map((M) => /* @__PURE__ */ t("label", { className: "flex cursor-pointer items-center gap-2 text-sm text-primaryText", children: [
-          /* @__PURE__ */ e("input", { type: "radio", name: "member-role", value: M, checked: C === M, onChange: () => $(M), className: "h-4 w-4 accent-primary" }),
-          M
-        ] }, M)) })
+        /* @__PURE__ */ e("div", { className: "flex flex-wrap items-center gap-8", children: ["成员", "管理员"].map((_) => /* @__PURE__ */ t("label", { className: "flex cursor-pointer items-center gap-2 text-sm text-primaryText", children: [
+          /* @__PURE__ */ e("input", { type: "radio", name: "member-role", value: _, checked: I === _, onChange: () => L(_), className: "h-4 w-4 accent-primary" }),
+          _
+        ] }, _)) })
       ] }),
       /* @__PURE__ */ t("div", { children: [
         /* @__PURE__ */ e("div", { className: "mb-1.5 text-sm font-medium text-primaryText", children: "归属项目" }),
         /* @__PURE__ */ e("div", { className: "rounded-md border border-borderSoft bg-surfaceMuted px-3 py-2 text-sm text-secondaryText", children: (a == null ? void 0 : a.projectsLabel) || "未参与项目" })
       ] }),
-      k && /* @__PURE__ */ e("p", { className: "text-sm text-danger", children: k })
+      T && /* @__PURE__ */ e("p", { className: "text-sm text-danger", children: T })
     ] }) }),
-    /* @__PURE__ */ t(F, { visible: h && !!a, title: "确定要移除该成员吗？", width: 420, maskClosable: !1, cancelText: "取消", okText: "确认移除", confirmLoading: B === "remove", onCancel: () => d(!1), onConfirm: Z, okButtonProps: { className: "!bg-danger !border-danger hover:!bg-danger-hover hover:!border-danger-hover" }, children: [
+    /* @__PURE__ */ t(F, { visible: h && !!a, title: "确定要移除该成员吗？", width: 420, maskClosable: !1, cancelText: "取消", okText: "确认移除", confirmLoading: $ === "remove", onCancel: () => d(!1), onConfirm: Z, okButtonProps: { className: "!bg-danger !border-danger hover:!bg-danger-hover hover:!border-danger-hover" }, children: [
       a && /* @__PURE__ */ t("p", { className: "text-sm text-secondaryText", children: [
         "您正在将成员 ",
         /* @__PURE__ */ t("span", { className: "font-semibold text-primaryText", children: [
@@ -361,7 +361,7 @@ function Cr({
         ] }),
         " 移出该科研团队，此操作执行后无法撤销。"
       ] }),
-      k && /* @__PURE__ */ e("p", { className: "mt-3 text-sm text-danger", children: k })
+      T && /* @__PURE__ */ e("p", { className: "mt-3 text-sm text-danger", children: T })
     ] })
   ] });
 }
@@ -372,9 +372,9 @@ function rr({
   onFetch: s,
   onToggle: o,
   onEdit: v,
-  onDelete: k
+  onDelete: T
 }) {
-  const [N, _] = p(null), g = P(() => [
+  const [N, S] = p(null), g = P(() => [
     {
       title: "订阅名称",
       dataIndex: "name",
@@ -416,7 +416,7 @@ function rr({
       dataIndex: "isEnabled",
       width: "7%",
       render: (u, c) => /* @__PURE__ */ e(
-        Ie,
+        ze,
         {
           size: "small",
           checked: c.isEnabled,
@@ -441,7 +441,7 @@ function rr({
           ee,
           {
             open: N === c.id,
-            onOpenChange: (n) => _(n ? c.id : null),
+            onOpenChange: (n) => S(n ? c.id : null),
             placement: "bottom-end",
             width: 140,
             portal: !0,
@@ -449,13 +449,13 @@ function rr({
             trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Me, { size: 16 }) }),
             items: m,
             onItemClick: (n) => {
-              _(null), n.key === "fetch" ? s(c.id) : n.key === "edit" ? v(c.id) : k(c.id);
+              S(null), n.key === "fetch" ? s(c.id) : n.key === "edit" ? v(c.id) : T(c.id);
             }
           }
         );
       }
     }
-  ], [N, k, v, s, o, i]);
+  ], [N, T, v, s, o, i]);
   return /* @__PURE__ */ e("section", { children: /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-white", children: /* @__PURE__ */ e(
     be,
     {
@@ -483,64 +483,64 @@ function Sr({
   loading: s = !1,
   error: o,
   pendingTaskId: v,
-  literatureSubscriptions: k = [],
+  literatureSubscriptions: T = [],
   literatureLoading: N = !1,
-  pendingLiteratureId: _,
+  pendingLiteratureId: S,
   onOpenSidebar: g,
   onCreateCustom: u,
   onCreateFromTemplate: c,
   onToggleTask: m,
   onEditTask: n,
-  onDeleteTask: f,
-  onOpenTaskChat: w,
-  onCreateLiterature: T,
-  onFetchLiterature: y,
-  onToggleLiterature: I,
+  onDeleteTask: b,
+  onOpenTaskChat: y,
+  onCreateLiterature: w,
+  onFetchLiterature: k,
+  onToggleLiterature: z,
   onEditLiterature: h,
   onDeleteLiterature: d,
   onRetry: a
 }) {
-  const [z, C] = p(null), [$, B] = p("scheduled"), E = !!(T && y && I && h && d), O = E ? $ : "scheduled", R = P(
+  const [M, I] = p(null), [L, $] = p("scheduled"), E = !!(w && k && z && h && d), B = E ? L : "scheduled", R = P(
     () => [
       {
         title: "任务名称",
         dataIndex: "name",
         width: "20%",
-        render: (b) => /* @__PURE__ */ e("span", { className: "truncate text-primaryText", children: String(b) })
+        render: (f) => /* @__PURE__ */ e("span", { className: "truncate text-primaryText", children: String(f) })
       },
       {
         title: "任务内容",
         dataIndex: "prompt",
         width: "40%",
-        render: (b) => /* @__PURE__ */ e("span", { className: "whitespace-pre-line break-all text-secondaryText", children: sr(String(b ?? "")) })
+        render: (f) => /* @__PURE__ */ e("span", { className: "whitespace-pre-line break-all text-secondaryText", children: sr(String(f ?? "")) })
       },
       {
         title: "下次运行",
         dataIndex: "nextRun",
         width: "14%",
-        render: (b, S) => /* @__PURE__ */ t("span", { children: [
-          /* @__PURE__ */ e("span", { className: "block text-secondaryText", children: String(b) }),
-          S.scheduleEnd && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-tertiaryText", children: S.scheduleEnd })
+        render: (f, C) => /* @__PURE__ */ t("span", { children: [
+          /* @__PURE__ */ e("span", { className: "block text-secondaryText", children: String(f) }),
+          C.scheduleEnd && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-tertiaryText", children: C.scheduleEnd })
         ] })
       },
       {
         title: "触发方式",
         dataIndex: "trigger",
         width: "16%",
-        render: (b) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(b) })
+        render: (f) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(f) })
       },
       {
         title: "状态",
         dataIndex: "isEnabled",
         width: "7%",
-        render: (b, S) => /* @__PURE__ */ e(
-          Ie,
+        render: (f, C) => /* @__PURE__ */ e(
+          ze,
           {
             size: "small",
-            checked: S.isEnabled,
-            disabled: S.isToggleDisabled || v === S.id,
-            onChange: () => m(S.id),
-            "aria-label": S.isEnabled ? "关闭任务" : "开启任务"
+            checked: C.isEnabled,
+            disabled: C.isToggleDisabled || v === C.id,
+            onChange: () => m(C.id),
+            "aria-label": C.isEnabled ? "关闭任务" : "开启任务"
           }
         )
       },
@@ -549,17 +549,17 @@ function Sr({
         dataIndex: "id",
         width: "3%",
         align: "right",
-        render: (b, S) => {
+        render: (f, C) => {
           const H = [
-            ...S.mainSessionId && w ? [{ key: "chat", label: "打开对话", icon: /* @__PURE__ */ e(xt, { size: 14 }) }] : [],
+            ...C.mainSessionId && y ? [{ key: "chat", label: "打开对话", icon: /* @__PURE__ */ e(xt, { size: 14 }) }] : [],
             { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(_e, { size: 14 }) },
             { key: "delete", label: "删除", icon: /* @__PURE__ */ e(ne, { size: 14 }), danger: !0 }
           ];
           return /* @__PURE__ */ e(
             ee,
             {
-              open: z === S.id,
-              onOpenChange: (G) => C(G ? S.id : null),
+              open: M === C.id,
+              onOpenChange: (G) => I(G ? C.id : null),
               placement: "bottom-end",
               width: 132,
               portal: !0,
@@ -567,14 +567,14 @@ function Sr({
               trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Me, { size: 16 }) }),
               items: H,
               onItemClick: (G) => {
-                C(null), G.key === "chat" && S.mainSessionId ? w == null || w(S.mainSessionId) : G.key === "edit" ? n(S.id) : f(S.id);
+                I(null), G.key === "chat" && C.mainSessionId ? y == null || y(C.mainSessionId) : G.key === "edit" ? n(C.id) : b(C.id);
               }
             }
           );
         }
       }
     ],
-    [z, f, n, w, m, v]
+    [M, b, n, y, m, v]
   );
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
@@ -598,10 +598,10 @@ function Sr({
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto overflow-x-hidden px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px]", children: [
       /* @__PURE__ */ t("section", { children: [
         /* @__PURE__ */ e("h2", { className: "text-2xl font-semibold text-primaryText", children: "定时任务" }),
-        /* @__PURE__ */ e("div", { className: "mt-6 grid grid-cols-1 gap-[18px] md:grid-cols-2 lg:grid-cols-3", children: r.map((b) => /* @__PURE__ */ t("button", { type: "button", onClick: () => c(b.id), className: "flex flex-col rounded-lg border border-lineSoft bg-white p-4 text-left transition-all hover:border-borderSoft hover:shadow-sm", children: [
-          /* @__PURE__ */ e("h3", { className: "text-[17px] font-medium text-primaryText", children: b.name }),
-          /* @__PURE__ */ e("p", { className: "mt-1 line-clamp-2 min-h-[38px] text-sm leading-5 text-secondaryText", children: b.description })
-        ] }, b.id)) })
+        /* @__PURE__ */ e("div", { className: "mt-6 grid grid-cols-1 gap-[18px] md:grid-cols-2 lg:grid-cols-3", children: r.map((f) => /* @__PURE__ */ t("button", { type: "button", onClick: () => c(f.id), className: "flex flex-col rounded-lg border border-lineSoft bg-white p-4 text-left transition-all hover:border-borderSoft hover:shadow-sm", children: [
+          /* @__PURE__ */ e("h3", { className: "text-[17px] font-medium text-primaryText", children: f.name }),
+          /* @__PURE__ */ e("p", { className: "mt-1 line-clamp-2 min-h-[38px] text-sm leading-5 text-secondaryText", children: f.description })
+        ] }, f.id)) })
       ] }),
       /* @__PURE__ */ t("section", { className: "mt-10", children: [
         E && /* @__PURE__ */ t("div", { className: "mb-5 flex items-center gap-6 border-b border-lineSubtle", role: "tablist", "aria-label": "任务列表类型", children: [
@@ -610,9 +610,9 @@ function Sr({
             {
               type: "button",
               role: "tab",
-              "aria-selected": O === "scheduled",
-              onClick: () => B("scheduled"),
-              className: `border-b-2 pb-3 text-sm font-medium transition-colors ${O === "scheduled" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText hover:text-secondaryText"}`,
+              "aria-selected": B === "scheduled",
+              onClick: () => $("scheduled"),
+              className: `border-b-2 pb-3 text-sm font-medium transition-colors ${B === "scheduled" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText hover:text-secondaryText"}`,
               children: "定时任务"
             }
           ),
@@ -621,28 +621,28 @@ function Sr({
             {
               type: "button",
               role: "tab",
-              "aria-selected": O === "literature",
-              onClick: () => B("literature"),
-              className: `border-b-2 pb-3 text-sm font-medium transition-colors ${O === "literature" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText hover:text-secondaryText"}`,
+              "aria-selected": B === "literature",
+              onClick: () => $("literature"),
+              className: `border-b-2 pb-3 text-sm font-medium transition-colors ${B === "literature" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText hover:text-secondaryText"}`,
               children: "文献订阅"
             }
           )
         ] }),
-        O === "scheduled" ? /* @__PURE__ */ t("div", { className: "space-y-3", role: "tabpanel", children: [
+        B === "scheduled" ? /* @__PURE__ */ t("div", { className: "space-y-3", role: "tabpanel", children: [
           !E && /* @__PURE__ */ e("h2", { className: "text-[15px] font-medium text-primaryText", children: "已设置任务" }),
           o && /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-3 rounded-lg border border-danger bg-danger-soft px-4 py-3 text-sm text-danger", children: [
             /* @__PURE__ */ e("span", { children: o }),
             a && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: a, children: "重新加载" })
           ] }),
           /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-white", children: /* @__PURE__ */ e(be, { className: "task-table-scroll w-full [&_table]:min-w-[940px]", columns: R, dataSource: l, rowKey: "id", striped: !1, loading: s }) })
-        ] }) : T && y && I && h && d && /* @__PURE__ */ e("div", { role: "tabpanel", children: /* @__PURE__ */ e(
+        ] }) : w && k && z && h && d && /* @__PURE__ */ e("div", { role: "tabpanel", children: /* @__PURE__ */ e(
           rr,
           {
-            items: k,
+            items: T,
             loading: N,
-            pendingId: _,
-            onFetch: y,
-            onToggle: I,
+            pendingId: S,
+            onFetch: k,
+            onToggle: z,
             onEdit: h,
             onDelete: d
           }
@@ -655,7 +655,7 @@ const { RangePicker: lr } = wt, nr = [
   { value: "hourly", label: "每小时" },
   { value: "daily", label: "每天" },
   { value: "weekly", label: "每周" }
-], Ke = {
+], Ue = {
   pubmed: { label: "PubMed 文献", desc: "追踪正式发表论文" },
   biorxiv: { label: "bioRxiv 预印本", desc: "追踪早期研究进展" }
 }, ir = [
@@ -682,32 +682,32 @@ function _r({
   literatureValue: s,
   scheduleValue: o,
   projects: v = [],
-  literatureProjects: k = [],
+  literatureProjects: T = [],
   onLiteratureChange: N,
-  onScheduleChange: _,
+  onScheduleChange: S,
   onCancel: g,
   onConfirm: u,
   onCreateProject: c
 }) {
-  const [m, n] = p(!1), f = l === "literature", w = v.find((a) => a.id === o.projectId) ?? null, T = f ? i ? "修改文献订阅任务" : "设置文献订阅任务" : i ? "修改定时任务" : "新建定时任务", y = o.repeatMode === "weekly" || o.repeatMode === "monthly" ? [o.repeatMode, o.repeatSubValue || (o.repeatMode === "weekly" ? "mon" : "1")] : [o.repeatMode], I = P(() => [
-    { key: "none", label: "不选择项目", active: !w },
-    ...v.map((a) => ({ key: a.id, label: /* @__PURE__ */ e("span", { className: "truncate", children: a.name }), active: (w == null ? void 0 : w.id) === a.id }))
-  ], [v, w]), h = P(() => c ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(ie, { size: 16 }) }] : [], [c]), d = (a) => {
+  const [m, n] = p(!1), b = l === "literature", y = v.find((a) => a.id === o.projectId) ?? null, w = b ? i ? "修改文献订阅任务" : "设置文献订阅任务" : i ? "修改定时任务" : "新建定时任务", k = o.repeatMode === "weekly" || o.repeatMode === "monthly" ? [o.repeatMode, o.repeatSubValue || (o.repeatMode === "weekly" ? "mon" : "1")] : [o.repeatMode], z = P(() => [
+    { key: "none", label: "不选择项目", active: !y },
+    ...v.map((a) => ({ key: a.id, label: /* @__PURE__ */ e("span", { className: "truncate", children: a.name }), active: (y == null ? void 0 : y.id) === a.id }))
+  ], [v, y]), h = P(() => c ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(ie, { size: 16 }) }] : [], [c]), d = (a) => {
     if (n(!1), a.key === "create") return c == null ? void 0 : c();
-    _({ ...o, projectId: a.key === "none" ? null : a.key });
+    S({ ...o, projectId: a.key === "none" ? null : a.key });
   };
   return /* @__PURE__ */ e(
     F,
     {
       visible: r,
-      title: T,
+      title: w,
       width: 600,
       className: "tools-task-modal",
-      okText: i ? "保存修改" : f ? "创建订阅" : "创建任务",
+      okText: i ? "保存修改" : b ? "创建订阅" : "创建任务",
       cancelText: "取消",
       onCancel: g,
       onConfirm: u,
-      okButtonProps: { disabled: !s.topic.trim() || (f ? !s.keywords.trim() || s.sourceTypes.length === 0 || s.sourceTypes.includes("pubmed") && s.pubmedMatchMode === "advanced" && !s.advancedQuery.trim() : !o.taskPrompt.trim()) },
+      okButtonProps: { disabled: !s.topic.trim() || (b ? !s.keywords.trim() || s.sourceTypes.length === 0 || s.sourceTypes.includes("pubmed") && s.pubmedMatchMode === "advanced" && !s.advancedQuery.trim() : !o.taskPrompt.trim()) },
       children: /* @__PURE__ */ t("div", { className: "space-y-5", children: [
         /* @__PURE__ */ t("div", { children: [
           /* @__PURE__ */ e("div", { className: "mb-1.5 text-sm font-medium text-primaryText", children: "任务名称" }),
@@ -722,7 +722,7 @@ function _r({
             }
           )
         ] }),
-        f ? /* @__PURE__ */ t("div", { className: "grid grid-cols-1 gap-4 sm:grid-cols-2", children: [
+        b ? /* @__PURE__ */ t("div", { className: "grid grid-cols-1 gap-4 sm:grid-cols-2", children: [
           /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ e("div", { className: "mb-1.5 text-sm font-medium text-primaryText", children: "抓取频率" }),
             /* @__PURE__ */ t("div", { className: "relative", children: [
@@ -763,7 +763,7 @@ function _r({
                   className: "task-period-picker w-full",
                   classNames: { popup: { root: "task-period-picker-popup" } },
                   value: [o.startDate ? Ne(o.startDate, "YYYY-MM-DD") : null, o.endDate ? Ne(o.endDate, "YYYY-MM-DD") : null],
-                  onChange: (a, [z, C]) => _({ ...o, startDate: z, endDate: C })
+                  onChange: (a, [M, I]) => S({ ...o, startDate: M, endDate: I })
                 }
               )
             ] }),
@@ -773,14 +773,14 @@ function _r({
                 /* @__PURE__ */ e(
                   Tt,
                   {
-                    value: y,
+                    value: k,
                     options: dr,
                     className: "task-repeat-cascader w-full",
                     classNames: { popup: { root: "task-repeat-cascader-popup" } },
                     placeholder: "请选择重复方式",
                     onChange: (a) => {
-                      const z = String(a[0] ?? "daily"), C = a[1] ? String(a[1]) : "";
-                      _({ ...o, repeatMode: z, repeatSubValue: z === "weekly" ? C || (o.repeatMode === "weekly" ? o.repeatSubValue : "mon") || "mon" : z === "monthly" ? C || (o.repeatMode === "monthly" ? o.repeatSubValue : "1") || "1" : "" });
+                      const M = String(a[0] ?? "daily"), I = a[1] ? String(a[1]) : "";
+                      S({ ...o, repeatMode: M, repeatSubValue: M === "weekly" ? I || (o.repeatMode === "weekly" ? o.repeatSubValue : "mon") || "mon" : M === "monthly" ? I || (o.repeatMode === "monthly" ? o.repeatSubValue : "1") || "1" : "" });
                     }
                   }
                 ),
@@ -791,7 +791,7 @@ function _r({
                     format: "HH:mm",
                     minuteStep: 1,
                     allowClear: !1,
-                    onChange: (a) => _({ ...o, runAt: a ? a.format("HH:mm") : o.runAt }),
+                    onChange: (a) => S({ ...o, runAt: a ? a.format("HH:mm") : o.runAt }),
                     className: "task-run-time-picker w-full",
                     classNames: { popup: { root: "task-run-time-picker-popup" } }
                   }
@@ -809,7 +809,7 @@ function _r({
                 "textarea",
                 {
                   value: o.taskPrompt,
-                  onChange: (a) => _({ ...o, taskPrompt: a.target.value }),
+                  onChange: (a) => S({ ...o, taskPrompt: a.target.value }),
                   placeholder: "输入任何内容，使用 '/' 选择技能或 '@' 引用资源...",
                   rows: 5,
                   className: "w-full resize-none rounded-lg border border-borderGray px-3.5 pb-10 pt-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary"
@@ -824,10 +824,10 @@ function _r({
                   width: 260,
                   trigger: /* @__PURE__ */ t("span", { className: "inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-secondaryText transition-colors hover:bg-bgLight", children: [
                     /* @__PURE__ */ e(ht, { size: 14 }),
-                    /* @__PURE__ */ e("span", { className: "max-w-[140px] truncate", children: (w == null ? void 0 : w.name) ?? "工作项目" }),
+                    /* @__PURE__ */ e("span", { className: "max-w-[140px] truncate", children: (y == null ? void 0 : y.name) ?? "工作项目" }),
                     /* @__PURE__ */ e(ue, { size: 14 })
                   ] }),
-                  items: I,
+                  items: z,
                   onItemClick: d,
                   className: "!inline-flex",
                   listClassName: "max-h-[220px] overflow-y-auto",
@@ -837,19 +837,19 @@ function _r({
             ] })
           ] })
         ] }),
-        f && /* @__PURE__ */ t(pe, { children: [
+        b && /* @__PURE__ */ t(pe, { children: [
           /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ e("div", { className: "mb-2 text-sm font-medium text-primaryText", children: "订阅来源" }),
-            /* @__PURE__ */ e("div", { className: "grid grid-cols-2 gap-3", children: Object.keys(Ke).map((a) => {
-              const z = Ke[a], C = s.sourceTypes.includes(a);
+            /* @__PURE__ */ e("div", { className: "grid grid-cols-2 gap-3", children: Object.keys(Ue).map((a) => {
+              const M = Ue[a], I = s.sourceTypes.includes(a);
               return /* @__PURE__ */ t("button", { type: "button", onClick: () => {
-                const $ = i ? [a] : C ? s.sourceTypes.filter((B) => B !== a) : [...s.sourceTypes, a];
-                N({ ...s, sourceTypes: $ });
-              }, className: `flex items-start gap-2.5 rounded-lg border px-3.5 py-3 text-left transition-colors ${C ? "border-primary bg-primary-soft-strong" : "border-borderGray bg-white hover:border-borderSoft"}`, children: [
-                /* @__PURE__ */ e("span", { className: `mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border ${C ? "border-primary bg-primary text-white" : "border-controlBorder text-transparent"}`, children: C && /* @__PURE__ */ e(ke, { size: 11, strokeWidth: 3, "aria-hidden": "true" }) }),
+                const L = i ? [a] : I ? s.sourceTypes.filter(($) => $ !== a) : [...s.sourceTypes, a];
+                N({ ...s, sourceTypes: L });
+              }, className: `flex items-start gap-2.5 rounded-lg border px-3.5 py-3 text-left transition-colors ${I ? "border-primary bg-primary-soft-strong" : "border-borderGray bg-white hover:border-borderSoft"}`, children: [
+                /* @__PURE__ */ e("span", { className: `mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border ${I ? "border-primary bg-primary text-white" : "border-controlBorder text-transparent"}`, children: I && /* @__PURE__ */ e(ke, { size: 11, strokeWidth: 3, "aria-hidden": "true" }) }),
                 /* @__PURE__ */ t("span", { children: [
-                  /* @__PURE__ */ e("span", { className: "block text-sm font-medium text-primaryText", children: z.label }),
-                  /* @__PURE__ */ e("span", { className: "mt-0.5 block text-[13px] text-secondaryText", children: z.desc })
+                  /* @__PURE__ */ e("span", { className: "block text-sm font-medium text-primaryText", children: M.label }),
+                  /* @__PURE__ */ e("span", { className: "mt-0.5 block text-[13px] text-secondaryText", children: M.desc })
                 ] })
               ] }, a);
             }) }),
@@ -869,7 +869,7 @@ function _r({
           ] }),
           s.sourceTypes.includes("pubmed") && /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ e("div", { className: "mb-2 text-sm font-medium text-primaryText", children: "PubMed 匹配方式" }),
-            /* @__PURE__ */ e(Ge.Group, { value: s.pubmedMatchMode, onChange: (a) => N({ ...s, pubmedMatchMode: a.target.value }), className: "task-radio-group", children: /* @__PURE__ */ e("div", { className: "flex flex-wrap gap-5", children: ir.map((a) => /* @__PURE__ */ e(Ge, { value: a.value, children: a.label }, a.value)) }) })
+            /* @__PURE__ */ e(Re.Group, { value: s.pubmedMatchMode, onChange: (a) => N({ ...s, pubmedMatchMode: a.target.value }), className: "task-radio-group", children: /* @__PURE__ */ e("div", { className: "flex flex-wrap gap-5", children: ir.map((a) => /* @__PURE__ */ e(Re, { value: a.value, children: a.label }, a.value)) }) })
           ] }),
           s.sourceTypes.includes("pubmed") && s.pubmedMatchMode === "advanced" && /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ t("div", { className: "mb-1.5 text-sm font-medium text-primaryText", children: [
@@ -889,15 +889,15 @@ function _r({
           ] }),
           /* @__PURE__ */ t("div", { children: [
             /* @__PURE__ */ e("div", { className: "mb-2 text-sm font-medium text-primaryText", children: "关联项目" }),
-            /* @__PURE__ */ e("div", { className: "max-h-[150px] space-y-1 overflow-y-auto rounded-lg border border-borderGray p-2", children: k.length > 0 ? k.map((a) => {
-              const z = s.projectNodeIds.includes(a.id);
+            /* @__PURE__ */ e("div", { className: "max-h-[150px] space-y-1 overflow-y-auto rounded-lg border border-borderGray p-2", children: T.length > 0 ? T.map((a) => {
+              const M = s.projectNodeIds.includes(a.id);
               return /* @__PURE__ */ t("label", { className: "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-primaryText hover:bg-bgLight", children: [
                 /* @__PURE__ */ e(
                   "input",
                   {
                     type: "checkbox",
-                    checked: z,
-                    onChange: () => N({ ...s, projectNodeIds: z ? s.projectNodeIds.filter((C) => C !== a.id) : [...s.projectNodeIds, a.id] }),
+                    checked: M,
+                    onChange: () => N({ ...s, projectNodeIds: M ? s.projectNodeIds.filter((I) => I !== a.id) : [...s.projectNodeIds, a.id] }),
                     className: "h-4 w-4 accent-primary"
                   }
                 ),
@@ -958,30 +958,29 @@ function zr({
   error: s,
   onOpenSidebar: o,
   onOpenProject: v,
-  onCreateProject: k,
+  onCreateProject: T,
   onRetry: N
 }) {
-  const [_, g] = p(!1), [u, c] = p(""), [m, n] = p(""), [f, w] = p([]), [T, y] = p(""), [I, h] = p(!1), d = () => {
-    c(""), n(""), w([]), y(""), g(!0);
-  }, a = () => {
-    I || (g(!1), y(""));
-  }, z = async () => {
-    const C = u.trim();
-    if (!C) {
+  const [S, g] = p(!1), [u, c] = p(""), [m, n] = p(""), [b, y] = p(""), [w, k] = p(!1), z = () => {
+    c(""), n(""), y(""), g(!0);
+  }, h = () => {
+    w || (g(!1), y(""));
+  }, d = async () => {
+    const a = u.trim();
+    if (!a) {
       y("请输入项目名称");
       return;
     }
-    h(!0), y("");
+    k(!0), y("");
     try {
-      await k({
-        name: C,
-        description: m.trim(),
-        documents: f
+      await T({
+        name: a,
+        description: m.trim()
       }), g(!1);
-    } catch ($) {
-      y($ instanceof Error ? $.message : "项目创建失败");
+    } catch (M) {
+      y(M instanceof Error ? M.message : "项目创建失败");
     } finally {
-      h(!1);
+      k(!1);
     }
   };
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
@@ -990,7 +989,7 @@ function zr({
         !l && /* @__PURE__ */ e("button", { type: "button", onClick: o, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
         /* @__PURE__ */ e("div", { className: "flex items-center gap-2 text-sm", children: /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: "项目" }) })
       ] }),
-      /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", icon: /* @__PURE__ */ e(ie, { size: 14 }), className: "shrink-0", onClick: d, children: "创建新项目" })
+      /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", icon: /* @__PURE__ */ e(ie, { size: 14 }), className: "shrink-0", onClick: z, children: "创建新项目" })
     ] }),
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px]", children: [
       /* @__PURE__ */ e("section", { className: "pb-0", children: /* @__PURE__ */ e("h2", { className: "text-2xl font-semibold text-primaryText", children: "科研项目" }) }),
@@ -999,29 +998,29 @@ function zr({
         N && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: N, children: "重新加载" })
       ] }),
       /* @__PURE__ */ t("div", { className: "mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-busy": i, children: [
-        r.map((C) => /* @__PURE__ */ t(
+        r.map((a) => /* @__PURE__ */ t(
           "button",
           {
             type: "button",
-            onClick: () => v(C.id),
+            onClick: () => v(a.id),
             className: "group rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm",
             children: [
-              /* @__PURE__ */ e("div", { className: "mb-1", children: /* @__PURE__ */ e("h3", { className: "truncate text-lg font-medium text-primaryText", children: C.name }) }),
-              /* @__PURE__ */ e("p", { className: "line-clamp-2 min-h-[40px] text-sm leading-5 text-secondaryText", children: C.description }),
+              /* @__PURE__ */ e("div", { className: "mb-1", children: /* @__PURE__ */ e("h3", { className: "truncate text-lg font-medium text-primaryText", children: a.name }) }),
+              /* @__PURE__ */ e("p", { className: "line-clamp-2 min-h-[40px] text-sm leading-5 text-secondaryText", children: a.description }),
               /* @__PURE__ */ t("div", { className: "mt-4 flex items-center gap-2 text-sm text-tertiaryText", children: [
                 /* @__PURE__ */ t("span", { children: [
-                  C.documentCount,
+                  a.documentCount,
                   "文档"
                 ] }),
                 /* @__PURE__ */ e("span", { children: "·" }),
                 /* @__PURE__ */ t("span", { children: [
-                  C.conversationCount,
+                  a.conversationCount,
                   "对话"
                 ] })
               ] })
             ]
           },
-          C.id
+          a.id
         )),
         !i && !s && r.length === 0 && /* @__PURE__ */ e("div", { className: "col-span-full rounded-lg border border-dashed border-borderSoft px-4 py-10 text-center text-sm text-tertiaryText", children: "暂无项目" })
       ] })
@@ -1029,17 +1028,17 @@ function zr({
     /* @__PURE__ */ e(
       F,
       {
-        visible: _,
+        visible: S,
         title: "创建新项目",
         width: 560,
         maskClosable: !1,
-        okText: I ? "创建中…" : "创建",
+        okText: w ? "创建中…" : "创建",
         cancelText: "取消",
-        onCancel: a,
+        onCancel: h,
         onConfirm: () => {
-          z();
+          d();
         },
-        okButtonProps: { disabled: I },
+        okButtonProps: { disabled: w },
         bodyClassName: "!px-6 !py-5",
         children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
           /* @__PURE__ */ t("section", { className: "space-y-2", children: [
@@ -1052,9 +1051,9 @@ function zr({
               {
                 value: u,
                 placeholder: "请输入项目名称",
-                disabled: I,
-                onChange: (C) => {
-                  c(C.target.value), T && y("");
+                disabled: w,
+                onChange: (a) => {
+                  c(a.target.value), b && y("");
                 }
               }
             )
@@ -1065,47 +1064,33 @@ function zr({
               "textarea",
               {
                 value: m,
-                onChange: (C) => n(C.target.value),
+                onChange: (a) => n(a.target.value),
                 placeholder: "请输入项目描述",
                 rows: 4,
-                disabled: I,
+                disabled: w,
                 className: "w-full resize-none rounded-lg border border-borderGray bg-white px-3 py-2 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
               }
             )
           ] }),
-          /* @__PURE__ */ t("section", { className: "space-y-2", children: [
-            /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "项目文档（选填）" }),
-            /* @__PURE__ */ e(
-              ze,
-              {
-                value: f,
-                maxCount: 5,
-                maxSize: 20 * 1024 * 1024,
-                disabled: I,
-                onChange: w,
-                onError: (C) => y(C.message)
-              }
-            )
-          ] }),
-          T && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: T })
+          b && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: b })
         ] })
       }
     )
   ] });
 }
-const We = 84, cr = { 日: 0, 天: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6 }, xe = (r) => String(r).padStart(2, "0"), Q = (r) => `${r.getFullYear()}年${xe(r.getMonth() + 1)}月${xe(r.getDate())}日 ${xe(r.getHours())}:${xe(r.getMinutes())}`;
-function Ye(r, l, i = /* @__PURE__ */ new Date()) {
+const Ke = 84, cr = { 日: 0, 天: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6 }, xe = (r) => String(r).padStart(2, "0"), Q = (r) => `${r.getFullYear()}年${xe(r.getMonth() + 1)}月${xe(r.getDate())}日 ${xe(r.getHours())}:${xe(r.getMinutes())}`;
+function We(r, l, i = /* @__PURE__ */ new Date()) {
   const s = r.trim(), o = (m, n) => {
-    const f = n.match(/^(\d{1,2}):(\d{2})$/);
-    return f ? (m.setHours(Number(f[1]), Number(f[2]), 0, 0), m) : null;
+    const b = n.match(/^(\d{1,2}):(\d{2})$/);
+    return b ? (m.setHours(Number(b[1]), Number(b[2]), 0, 0), m) : null;
   };
   if (s === "刚刚") return Q(i);
   const v = s.match(/^今天\s+(\d{1,2}:\d{2})$/);
   if (v) return Q(o(new Date(i), v[1]) ?? i);
-  const k = s.match(/^昨天\s+(\d{1,2}:\d{2})$/);
-  if (k) {
+  const T = s.match(/^昨天\s+(\d{1,2}:\d{2})$/);
+  if (T) {
     const m = new Date(i);
-    return m.setDate(m.getDate() - 1), Q(o(m, k[1]) ?? i);
+    return m.setDate(m.getDate() - 1), Q(o(m, T[1]) ?? i);
   }
   const N = s.match(/^(上周)?周([一二三四五六日天])\s+(\d{1,2}:\d{2})$/);
   if (N) {
@@ -1113,8 +1098,8 @@ function Ye(r, l, i = /* @__PURE__ */ new Date()) {
     let n = m.getDay() - cr[N[2]];
     return n < 0 && (n += 7), m.setDate(m.getDate() - n - (N[1] ? 7 : 0)), Q(o(m, N[3]) ?? i);
   }
-  const _ = s.match(/^(\d{4})[.\-/年](\d{1,2})[.\-/月](\d{1,2})日?\s+(\d{1,2}):(\d{2})$/);
-  if (_) return Q(new Date(Number(_[1]), Number(_[2]) - 1, Number(_[3]), Number(_[4]), Number(_[5])));
+  const S = s.match(/^(\d{4})[.\-/年](\d{1,2})[.\-/月](\d{1,2})日?\s+(\d{1,2}):(\d{2})$/);
+  if (S) return Q(new Date(Number(S[1]), Number(S[2]) - 1, Number(S[3]), Number(S[4]), Number(S[5])));
   const g = s.match(/^(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})$/);
   if (g) return Q(new Date(i.getFullYear(), Number(g[1]) - 1, Number(g[2]), Number(g[3]), Number(g[4])));
   const u = l.match(/^c-(\d{13})$/);
@@ -1132,45 +1117,45 @@ function Ir({
   memberCount: s,
   isSidebarOpen: o,
   onOpenSidebar: v,
-  onBackToProjects: k,
+  onBackToProjects: T,
   onOpenMemberManagement: N,
-  onOpenDocument: _,
+  onOpenDocument: S,
   onOpenConversation: g,
   onCreateDocument: u,
   onCreateConversation: c,
   onImportDocuments: m,
   onUpdateProjectName: n,
-  onUpdateProjectDescription: f,
-  documentImportAccept: w,
-  documentImportMaxSize: T,
-  documentImportDescription: y,
-  showMemberManagement: I = !0,
+  onUpdateProjectDescription: b,
+  documentImportAccept: y,
+  documentImportMaxSize: w,
+  documentImportDescription: k,
+  showMemberManagement: z = !0,
   onDeleteProject: h
 }) {
-  const [d, a] = p("documents"), [z, C] = p(""), [$, B] = p("all"), [E, O] = p(!1), [R, b] = p(!1), [S, H] = p(!1), [G, X] = p([]), [oe, K] = p(""), [j, de] = p(!1), [V, J] = p((r == null ? void 0 : r.name) ?? ""), [te, Z] = p((r == null ? void 0 : r.description) ?? ""), [fe, M] = p(!1), [L, Y] = p(!1), [ce, re] = p(""), [Je, ge] = p(!1), [me, Pe] = p(!1), [De, ae] = p(""), Ae = Se(null);
+  const [d, a] = p("documents"), [M, I] = p(""), [L, $] = p("all"), [E, B] = p(!1), [R, f] = p(!1), [C, H] = p(!1), [G, X] = p([]), [oe, K] = p(""), [j, de] = p(!1), [V, J] = p((r == null ? void 0 : r.name) ?? ""), [te, Z] = p((r == null ? void 0 : r.description) ?? ""), [fe, _] = p(!1), [O, Y] = p(!1), [ce, re] = p(""), [Je, ge] = p(!1), [me, Ie] = p(!1), [Pe, ae] = p(""), De = Se(null);
   le(() => {
-    J((r == null ? void 0 : r.name) ?? ""), Z((r == null ? void 0 : r.description) ?? ""), M(!1), Y(!1), re("");
+    J((r == null ? void 0 : r.name) ?? ""), Z((r == null ? void 0 : r.description) ?? ""), _(!1), Y(!1), re("");
   }, [r]);
-  const Ee = P(() => ["all", ...Array.from(new Set(l.flatMap((x) => x.tags)))], [l]), $e = P(() => {
-    const x = z.trim().toLowerCase();
-    return l.filter((D) => ($ === "all" || D.tags.includes($)) && (!x || [D.title, D.summary, ...D.tags].join(" ").toLowerCase().includes(x)));
-  }, [l, z, $]), Be = P(() => {
-    const x = z.trim().toLowerCase();
-    return x ? i.filter((D) => [D.title, D.date, Ye(D.date, D.id)].join(" ").toLowerCase().includes(x)) : i;
-  }, [i, z]);
+  const Ae = P(() => ["all", ...Array.from(new Set(l.flatMap((x) => x.tags)))], [l]), Ee = P(() => {
+    const x = M.trim().toLowerCase();
+    return l.filter((D) => (L === "all" || D.tags.includes(L)) && (!x || [D.title, D.summary, ...D.tags].join(" ").toLowerCase().includes(x)));
+  }, [l, M, L]), $e = P(() => {
+    const x = M.trim().toLowerCase();
+    return x ? i.filter((D) => [D.title, D.date, We(D.date, D.id)].join(" ").toLowerCase().includes(x)) : i;
+  }, [i, M]);
   le(() => {
     if (d !== "documents") return;
     const x = () => {
-      const D = Ae.current;
-      if (!D) return b(!1);
-      const He = D.scrollHeight > We + 1;
-      b(He), He || O(!1);
+      const D = De.current;
+      if (!D) return f(!1);
+      const Le = D.scrollHeight > Ke + 1;
+      f(Le), Le || B(!1);
     };
     return x(), window.addEventListener("resize", x), () => window.removeEventListener("resize", x);
-  }, [d, Ee]);
-  const Oe = async () => {
+  }, [d, Ae]);
+  const Be = async () => {
     const x = V.trim() || (r == null ? void 0 : r.name) || "";
-    if (J(x), M(!1), x && x !== (r == null ? void 0 : r.name)) {
+    if (J(x), _(!1), x && x !== (r == null ? void 0 : r.name)) {
       re("");
       try {
         await n(x);
@@ -1178,12 +1163,12 @@ function Ir({
         J((r == null ? void 0 : r.name) ?? ""), re(D instanceof Error ? D.message : "项目名称更新失败");
       }
     }
-  }, Le = async () => {
+  }, Oe = async () => {
     const x = te.trim() || (r == null ? void 0 : r.description) || "";
     if (Z(x), Y(!1), x && x !== (r == null ? void 0 : r.description)) {
       re("");
       try {
-        await f(x);
+        await b(x);
       } catch (D) {
         Z((r == null ? void 0 : r.description) ?? ""), re(D instanceof Error ? D.message : "项目描述更新失败");
       }
@@ -1200,11 +1185,11 @@ function Ir({
     }
   }, je = async () => {
     if (!(!h || me)) {
-      Pe(!0), ae("");
+      Ie(!0), ae("");
       try {
         await h();
       } catch (x) {
-        ae(x instanceof Error ? x.message : "项目删除失败"), Pe(!1);
+        ae(x instanceof Error ? x.message : "项目删除失败"), Ie(!1);
       }
     }
   };
@@ -1213,14 +1198,14 @@ function Ir({
       /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
         !o && /* @__PURE__ */ e("button", { type: "button", onClick: v, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
         /* @__PURE__ */ t("div", { className: "flex items-center gap-2 text-sm", children: [
-          /* @__PURE__ */ e("button", { type: "button", onClick: k, className: "text-tertiaryText transition-colors hover:text-primaryText", children: "项目" }),
+          /* @__PURE__ */ e("button", { type: "button", onClick: T, className: "text-tertiaryText transition-colors hover:text-primaryText", children: "项目" }),
           /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
           /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: V || (r == null ? void 0 : r.name) || "详情" })
         ] })
       ] }),
-      r && (I || h) && /* @__PURE__ */ t("div", { className: "flex items-center gap-4", children: [
-        I && /* @__PURE__ */ t("button", { type: "button", onClick: N, className: "inline-flex items-center gap-1.5 rounded-lg bg-transparent px-1 py-1 text-sm font-medium leading-5 text-secondaryText transition-colors hover:text-primaryText", children: [
-          /* @__PURE__ */ e(Re, { size: 15 }),
+      r && (z || h) && /* @__PURE__ */ t("div", { className: "flex items-center gap-4", children: [
+        z && /* @__PURE__ */ t("button", { type: "button", onClick: N, className: "inline-flex items-center gap-1.5 rounded-lg bg-transparent px-1 py-1 text-sm font-medium leading-5 text-secondaryText transition-colors hover:text-primaryText", children: [
+          /* @__PURE__ */ e(He, { size: 15 }),
           /* @__PURE__ */ e("span", { children: "管理成员" })
         ] }),
         h && /* @__PURE__ */ t("button", { type: "button", onClick: () => {
@@ -1239,29 +1224,29 @@ function Ir({
           value: V,
           onChange: (x) => J(x.target.value),
           onBlur: () => {
-            Oe();
+            Be();
           },
           onKeyDown: (x) => {
-            x.key === "Enter" && (x.preventDefault(), Oe()), x.key === "Escape" && (J(r.name), M(!1));
+            x.key === "Enter" && (x.preventDefault(), Be()), x.key === "Escape" && (J(r.name), _(!1));
           },
           autoFocus: !0,
           className: "w-full max-w-[560px] rounded-md border border-primary bg-white px-2 py-1 text-2xl font-semibold text-primaryText outline-none"
         }
       ) : /* @__PURE__ */ t("div", { className: "group relative block w-fit max-w-full", children: [
-        /* @__PURE__ */ e("h2", { className: "cursor-text text-2xl font-semibold text-primaryText", onClick: () => M(!0), children: V || r.name }),
+        /* @__PURE__ */ e("h2", { className: "cursor-text text-2xl font-semibold text-primaryText", onClick: () => _(!0), children: V || r.name }),
         /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-max -translate-x-1/2 rounded-md bg-strongText px-2 py-1 text-xs text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100", children: "点击编辑项目名称" })
       ] }),
-      L ? /* @__PURE__ */ e(
+      O ? /* @__PURE__ */ e(
         "input",
         {
           type: "text",
           value: te,
           onChange: (x) => Z(x.target.value),
           onBlur: () => {
-            Le();
+            Oe();
           },
           onKeyDown: (x) => {
-            x.key === "Enter" && (x.preventDefault(), Le()), x.key === "Escape" && (Z(r.description), Y(!1));
+            x.key === "Enter" && (x.preventDefault(), Oe()), x.key === "Escape" && (Z(r.description), Y(!1));
           },
           autoFocus: !0,
           className: "mt-1 w-full max-w-[760px] rounded-md border border-lineSubtle bg-white px-2 py-1 text-sm text-tertiaryText outline-none focus:border-primary"
@@ -1272,7 +1257,7 @@ function Ir({
       ] }),
       ce && /* @__PURE__ */ e("div", { role: "alert", className: "mt-2 text-sm text-danger", children: ce }),
       /* @__PURE__ */ e("div", { className: "mt-4 flex flex-wrap items-center gap-2", children: /* @__PURE__ */ t("span", { className: "inline-flex items-center gap-1.5 rounded-full bg-lineSoft px-2.5 py-0.5 text-[13px] font-medium text-secondaryText", children: [
-        /* @__PURE__ */ e(Re, { size: 13 }),
+        /* @__PURE__ */ e(He, { size: 13 }),
         /* @__PURE__ */ t("span", { children: [
           "成员 ",
           s,
@@ -1292,7 +1277,7 @@ function Ir({
       /* @__PURE__ */ t("div", { className: "mt-4 flex flex-wrap items-center justify-between gap-3", children: [
         /* @__PURE__ */ t("div", { className: "relative w-full max-w-[320px]", children: [
           /* @__PURE__ */ e(pt, { size: 16, className: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-tertiaryText" }),
-          /* @__PURE__ */ e("input", { type: "text", value: z, onChange: (x) => C(x.target.value), placeholder: `搜索${d === "documents" ? "文档" : "历史对话"}`, className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none" })
+          /* @__PURE__ */ e("input", { type: "text", value: M, onChange: (x) => I(x.target.value), placeholder: `搜索${d === "documents" ? "文档" : "历史对话"}`, className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none" })
         ] }),
         /* @__PURE__ */ t("div", { className: "flex items-center gap-5", children: [
           /* @__PURE__ */ e(A, { type: "ghost", size: "small", rounded: "large", icon: d === "documents" ? /* @__PURE__ */ e(ie, { size: 16 }) : void 0, className: "!h-auto !gap-1 !border-transparent !bg-transparent !px-0 !py-0 !text-sm !font-semibold !text-primary hover:!bg-transparent hover:!text-primary-hover", onClick: d === "documents" ? u : c, children: d === "documents" ? "新建" : "发起对话" }),
@@ -1308,22 +1293,22 @@ function Ir({
         ] })
       ] }),
       d === "documents" && /* @__PURE__ */ e("div", { className: "mt-3", children: /* @__PURE__ */ t("div", { className: "flex items-start justify-between gap-3", children: [
-        /* @__PURE__ */ e("div", { ref: Ae, className: "flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200", style: { maxHeight: E || !R ? void 0 : `${We}px` }, children: Ee.map((x) => /* @__PURE__ */ e("button", { type: "button", onClick: () => B(x), className: `h-7 rounded-full border px-3 text-xs transition-colors ${$ === x ? "border-primary bg-primary-soft text-primary" : "border-lineSubtle bg-white text-secondaryText hover:border-controlBorder"}`, children: x === "all" ? "全部" : x }, x)) }),
-        R && /* @__PURE__ */ e("button", { type: "button", onClick: () => O((x) => !x), className: "shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText", children: E ? "收起" : "展开" })
+        /* @__PURE__ */ e("div", { ref: De, className: "flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200", style: { maxHeight: E || !R ? void 0 : `${Ke}px` }, children: Ae.map((x) => /* @__PURE__ */ e("button", { type: "button", onClick: () => $(x), className: `h-7 rounded-full border px-3 text-xs transition-colors ${L === x ? "border-primary bg-primary-soft text-primary" : "border-lineSubtle bg-white text-secondaryText hover:border-controlBorder"}`, children: x === "all" ? "全部" : x }, x)) }),
+        R && /* @__PURE__ */ e("button", { type: "button", onClick: () => B((x) => !x), className: "shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText", children: E ? "收起" : "展开" })
       ] }) }),
-      d === "documents" ? $e.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2", children: $e.map((x) => /* @__PURE__ */ t("button", { type: "button", onClick: () => _(x.kbNodeId), className: "rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm", children: [
+      d === "documents" ? Ee.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2", children: Ee.map((x) => /* @__PURE__ */ t("button", { type: "button", onClick: () => S(x.kbNodeId), className: "rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm", children: [
         /* @__PURE__ */ e("h3", { className: "truncate text-base font-medium text-primaryText", children: x.title }),
         /* @__PURE__ */ e("p", { className: "mt-1.5 line-clamp-2 text-sm leading-5 text-secondaryText", children: x.summary }),
         x.tags.length > 0 && /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2", children: x.tags.map((D) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-lg bg-projectTagSurface px-3 py-1 text-xs text-secondaryText", children: D }, `${x.id}-${D}`)) })
-      ] }, x.id)) }) : /* @__PURE__ */ e("div", { className: "mt-4 rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(he, { description: "暂无匹配的文档" }) }) : Be.length ? /* @__PURE__ */ e("div", { className: "mt-4 space-y-2", children: Be.map((x) => /* @__PURE__ */ t("button", { type: "button", onClick: () => g(x.id), className: "-ml-2 w-[calc(100%+0.5rem)] rounded-lg px-2 py-3 text-left transition-colors hover:bg-projectConversationHover", children: [
+      ] }, x.id)) }) : /* @__PURE__ */ e("div", { className: "mt-4 rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(he, { description: "暂无匹配的文档" }) }) : $e.length ? /* @__PURE__ */ e("div", { className: "mt-4 space-y-2", children: $e.map((x) => /* @__PURE__ */ t("button", { type: "button", onClick: () => g(x.id), className: "-ml-2 w-[calc(100%+0.5rem)] rounded-lg px-2 py-3 text-left transition-colors hover:bg-projectConversationHover", children: [
         /* @__PURE__ */ e("div", { className: "truncate text-sm font-medium text-primaryText", children: x.title }),
-        /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: Ye(x.date, x.id) })
+        /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: We(x.date, x.id) })
       ] }, x.id)) }) : /* @__PURE__ */ e("div", { className: "mt-4 rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(he, { description: "暂无匹配的历史对话" }) })
     ] }) : /* @__PURE__ */ e("div", { className: "rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(he, { description: "项目不存在或已被删除" }) }) }) }),
     /* @__PURE__ */ e(
       F,
       {
-        visible: S,
+        visible: C,
         title: "导入文档",
         width: 500,
         maskClosable: !1,
@@ -1338,7 +1323,7 @@ function Ir({
         okButtonProps: { disabled: j },
         bodyClassName: "!px-6 !py-5",
         children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
-          /* @__PURE__ */ e(ze, { value: G, accept: w, maxCount: 5, maxSize: T ?? 20 * 1024 * 1024, uploadDescription: y, disabled: j, onChange: X, onError: (x) => K(x.message) }),
+          /* @__PURE__ */ e(qe, { value: G, accept: y, maxCount: 5, maxSize: w ?? 20 * 1024 * 1024, uploadDescription: k, disabled: j, onChange: X, onError: (x) => K(x.message) }),
           oe && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: oe })
         ] })
       }
@@ -1367,7 +1352,7 @@ function Ir({
             r == null ? void 0 : r.name,
             "”将不再显示。确认删除当前项目吗？"
           ] }),
-          De && /* @__PURE__ */ e("p", { role: "alert", className: "text-danger", children: De })
+          Pe && /* @__PURE__ */ e("p", { role: "alert", className: "text-danger", children: Pe })
         ] })
       }
     )
@@ -1380,19 +1365,19 @@ function Pr({
   loading: s = !1,
   error: o = "",
   defaultKnowledgeType: v,
-  defaultTemplateId: k,
+  defaultTemplateId: T,
   onClose: N,
-  onRetry: _,
+  onRetry: S,
   onContinue: g
 }) {
-  var y, I, h;
-  const u = v || ((y = l[0]) == null ? void 0 : y.value) || "", c = k || ((I = i.find((d) => d.id === "blank")) == null ? void 0 : I.id) || ((h = i[0]) == null ? void 0 : h.id) || "", [m, n] = p(u), [f, w] = p(c);
+  var k, z, h;
+  const u = v || ((k = l[0]) == null ? void 0 : k.value) || "", c = T || ((z = i.find((d) => d.id === "blank")) == null ? void 0 : z.id) || ((h = i[0]) == null ? void 0 : h.id) || "", [m, n] = p(u), [b, y] = p(c);
   le(() => {
-    r && (n(u), w(c));
+    r && (n(u), y(c));
   }, [c, u, r]);
-  const T = P(
-    () => i.find((d) => d.id === f) ?? null,
-    [f, i]
+  const w = P(
+    () => i.find((d) => d.id === b) ?? null,
+    [b, i]
   );
   return /* @__PURE__ */ e(
     F,
@@ -1441,10 +1426,10 @@ function Pr({
             ] }),
             s ? /* @__PURE__ */ e("div", { className: "rounded-lg border border-dashed border-borderSoft px-4 py-10 text-center text-sm text-tertiaryText", children: "正在加载模板…" }) : o ? /* @__PURE__ */ t("div", { className: "rounded-lg border border-danger bg-danger-soft px-4 py-4", children: [
               /* @__PURE__ */ e("p", { className: "text-sm text-danger", children: o }),
-              _ && /* @__PURE__ */ e(A, { type: "secondary", size: "small", className: "mt-3", onClick: _, children: "重新加载" })
+              S && /* @__PURE__ */ e(A, { type: "secondary", size: "small", className: "mt-3", onClick: S, children: "重新加载" })
             ] }) : i.length ? /* @__PURE__ */ e("div", { className: "grid gap-3 sm:grid-cols-2", children: i.map((d) => {
-              var z;
-              const a = d.id === f;
+              var M;
+              const a = d.id === b;
               return /* @__PURE__ */ e(
                 "button",
                 {
@@ -1453,7 +1438,7 @@ function Pr({
                     "rounded-lg border p-3 text-left transition",
                     a ? "border-primary bg-primary-soft" : "border-lineSubtle bg-surface hover:border-controlBorderHover hover:bg-surfaceMuted"
                   ].join(" "),
-                  onClick: () => w(d.id),
+                  onClick: () => y(d.id),
                   children: /* @__PURE__ */ t("div", { className: "flex items-start gap-3", children: [
                     /* @__PURE__ */ e("div", { className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surfaceMuted text-base text-secondaryText", children: d.icon || /* @__PURE__ */ e(bt, { size: 17 }) }),
                     /* @__PURE__ */ t("div", { className: "min-w-0 flex-1", children: [
@@ -1463,7 +1448,7 @@ function Pr({
                         a && /* @__PURE__ */ e(ke, { size: 15, className: "ml-auto shrink-0 text-primary" })
                       ] }),
                       /* @__PURE__ */ e("p", { className: "mt-1 line-clamp-2 text-xs leading-4 text-tertiaryText", children: d.description }),
-                      (z = d.structure) != null && z.length ? /* @__PURE__ */ e("div", { className: "mt-2 flex flex-wrap gap-1.5", children: d.structure.slice(0, 3).map((C) => /* @__PURE__ */ e("span", { className: "rounded-full bg-surface px-2 py-0.5 text-xs text-secondaryText", children: C }, C)) }) : null
+                      (M = d.structure) != null && M.length ? /* @__PURE__ */ e("div", { className: "mt-2 flex flex-wrap gap-1.5", children: d.structure.slice(0, 3).map((I) => /* @__PURE__ */ e("span", { className: "rounded-full bg-surface px-2 py-0.5 text-xs text-secondaryText", children: I }, I)) }) : null
                     ] })
                   ] })
                 },
@@ -1473,7 +1458,7 @@ function Pr({
           ] })
         ] }),
         /* @__PURE__ */ t("div", { className: "flex shrink-0 items-center justify-between gap-4 border-t border-lineSoft px-6 py-4", children: [
-          /* @__PURE__ */ e("p", { className: "min-w-0 truncate text-xs text-tertiaryText", children: T ? `已选择：${T.name}` : "请选择一个模板" }),
+          /* @__PURE__ */ e("p", { className: "min-w-0 truncate text-xs text-tertiaryText", children: w ? `已选择：${w.name}` : "请选择一个模板" }),
           /* @__PURE__ */ t("div", { className: "flex shrink-0 items-center gap-2", children: [
             /* @__PURE__ */ e(A, { type: "secondary", size: "medium", onClick: N, children: "取消" }),
             /* @__PURE__ */ e(
@@ -1481,8 +1466,8 @@ function Pr({
               {
                 type: "primary",
                 size: "medium",
-                disabled: s || !!o || !m || !f,
-                onClick: () => g({ knowledgeType: m, templateId: f }),
+                disabled: s || !!o || !m || !b,
+                onClick: () => g({ knowledgeType: m, templateId: b }),
                 children: "继续编辑"
               }
             )
@@ -1499,15 +1484,15 @@ function Dr({
   onOpenSidebar: s,
   onBackToProjects: o,
   onBackToProject: v,
-  onEdit: k,
+  onEdit: T,
   onDelete: N
 }) {
-  const [_, g] = p(!1), [u, c] = p(!1), [m, n] = p(""), f = async () => {
+  const [S, g] = p(!1), [u, c] = p(!1), [m, n] = p(""), b = async () => {
     c(!0), n("");
     try {
       await N(), g(!1);
-    } catch (w) {
-      n(w instanceof Error ? w.message : "文档删除失败");
+    } catch (y) {
+      n(y instanceof Error ? y.message : "文档删除失败");
     } finally {
       c(!1);
     }
@@ -1528,14 +1513,14 @@ function Dr({
         /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => {
           n(""), g(!0);
         }, children: "删除" }),
-        /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", onClick: k, children: "编辑" })
+        /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", onClick: T, children: "编辑" })
       ] })
     ] }),
     /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto flex h-full min-h-0 max-w-[1240px] flex-col", children: /* @__PURE__ */ e(tt, { document: l }) }) }),
     /* @__PURE__ */ t(
       F,
       {
-        visible: _,
+        visible: S,
         title: "删除文档",
         width: 420,
         maskClosable: !1,
@@ -1545,7 +1530,7 @@ function Dr({
         footer: /* @__PURE__ */ t("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
           /* @__PURE__ */ e(A, { type: "secondary", size: "medium", disabled: u, onClick: () => g(!1), children: "取消" }),
           /* @__PURE__ */ e(A, { type: "danger", size: "medium", disabled: u, onClick: () => {
-            f();
+            b();
           }, children: u ? "删除中…" : "删除" })
         ] }),
         children: [
@@ -1564,41 +1549,41 @@ function Ar({
   onClose: s,
   onInvite: o,
   onChangePermission: v,
-  onRemove: k
+  onRemove: T
 }) {
-  const [N, _] = p([]), [g, u] = p("浏览"), [c, m] = p(""), [n, f] = p(""), w = P(() => {
+  const [N, S] = p([]), [g, u] = p("浏览"), [c, m] = p(""), [n, b] = p(""), y = P(() => {
     const h = new Set(l.map((d) => d.id));
     return i.filter((d) => !h.has(d.id)).map((d) => ({
       label: `${d.name}（${d.email}）`,
       value: d.id,
       searchText: `${d.name} ${d.email}`
     }));
-  }, [i, l]), T = () => {
-    n || (_([]), u("浏览"), m(""), s());
-  }, y = async () => {
+  }, [i, l]), w = () => {
+    n || (S([]), u("浏览"), m(""), s());
+  }, k = async () => {
     if (!N.length) {
       m("请先选择要邀请的成员");
       return;
     }
-    f("invite"), m("");
+    b("invite"), m("");
     try {
-      await o(N, g), _([]), u("浏览");
+      await o(N, g), S([]), u("浏览");
     } catch (h) {
       m(h instanceof Error ? h.message : "邀请成员失败");
     } finally {
-      f("");
+      b("");
     }
-  }, I = async (h, d) => {
-    f(h), m("");
+  }, z = async (h, d) => {
+    b(h), m("");
     try {
-      d === "移除" ? await k(h) : await v(h, d);
+      d === "移除" ? await T(h) : await v(h, d);
     } catch (a) {
       m(a instanceof Error ? a.message : "成员操作失败");
     } finally {
-      f("");
+      b("");
     }
   };
-  return /* @__PURE__ */ e(F, { visible: r, title: "管理成员", width: 560, maskClosable: !1, footer: null, onCancel: T, bodyClassName: "!px-6 !py-5", children: /* @__PURE__ */ t("div", { className: "space-y-5", children: [
+  return /* @__PURE__ */ e(F, { visible: r, title: "管理成员", width: 560, maskClosable: !1, footer: null, onCancel: w, bodyClassName: "!px-6 !py-5", children: /* @__PURE__ */ t("div", { className: "space-y-5", children: [
     /* @__PURE__ */ t("section", { className: "space-y-3", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "加入新成员" }),
       /* @__PURE__ */ t("div", { className: "flex items-center gap-3", children: [
@@ -1610,13 +1595,13 @@ function Ar({
               showSearch: !0,
               variant: "borderless",
               value: N,
-              options: w,
+              options: y,
               optionFilterProp: "searchText",
               classNames: { popup: { root: "project-invite-member-dropdown" } },
               suffixIcon: null,
               placeholder: "搜索姓名/邮箱并选择成员",
               onChange: (h) => {
-                _(h), c && m("");
+                S(h), c && m("");
               },
               disabled: !!n,
               className: "w-full"
@@ -1637,7 +1622,7 @@ function Ar({
           )
         ] }),
         /* @__PURE__ */ e(A, { type: "primary", size: "medium", disabled: !!n, onClick: () => {
-          y();
+          k();
         }, children: n === "invite" ? "邀请中…" : "邀请成员" })
       ] }),
       c && /* @__PURE__ */ e("div", { className: "text-sm text-danger", children: c })
@@ -1654,7 +1639,7 @@ function Ar({
           value: h.permission,
           options: mr,
           onChange: (d) => {
-            I(h.id, String(d));
+            z(h.id, String(d));
           },
           disabled: !!n,
           className: "member-permission-action-select w-[84px]",
@@ -1673,20 +1658,20 @@ function Er({
   onOpenSidebar: s,
   onBackToProjects: o,
   onBackToProject: v,
-  onDelete: k,
+  onDelete: T,
   onEdit: N
 }) {
-  const [_, g] = p(!1), [u, c] = p(!1), m = Se(null), n = P(
+  const [S, g] = p(!1), [u, c] = p(!1), m = Se(null), n = P(
     () => l ? xr(l.timeline) : null,
     [l]
-  ), f = (n == null ? void 0 : n.actor) || (l == null ? void 0 : l.ownerName) || "未知成员";
+  ), b = (n == null ? void 0 : n.actor) || (l == null ? void 0 : l.ownerName) || "未知成员";
   le(() => () => {
     m.current !== null && window.clearTimeout(m.current);
   }, []);
-  const w = () => {
+  const y = () => {
     g(!0), m.current !== null && window.clearTimeout(m.current), m.current = window.setTimeout(() => g(!1), 700);
-  }, T = () => {
-    c(!1), k();
+  }, w = () => {
+    c(!1), T();
   };
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-surface", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
@@ -1711,21 +1696,21 @@ function Er({
         /* @__PURE__ */ e("div", { className: "mt-3 flex items-center justify-between gap-4", children: /* @__PURE__ */ t("div", { className: "flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-tertiaryText", children: [
           /* @__PURE__ */ t("span", { children: [
             "创建人: ",
-            f
+            b
           ] }),
           /* @__PURE__ */ t("span", { children: [
             "最近修改: ",
-            f
+            b
           ] }),
           /* @__PURE__ */ e("span", { children: (n == null ? void 0 : n.updatedAt) ?? l.updatedAt })
         ] }) }),
         /* @__PURE__ */ e("div", { className: "mt-4 h-px bg-lineSubtle" })
       ] }),
-      /* @__PURE__ */ t("section", { onScroll: w, className: `auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${_ ? "is-scrolling" : ""}`, children: [
-        n != null && n.markdownContent ? /* @__PURE__ */ e("div", { className: "prose prose-slate max-w-none text-primaryText prose-p:my-3 prose-p:text-sm prose-p:leading-7 prose-li:text-sm prose-li:leading-7 prose-headings:text-primaryText prose-headings:tracking-[-0.01em] prose-h2:mb-2 prose-h2:mt-4 prose-h2:text-[16px] prose-h2:font-semibold prose-h3:mb-2 prose-h3:mt-4 prose-h3:text-base prose-h3:font-semibold prose-strong:text-primaryText prose-code:before:content-none prose-code:after:content-none prose-hr:my-5 prose-li:my-1 prose-li:marker:text-secondaryText prose-ol:pl-6 prose-ul:pl-6 prose-blockquote:border-l-2 prose-blockquote:border-lineSubtle prose-blockquote:pl-3 prose-blockquote:text-secondaryText prose-a:text-primary prose-a:no-underline hover:prose-a:underline", children: /* @__PURE__ */ e(Nt, { remarkPlugins: [vt], children: n.markdownContent }) }) : /* @__PURE__ */ e("div", { className: "mt-6 grid gap-4 md:grid-cols-2", children: ((n == null ? void 0 : n.detailSections) ?? []).map((y) => /* @__PURE__ */ t("article", { className: "rounded-xl border border-lineSubtle bg-surface p-4", children: [
-          /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: y.title }),
-          /* @__PURE__ */ e("p", { className: "mt-2 text-sm leading-6 text-secondaryText", children: y.content })
-        ] }, y.title)) }),
+      /* @__PURE__ */ t("section", { onScroll: y, className: `auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${S ? "is-scrolling" : ""}`, children: [
+        n != null && n.markdownContent ? /* @__PURE__ */ e("div", { className: "prose prose-slate max-w-none text-primaryText prose-p:my-3 prose-p:text-sm prose-p:leading-7 prose-li:text-sm prose-li:leading-7 prose-headings:text-primaryText prose-headings:tracking-[-0.01em] prose-h2:mb-2 prose-h2:mt-4 prose-h2:text-[16px] prose-h2:font-semibold prose-h3:mb-2 prose-h3:mt-4 prose-h3:text-base prose-h3:font-semibold prose-strong:text-primaryText prose-code:before:content-none prose-code:after:content-none prose-hr:my-5 prose-li:my-1 prose-li:marker:text-secondaryText prose-ol:pl-6 prose-ul:pl-6 prose-blockquote:border-l-2 prose-blockquote:border-lineSubtle prose-blockquote:pl-3 prose-blockquote:text-secondaryText prose-a:text-primary prose-a:no-underline hover:prose-a:underline", children: /* @__PURE__ */ e(Nt, { remarkPlugins: [vt], children: n.markdownContent }) }) : /* @__PURE__ */ e("div", { className: "mt-6 grid gap-4 md:grid-cols-2", children: ((n == null ? void 0 : n.detailSections) ?? []).map((k) => /* @__PURE__ */ t("article", { className: "rounded-xl border border-lineSubtle bg-surface p-4", children: [
+          /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: k.title }),
+          /* @__PURE__ */ e("p", { className: "mt-2 text-sm leading-6 text-secondaryText", children: k.content })
+        ] }, k.title)) }),
         /* @__PURE__ */ t("div", { className: "mt-8 border-t border-lineSubtle pt-6", children: [
           /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "记录摘要" }),
           /* @__PURE__ */ e("p", { className: "mt-2 text-sm leading-6 text-secondaryText", children: n == null ? void 0 : n.summary }),
@@ -1742,17 +1727,17 @@ function Er({
         ] }),
         /* @__PURE__ */ t("div", { className: "mb-6 mt-8 border-t border-lineSubtle pt-6", children: [
           /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "附件" }),
-          /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2.5", children: ((n == null ? void 0 : n.attachments) ?? []).map((y) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText", children: y }, y)) })
+          /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2.5", children: ((n == null ? void 0 : n.attachments) ?? []).map((k) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText", children: k }, k)) })
         ] })
       ] })
     ] }) }) }),
     /* @__PURE__ */ e(F, { visible: u, title: "删除文档", width: 420, maskClosable: !1, onCancel: () => c(!1), footer: /* @__PURE__ */ t("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
       /* @__PURE__ */ e(A, { type: "secondary", size: "medium", onClick: () => c(!1), children: "取消" }),
-      /* @__PURE__ */ e(A, { type: "danger", size: "medium", onClick: T, children: "删除" })
+      /* @__PURE__ */ e(A, { type: "danger", size: "medium", onClick: w, children: "删除" })
     ] }), children: /* @__PURE__ */ e("div", { className: "text-sm leading-6 text-secondaryText", children: "删除文档后将不可回复，确认删除当前文档吗？" }) })
   ] });
 }
-function qe({ label: r, description: l, children: i }) {
+function Ye({ label: r, description: l, children: i }) {
   return /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-6 py-5", children: [
     /* @__PURE__ */ t("div", { className: "min-w-0 pr-4", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: r }),
@@ -1768,25 +1753,25 @@ function $r({
   avatarUploading: s = !1,
   actionError: o,
   onOpenSidebar: v,
-  onChangePassword: k,
+  onChangePassword: T,
   onChangeAvatar: N
 }) {
-  const [_, g] = p(!1), [u, c] = p(""), [m, n] = p(""), [f, w] = p(""), [T, y] = p(!1), [I, h] = p(""), [d, a] = p(""), [z, C] = p(""), $ = Se(null), B = f.length > 0 && m !== f, E = m.length > 0 && m.trim().length < 6, O = !!(u.trim() && m.trim() && f.trim() && !E && !B && !T), R = () => {
-    T || (g(!1), c(""), n(""), w(""), h(""), a(""), C(""));
-  }, b = async () => {
-    if (O) {
-      y(!0), h(""), a(""), C("");
+  const [S, g] = p(!1), [u, c] = p(""), [m, n] = p(""), [b, y] = p(""), [w, k] = p(!1), [z, h] = p(""), [d, a] = p(""), [M, I] = p(""), L = Se(null), $ = b.length > 0 && m !== b, E = m.length > 0 && m.trim().length < 6, B = !!(u.trim() && m.trim() && b.trim() && !E && !$ && !w), R = () => {
+    w || (g(!1), c(""), n(""), y(""), h(""), a(""), I(""));
+  }, f = async () => {
+    if (B) {
+      k(!0), h(""), a(""), I("");
       try {
-        const S = await (k == null ? void 0 : k({ currentPassword: u.trim(), newPassword: m.trim() }));
-        if (S && !S.ok) {
-          S.field === "currentPassword" ? a(S.message) : S.field === "newPassword" ? C(S.message) : h(S.message);
+        const C = await (T == null ? void 0 : T({ currentPassword: u.trim(), newPassword: m.trim() }));
+        if (C && !C.ok) {
+          C.field === "currentPassword" ? a(C.message) : C.field === "newPassword" ? I(C.message) : h(C.message);
           return;
         }
-        g(!1), c(""), n(""), w("");
-      } catch (S) {
-        h(S instanceof Error ? S.message : "密码修改失败");
+        g(!1), c(""), n(""), y("");
+      } catch (C) {
+        h(C instanceof Error ? C.message : "密码修改失败");
       } finally {
-        y(!1);
+        k(!1);
       }
     }
   };
@@ -1802,8 +1787,8 @@ function $r({
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto max-w-[720px] py-0", children: /* @__PURE__ */ e("div", { className: "space-y-6", children: /* @__PURE__ */ t("div", { children: [
       /* @__PURE__ */ e("h3", { className: "mb-2 mt-4 text-base font-semibold text-primaryText", children: "账户" }),
       /* @__PURE__ */ t("div", { className: "rounded-lg bg-surface", children: [
-        /* @__PURE__ */ e(qe, { label: "修改密码", description: "定期修改密码可提升账户安全性", children: /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => g(!0), children: "修改" }) }),
-        /* @__PURE__ */ e(qe, { label: "更换头像", description: "上传新的个人头像（支持 PNG/JPG）", children: /* @__PURE__ */ t("div", { className: "flex items-center gap-2.5", children: [
+        /* @__PURE__ */ e(Ye, { label: "修改密码", description: "定期修改密码可提升账户安全性", children: /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => g(!0), children: "修改" }) }),
+        /* @__PURE__ */ e(Ye, { label: "更换头像", description: "上传新的个人头像（支持 PNG/JPG）", children: /* @__PURE__ */ t("div", { className: "flex items-center gap-2.5", children: [
           /* @__PURE__ */ e("div", { className: "flex h-8 w-8 overflow-hidden items-center justify-center rounded-full bg-primary-soft text-xs text-primary", children: i ? /* @__PURE__ */ e("img", { src: i, alt: "当前头像", className: "h-full w-full object-cover" }) : l }),
           /* @__PURE__ */ e(
             A,
@@ -1814,8 +1799,8 @@ function $r({
               isLoading: s,
               disabled: s,
               onClick: () => {
-                var S;
-                return (S = $.current) == null ? void 0 : S.click();
+                var C;
+                return (C = L.current) == null ? void 0 : C.click();
               },
               children: s ? "上传中" : "上传"
             }
@@ -1824,14 +1809,14 @@ function $r({
         /* @__PURE__ */ e(
           "input",
           {
-            ref: $,
+            ref: L,
             type: "file",
             accept: "image/png,image/jpeg,image/webp",
             className: "hidden",
-            onChange: async (S) => {
+            onChange: async (C) => {
               var G;
-              const H = (G = S.target.files) == null ? void 0 : G[0];
-              if (S.target.value = "", !(!H || s))
+              const H = (G = C.target.files) == null ? void 0 : G[0];
+              if (C.target.value = "", !(!H || s))
                 try {
                   await (N == null ? void 0 : N(H));
                 } catch {
@@ -1845,16 +1830,16 @@ function $r({
     /* @__PURE__ */ e(
       F,
       {
-        visible: _,
+        visible: S,
         title: "修改密码",
         onClose: R,
         onCancel: R,
         onConfirm: () => {
-          b();
+          f();
         },
         cancelText: "取消",
-        okText: T ? "保存中…" : "保存",
-        okButtonProps: { disabled: !O },
+        okText: w ? "保存中…" : "保存",
+        okButtonProps: { disabled: !B },
         children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
           /* @__PURE__ */ e(
             se,
@@ -1862,14 +1847,14 @@ function $r({
               label: "当前密码",
               type: "password",
               value: u,
-              onChange: (S) => {
-                c(S.target.value), a(""), h("");
+              onChange: (C) => {
+                c(C.target.value), a(""), h("");
               },
               placeholder: "请输入当前密码",
               size: "medium",
               error: !!d,
               helperText: d || void 0,
-              disabled: T
+              disabled: w
             }
           ),
           /* @__PURE__ */ e(
@@ -1878,14 +1863,14 @@ function $r({
               label: "新密码",
               type: "password",
               value: m,
-              onChange: (S) => {
-                n(S.target.value), C(""), h("");
+              onChange: (C) => {
+                n(C.target.value), I(""), h("");
               },
               placeholder: "请输入新密码",
               size: "medium",
-              error: !!z || E,
-              helperText: z || (E ? "新密码至少需要 6 位" : void 0),
-              disabled: T
+              error: !!M || E,
+              helperText: M || (E ? "新密码至少需要 6 位" : void 0),
+              disabled: w
             }
           ),
           /* @__PURE__ */ e(
@@ -1893,16 +1878,16 @@ function $r({
             {
               label: "确认新密码",
               type: "password",
-              value: f,
-              onChange: (S) => w(S.target.value),
+              value: b,
+              onChange: (C) => y(C.target.value),
               placeholder: "请再次输入新密码",
               size: "medium",
-              error: B,
-              helperText: B ? "两次输入的新密码不一致" : void 0,
-              disabled: T
+              error: $,
+              helperText: $ ? "两次输入的新密码不一致" : void 0,
+              disabled: w
             }
           ),
-          I && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: I })
+          z && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: z })
         ] })
       }
     )
@@ -1920,7 +1905,7 @@ function Br({ onOpenAiUsage: r, onOpenMembers: l, onLogout: i }) {
 }
 const we = (r) => new Intl.NumberFormat("en-US").format(Math.round(r));
 function hr({ points: r, labels: l, totalAmount: i }) {
-  const [g, u] = p(null), c = P(() => Math.max(...r, 1), [r]), m = P(() => r.length <= 10 ? 1 : Math.ceil(r.length / 6), [r.length]), n = P(() => r.length <= 1 ? 0 : Math.min(6, 928 / r.length / 2.5), [928, r.length]), f = P(() => r.length === 0 ? 0 : Math.max(3, (928 - (r.length - 1) * n) / r.length), [n, 928, r.length]), w = (T) => T >= 1e4 ? `${(T / 1e4).toFixed(1)}万` : we(T);
+  const [g, u] = p(null), c = P(() => Math.max(...r, 1), [r]), m = P(() => r.length <= 10 ? 1 : Math.ceil(r.length / 6), [r.length]), n = P(() => r.length <= 1 ? 0 : Math.min(6, 928 / r.length / 2.5), [928, r.length]), b = P(() => r.length === 0 ? 0 : Math.max(3, (928 - (r.length - 1) * n) / r.length), [n, 928, r.length]), y = (w) => w >= 1e4 ? `${(w / 1e4).toFixed(1)}万` : we(w);
   return /* @__PURE__ */ t("div", { children: [
     /* @__PURE__ */ t("div", { className: "mb-3", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-semibold text-primaryText", children: "月度用量" }),
@@ -1931,22 +1916,22 @@ function hr({ points: r, labels: l, totalAmount: i }) {
     ] }),
     /* @__PURE__ */ t("div", { className: "relative h-[190px] w-full", children: [
       /* @__PURE__ */ t("svg", { viewBox: "0 0 1000 190", preserveAspectRatio: "none", className: "h-full w-full", children: [
-        [c, 0].map((T) => {
-          const y = 156 - T / c * 138;
+        [c, 0].map((w) => {
+          const k = 156 - w / c * 138;
           return /* @__PURE__ */ t("g", { children: [
-            /* @__PURE__ */ e("line", { x1: 52, x2: 980, y1: y.toFixed(2), y2: y.toFixed(2), stroke: "var(--chatui-color-line-subtle)", strokeWidth: "1" }),
-            /* @__PURE__ */ e("text", { x: 44, y: y + 4, textAnchor: "end", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: w(T) })
-          ] }, T);
+            /* @__PURE__ */ e("line", { x1: 52, x2: 980, y1: k.toFixed(2), y2: k.toFixed(2), stroke: "var(--chatui-color-line-subtle)", strokeWidth: "1" }),
+            /* @__PURE__ */ e("text", { x: 44, y: k + 4, textAnchor: "end", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: y(w) })
+          ] }, w);
         }),
-        r.map((T, y) => {
-          const I = T / c * 138, h = 52 + y * (f + n), d = 156 - I, a = l[y] ?? "", z = y % m === 0 || y === r.length - 1;
-          return /* @__PURE__ */ t("g", { onMouseEnter: () => u(y), onMouseLeave: () => u(null), children: [
-            /* @__PURE__ */ e("rect", { x: h.toFixed(2), y: d.toFixed(2), width: f.toFixed(2), height: Math.max(1, I).toFixed(2), rx: "1.5", fill: g === y ? "var(--chatui-color-ai-usage-bar-hover)" : "var(--chatui-color-ai-usage-bar)" }),
-            z && /* @__PURE__ */ e("text", { x: (h + f / 2).toFixed(2), y: 170, textAnchor: "middle", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: a })
-          ] }, `${a}-${y}`);
+        r.map((w, k) => {
+          const z = w / c * 138, h = 52 + k * (b + n), d = 156 - z, a = l[k] ?? "", M = k % m === 0 || k === r.length - 1;
+          return /* @__PURE__ */ t("g", { onMouseEnter: () => u(k), onMouseLeave: () => u(null), children: [
+            /* @__PURE__ */ e("rect", { x: h.toFixed(2), y: d.toFixed(2), width: b.toFixed(2), height: Math.max(1, z).toFixed(2), rx: "1.5", fill: g === k ? "var(--chatui-color-ai-usage-bar-hover)" : "var(--chatui-color-ai-usage-bar)" }),
+            M && /* @__PURE__ */ e("text", { x: (h + b / 2).toFixed(2), y: 170, textAnchor: "middle", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: a })
+          ] }, `${a}-${k}`);
         })
       ] }),
-      g !== null && /* @__PURE__ */ t("div", { className: "pointer-events-none absolute top-0 z-20 -translate-x-1/2 rounded-lg bg-aiUsageTooltip px-2.5 py-2 text-xs text-white shadow-md", style: { left: `${(52 + g * (f + n) + f / 2) / 1e3 * 100}%` }, children: [
+      g !== null && /* @__PURE__ */ t("div", { className: "pointer-events-none absolute top-0 z-20 -translate-x-1/2 rounded-lg bg-aiUsageTooltip px-2.5 py-2 text-xs text-white shadow-md", style: { left: `${(52 + g * (b + n) + b / 2) / 1e3 * 100}%` }, children: [
         /* @__PURE__ */ e("div", { className: "text-tertiaryText", children: l[g] }),
         /* @__PURE__ */ t("div", { className: "mt-0.5 font-semibold text-aiUsageBar", children: [
           we(r[g]),
@@ -1963,22 +1948,22 @@ function Or({
   monthOptions: s,
   selectedMember: o,
   selectedMonth: v,
-  trendPoints: k,
+  trendPoints: T,
   trendLabels: N,
-  trendTotal: _,
+  trendTotal: S,
   rechargeRecords: g,
   onOpenSidebar: u,
   onMemberChange: c,
   onMonthChange: m
 }) {
-  var O, R;
-  const [n, f] = p("analysis"), [w, T] = p(!1), [y, I] = p(!1), h = ((O = i.find((b) => b.value === o)) == null ? void 0 : O.label) ?? "全部成员", d = ((R = s.find((b) => b.value === v)) == null ? void 0 : R.label) ?? v, a = P(() => i.map((b) => ({ key: `member-${b.value}`, label: b.label, active: b.value === o })), [i, o]), z = P(() => s.map((b) => ({ key: `month-${b.value}`, label: b.label, active: b.value === v })), [s, v]), C = Te((b) => {
-    c(b.key.replace("member-", "")), T(!1);
-  }, [c]), $ = Te((b) => {
-    m(b.key.replace("month-", "")), I(!1);
-  }, [m]), B = P(() => [
-    { title: "充值金额", dataIndex: "amount", width: "50%", render: (b) => /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: String(b) }) },
-    { title: "充值时间", dataIndex: "rechargeTime", width: "50%", render: (b) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(b) }) }
+  var B, R;
+  const [n, b] = p("analysis"), [y, w] = p(!1), [k, z] = p(!1), h = ((B = i.find((f) => f.value === o)) == null ? void 0 : B.label) ?? "全部成员", d = ((R = s.find((f) => f.value === v)) == null ? void 0 : R.label) ?? v, a = P(() => i.map((f) => ({ key: `member-${f.value}`, label: f.label, active: f.value === o })), [i, o]), M = P(() => s.map((f) => ({ key: `month-${f.value}`, label: f.label, active: f.value === v })), [s, v]), I = Te((f) => {
+    c(f.key.replace("member-", "")), w(!1);
+  }, [c]), L = Te((f) => {
+    m(f.key.replace("month-", "")), z(!1);
+  }, [m]), $ = P(() => [
+    { title: "充值金额", dataIndex: "amount", width: "50%", render: (f) => /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: String(f) }) },
+    { title: "充值时间", dataIndex: "rechargeTime", width: "50%", render: (f) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(f) }) }
   ], []), E = "!min-w-[172px] !rounded-lg !border !border-borderGray !p-1.5 !shadow-md";
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-surface", children: [
     /* @__PURE__ */ e("header", { className: "z-10 flex h-16 shrink-0 items-center bg-homeHeaderSurface px-4 backdrop-blur-sm", children: /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
@@ -1990,42 +1975,42 @@ function Or({
       ] })
     ] }) }),
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-10 pt-2 md:px-8 md:pb-12 md:pt-3 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px] space-y-5", children: [
-      /* @__PURE__ */ e("section", { className: "grid grid-cols-1 gap-3 md:grid-cols-3", children: l.map((b) => /* @__PURE__ */ e("div", { className: "h-[118px] rounded-xl bg-aiUsageCard px-4", children: /* @__PURE__ */ t("div", { className: "flex h-full flex-col justify-center", children: [
+      /* @__PURE__ */ e("section", { className: "grid grid-cols-1 gap-3 md:grid-cols-3", children: l.map((f) => /* @__PURE__ */ e("div", { className: "h-[118px] rounded-xl bg-aiUsageCard px-4", children: /* @__PURE__ */ t("div", { className: "flex h-full flex-col justify-center", children: [
         /* @__PURE__ */ t("div", { className: "flex items-center gap-1 text-sm text-tertiaryText", children: [
-          /* @__PURE__ */ e("span", { children: b.title }),
-          b.tooltip && /* @__PURE__ */ t("div", { className: "group relative inline-flex", children: [
+          /* @__PURE__ */ e("span", { children: f.title }),
+          f.tooltip && /* @__PURE__ */ t("div", { className: "group relative inline-flex", children: [
             /* @__PURE__ */ e(ft, { size: 14, className: "cursor-help text-tertiaryText opacity-80" }),
-            /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-max -translate-x-1/2 rounded-md bg-aiUsageTooltip px-2 py-1 text-xs text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100", children: b.tooltip })
+            /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 w-max -translate-x-1/2 rounded-md bg-aiUsageTooltip px-2 py-1 text-xs text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100", children: f.tooltip })
           ] })
         ] }),
         /* @__PURE__ */ t("div", { className: "mt-2 flex items-center gap-2", children: [
-          /* @__PURE__ */ e("div", { className: "overflow-hidden text-ellipsis whitespace-nowrap text-[30px] font-semibold leading-none text-primaryText", children: b.value }),
-          b.warningLabel && /* @__PURE__ */ e("span", { className: "inline-flex shrink-0 items-center rounded-full bg-danger-soft px-2 py-0.5 text-xs font-medium text-danger", children: b.warningLabel })
+          /* @__PURE__ */ e("div", { className: "overflow-hidden text-ellipsis whitespace-nowrap text-[30px] font-semibold leading-none text-primaryText", children: f.value }),
+          f.warningLabel && /* @__PURE__ */ e("span", { className: "inline-flex shrink-0 items-center rounded-full bg-danger-soft px-2 py-0.5 text-xs font-medium text-danger", children: f.warningLabel })
         ] }),
-        b.helper && /* @__PURE__ */ e("div", { className: "mt-2 text-sm text-tertiaryText", children: b.helper })
-      ] }) }, b.title)) }),
+        f.helper && /* @__PURE__ */ e("div", { className: "mt-2 text-sm text-tertiaryText", children: f.helper })
+      ] }) }, f.title)) }),
       /* @__PURE__ */ t("section", { className: "rounded-xl bg-surface", children: [
         /* @__PURE__ */ e("div", { className: "flex items-center justify-between border-b border-lineSubtle pt-3", children: /* @__PURE__ */ t("div", { className: "flex items-center gap-5", children: [
-          /* @__PURE__ */ e("button", { type: "button", onClick: () => f("analysis"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "analysis" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "消耗分析" }),
-          /* @__PURE__ */ e("button", { type: "button", onClick: () => f("recharge"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "recharge" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "充值记录" })
+          /* @__PURE__ */ e("button", { type: "button", onClick: () => b("analysis"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "analysis" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "消耗分析" }),
+          /* @__PURE__ */ e("button", { type: "button", onClick: () => b("recharge"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "recharge" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "充值记录" })
         ] }) }),
         n === "analysis" && /* @__PURE__ */ e("div", { className: "py-5", children: /* @__PURE__ */ t("div", { className: "flex flex-wrap items-center gap-2 text-sm text-secondaryText", children: [
-          /* @__PURE__ */ e(ee, { open: w, onOpenChange: T, items: a, onItemClick: C, placement: "bottom-start", width: 172, portal: !0, menuClassName: E, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
+          /* @__PURE__ */ e(ee, { open: y, onOpenChange: w, items: a, onItemClick: I, placement: "bottom-start", width: 172, portal: !0, menuClassName: E, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
             /* @__PURE__ */ e("span", { className: "truncate", children: h }),
-            /* @__PURE__ */ e(ue, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${w ? "rotate-180" : ""}` })
-          ] }) }),
-          /* @__PURE__ */ e(ee, { open: y, onOpenChange: I, items: z, onItemClick: $, placement: "bottom-start", width: 172, portal: !0, menuClassName: E, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
-            /* @__PURE__ */ e("span", { className: "truncate", children: d }),
             /* @__PURE__ */ e(ue, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${y ? "rotate-180" : ""}` })
+          ] }) }),
+          /* @__PURE__ */ e(ee, { open: k, onOpenChange: z, items: M, onItemClick: L, placement: "bottom-start", width: 172, portal: !0, menuClassName: E, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
+            /* @__PURE__ */ e("span", { className: "truncate", children: d }),
+            /* @__PURE__ */ e(ue, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${k ? "rotate-180" : ""}` })
           ] }) })
         ] }) }),
-        n === "analysis" ? /* @__PURE__ */ e("div", { className: "py-4", children: /* @__PURE__ */ e(hr, { points: k, labels: N, totalAmount: _ }) }) : /* @__PURE__ */ e("div", { className: "pb-5 pt-4", children: g.length > 0 ? /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-surface", children: /* @__PURE__ */ e(be, { className: "task-table-scroll min-w-[760px]", columns: B, dataSource: g, rowKey: "id" }) }) : /* @__PURE__ */ e("div", { className: "flex min-h-[180px] items-center justify-center text-sm text-tertiaryText", children: "暂无充值记录" }) })
+        n === "analysis" ? /* @__PURE__ */ e("div", { className: "py-4", children: /* @__PURE__ */ e(hr, { points: T, labels: N, totalAmount: S }) }) : /* @__PURE__ */ e("div", { className: "pb-5 pt-4", children: g.length > 0 ? /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-surface", children: /* @__PURE__ */ e(be, { className: "task-table-scroll min-w-[760px]", columns: $, dataSource: g, rowKey: "id" }) }) : /* @__PURE__ */ e("div", { className: "flex min-h-[180px] items-center justify-center text-sm text-tertiaryText", children: "暂无充值记录" }) })
       ] })
     ] }) })
   ] });
 }
 function Lr({ isSidebarOpen: r, result: l, onOpenSidebar: i, onBack: s, onRun: o, onReset: v }) {
-  const k = "h-28 w-full resize-none rounded-lg border border-borderGray bg-surface p-4 font-mono text-base text-primaryText outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary";
+  const T = "h-28 w-full resize-none rounded-lg border border-borderGray bg-surface p-4 font-mono text-base text-primaryText outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary";
   return /* @__PURE__ */ e("div", { className: "h-full w-full overflow-y-auto bg-surface p-8 md:p-12", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[800px]", children: [
     /* @__PURE__ */ t("div", { className: "mb-2 flex items-center gap-4", children: [
       !r && /* @__PURE__ */ e("button", { type: "button", onClick: i, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
@@ -2036,11 +2021,11 @@ function Lr({ isSidebarOpen: r, result: l, onOpenSidebar: i, onBack: s, onRun: o
     /* @__PURE__ */ t("div", { className: "space-y-6 rounded-2xl border border-borderGray p-8", children: [
       /* @__PURE__ */ t("div", { children: [
         /* @__PURE__ */ e("label", { className: "mb-3 block text-base font-medium text-primaryText", children: "输入序列 1" }),
-        /* @__PURE__ */ e("textarea", { className: k, placeholder: "ATCGATCGATCG..." })
+        /* @__PURE__ */ e("textarea", { className: T, placeholder: "ATCGATCGATCG..." })
       ] }),
       /* @__PURE__ */ t("div", { children: [
         /* @__PURE__ */ e("label", { className: "mb-3 block text-base font-medium text-primaryText", children: "输入序列 2" }),
-        /* @__PURE__ */ e("textarea", { className: k, placeholder: "ATCGATCGATCG..." })
+        /* @__PURE__ */ e("textarea", { className: T, placeholder: "ATCGATCGATCG..." })
       ] }),
       /* @__PURE__ */ t("div", { className: "flex gap-4 pt-2", children: [
         /* @__PURE__ */ t("button", { type: "button", onClick: o, className: "flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-base font-medium text-white transition-all hover:opacity-90 active:scale-95", children: [
@@ -2069,7 +2054,7 @@ export {
   ee as BaseActionMenu,
   A as BaseButton,
   Ur as BaseCard,
-  ze as BaseDocumentUpload,
+  qe as BaseDocumentUpload,
   he as BaseEmpty,
   se as BaseInput,
   F as BaseModal,
@@ -2077,7 +2062,7 @@ export {
   Kr as BaseSegmented,
   Wr as BaseSelect,
   be as BaseTable,
-  Ie as BaseToggle,
+  ze as BaseToggle,
   Ve as BaseUpload,
   Yr as CHAT_FILE_OPTIONS,
   qr as CHAT_INPUT_GUIDE_TEXT,
@@ -2086,49 +2071,50 @@ export {
   Jr as CHAT_SKILL_OPTIONS,
   Zr as ChatComposerDock,
   jr as ChatConversationViewport,
-  Vr as ChatHomePage,
-  ea as ChatPreviewPanel,
-  ta as ChatProjectFilesPanel,
-  ra as ChatShareControls,
-  aa as ChatTimelineNavigation,
-  sa as ChatWorkspaceFrame,
-  la as ChatWorkspaceHeader,
-  na as ChatWorkspaceHeaderAction,
-  ia as ChatWorkspaceSidePanel,
+  Vr as ChatDisplayCard,
+  ea as ChatHomePage,
+  ta as ChatPreviewPanel,
+  ra as ChatProjectFilesPanel,
+  aa as ChatShareControls,
+  sa as ChatTimelineNavigation,
+  la as ChatWorkspaceFrame,
+  na as ChatWorkspaceHeader,
+  ia as ChatWorkspaceHeaderAction,
+  oa as ChatWorkspaceSidePanel,
   Er as ExperimentDetailPage,
-  oa as ForgotPasswordPage,
-  da as InputArea,
+  da as ForgotPasswordPage,
+  ca as InputArea,
   rr as LiteratureSubscriptionsTable,
-  ca as LoginPage,
+  ma as LoginPage,
   Cr as MemberManagementPage,
-  ma as MessageItem,
-  xa as MessageList,
-  ha as MiraDraftCard,
+  xa as MessageItem,
+  ha as MessageList,
+  pa as MiraDraftCard,
   Tr as NavigationProvider,
   Ir as ProjectDetailPage,
-  pa as ProjectDocumentAttachments,
+  ua as ProjectDocumentAttachments,
   Pr as ProjectDocumentCreateModal,
-  ua as ProjectDocumentEditor,
-  ba as ProjectDocumentMetadata,
+  ba as ProjectDocumentEditor,
+  fa as ProjectDocumentMetadata,
   Dr as ProjectDocumentPreview,
   tt as ProjectDocumentPreviewContent,
   Ar as ProjectMemberManagementModal,
   zr as ProjectsPage,
-  fa as QuickPrompts,
-  ga as RegisterPage,
+  ga as QuickPrompts,
+  ya as RegisterPage,
   Mr as ScheduledTaskDeleteModal,
   _r as ScheduledTaskEditorModal,
   Sr as ScheduledTasksOverview,
   Br as SettingsPage,
-  ya as SkillPage,
+  Na as SkillPage,
   $r as SystemSettingsDetailPage,
-  Na as ThinkingIndicator,
+  va as ThinkingIndicator,
   Lr as ToolPage,
   sr as buildTaskPromptPreview,
-  Ye as formatProjectConversationDate,
-  va as insertFileReference,
-  wa as insertSkillCommand,
-  Ta as resolveAtQuery,
-  ka as resolveSlashQuery,
+  We as formatProjectConversationDate,
+  wa as insertFileReference,
+  Ta as insertSkillCommand,
+  ka as resolveAtQuery,
+  Ca as resolveSlashQuery,
   kr as useNavigation
 };

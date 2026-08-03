@@ -17,5 +17,5 @@ export function SkillPageFixture() {
     setSkills((current) => current.map((skill) => ids.includes(skill.id) ? { ...skill, installed } : skill));
     setEvent(`${installed ? '安装' : '卸载'}：${ids.join(',')}`);
   };
-  return <><SkillPage isSidebarOpen={false} skills={skills} onOpenSidebar={() => setEvent('展开边栏')} onCreateSkill={() => setEvent('新建 Skill')} onInstall={(ids) => update(ids, true)} onUninstall={(ids) => update(ids, false)} /><output className="sr-only" aria-live="polite">{event}</output></>;
+  return <><SkillPage isSidebarOpen={false} skills={skills} onOpenSidebar={() => setEvent('展开边栏')} onInstall={(ids) => update(ids, true)} onUninstall={(ids) => update(ids, false)} /><output className="sr-only" aria-live="polite">{event}</output></>;
 }

@@ -17,10 +17,9 @@ export interface SkillPageProps {
     error?: string;
     pendingSkillIds?: readonly string[];
     onOpenSidebar(): void;
-    onCreateSkill(): void;
     onInstall(skillIds: string[]): void;
     onUninstall(skillIds: string[]): void;
     onRetry?(): void;
 }
-export declare function SkillPage({ isSidebarOpen, skills, loading, error, pendingSkillIds, onOpenSidebar, onCreateSkill, onInstall, onUninstall, onRetry, }: SkillPageProps): React.JSX.Element;
+export declare function SkillPage({ isSidebarOpen, skills, loading, error, pendingSkillIds, onOpenSidebar, onInstall, onUninstall, onRetry, }: SkillPageProps): React.JSX.Element;
 //# sourceMappingURL=SkillPage.d.ts.map

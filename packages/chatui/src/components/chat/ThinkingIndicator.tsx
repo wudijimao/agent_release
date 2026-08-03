@@ -1,5 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Loader2, Search, Globe, BookOpen, ChevronDown, ChevronRight, Sparkles } from 'lucide-react';
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  CircleCheckBig,
+  CircleHelp,
+  CircleX,
+  Clock3,
+  Globe,
+  ListChecks,
+  Loader2,
+  Minus,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  TriangleAlert,
+} from 'lucide-react';
 
 /**
  * 任务状态阶段枚举，对齐豆包的交互范式：
@@ -10,17 +26,31 @@ import { Loader2, Search, Globe, BookOpen, ChevronDown, ChevronRight, Sparkles }
  *   generating → 正在生成回复
  */
 export type StatusPhase =
+  | 'queued'
   | 'thinking'
   | 'analyzing'
   | 'searching'
   | 'executing'
-  | 'generating';
+  | 'generating'
+  | 'awaiting_clarification'
+  | 'awaiting_confirmation'
+  | 'awaiting_approval'
+  | 'warning'
+  | 'failed';
 
 export interface SearchStep {
+  /** 稳定步骤标识，用于流式更新同一条子状态 */
+  id?: string;
   /** 步骤类型 */
-  type: 'knowledge' | 'web' | 'tool';
+  type: 'knowledge' | 'web' | 'tool' | 'planning' | 'context' | 'generation' | 'action';
   /** 步骤描述文案 */
   label: string;
+  /** 当前步骤状态 */
+  status?: 'running' | 'completed' | 'failed' | 'skipped' | 'warning';
+  /** 服务端提供的安全补充说明 */
+  detail?: string;
+  /** 检索或工具结果数量 */
+  resultCount?: number;
 }
 
 export interface ThinkingIndicatorProps {
@@ -28,17 +58,39 @@ export interface ThinkingIndicatorProps {
   phase: StatusPhase;
   /** 搜索/工具调用步骤列表 */
   searchSteps?: SearchStep[];
+  /** 服务端提供的当前状态文案 */
+  label?: string;
   /** 是否默认展开搜索步骤，默认 true */
   defaultExpanded?: boolean;
 }
 
 /* ── 阶段对应文案 ── */
 const PHASE_LABEL: Record<StatusPhase, string> = {
+  queued: '等待中…',
   thinking: '思考中…',
   analyzing: '分析中…',
   searching: '搜索中…',
   executing: '执行中…',
   generating: '生成中…',
+  awaiting_clarification: '等待补充信息',
+  awaiting_confirmation: '等待确认',
+  awaiting_approval: '等待审批',
+  warning: '处理时出现提醒',
+  failed: '处理失败',
+};
+
+const PHASE_ICON: Record<StatusPhase, React.ReactNode> = {
+  queued: <Clock3 size={14} className="text-tertiaryText" />,
+  thinking: <Loader2 size={14} className="animate-spin text-primary" />,
+  analyzing: <Loader2 size={14} className="animate-spin text-primary" />,
+  searching: <Loader2 size={14} className="animate-spin text-primary" />,
+  executing: <Loader2 size={14} className="animate-spin text-primary" />,
+  generating: <Sparkles size={14} className="animate-pulse text-primary" />,
+  awaiting_clarification: <CircleHelp size={14} className="text-warning" />,
+  awaiting_confirmation: <CircleCheckBig size={14} className="text-primary" />,
+  awaiting_approval: <ShieldCheck size={14} className="text-warning" />,
+  warning: <TriangleAlert size={14} className="text-warning" />,
+  failed: <CircleX size={14} className="text-danger" />,
 };
 
 /* ── 步骤类型 → 图标 + 颜色 ── */
@@ -58,11 +110,54 @@ const STEP_META: Record<
     icon: <Search size={13} />,
     colorClass: 'text-chatToolStep',
   },
+  planning: {
+    icon: <ListChecks size={13} />,
+    colorClass: 'text-chatToolStep',
+  },
+  context: {
+    icon: <BookOpen size={13} />,
+    colorClass: 'text-primary',
+  },
+  generation: {
+    icon: <Sparkles size={13} />,
+    colorClass: 'text-primary',
+  },
+  action: {
+    icon: <Search size={13} />,
+    colorClass: 'text-chatToolStep',
+  },
+};
+
+const STEP_STATUS_META: Record<
+  NonNullable<SearchStep['status']>,
+  { icon: React.ReactNode; colorClass: string }
+> = {
+  running: {
+    icon: <Loader2 size={13} className="animate-spin" />,
+    colorClass: 'text-primary',
+  },
+  completed: {
+    icon: <CircleCheckBig size={13} />,
+    colorClass: 'text-primary',
+  },
+  failed: {
+    icon: <CircleX size={13} />,
+    colorClass: 'text-danger',
+  },
+  skipped: {
+    icon: <Minus size={13} />,
+    colorClass: 'text-tertiaryText',
+  },
+  warning: {
+    icon: <TriangleAlert size={13} />,
+    colorClass: 'text-warning',
+  },
 };
 
 export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
   phase,
   searchSteps = [],
+  label,
   defaultExpanded = true,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
@@ -83,16 +178,12 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
       <div className="flex items-center gap-2">
         {/* 旋转动画图标 */}
         <span className="relative flex h-4 w-4 items-center justify-center">
-          {phase === 'generating' ? (
-            <Sparkles size={14} className="text-primary animate-pulse" />
-          ) : (
-            <Loader2 size={14} className="animate-spin text-primary" />
-          )}
+          {PHASE_ICON[phase]}
         </span>
 
         {/* 阶段文案 */}
         <span className="text-[13px] leading-5 text-secondaryText select-none">
-          {PHASE_LABEL[phase]}
+          {label || PHASE_LABEL[phase]}
         </span>
 
         {/* 搜索步骤折叠按钮 */}
@@ -118,13 +209,35 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
         >
           {searchSteps.map((step, idx) => {
             const meta = STEP_META[step.type] ?? STEP_META.tool;
+            const statusMeta = step.status
+              ? STEP_STATUS_META[step.status]
+              : undefined;
             return (
               <div
-                key={`${step.type}-${idx}-${step.label}`}
-                className="flex items-center gap-2 text-[13px] leading-5 text-secondaryText"
+                key={step.id ?? `${step.type}-${idx}-${step.label}`}
+                className="flex items-start gap-2 text-[13px] leading-5 text-secondaryText"
               >
-                <span className={meta.colorClass}>{meta.icon}</span>
-                <span className="truncate max-w-[480px]">{step.label}</span>
+                <span className={`mt-1 ${meta.colorClass}`}>{meta.icon}</span>
+                <span className="min-w-0 max-w-[480px]">
+                  <span className="flex items-center gap-1.5">
+                    <span className="block min-w-0 truncate">{step.label}</span>
+                    {statusMeta && (
+                      <span
+                        className={`shrink-0 ${statusMeta.colorClass}`}
+                        aria-label={step.status}
+                      >
+                        {statusMeta.icon}
+                      </span>
+                    )}
+                  </span>
+                  {(step.detail || step.resultCount !== undefined) && (
+                    <span className="block truncate text-[12px] text-tertiaryText">
+                      {step.detail}
+                      {step.detail && step.resultCount !== undefined ? ' · ' : ''}
+                      {step.resultCount !== undefined ? `${step.resultCount} 条结果` : ''}
+                    </span>
+                  )}
+                </span>
               </div>
             );
           })}

@@ -9,7 +9,6 @@ export interface ProjectListItemViewModel extends Record<string, unknown> {
 export interface CreateProjectViewModel {
     name: string;
     description: string;
-    documents: File[];
 }
 export interface ProjectsPageProps {
     projects: ProjectListItemViewModel[];

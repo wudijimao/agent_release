@@ -6,8 +6,10 @@ import type { HomeAssistantDisplay } from "@bioagent/shared";
 import type { ApiClient } from "@/lib/api";
 
 import {
+  cancelMiraDocumentDraft,
   confirmMiraDocumentDraft,
   mapMiraDocumentDraft,
+  mapMiraDocumentDraftPreview,
 } from "./mira-document-drafts";
 
 const display: HomeAssistantDisplay = {
@@ -43,9 +45,41 @@ test("mira draft mapper produces a compact UI card and a separate action", () =>
     targetLabel: "肿瘤项目",
     summary: "一份待归档的论文分析。",
     status: "waiting",
+    previewable: true,
+    actionable: true,
   });
   assert.equal(mapped?.action?.confirmPath, "/api/mira/drafts/draft-1/confirm");
+  assert.equal(mapped?.action?.cancelPath, "/api/mira/drafts/draft-1/cancel");
   assert.equal(mapped?.action?.markdown, "# CRISPR 论文分析\n\n正文");
+});
+
+test("mira draft preview reuses the project document preview view model", () => {
+  const mapped = mapMiraDocumentDraft(display, "message-1", "肿瘤项目");
+  assert.ok(mapped?.action);
+
+  const preview = mapMiraDocumentDraftPreview(mapped.action, "肿瘤项目");
+  assert.equal(preview.type, "draft");
+  assert.equal(preview.document?.title, "CRISPR 论文分析");
+  assert.equal(preview.document?.markdown, "# CRISPR 论文分析\n\n正文");
+  assert.deepEqual(preview.actions, [
+    { id: "cancel", label: "取消", tone: "secondary" },
+    { id: "confirm", label: "确认保存", tone: "primary" },
+  ]);
+});
+
+test("mira draft cancellation uses the server-provided cancel route", async () => {
+  const calls: string[] = [];
+  const api = {
+    post: async (path: string) => {
+      calls.push(path);
+      return { status: "cancelled" };
+    },
+  } as unknown as ApiClient;
+  const mapped = mapMiraDocumentDraft(display, "message-1", "肿瘤项目");
+  assert.ok(mapped?.action);
+
+  await cancelMiraDocumentDraft(api, mapped.action);
+  assert.deepEqual(calls, ["/api/mira/drafts/draft-1/cancel"]);
 });
 
 test("mira draft confirmation patches the current project before confirming", async () => {

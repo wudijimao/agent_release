@@ -4,7 +4,10 @@ import type {
   ProjectKnowledgeSection,
   ProjectKnowledgeType,
 } from "@bioagent/shared";
-import type { MiraDraftCardViewModel } from "@bioagent/chatui";
+import type {
+  ChatPreviewItemViewModel,
+  MiraDraftCardViewModel,
+} from "@bioagent/chatui";
 
 import type { ApiClient } from "@/lib/api";
 
@@ -14,6 +17,7 @@ export interface MiraDocumentDraftAction {
   confirmationToken?: string;
   draftHash?: string;
   confirmPath: string;
+  cancelPath: string;
   title: string;
   markdown: string;
   projectKnowledgeType?: ProjectKnowledgeType | string;
@@ -45,6 +49,11 @@ export function mapMiraDocumentDraft(
   const status = confirmation?.status;
   const isSaved = status === "completed";
   const isFailed = status === "failed" || status === "cancelled" || status === "skipped";
+  const isActionable = Boolean(
+    confirmation?.actionId
+      && confirmation.confirmationToken
+      && !terminalStatuses.has(status ?? ""),
+  );
   const title = payload.title.trim() || display.title.trim() || "未命名文档";
   const rawSummary = payload.sections.find((section) => section.summary.trim())?.summary.trim();
   const summary =
@@ -57,6 +66,8 @@ export function mapMiraDocumentDraft(
     ...(targetLabel ? { targetLabel } : {}),
     ...(summary ? { summary } : {}),
     status: isSaved ? "saved" : isFailed ? "error" : "waiting",
+    previewable: isActionable,
+    actionable: isActionable,
     ...(isFailed ? { errorMessage: "草稿未能保存，请重新生成后再试。" } : {}),
   };
 
@@ -75,7 +86,12 @@ export function mapMiraDocumentDraft(
       actionId: confirmation.actionId,
       confirmationToken: confirmation.confirmationToken,
       draftHash: confirmation.draftHash,
-      confirmPath: `/api/mira/drafts/${encodeURIComponent(confirmation.actionId)}/confirm`,
+      confirmPath:
+        confirmation.confirmAction?.path
+        || `/api/mira/drafts/${encodeURIComponent(confirmation.actionId)}/confirm`,
+      cancelPath:
+        confirmation.cancelAction?.path
+        || `/api/mira/drafts/${encodeURIComponent(confirmation.actionId)}/cancel`,
       title: card.title,
       markdown: payload.markdown ?? "",
       projectKnowledgeType: payload.projectKnowledgeType,
@@ -117,4 +133,42 @@ export async function confirmMiraDocumentDraft(
       draftHash: patched.draftHash || action.draftHash,
     },
   );
+}
+
+export async function cancelMiraDocumentDraft(
+  api: ApiClient,
+  action: MiraDocumentDraftAction,
+) {
+  return api.post(action.cancelPath);
+}
+
+export function mapMiraDocumentDraftPreview(
+  action: MiraDocumentDraftAction,
+  projectName: string,
+): ChatPreviewItemViewModel {
+  return {
+    key: `draft:${action.actionKey}`,
+    type: "draft",
+    title: action.title,
+    subtitle: `${projectName} · 待确认草稿`,
+    actions: [
+      { id: "cancel", label: "取消", tone: "secondary" },
+      { id: "confirm", label: "确认保存", tone: "primary" },
+    ],
+    document: {
+      id: action.actionId,
+      title: action.title,
+      markdown: action.markdown,
+      createdByName: "Helia",
+      updatedByName: "Helia",
+      updatedAt: "刚刚",
+      canEdit: false,
+      attachments: [],
+      index: {
+        status: "disabled",
+        statusLabel: "保存后建立索引",
+        detail: "草稿确认保存后，服务端将继续处理文档索引。",
+      },
+    },
+  };
 }

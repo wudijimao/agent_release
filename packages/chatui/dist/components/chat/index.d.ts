@@ -1,6 +1,8 @@
 export { AssistantActions } from "./AssistantActions";
 export type { AssistantActionsProps } from "./AssistantActions";
 export { ChatConversationViewport } from "./ChatConversationViewport";
+export { ChatDisplayCard } from "./ChatDisplayCard";
+export type { ChatDisplayCardProps } from "./ChatDisplayCard";
 export type { ChatConversationScrollbar, ChatConversationSelection, ChatConversationViewportProps, } from "./ChatConversationViewport";
 export { ChatComposerDock } from "./ChatComposerDock";
 export type { ChatComposerDockProps } from "./ChatComposerDock";
@@ -13,7 +15,7 @@ export type { ChatTimelineItem, ChatTimelineNavigationProps, } from "./ChatTimel
 export { ChatShareControls } from "./ChatShareControls";
 export type { ChatShareControlsProps } from "./ChatShareControls";
 export { ChatPreviewPanel, ChatProjectFilesPanel } from "./ChatWorkspacePanels";
-export type { ChatPreviewItemType, ChatPreviewItemViewModel, ChatPreviewPanelProps, ChatProjectExperimentItemViewModel, ChatProjectFilesPanelProps, ChatProjectKnowledgeItemViewModel, } from "./ChatWorkspacePanels";
+export type { ChatPreviewActionViewModel, ChatPreviewItemType, ChatPreviewItemViewModel, ChatPreviewPanelProps, ChatProjectExperimentItemViewModel, ChatProjectFilesPanelProps, ChatProjectKnowledgeItemViewModel, } from "./ChatWorkspacePanels";
 export { InputArea } from "./InputArea";
 export type { ChatFileOption, ChatSkillOption, InputAreaProps, InputAttachment, InputReference, InputSendPayload, } from "./InputArea";
 export { CHAT_FILE_OPTIONS, CHAT_INPUT_GUIDE_TEXT, CHAT_RECENT_FILE_OPTIONS, CHAT_SKILL_OPTIONS, insertFileReference, insertSkillCommand, resolveAtQuery, resolveSlashQuery, } from "./InputArea";
@@ -27,5 +29,5 @@ export { QuickPrompts, CHAT_QUICK_PROMPTS } from "./QuickPrompts";
 export type { QuickPromptsProps } from "./QuickPrompts";
 export { ThinkingIndicator } from "./ThinkingIndicator";
 export type { SearchStep, StatusPhase, ThinkingIndicatorProps, } from "./ThinkingIndicator";
-export type { AssistantFeedback, ChatAttachment, ChatMessage, ChatReference, MiraDraftCardViewModel, } from "./chat.types";
+export type { AssistantFeedback, ChatAttachment, ChatDisplayCardAction, ChatDisplayCardLink, ChatDisplayCardViewModel, ChatMessage, ChatReference, MiraDraftCardViewModel, } from "./chat.types";
 //# sourceMappingURL=index.d.ts.map

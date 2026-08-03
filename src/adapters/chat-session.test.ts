@@ -10,16 +10,26 @@ import {
   buildChatRegeneratePayload,
   ChatStreamDisconnectedError,
   getChatStreamErrorMessage,
+  formatChatActionExpiry,
   interruptChatStream,
   loadChatSession,
   mapChatAttachmentRef,
   mapChatContextRef,
+  mapChatDisplayCard,
   mapChatHistoryDetail,
   reconcileChatStream,
   reduceChatStreamEvent,
   shouldReconcileChatStreamFailure,
   updateLatestUserMessageAttachments,
 } from "./chat-session";
+
+test("formats action expiry as readable Beijing time", () => {
+  assert.equal(
+    formatChatActionExpiry("2026-08-03T18:00:00Z"),
+    "2026年8月4日 02:00",
+  );
+  assert.equal(formatChatActionExpiry("not-a-date"), "not-a-date");
+});
 
 const detail: ChatHistoryDetailResponse = {
   sessionId: "session-1",
@@ -125,8 +135,148 @@ test("mapChatHistoryDetail produces the UI view model and hides system messages"
       { id: "assistant-1", role: "assistant", content: "回答", attachments: [] },
     ],
     miraDraftActions: {},
+    deferredActions: {},
     isReplying: false,
   });
+});
+
+test("mapChatHistoryDetail restores MCP confirmation actions from history", () => {
+  const result = mapChatHistoryDetail({
+    ...detail,
+    pendingMcpToolCalls: [
+      {
+        id: "tool-call-1",
+        status: "pending_confirmation",
+        riskLevel: "write_low",
+        dataTypes: ["project_document"],
+        inputSummary: "保存实验记录",
+        expiresAt: "2026-08-03T18:00:00Z",
+        toolName: "保存实验记录",
+        serverName: "Mira",
+      },
+    ],
+  });
+
+  assert.deepEqual(result.deferredActions, {
+    "mcp:tool-call-1": {
+      kind: "mcp",
+      actionKey: "mcp:tool-call-1",
+      toolCallId: "tool-call-1",
+      status: "pending_confirmation",
+    },
+  });
+  assert.deepEqual(result.messages.at(-1)?.displayCard?.actions, [
+    { id: "confirm", label: "确认执行", tone: "primary" },
+    { id: "cancel", label: "取消", tone: "secondary" },
+  ]);
+});
+
+test("display mapper exposes server-declared draft routes as actions", () => {
+  const state = reduceChatStreamEvent(
+    beginChatStream([], { role: "user", content: "创建订阅" }),
+    "display_done",
+    {
+      display: {
+        schemaVersion: "home-display.v1",
+        intentClass: "action",
+        cardType: "tracking_subscription_preview",
+        title: "文献订阅草稿",
+        state: "waiting_confirmation",
+        payload: {
+          sourceName: "PubMed",
+          sourceType: "pubmed",
+          keywords: ["EGFR"],
+          frequency: "weekly",
+          lookbackDays: 7,
+          projectNodeIds: [],
+          draftEnvelope: {
+            schemaVersion: "home-draft-envelope/v1",
+            draftId: "draft-route-1",
+            objectType: "tracking_subscription",
+            action: "create",
+            targetModule: "tracking",
+            draftSchemaVersion: "v1",
+            draft: {},
+            sourceRefs: [],
+            provenance: {
+              toolName: "create_subscription",
+              runId: "run-1",
+              createdAt: "2026-08-03T10:00:00Z",
+            },
+            validation: { status: "valid", missingFields: [], warnings: [] },
+            confirmation: {
+              required: true,
+              confirmRoute: "/api/tracking/subscription-drafts/draft-route-1/confirm",
+              confirmMethod: "POST",
+              confirmPayload: { confirmationToken: "token-1" },
+              cancelRoute: "/api/tracking/subscription-drafts/draft-route-1/cancel",
+            },
+          },
+        },
+      },
+    },
+  );
+
+  assert.deepEqual(state.messages.at(-1)?.displayCard?.actions, [
+    { id: "confirm", label: "确认", tone: "primary" },
+    { id: "cancel", label: "取消", tone: "secondary" },
+  ]);
+  assert.deepEqual(state.deferredActions?.["draft-route:draft-route-1"], {
+    kind: "route",
+    actionKey: "draft-route:draft-route-1",
+    confirmPath: "/api/tracking/subscription-drafts/draft-route-1/confirm",
+    cancelPath: "/api/tracking/subscription-drafts/draft-route-1/cancel",
+    confirmBody: { confirmationToken: "token-1" },
+  });
+});
+
+test("stream reducer renders a live Mira document draft", () => {
+  const state = reduceChatStreamEvent(
+    beginChatStream([], { role: "user", content: "整理成文档" }),
+    "display_done",
+    {
+      display: {
+        schemaVersion: "home-display.v1",
+        intentClass: "write_or_archive",
+        cardType: "mira_archive_preview",
+        title: "文档草稿",
+        state: "waiting_confirmation",
+        payload: {
+          targetPath: "当前项目",
+          mode: "create",
+          title: "实验记录",
+          markdown: "## 结果\n\n实验结果正文",
+          sections: [{ heading: "结果", summary: "实验结果正文" }],
+          sourceRefs: [],
+          warnings: [],
+          confirmation: {
+            actionId: "mira-draft-1",
+            confirmationToken: "token-1",
+            draftHash: "hash-1",
+            status: "waiting_approval",
+            confirmAction: {
+              method: "POST",
+              path: "/api/mira/drafts/mira-draft-1/confirm",
+              requiresConfirmationToken: true,
+            },
+            cancelAction: {
+              method: "POST",
+              path: "/api/mira/drafts/mira-draft-1/cancel",
+              requiresConfirmationToken: false,
+            },
+          },
+        },
+      },
+    },
+  );
+
+  assert.equal(state.messages.at(-1)?.miraDraft?.title, "实验记录");
+  assert.equal(state.messages.at(-1)?.miraDraft?.actionKey, "mira:mira-draft-1");
+  assert.equal(
+    state.miraDraftActions?.["mira:mira-draft-1"]?.markdown,
+    "## 结果\n\n实验结果正文",
+  );
+  assert.equal(state.statusVisible, false);
 });
 
 test("mapChatHistoryDetail restores a pending assistant turn for an active run", () => {
@@ -319,97 +469,346 @@ test("loadChatSession calls the real history detail endpoint", async () => {
   assert.equal(result.id, "session-1");
 });
 
-test("stream reducer covers meta, task trace, text chunks, and errors", () => {
+test("stream reducer keeps consuming ordered task status after the first text chunk", () => {
   let state = beginChatStream([], { role: "user", content: "问题" });
   assert.equal(state.statusPhase, "analyzing");
+  assert.equal(state.statusVisible, true);
 
   state = reduceChatStreamEvent(state, "meta", { sessionId: "session-2" });
   state = reduceChatStreamEvent(state, "task_trace", {
     step: {
+      id: "generation",
       title: "准备生成回复",
       category: "generation",
       status: "running",
+      sequence: 1,
     },
   });
   assert.equal(state.statusPhase, "analyzing");
-  assert.deepEqual(state.searchSteps, []);
+  assert.deepEqual(state.searchSteps, [
+    {
+      id: "generation",
+      type: "generation",
+      label: "准备生成回复",
+      status: "running",
+    },
+  ]);
 
   state = reduceChatStreamEvent(state, "task_trace", {
     step: {
+      id: "context",
       title: "分析任务和上下文",
       category: "context",
       status: "running",
+      sequence: 2,
     },
   });
   assert.equal(state.statusPhase, "analyzing");
+  assert.equal(state.statusLabel, undefined);
   assert.deepEqual(state.searchSteps, [
-    { type: "tool", label: "分析任务和上下文" },
+    {
+      id: "context",
+      type: "context",
+      label: "分析任务和上下文",
+      status: "running",
+    },
   ]);
 
   state = reduceChatStreamEvent(state, "task_trace", {
     step: {
-      title: "已完成上下文分析",
+      id: "context",
+      title: "已分析任务和上下文",
+      detail: "已读取当前项目资料",
       category: "context",
       status: "completed",
+      sequence: 3,
     },
   });
+  assert.equal(state.statusVisible, true);
   assert.deepEqual(state.searchSteps, [
-    { type: "tool", label: "分析任务和上下文" },
-  ]);
-
-  state = reduceChatStreamEvent(state, "task_trace", {
-    step: {
-      title: "检索知识库",
-      category: "retrieval",
-      status: "running",
-    },
-  });
-  assert.equal(state.statusPhase, "searching");
-  assert.deepEqual(state.searchSteps, [
-    { type: "knowledge", label: "检索知识库" },
-  ]);
-
-  state = reduceChatStreamEvent(state, "task_trace", {
-    step: {
-      detail: "正在分析检索结果",
-      category: "tool",
-      status: "running",
-    },
-  });
-  assert.equal(state.statusPhase, "executing");
-  assert.deepEqual(state.searchSteps, [
-    { type: "tool", label: "正在分析检索结果" },
-  ]);
-
-  state = reduceChatStreamEvent(state, "task_trace", {
-    step: {
-      title: "生成回复",
-      category: "generation",
+    {
+      id: "context",
+      type: "context",
+      label: "已分析任务和上下文",
       status: "completed",
+      detail: "已读取当前项目资料",
     },
-  });
-  assert.equal(state.statusPhase, "executing");
+  ]);
 
   state = reduceChatStreamEvent(state, "text", { content: "答" });
   state = reduceChatStreamEvent(state, "text", { content: "案" });
+  assert.equal(state.statusPhase, "generating");
+  assert.equal(state.statusLabel, undefined);
+
   state = reduceChatStreamEvent(state, "task_trace", {
     step: {
-      title: "迟到的知识库检索",
+      id: "tool:literature-search",
+      title: "检索近期文献",
       category: "retrieval",
       status: "running",
+      sequence: 4,
+    },
+  });
+  assert.equal(state.statusPhase, "searching");
+  assert.equal(state.statusLabel, undefined);
+  assert.equal(state.searchSteps.length, 1);
+
+  const orderedState = state;
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      id: "tool:old",
+      title: "迟到的旧状态",
+      category: "tool",
+      status: "running",
+      sequence: 3,
+    },
+  });
+  assert.equal(state, orderedState);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      id: "tool:literature-search",
+      title: "已检索近期文献",
+      category: "retrieval",
+      status: "completed",
+      resultCount: 12,
+      sequence: 5,
     },
   });
 
   assert.equal(state.sessionId, "session-2");
   assert.equal(state.statusPhase, "generating");
+  assert.equal(state.statusLabel, undefined);
+  assert.equal(state.statusVisible, true);
   assert.deepEqual(state.searchSteps, [
-    { type: "tool", label: "正在分析检索结果" },
+    {
+      id: "tool:literature-search",
+      type: "knowledge",
+      label: "已检索近期文献",
+      status: "completed",
+      resultCount: 12,
+    },
   ]);
   assert.equal(state.messages.at(-1)?.content, "答案");
   assert.equal(state.hasReceivedAssistantChunk, true);
 
+  state = reduceChatStreamEvent(state, "status", { status: "completed" });
+  assert.equal(state.statusVisible, false);
+  assert.equal(state.searchSteps.length, 0);
+});
+
+test("stream reducer maps run lifecycle and preserves waiting states from late traces", () => {
+  let state = beginChatStream([], { role: "user", content: "问题" });
+
+  state = reduceChatStreamEvent(state, "status", { status: "queued" });
+  assert.equal(state.statusPhase, "queued");
+
+  state = reduceChatStreamEvent(state, "status", { status: "running" });
+  assert.equal(state.statusPhase, "analyzing");
+
+  state = reduceChatStreamEvent(state, "status", {
+    status: "awaiting_clarification",
+  });
+  assert.equal(state.statusPhase, "awaiting_clarification");
+  assert.equal(state.statusVisible, true);
+
+  state = reduceChatStreamEvent(state, "task_trace", {
+    step: {
+      id: "generation",
+      title: "生成回复",
+      category: "generation",
+      status: "completed",
+      sequence: 10,
+    },
+  });
+  assert.equal(state.statusPhase, "awaiting_clarification");
+  assert.equal(state.statusVisible, true);
+  assert.deepEqual(state.searchSteps, [
+    {
+      id: "generation",
+      type: "generation",
+      label: "生成回复",
+      status: "completed",
+    },
+  ]);
+
+  state = reduceChatStreamEvent(state, "done", { type: "done" });
+  assert.equal(state.statusVisible, true);
+
+  state = reduceChatStreamEvent(state, "status", { status: "running" });
+  assert.equal(state.statusPhase, "analyzing");
+
+  state = reduceChatStreamEvent(state, "status", {
+    status: "awaiting_confirmation",
+  });
+  assert.equal(state.statusPhase, "awaiting_confirmation");
+
+  state = reduceChatStreamEvent(state, "status", {
+    status: "awaiting_approval",
+  });
+  assert.equal(state.statusPhase, "awaiting_approval");
+
+  state = reduceChatStreamEvent(state, "status", { status: "cancelled" });
+  assert.equal(state.statusVisible, false);
+});
+
+test("stream reducer exposes warnings and failures without treating warnings as errors", () => {
+  let state = beginChatStream([], { role: "user", content: "问题" });
+
+  state = reduceChatStreamEvent(state, "warning", {
+    message: "部分来源暂时不可用",
+  });
+  assert.equal(state.statusPhase, "warning");
+  assert.equal(state.statusLabel, undefined);
+  assert.deepEqual(state.searchSteps.at(-1), {
+    id: "warning:0",
+    type: "action",
+    label: "部分来源暂时不可用",
+    status: "warning",
+  });
+  assert.equal(state.error, undefined);
+
   state = reduceChatStreamEvent(state, "error", { error: "模型不可用" });
+  assert.equal(state.statusPhase, "failed");
+  assert.deepEqual(state.searchSteps.at(-1), {
+    id: "stream:error",
+    type: "action",
+    label: "处理失败",
+    status: "failed",
+  });
   assert.equal(state.error, "模型不可用");
+});
+
+test("stream reducer renders deferred requests and final display cards", () => {
+  let state = beginChatStream([], { role: "user", content: "查找文献" });
+
+  state = reduceChatStreamEvent(state, "clarification_required", {
+    requestId: "request-1",
+    summary: {
+      question: "你想查询哪个研究方向？",
+      reason: "需要主题才能检索",
+      missingItems: ["主题关键词", "时间范围"],
+      recommendedNext: "补充一个疾病或基因名称",
+    },
+  });
+  assert.deepEqual(state.messages.at(-1)?.displayCard, {
+    kind: "clarification",
+    title: "需要补充信息",
+    summary: "你想查询哪个研究方向？",
+    items: [
+      "主题关键词",
+      "时间范围",
+      "建议下一步：补充一个疾病或基因名称",
+    ],
+  });
+
+  state = reduceChatStreamEvent(state, "display_done", {
+    display: {
+      schemaVersion: "home-display.v1",
+      intentClass: "general_answer",
+      cardType: "clarification",
+      title: "请补充检索范围",
+      payload: {
+        question: "请提供疾病、基因、通路或技术关键词。",
+        missingItems: ["文献主题关键词"],
+      },
+      state: "needs_clarification",
+    },
+  });
+  assert.deepEqual(state.messages.at(-1)?.displayCard, {
+    kind: "clarification",
+    title: "请补充检索范围",
+    summary: "请提供疾病、基因、通路或技术关键词。",
+    items: ["文献主题关键词"],
+  });
+  assert.equal(state.statusPhase, "awaiting_clarification");
+  assert.equal(state.statusVisible, false);
+
+  state = reduceChatStreamEvent(state, "display_done", {
+    display: {
+      schemaVersion: "home-display.v1",
+      intentClass: "general_answer",
+      cardType: "answer",
+      title: "回答完成",
+      payload: { markdown: "最终回答" },
+      state: "completed",
+    },
+  });
+  assert.equal(state.statusVisible, false);
+  assert.deepEqual(state.searchSteps, []);
+});
+
+test("stream reducer maps approvals, artifacts, and structured research results", () => {
+  let state = beginChatStream([], { role: "user", content: "生成报告" });
+
+  state = reduceChatStreamEvent(state, "approval_required", {
+    requestId: "request-2",
+    expiresAt: "2026-08-03T12:00:00Z",
+    summary: {
+      toolDisplayName: "写入实验记录",
+      inputSummary: "将结果保存到当前项目",
+    },
+  });
+  assert.equal(state.messages.at(-1)?.displayCard?.kind, "approval");
+  assert.equal(
+    state.messages.at(-1)?.displayCard?.title,
+    "等待审批：写入实验记录",
+  );
+
+  state = reduceChatStreamEvent(state, "artifact", {
+    artifact: {
+      id: "artifact-1",
+      type: "report",
+      name: "实验报告.pdf",
+      url: "https://files.example/report.pdf",
+    },
+  });
+  assert.deepEqual(state.messages.at(-1)?.displayCard?.links, [
+    { label: "打开产物", href: "https://files.example/report.pdf" },
+  ]);
+
+  state = reduceChatStreamEvent(state, "structured_payload", {
+    structuredPayload: {
+      kind: "research_answer",
+      data: {
+        title: "近期研究",
+        summary: ["发现 2 篇高相关文献"],
+        papers: [
+          {
+            title: "EGFR resistance",
+            pmid: "12345",
+          },
+        ],
+      },
+    },
+  });
+  assert.deepEqual(state.messages.at(-1)?.displayCard, {
+    kind: "result",
+    title: "近期研究",
+    summary: "发现 2 篇高相关文献",
+    links: [
+      {
+        label: "EGFR resistance",
+        href: "https://pubmed.ncbi.nlm.nih.gov/12345/",
+      },
+    ],
+    statusLabel: "已完成",
+  });
+  assert.equal(state.statusVisible, true);
+
+  state = reduceChatStreamEvent(state, "status", { status: "completed" });
+  assert.equal(state.statusVisible, false);
+});
+
+test("display mapper ignores answer and Mira cards handled by existing renderers", () => {
+  assert.equal(
+    mapChatDisplayCard({ cardType: "answer" } as never),
+    null,
+  );
+  assert.equal(
+    mapChatDisplayCard({ cardType: "mira_archive_preview" } as never),
+    null,
+  );
 });
 
 test("interruptChatStream removes only an empty assistant placeholder", () => {

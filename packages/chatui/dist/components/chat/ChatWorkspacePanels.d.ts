@@ -1,6 +1,11 @@
 import type { MouseEvent } from 'react';
 import type { ProjectDocumentPreviewViewModel } from '../../screens/projects/ProjectDocumentPreview';
-export type ChatPreviewItemType = 'knowledge' | 'experiment-log';
+export type ChatPreviewItemType = 'knowledge' | 'experiment-log' | 'draft';
+export interface ChatPreviewActionViewModel {
+    id: string;
+    label: string;
+    tone?: 'primary' | 'secondary' | 'danger';
+}
 export interface ChatPreviewItemViewModel {
     key: string;
     type: ChatPreviewItemType;
@@ -10,6 +15,7 @@ export interface ChatPreviewItemViewModel {
     document?: ProjectDocumentPreviewViewModel;
     loading?: boolean;
     error?: string;
+    actions?: readonly ChatPreviewActionViewModel[];
 }
 export interface ChatPreviewPanelProps {
     tabs: readonly ChatPreviewItemViewModel[];
@@ -17,9 +23,11 @@ export interface ChatPreviewPanelProps {
     onSelectTab(key: string): void;
     onCloseTab(key: string): void;
     onClose(): void;
+    pendingActionKey?: string;
+    onAction?(itemKey: string, actionId: string): void;
     onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
-export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
+export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
 export interface ChatProjectKnowledgeItemViewModel {
     id: string;
     title: string;

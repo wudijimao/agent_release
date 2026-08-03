@@ -786,18 +786,42 @@ export function ComponentShowcase() {
 
         <ShowcaseSection title="✨ ThinkingIndicator - 任务状态组件">
           <div className="space-y-5">
+            <ThinkingIndicator phase="queued" />
             <ThinkingIndicator phase="thinking" />
             <ThinkingIndicator
               phase="analyzing"
               searchSteps={[
-                { type: "tool", label: "分析任务和上下文" },
+                {
+                  id: "plan",
+                  type: "planning",
+                  label: "制定处理计划",
+                  status: "completed",
+                },
+                {
+                  id: "context",
+                  type: "context",
+                  label: "分析任务和上下文",
+                  status: "running",
+                  detail: "正在读取当前项目资料",
+                },
               ]}
             />
             <ThinkingIndicator
               phase="searching"
               searchSteps={[
-                { type: "knowledge", label: "检索项目知识库" },
-                { type: "web", label: "查询最新研究资料" },
+                {
+                  id: "knowledge",
+                  type: "knowledge",
+                  label: "检索项目知识库",
+                  status: "completed",
+                  resultCount: 8,
+                },
+                {
+                  id: "web",
+                  type: "web",
+                  label: "查询最新研究资料",
+                  status: "running",
+                },
               ]}
             />
             <ThinkingIndicator
@@ -807,6 +831,11 @@ export function ComponentShowcase() {
               ]}
             />
             <ThinkingIndicator phase="generating" />
+            <ThinkingIndicator phase="awaiting_clarification" />
+            <ThinkingIndicator phase="awaiting_confirmation" />
+            <ThinkingIndicator phase="awaiting_approval" />
+            <ThinkingIndicator phase="warning" label="部分来源暂时不可用" />
+            <ThinkingIndicator phase="failed" />
           </div>
         </ShowcaseSection>
 
