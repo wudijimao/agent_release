@@ -61,8 +61,10 @@ test("mira draft preview reuses the project document preview view model", () => 
   assert.equal(preview.type, "draft");
   assert.equal(preview.document?.title, "CRISPR 论文分析");
   assert.equal(preview.document?.markdown, "# CRISPR 论文分析\n\n正文");
+  assert.equal(preview.document?.canEdit, true);
   assert.deepEqual(preview.actions, [
     { id: "cancel", label: "取消", tone: "secondary" },
+    { id: "edit", label: "编辑", tone: "secondary" },
     { id: "confirm", label: "确认保存", tone: "primary" },
   ]);
 });

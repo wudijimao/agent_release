@@ -32,6 +32,7 @@ export interface ChatPreviewPanelProps {
   onClose(): void;
   pendingActionKey?: string;
   onAction?(itemKey: string, actionId: string): void;
+  resolveActions?(item: ChatPreviewItemViewModel): readonly ChatPreviewActionViewModel[] | undefined;
   renderContent?(item: ChatPreviewItemViewModel): ReactNode;
   onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
@@ -44,10 +45,14 @@ export function ChatPreviewPanel({
   onClose,
   pendingActionKey,
   onAction,
+  resolveActions,
   renderContent,
   onResizeStart,
 }: ChatPreviewPanelProps) {
   const activeItem = tabs.find((tab) => tab.key === activeKey) ?? null;
+  const activeActions = activeItem
+    ? resolveActions?.(activeItem) ?? activeItem.actions
+    : undefined;
   const customContent = activeItem ? renderContent?.(activeItem) : undefined;
 
   return (
@@ -98,7 +103,7 @@ export function ChatPreviewPanel({
           })}
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {!customContent && activeItem?.actions?.map((action) => (
+          {activeItem && activeActions?.map((action) => (
             <BaseButton
               key={action.id}
               type={action.tone ?? 'secondary'}

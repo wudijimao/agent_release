@@ -25,10 +25,11 @@ export interface ChatPreviewPanelProps {
     onClose(): void;
     pendingActionKey?: string;
     onAction?(itemKey: string, actionId: string): void;
+    resolveActions?(item: ChatPreviewItemViewModel): readonly ChatPreviewActionViewModel[] | undefined;
     renderContent?(item: ChatPreviewItemViewModel): ReactNode;
     onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
-export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, renderContent, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
+export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, resolveActions, renderContent, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
 export interface ChatProjectKnowledgeItemViewModel {
     id: string;
     title: string;

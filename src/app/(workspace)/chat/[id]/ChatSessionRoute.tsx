@@ -62,7 +62,10 @@ import {
   mapMiraDocumentDraftPreview,
   type MiraDocumentDraftAction,
 } from "@/adapters/mira-document-drafts";
-import { loadProjectDocumentDetail } from "@/adapters/project-document-detail";
+import {
+  loadProjectDocumentDetail,
+  updateProjectDocument,
+} from "@/adapters/project-document-detail";
 import { streamChat } from "@/lib/api";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
@@ -111,14 +114,14 @@ const initialStreamState: ChatStreamViewState = {
   deferredActions: {},
 };
 
-interface MiraDraftEditState {
+interface DocumentEditState {
   title: string;
   markdown: string;
 }
 
 interface MiraDraftTargetSelection {
   actionKey: string;
-  editedContent?: MiraDraftEditState;
+  editedContent?: DocumentEditState;
   previewItemKey?: string;
 }
 
@@ -127,6 +130,12 @@ const PANEL_MAX_WIDTH = 440;
 const DEFAULT_PROJECT_PANEL_WIDTH = 260;
 const DEFAULT_PREVIEW_PANEL_WIDTH = 520;
 const CHAT_TIMELINE_MIN_ITEMS = 5;
+
+function projectDocumentPreviewActions(canEdit: boolean) {
+  return canEdit
+    ? ([{ id: "edit", label: "编辑", tone: "secondary" }] as const)
+    : undefined;
+}
 
 function measureWorkspaceWidth(container: HTMLDivElement | null) {
   if (!container) return 0;
@@ -182,8 +191,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const [miraDraftActions, setMiraDraftActions] = useState<
     Record<string, MiraDocumentDraftAction>
   >({});
-  const [miraDraftEdits, setMiraDraftEdits] = useState<
-    Record<string, MiraDraftEditState>
+  const [documentPreviewEdits, setDocumentPreviewEdits] = useState<
+    Record<string, DocumentEditState>
   >({});
   const [miraDraftTargetSelection, setMiraDraftTargetSelection] =
     useState<MiraDraftTargetSelection | null>(null);
@@ -191,6 +200,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     useState<string>();
   const [pendingDisplayActionKey, setPendingDisplayActionKey] = useState<string>();
   const [pendingMiraActionKey, setPendingMiraActionKey] = useState<string>();
+  const [pendingDocumentPreviewKey, setPendingDocumentPreviewKey] =
+    useState<string>();
   const [isStreaming, setIsStreaming] = useState(false);
   const [isRemoteReplying, setIsRemoteReplying] = useState(
     cachedSession?.isReplying ?? false,
@@ -334,6 +345,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         setShowPreviewPanel(false);
         setFileSearchQuery("");
         setPreviewTabs([]);
+        setDocumentPreviewEdits({});
         setActivePreviewKey(null);
         persistedMessageIdsRef.current = session.messageIds;
         historyLoadedSessionIdRef.current = sessionId;
@@ -695,7 +707,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const handleConfirmMiraDraft = useCallback(
     async (
       actionKey: string,
-      editedContent?: MiraDraftEditState,
+      editedContent?: DocumentEditState,
       selectedTargetProjectId?: string,
       previewItemKey?: string,
     ) => {
@@ -847,7 +859,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           api,
           key.slice(key.indexOf(":") + 1),
         );
-        openPreviewItem({ ...item, document, loading: false, error: undefined });
+        openPreviewItem({
+          ...item,
+          document,
+          actions: projectDocumentPreviewActions(document.canEdit),
+          loading: false,
+          error: undefined,
+        });
       } catch (loadError) {
         openPreviewItem({
           ...item,
@@ -883,15 +901,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, [pageStatus]);
 
   const closePreviewTab = useCallback((targetKey: string) => {
-    if (targetKey.startsWith("draft:")) {
-      const actionKey = targetKey.slice("draft:".length);
-      setMiraDraftEdits((current) => {
-        if (!(actionKey in current)) return current;
-        const next = { ...current };
-        delete next[actionKey];
-        return next;
-      });
-    }
+    setDocumentPreviewEdits((current) => {
+      if (!(targetKey in current)) return current;
+      const next = { ...current };
+      delete next[targetKey];
+      return next;
+    });
     setPreviewTabs((current) => {
       const closingIndex = current.findIndex((tab) => tab.key === targetKey);
       if (closingIndex < 0) return current;
@@ -926,7 +941,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             api,
             savedDraft.documentId,
           );
-          openPreviewItem({ ...item, document, loading: false });
+          openPreviewItem({
+            ...item,
+            document,
+            actions: projectDocumentPreviewActions(document.canEdit),
+            loading: false,
+          });
         } catch (loadError) {
           openPreviewItem({
             ...item,
@@ -940,13 +960,6 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
       const action = miraDraftActions[actionKey];
       if (!action) return;
-      setMiraDraftEdits((current) => ({
-        ...current,
-        [actionKey]: {
-          title: action.title,
-          markdown: action.markdown,
-        },
-      }));
       openPreviewItem(
         mapMiraDocumentDraftPreview(
           action,
@@ -1043,8 +1056,106 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     [api, loadPage, pendingDisplayActionKey, streamState.deferredActions],
   );
 
+  const handleSaveProjectDocumentPreview = useCallback(
+    async (
+      item: ChatPreviewItemViewModel,
+      edit: DocumentEditState,
+    ) => {
+      if (!item.document || pendingDocumentPreviewKey) return;
+      setPendingDocumentPreviewKey(item.key);
+      setStreamNotice("");
+      try {
+        await updateProjectDocument(api, {
+          kbNodeId: item.document.id,
+          title: edit.title,
+          markdown: edit.markdown,
+        });
+        const document = await loadProjectDocumentDetail(api, item.document.id);
+        setPreviewTabs((current) =>
+          current.map((tab) =>
+            tab.key === item.key
+              ? {
+                  ...tab,
+                  title: document.title,
+                  document,
+                  actions: projectDocumentPreviewActions(document.canEdit),
+                }
+              : tab,
+          ),
+        );
+        setDocumentPreviewEdits((current) => {
+          const next = { ...current };
+          delete next[item.key];
+          return next;
+        });
+        await loadProjectWorkspace();
+        setStreamNotice("文档已保存");
+      } catch (error) {
+        setStreamNotice(error instanceof Error ? error.message : "文档保存失败，请重试。");
+      } finally {
+        setPendingDocumentPreviewKey(undefined);
+      }
+    },
+    [api, loadProjectWorkspace, pendingDocumentPreviewKey],
+  );
+
+  const handleCancelDocumentPreviewEdit = useCallback((itemKey: string) => {
+    setDocumentPreviewEdits((current) => {
+      const next = { ...current };
+      delete next[itemKey];
+      return next;
+    });
+  }, []);
+
+  const handleSaveDocumentPreviewEdit = useCallback(
+    (item: ChatPreviewItemViewModel) => {
+      const edit = documentPreviewEdits[item.key];
+      if (!edit) return;
+      if (item.key.startsWith("draft:")) {
+        const actionKey = item.key.slice("draft:".length);
+        void handleConfirmMiraDraft(
+          actionKey,
+          edit,
+          undefined,
+          item.key,
+        ).then((confirmed) => {
+          if (confirmed) closePreviewTab(item.key);
+        });
+        return;
+      }
+      void handleSaveProjectDocumentPreview(item, edit);
+    },
+    [
+      closePreviewTab,
+      documentPreviewEdits,
+      handleConfirmMiraDraft,
+      handleSaveProjectDocumentPreview,
+    ],
+  );
+
   const handlePreviewAction = useCallback(
     (itemKey: string, actionId: string) => {
+      const item = previewTabs.find((preview) => preview.key === itemKey);
+      if (!item) return;
+      if (actionId === "edit") {
+        if (!item.document?.canEdit) return;
+        setDocumentPreviewEdits((current) => ({
+          ...current,
+          [itemKey]: {
+            title: item.document!.title,
+            markdown: item.document!.markdown,
+          },
+        }));
+        return;
+      }
+      if (actionId === "cancel-edit") {
+        handleCancelDocumentPreviewEdit(itemKey);
+        return;
+      }
+      if (actionId === "save-edit") {
+        handleSaveDocumentPreviewEdit(item);
+        return;
+      }
       if (!itemKey.startsWith("draft:")) return;
       const actionKey = itemKey.slice("draft:".length);
       if (actionId === "confirm") {
@@ -1055,72 +1166,93 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         void handleCancelMiraDraft(actionKey);
       }
     },
-    [closePreviewTab, handleCancelMiraDraft, handleConfirmMiraDraft],
+    [
+      closePreviewTab,
+      handleCancelDocumentPreviewEdit,
+      handleCancelMiraDraft,
+      handleConfirmMiraDraft,
+      handleSaveDocumentPreviewEdit,
+      previewTabs,
+    ],
+  );
+
+  const resolvePreviewActions = useCallback(
+    (item: ChatPreviewItemViewModel) => {
+      if (!documentPreviewEdits[item.key]) return item.actions;
+      const saving = item.key.startsWith("draft:")
+        ? pendingMiraActionKey === item.key.slice("draft:".length)
+        : pendingDocumentPreviewKey === item.key;
+      return [
+        { id: "cancel-edit", label: "取消", tone: "secondary" as const },
+        {
+          id: "save-edit",
+          label: saving ? "保存中…" : "保存",
+          tone: "primary" as const,
+        },
+      ];
+    },
+    [documentPreviewEdits, pendingDocumentPreviewKey, pendingMiraActionKey],
   );
 
   const renderPreviewContent = useCallback(
     (item: ChatPreviewItemViewModel) => {
-      if (!item.key.startsWith("draft:")) return undefined;
-      const actionKey = item.key.slice("draft:".length);
-      const action = miraDraftActions[actionKey];
-      const edit = miraDraftEdits[actionKey];
-      if (!action || !edit) return undefined;
+      const edit = documentPreviewEdits[item.key];
+      if (!item.document || !edit) return undefined;
+      const isDraft = item.key.startsWith("draft:");
+      const actionKey = isDraft ? item.key.slice("draft:".length) : undefined;
+      const action = actionKey ? miraDraftActions[actionKey] : undefined;
+      if (isDraft && (!actionKey || !action)) return undefined;
 
       return (
         <ProjectDocumentEditor
+          key={item.key}
           projectName={
             projectWorkspace?.projectName ?? currentProject?.name ?? "当前项目"
           }
           title={edit.title}
           initialMarkdown={edit.markdown}
-          createdByName="Helia"
-          updatedByName="Helia"
-          updatedAt="刚刚"
-          index={{
-            status: "disabled",
-            statusLabel: "保存后建立索引",
-            detail: "草稿确认保存后，服务端将继续处理文档索引。",
-          }}
+          createdByName={item.document.createdByName}
+          updatedByName={item.document.updatedByName}
+          updatedAt={item.document.updatedAt}
+          index={item.document.index}
+          attachments={item.document.attachments}
           layout="panel"
-          saving={pendingMiraActionKey === actionKey}
+          showHeaderActions={false}
+          saving={
+            isDraft
+              ? pendingMiraActionKey === actionKey
+              : pendingDocumentPreviewKey === item.key
+          }
           onTitleChange={(title) =>
-            setMiraDraftEdits((current) => {
-              const currentEdit = current[actionKey] ?? edit;
+            setDocumentPreviewEdits((current) => {
+              const currentEdit = current[item.key] ?? edit;
               return {
                 ...current,
-                [actionKey]: { ...currentEdit, title },
+                [item.key]: { ...currentEdit, title },
               };
             })
           }
           onMarkdownChange={(markdown) =>
-            setMiraDraftEdits((current) => {
-              const currentEdit = current[actionKey] ?? edit;
+            setDocumentPreviewEdits((current) => {
+              const currentEdit = current[item.key] ?? edit;
               return {
                 ...current,
-                [actionKey]: { ...currentEdit, markdown },
+                [item.key]: { ...currentEdit, markdown },
               };
             })
           }
-          onSave={() => {
-            void handleConfirmMiraDraft(
-              actionKey,
-              edit,
-              undefined,
-              item.key,
-            ).then((confirmed) => {
-              if (confirmed) closePreviewTab(item.key);
-            });
-          }}
-          onClose={() => closePreviewTab(item.key)}
+          onSave={() => handleSaveDocumentPreviewEdit(item)}
+          onClose={() => handleCancelDocumentPreviewEdit(item.key)}
         />
       );
     },
     [
-      closePreviewTab,
       currentProject?.name,
-      handleConfirmMiraDraft,
+      documentPreviewEdits,
+      handleCancelDocumentPreviewEdit,
+      handleSaveDocumentPreviewEdit,
       miraDraftActions,
-      miraDraftEdits,
+      pendingDocumentPreviewKey,
       pendingMiraActionKey,
       projectWorkspace?.projectName,
     ],
@@ -1247,12 +1379,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               onClose={() => {
                 setShowPreviewPanel(false);
                 setPreviewTabs([]);
+                setDocumentPreviewEdits({});
                 setActivePreviewKey(null);
               }}
               pendingActionKey={
-                pendingMiraActionKey ? `draft:${pendingMiraActionKey}` : undefined
+                pendingDocumentPreviewKey
+                ?? (pendingMiraActionKey ? `draft:${pendingMiraActionKey}` : undefined)
               }
               onAction={handlePreviewAction}
+              resolveActions={resolvePreviewActions}
               renderContent={renderPreviewContent}
               onResizeStart={(event) => startPanelResize("preview", event)}
             />

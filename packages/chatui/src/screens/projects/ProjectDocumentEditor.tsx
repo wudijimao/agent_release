@@ -111,6 +111,7 @@ export interface ProjectDocumentEditorProps {
   saving?: boolean;
   saveError?: string;
   layout?: 'page' | 'panel';
+  showHeaderActions?: boolean;
   onTitleChange(title: string): void;
   onMarkdownChange(markdown: string): void;
   onUploadAttachments?(files: File[]): void | Promise<void>;
@@ -132,6 +133,7 @@ export function ProjectDocumentEditor({
   saving = false,
   saveError,
   layout = 'page',
+  showHeaderActions = true,
   onTitleChange,
   onMarkdownChange,
   onUploadAttachments,
@@ -952,28 +954,30 @@ export function ProjectDocumentEditor({
 
   return (
     <section className={styles.shell} aria-label="项目文档编辑器">
-      <header className={styles.header}>
-        <div className={styles.headerActions}>
-          <BaseButton
-            type="secondary"
-            size="small"
-            rounded="large"
-            disabled={saving}
-            onClick={onClose}
-          >
-            取消
-          </BaseButton>
-          <BaseButton
-            type="primary"
-            size="small"
-            rounded="large"
-            disabled={saving}
-            onClick={onSave}
-          >
-            {saving ? '保存中…' : '保存'}
-          </BaseButton>
-        </div>
-      </header>
+      {showHeaderActions && (
+        <header className={styles.header}>
+          <div className={styles.headerActions}>
+            <BaseButton
+              type="secondary"
+              size="small"
+              rounded="large"
+              disabled={saving}
+              onClick={onClose}
+            >
+              取消
+            </BaseButton>
+            <BaseButton
+              type="primary"
+              size="small"
+              rounded="large"
+              disabled={saving}
+              onClick={onSave}
+            >
+              {saving ? '保存中…' : '保存'}
+            </BaseButton>
+          </div>
+        </header>
+      )}
 
       <div
         className={`${styles.viewport} min-h-0 px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10`}

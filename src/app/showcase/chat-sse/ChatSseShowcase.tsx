@@ -4,6 +4,7 @@ import {
   BaseButton,
   ChatConversationViewport,
   ChatPreviewPanel,
+  ProjectDocumentEditor,
   type ChatPreviewItemViewModel,
 } from "@bioagent/chatui";
 import { Pause, Play, RotateCcw, StepForward } from "lucide-react";
@@ -51,6 +52,10 @@ export function ChatSseShowcase() {
   const [intervalMs, setIntervalMs] = useState<number>(1_000);
   const [draftPreview, setDraftPreview] =
     useState<ChatPreviewItemViewModel | null>(null);
+  const [draftEdit, setDraftEdit] = useState<{
+    title: string;
+    markdown: string;
+  } | null>(null);
 
   const currentEvent = cursor > 0 ? scenario.events[cursor - 1] : undefined;
   const nextEvent = scenario.events[cursor];
@@ -61,6 +66,7 @@ export function ChatSseShowcase() {
     setCursor(0);
     setStreamState(createInitialState(scenario.userMessage));
     setDraftPreview(null);
+    setDraftEdit(null);
   }, [scenario.userMessage]);
 
   const runNext = useCallback(() => {
@@ -86,6 +92,7 @@ export function ChatSseShowcase() {
       setCursor(0);
       setStreamState(createInitialState(scenario.userMessage));
       setDraftPreview(null);
+      setDraftEdit(null);
     }
     setPlaying(true);
   }, [finished, playing, scenario.userMessage]);
@@ -96,6 +103,7 @@ export function ChatSseShowcase() {
       setPlaying(false);
       setCursor(nextCursor);
       setDraftPreview(null);
+      setDraftEdit(null);
       setStreamState(
         replayToEvent(scenario.userMessage, scenario.events, nextCursor),
       );
@@ -140,6 +148,7 @@ export function ChatSseShowcase() {
         };
       });
       setDraftPreview(null);
+      setDraftEdit(null);
     },
     [],
   );
@@ -149,6 +158,7 @@ export function ChatSseShowcase() {
       const action = streamState.miraDraftActions?.[actionKey];
       if (!action) return;
       setDraftPreview(mapMiraDocumentDraftPreview(action, "EGFR 耐药研究"));
+      setDraftEdit(null);
     },
     [streamState.miraDraftActions],
   );
@@ -186,6 +196,7 @@ export function ChatSseShowcase() {
                   setCursor(0);
                   setStreamState(createInitialState(nextScenario.userMessage));
                   setDraftPreview(null);
+                  setDraftEdit(null);
                 }}
                 className="h-8 max-w-[280px] rounded-md border border-lineSubtle bg-surface px-2 text-sm text-primaryText outline-none transition-colors focus:border-primary"
               >
@@ -282,15 +293,82 @@ export function ChatSseShowcase() {
                   tabs={[draftPreview]}
                   activeKey={draftPreview.key}
                   onSelectTab={() => undefined}
-                  onCloseTab={() => setDraftPreview(null)}
-                  onClose={() => setDraftPreview(null)}
+                  onCloseTab={() => {
+                    setDraftPreview(null);
+                    setDraftEdit(null);
+                  }}
+                  onClose={() => {
+                    setDraftPreview(null);
+                    setDraftEdit(null);
+                  }}
                   onAction={(_itemKey, actionId) => {
+                    if (actionId === "edit" && draftPreview.document) {
+                      setDraftEdit({
+                        title: draftPreview.document.title,
+                        markdown: draftPreview.document.markdown,
+                      });
+                      return;
+                    }
+                    if (actionId === "cancel-edit") {
+                      setDraftEdit(null);
+                      return;
+                    }
                     const actionKey = draftPreview.key.slice("draft:".length);
                     settleMiraDraft(
                       actionKey,
-                      actionId === "confirm" ? "saved" : "cancelled",
+                      actionId === "confirm" || actionId === "save-edit"
+                        ? "saved"
+                        : "cancelled",
                     );
                   }}
+                  resolveActions={(item) =>
+                    draftEdit
+                      ? [
+                          {
+                            id: "cancel-edit",
+                            label: "取消",
+                            tone: "secondary",
+                          },
+                          {
+                            id: "save-edit",
+                            label: "保存",
+                            tone: "primary",
+                          },
+                        ]
+                      : item.actions
+                  }
+                  renderContent={() =>
+                    draftEdit && draftPreview.document ? (
+                      <ProjectDocumentEditor
+                        projectName="EGFR 耐药研究"
+                        title={draftEdit.title}
+                        initialMarkdown={draftEdit.markdown}
+                        createdByName={draftPreview.document.createdByName}
+                        updatedByName={draftPreview.document.updatedByName}
+                        updatedAt={draftPreview.document.updatedAt}
+                        index={draftPreview.document.index}
+                        layout="panel"
+                        showHeaderActions={false}
+                        onTitleChange={(title) =>
+                          setDraftEdit((current) =>
+                            current ? { ...current, title } : current,
+                          )
+                        }
+                        onMarkdownChange={(markdown) =>
+                          setDraftEdit((current) =>
+                            current ? { ...current, markdown } : current,
+                          )
+                        }
+                        onSave={() =>
+                          settleMiraDraft(
+                            draftPreview.key.slice("draft:".length),
+                            "saved",
+                          )
+                        }
+                        onClose={() => setDraftEdit(null)}
+                      />
+                    ) : undefined
+                  }
                   onResizeStart={() => undefined}
                 />
               </div>

@@ -155,6 +155,7 @@ export function mapMiraDocumentDraftPreview(
     subtitle: `${projectName} · 待确认草稿`,
     actions: [
       { id: "cancel", label: "取消", tone: "secondary" },
+      { id: "edit", label: "编辑", tone: "secondary" },
       { id: "confirm", label: "确认保存", tone: "primary" },
     ],
     document: {
@@ -164,7 +165,7 @@ export function mapMiraDocumentDraftPreview(
       createdByName: "Helia",
       updatedByName: "Helia",
       updatedAt: "刚刚",
-      canEdit: false,
+      canEdit: true,
       attachments: [],
       index: {
         status: "disabled",
