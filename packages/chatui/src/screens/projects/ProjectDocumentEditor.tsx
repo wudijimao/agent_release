@@ -110,6 +110,7 @@ export interface ProjectDocumentEditorProps {
   attachmentUnavailableHint?: string;
   saving?: boolean;
   saveError?: string;
+  layout?: 'page' | 'panel';
   onTitleChange(title: string): void;
   onMarkdownChange(markdown: string): void;
   onUploadAttachments?(files: File[]): void | Promise<void>;
@@ -130,6 +131,7 @@ export function ProjectDocumentEditor({
   attachmentUnavailableHint,
   saving = false,
   saveError,
+  layout = 'page',
   onTitleChange,
   onMarkdownChange,
   onUploadAttachments,
@@ -144,6 +146,7 @@ export function ProjectDocumentEditor({
   const [uploadingAttachments, setUploadingAttachments] = useState(false);
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null);
   const [attachmentError, setAttachmentError] = useState('');
+  const contentInset = layout === 'page' ? 'px-[120px]' : 'px-6 md:px-8';
 
   useEffect(() => {
     onMarkdownChangeRef.current = onMarkdownChange;
@@ -977,7 +980,7 @@ export function ProjectDocumentEditor({
       >
         {saveError && <div className={styles.saveError}>{saveError}</div>}
         <div className={styles.editorCanvas}>
-          <section className="mb-4 shrink-0 px-[120px]">
+          <section className={`mb-4 shrink-0 ${contentInset}`}>
             <input
               value={title}
               onChange={(event) => onTitleChange(event.target.value)}
@@ -997,7 +1000,7 @@ export function ProjectDocumentEditor({
           <section className="auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1">
             <div
               ref={editorRootRef}
-              className={`${styles.milkdownHost} ${markdownStyles.editor} chatui-project-document-editor`}
+              className={`${styles.milkdownHost} ${markdownStyles.editor} ${contentInset} chatui-project-document-editor`}
               style={crepeTheme}
             />
 
@@ -1013,6 +1016,7 @@ export function ProjectDocumentEditor({
             )}
             <ProjectDocumentAttachments
               attachments={attachments}
+              className={`${layout === 'page' ? 'mx-[120px]' : 'mx-6 md:mx-8'} mb-6 mt-8 border-t border-lineSubtle pt-6`}
               uploading={uploadingAttachments}
               deletingAttachmentId={deletingAttachmentId}
               unavailableHint={attachmentUnavailableHint}

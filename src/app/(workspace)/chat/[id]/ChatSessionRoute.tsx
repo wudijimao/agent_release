@@ -2,10 +2,12 @@
 
 import {
   BaseButton,
+  BaseModal,
   ChatComposerDock,
   ChatConversationViewport,
   ChatPreviewPanel,
   ChatProjectFilesPanel,
+  ProjectDocumentEditor,
   ChatTimelineNavigation,
   ChatWorkspaceFrame,
   ChatWorkspaceHeader,
@@ -49,6 +51,7 @@ import {
 } from "@/adapters/chat-attachments";
 import { resolveChatSendScope } from "@/adapters/chat-resources";
 import {
+  isUnassignedProject,
   loadProjectDetail,
   mapProjectChatWorkspace,
   type ProjectChatWorkspaceViewModel,
@@ -108,6 +111,17 @@ const initialStreamState: ChatStreamViewState = {
   deferredActions: {},
 };
 
+interface MiraDraftEditState {
+  title: string;
+  markdown: string;
+}
+
+interface MiraDraftTargetSelection {
+  actionKey: string;
+  editedContent?: MiraDraftEditState;
+  previewItemKey?: string;
+}
+
 const PANEL_MIN_WIDTH = 200;
 const PANEL_MAX_WIDTH = 440;
 const DEFAULT_PROJECT_PANEL_WIDTH = 260;
@@ -138,6 +152,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const api = useApiClient();
   const {
     chats,
+    defaultProjectId,
     getCachedSession,
     isSidebarOpen,
     openSidebar,
@@ -167,6 +182,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const [miraDraftActions, setMiraDraftActions] = useState<
     Record<string, MiraDocumentDraftAction>
   >({});
+  const [miraDraftEdits, setMiraDraftEdits] = useState<
+    Record<string, MiraDraftEditState>
+  >({});
+  const [miraDraftTargetSelection, setMiraDraftTargetSelection] =
+    useState<MiraDraftTargetSelection | null>(null);
+  const [selectedMiraTargetProjectId, setSelectedMiraTargetProjectId] =
+    useState<string>();
   const [pendingDisplayActionKey, setPendingDisplayActionKey] = useState<string>();
   const [pendingMiraActionKey, setPendingMiraActionKey] = useState<string>();
   const [isStreaming, setIsStreaming] = useState(false);
@@ -671,14 +693,35 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, []);
 
   const handleConfirmMiraDraft = useCallback(
-    async (actionKey: string) => {
+    async (
+      actionKey: string,
+      editedContent?: MiraDraftEditState,
+      selectedTargetProjectId?: string,
+      previewItemKey?: string,
+    ) => {
       if (pendingMiraActionKey) return false;
-      const action = miraDraftActions[actionKey];
-      const projectId = currentChat?.projectId;
-      if (!action || !projectId) {
-        setStreamNotice("当前对话未归属项目，无法保存文档。");
+      const sourceAction = miraDraftActions[actionKey];
+      if (!sourceAction) return false;
+
+      const conversationProjectId = currentChat?.projectId;
+      const conversationIsUnassigned = isUnassignedProject(
+        conversationProjectId,
+        defaultProjectId,
+      );
+      if (conversationIsUnassigned && !selectedTargetProjectId) {
+        setSelectedMiraTargetProjectId(undefined);
+        setMiraDraftTargetSelection({
+          actionKey,
+          editedContent,
+          previewItemKey,
+        });
         return false;
       }
+      const projectId = selectedTargetProjectId ?? conversationProjectId;
+      if (!projectId) return false;
+      const action = editedContent
+        ? { ...sourceAction, ...editedContent }
+        : sourceAction;
 
       const updateDraftCard = (
         patch: Partial<NonNullable<ChatMessage["miraDraft"]>>,
@@ -697,13 +740,28 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       setPendingMiraActionKey(actionKey);
       setStreamNotice("");
       try {
-        await confirmMiraDocumentDraft(api, action, {
+        const selectedProject = selectedTargetProjectId
+          ? await loadProjectDetail(api, selectedTargetProjectId)
+          : null;
+        const confirmation = await confirmMiraDocumentDraft(api, action, {
           projectId,
           projectName:
-            projectWorkspace?.projectName ?? currentProject?.name ?? "当前项目",
-          parentNodeId: projectWorkspace?.defaultKbNodeId,
+            selectedProject?.name
+            ?? projectWorkspace?.projectName
+            ?? currentProject?.name
+            ?? "当前项目",
+          parentNodeId:
+            selectedProject?.defaultKbNodeId
+            ?? projectWorkspace?.defaultKbNodeId,
         });
-        updateDraftCard({ status: "saved", errorMessage: undefined });
+        const documentId = confirmation.nodeId ?? confirmation.outputRef?.nodeId;
+        updateDraftCard({
+          status: "saved",
+          errorMessage: undefined,
+          ...(documentId
+            ? { documentId, previewable: true }
+            : { previewable: false }),
+        });
         setMiraDraftActions((current) => {
           const next = { ...current };
           delete next[actionKey];
@@ -726,6 +784,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       api,
       currentChat,
       currentProject,
+      defaultProjectId,
       loadProjectWorkspace,
       miraDraftActions,
       pendingMiraActionKey,
@@ -824,6 +883,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, [pageStatus]);
 
   const closePreviewTab = useCallback((targetKey: string) => {
+    if (targetKey.startsWith("draft:")) {
+      const actionKey = targetKey.slice("draft:".length);
+      setMiraDraftEdits((current) => {
+        if (!(actionKey in current)) return current;
+        const next = { ...current };
+        delete next[actionKey];
+        return next;
+      });
+    }
     setPreviewTabs((current) => {
       const closingIndex = current.findIndex((tab) => tab.key === targetKey);
       if (closingIndex < 0) return current;
@@ -841,9 +909,44 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, []);
 
   const handlePreviewMiraDraft = useCallback(
-    (actionKey: string) => {
+    async (actionKey: string) => {
+      const savedDraft = streamState.messages.find(
+        (message) => message.miraDraft?.actionKey === actionKey,
+      )?.miraDraft;
+      if (savedDraft?.documentId) {
+        const item: ChatPreviewItemViewModel = {
+          key: `saved-draft:${savedDraft.documentId}`,
+          type: "knowledge",
+          title: savedDraft.title,
+          subtitle: `${savedDraft.targetLabel ?? "项目"} · 已保存文档`,
+        };
+        openPreviewItem({ ...item, loading: true });
+        try {
+          const document = await loadProjectDocumentDetail(
+            api,
+            savedDraft.documentId,
+          );
+          openPreviewItem({ ...item, document, loading: false });
+        } catch (loadError) {
+          openPreviewItem({
+            ...item,
+            loading: false,
+            error:
+              loadError instanceof Error ? loadError.message : "文档加载失败",
+          });
+        }
+        return;
+      }
+
       const action = miraDraftActions[actionKey];
       if (!action) return;
+      setMiraDraftEdits((current) => ({
+        ...current,
+        [actionKey]: {
+          title: action.title,
+          markdown: action.markdown,
+        },
+      }));
       openPreviewItem(
         mapMiraDocumentDraftPreview(
           action,
@@ -851,7 +954,14 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         ),
       );
     },
-    [currentProject?.name, miraDraftActions, openPreviewItem, projectWorkspace?.projectName],
+    [
+      api,
+      currentProject?.name,
+      miraDraftActions,
+      openPreviewItem,
+      projectWorkspace?.projectName,
+      streamState.messages,
+    ],
   );
 
   const handleCancelMiraDraft = useCallback(
@@ -946,6 +1056,74 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       }
     },
     [closePreviewTab, handleCancelMiraDraft, handleConfirmMiraDraft],
+  );
+
+  const renderPreviewContent = useCallback(
+    (item: ChatPreviewItemViewModel) => {
+      if (!item.key.startsWith("draft:")) return undefined;
+      const actionKey = item.key.slice("draft:".length);
+      const action = miraDraftActions[actionKey];
+      const edit = miraDraftEdits[actionKey];
+      if (!action || !edit) return undefined;
+
+      return (
+        <ProjectDocumentEditor
+          projectName={
+            projectWorkspace?.projectName ?? currentProject?.name ?? "当前项目"
+          }
+          title={edit.title}
+          initialMarkdown={edit.markdown}
+          createdByName="Helia"
+          updatedByName="Helia"
+          updatedAt="刚刚"
+          index={{
+            status: "disabled",
+            statusLabel: "保存后建立索引",
+            detail: "草稿确认保存后，服务端将继续处理文档索引。",
+          }}
+          layout="panel"
+          saving={pendingMiraActionKey === actionKey}
+          onTitleChange={(title) =>
+            setMiraDraftEdits((current) => {
+              const currentEdit = current[actionKey] ?? edit;
+              return {
+                ...current,
+                [actionKey]: { ...currentEdit, title },
+              };
+            })
+          }
+          onMarkdownChange={(markdown) =>
+            setMiraDraftEdits((current) => {
+              const currentEdit = current[actionKey] ?? edit;
+              return {
+                ...current,
+                [actionKey]: { ...currentEdit, markdown },
+              };
+            })
+          }
+          onSave={() => {
+            void handleConfirmMiraDraft(
+              actionKey,
+              edit,
+              undefined,
+              item.key,
+            ).then((confirmed) => {
+              if (confirmed) closePreviewTab(item.key);
+            });
+          }}
+          onClose={() => closePreviewTab(item.key)}
+        />
+      );
+    },
+    [
+      closePreviewTab,
+      currentProject?.name,
+      handleConfirmMiraDraft,
+      miraDraftActions,
+      miraDraftEdits,
+      pendingMiraActionKey,
+      projectWorkspace?.projectName,
+    ],
   );
 
   const startPanelResize = useCallback(
@@ -1075,6 +1253,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
                 pendingMiraActionKey ? `draft:${pendingMiraActionKey}` : undefined
               }
               onAction={handlePreviewAction}
+              renderContent={renderPreviewContent}
               onResizeStart={(event) => startPanelResize("preview", event)}
             />
           </ChatWorkspaceSidePanel>
@@ -1177,6 +1356,73 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           onUploadValidationError={setStreamNotice}
         />
       </ChatComposerDock>
+
+      <BaseModal
+        visible={miraDraftTargetSelection !== null}
+        title="选择文档保存项目"
+        width={440}
+        maskClosable={false}
+        okText="保存到该项目"
+        cancelText="取消"
+        confirmLoading={Boolean(pendingMiraActionKey)}
+        okButtonProps={{
+          disabled: !selectedMiraTargetProjectId || Boolean(pendingMiraActionKey),
+        }}
+        cancelButtonProps={{ disabled: Boolean(pendingMiraActionKey) }}
+        onCancel={() => {
+          if (pendingMiraActionKey) return;
+          setMiraDraftTargetSelection(null);
+          setSelectedMiraTargetProjectId(undefined);
+        }}
+        onConfirm={async () => {
+          const selection = miraDraftTargetSelection;
+          const targetProjectId = selectedMiraTargetProjectId;
+          if (!selection || !targetProjectId) return;
+          const confirmed = await handleConfirmMiraDraft(
+            selection.actionKey,
+            selection.editedContent,
+            targetProjectId,
+          );
+          if (!confirmed) return;
+          setMiraDraftTargetSelection(null);
+          setSelectedMiraTargetProjectId(undefined);
+          if (selection.previewItemKey) {
+            closePreviewTab(selection.previewItemKey);
+          }
+        }}
+      >
+        <p className="mb-3 text-sm leading-6 text-secondaryText">
+          当前对话属于“未归属”项目，请选择文档最终保存的位置。
+        </p>
+        <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+          {projects.filter((project) => project.selectable !== false).length ? (
+            projects
+              .filter((project) => project.selectable !== false)
+              .map((project) => {
+                const selected = selectedMiraTargetProjectId === project.id;
+                return (
+                  <button
+                    key={project.id}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setSelectedMiraTargetProjectId(project.id)}
+                    className={`w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
+                      selected
+                        ? "border-primary bg-primary-soft text-primary"
+                        : "border-lineSubtle bg-surface text-primaryText hover:bg-surfaceMuted"
+                    }`}
+                  >
+                    <span className="block truncate font-medium">{project.name}</span>
+                  </button>
+                );
+              })
+          ) : (
+            <div className="rounded-lg bg-surfaceMuted px-4 py-3 text-sm text-secondaryText">
+              暂无可保存的项目，请先创建项目。
+            </div>
+          )}
+        </div>
+      </BaseModal>
     </ChatWorkspaceFrame>
   );
 }

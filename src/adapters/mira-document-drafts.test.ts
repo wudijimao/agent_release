@@ -67,6 +67,29 @@ test("mira draft preview reuses the project document preview view model", () => 
   ]);
 });
 
+test("completed mira draft exposes its persisted document for preview", () => {
+  const completedDisplay: HomeAssistantDisplay = {
+    ...display,
+    state: "completed",
+    payload: {
+      ...display.payload,
+      targetWikiNodeId: "node-1",
+      confirmation: {
+        ...display.payload.confirmation!,
+        status: "completed",
+        confirmationToken: undefined,
+      },
+    },
+  };
+
+  const mapped = mapMiraDocumentDraft(completedDisplay, "message-1", "肿瘤项目");
+
+  assert.equal(mapped?.action, undefined);
+  assert.equal(mapped?.card.status, "saved");
+  assert.equal(mapped?.card.documentId, "node-1");
+  assert.equal(mapped?.card.previewable, true);
+});
+
 test("mira draft cancellation uses the server-provided cancel route", async () => {
   const calls: string[] = [];
   const api = {

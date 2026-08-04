@@ -19,6 +19,8 @@ export interface ChatReference {
 export interface MiraDraftCardViewModel {
     actionKey: string;
     title: string;
+    /** 已保存文档的稳定标识；组件库只负责透传，不读取文档。 */
+    documentId?: string;
     targetLabel?: string;
     summary?: string;
     status: 'waiting' | 'saving' | 'saved' | 'error';

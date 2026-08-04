@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import type { ProjectDocumentPreviewViewModel } from '../../screens/projects/ProjectDocumentPreview';
 export type ChatPreviewItemType = 'knowledge' | 'experiment-log' | 'draft';
 export interface ChatPreviewActionViewModel {
@@ -25,9 +25,10 @@ export interface ChatPreviewPanelProps {
     onClose(): void;
     pendingActionKey?: string;
     onAction?(itemKey: string, actionId: string): void;
+    renderContent?(item: ChatPreviewItemViewModel): ReactNode;
     onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
-export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
+export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, renderContent, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
 export interface ChatProjectKnowledgeItemViewModel {
     id: string;
     title: string;

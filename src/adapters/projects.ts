@@ -33,6 +33,13 @@ export async function loadProjectsBootstrap(
   return api.get<ProjectsBootstrapPayload>("/api/projects/bootstrap");
 }
 
+export function isUnassignedProject(
+  projectId: string | null | undefined,
+  defaultProjectId: string | null | undefined,
+) {
+  return !projectId || Boolean(defaultProjectId && projectId === defaultProjectId);
+}
+
 export async function loadProjectDetail(
   api: ApiClient,
   projectId: string,

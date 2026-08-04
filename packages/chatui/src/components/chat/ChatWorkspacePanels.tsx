@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { FileText, FlaskConical, Search, X } from 'lucide-react';
 import { BaseButton } from '../common';
 import { ProjectDocumentPreviewContent } from '../../screens/projects/ProjectDocumentPreviewContent';
@@ -32,6 +32,7 @@ export interface ChatPreviewPanelProps {
   onClose(): void;
   pendingActionKey?: string;
   onAction?(itemKey: string, actionId: string): void;
+  renderContent?(item: ChatPreviewItemViewModel): ReactNode;
   onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
 
@@ -43,9 +44,11 @@ export function ChatPreviewPanel({
   onClose,
   pendingActionKey,
   onAction,
+  renderContent,
   onResizeStart,
 }: ChatPreviewPanelProps) {
   const activeItem = tabs.find((tab) => tab.key === activeKey) ?? null;
+  const customContent = activeItem ? renderContent?.(activeItem) : undefined;
 
   return (
     <div data-testid="chat-document-preview" className="relative flex h-full w-full min-w-0 flex-col border-l border-chatWorkspaceDivider bg-white">
@@ -95,7 +98,7 @@ export function ChatPreviewPanel({
           })}
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {activeItem?.actions?.map((action) => (
+          {!customContent && activeItem?.actions?.map((action) => (
             <BaseButton
               key={action.id}
               type={action.tone ?? 'secondary'}
@@ -120,7 +123,9 @@ export function ChatPreviewPanel({
 
       <div className="min-h-0 flex-1 overflow-hidden pb-4 pt-2">
         {activeItem ? (
-          activeItem.document ? (
+          customContent ? (
+            customContent
+          ) : activeItem.document ? (
             <ProjectDocumentPreviewContent document={activeItem.document} layout="panel" />
           ) : (
             <div className="flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText">

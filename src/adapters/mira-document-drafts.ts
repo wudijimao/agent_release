@@ -55,6 +55,7 @@ export function mapMiraDocumentDraft(
       && !terminalStatuses.has(status ?? ""),
   );
   const title = payload.title.trim() || display.title.trim() || "未命名文档";
+  const documentId = payload.targetWikiNodeId?.trim();
   const rawSummary = payload.sections.find((section) => section.summary.trim())?.summary.trim();
   const summary =
     rawSummary && rawSummary.replace(/\s+/g, " ") !== title.replace(/\s+/g, " ")
@@ -63,10 +64,11 @@ export function mapMiraDocumentDraft(
   const card: MiraDraftCardViewModel = {
     actionKey,
     title,
+    ...(documentId ? { documentId } : {}),
     ...(targetLabel ? { targetLabel } : {}),
     ...(summary ? { summary } : {}),
     status: isSaved ? "saved" : isFailed ? "error" : "waiting",
-    previewable: isActionable,
+    previewable: isSaved ? Boolean(documentId) : isActionable,
     actionable: isActionable,
     ...(isFailed ? { errorMessage: "草稿未能保存，请重新生成后再试。" } : {}),
   };

@@ -14,6 +14,7 @@ import {
   archiveProject,
   createProject,
   createProjectConversation,
+  isUnassignedProject,
   loadProjectDetail,
   loadProjectsBootstrap,
   mapProjectChatWorkspace,
@@ -27,6 +28,13 @@ import {
   updateProject,
   updateProjectMember,
 } from "./projects";
+
+test("unassigned project detection covers legacy empty and default project ids", () => {
+  assert.equal(isUnassignedProject(undefined, "default-project"), true);
+  assert.equal(isUnassignedProject(null, "default-project"), true);
+  assert.equal(isUnassignedProject("default-project", "default-project"), true);
+  assert.equal(isUnassignedProject("project-1", "default-project"), false);
+});
 
 function project(overrides: Partial<ProjectSummary> = {}): ProjectSummary {
   return {

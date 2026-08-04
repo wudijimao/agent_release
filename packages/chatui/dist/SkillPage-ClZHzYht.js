@@ -1,19 +1,19 @@
-import { jsxs as r, Fragment as Ue, jsx as e } from "react/jsx-runtime";
-import De, { useMemo as ge, useState as v, useRef as me, useCallback as Le, useEffect as ye, useLayoutEffect as Lt, forwardRef as Wt, useId as pr } from "react";
-import Pe from "classnames";
-import { Check as et, Copy as pt, RefreshCcw as hr, ThumbsUp as fr, ThumbsDown as xr, ArrowUpRight as br, Info as gr, Ban as yr, TriangleAlert as St, CircleCheckBig as ct, ShieldCheck as Ut, CircleHelp as Vt, FileText as ht, LoaderCircle as Kt, Puzzle as Ot, AtSign as Xt, AlertCircle as vr, Paperclip as Gt, ArrowRight as Yt, ChevronDown as dt, ChevronRight as ot, CircleX as Qt, Sparkles as Zt, Loader2 as Xe, Clock3 as ft, Search as Ze, BookOpen as At, ListChecks as wr, Globe as Nr, Minus as kr, Menu as Jt, Upload as Tr, Trash2 as er, CheckCircle2 as at, SearchX as Cr, FlaskConical as Sr, X as nt, Plus as tr, Square as Mr, Send as $r, UserPlus as zr, Building2 as Lr, Folder as bt, PanelLeftClose as Ar, SquarePen as Pr, AlertTriangle as Er, Settings as _r, Pin as gt, MoreHorizontal as Br, Pencil as Ir, Share2 as Rr } from "lucide-react";
+import { jsxs as r, Fragment as Ve, jsx as e } from "react/jsx-runtime";
+import je, { useMemo as ge, useState as v, useRef as he, useCallback as Pe, useEffect as ye, useLayoutEffect as Lt, forwardRef as Wt, useId as pr } from "react";
+import Ee from "classnames";
+import { Check as Je, Copy as ft, RefreshCcw as hr, ThumbsUp as fr, ThumbsDown as xr, ArrowUpRight as br, Info as gr, Ban as yr, TriangleAlert as Mt, CircleCheckBig as ut, ShieldCheck as Ut, CircleHelp as Vt, FileText as xt, LoaderCircle as Kt, Puzzle as Ot, AtSign as Xt, AlertCircle as vr, Paperclip as Gt, ArrowRight as Yt, ChevronDown as mt, ChevronRight as dt, CircleX as Qt, Sparkles as Zt, Loader2 as Ge, Clock3 as bt, Search as Ze, BookOpen as At, ListChecks as wr, Globe as Nr, Minus as kr, Menu as Jt, Upload as Tr, Trash2 as er, CheckCircle2 as nt, SearchX as Cr, FlaskConical as Sr, X as rt, Plus as tr, Square as Mr, Send as $r, UserPlus as zr, Building2 as Lr, Folder as gt, PanelLeftClose as Ar, SquarePen as Pr, AlertTriangle as Er, Settings as _r, Pin as yt, MoreHorizontal as Br, Pencil as Ir, Share2 as Rr } from "lucide-react";
 import rr from "react-markdown";
 import nr from "remark-gfm";
 import jr from "rehype-highlight";
 import "katex/contrib/mhchem";
 import { createPortal as Dr } from "react-dom";
-import { Crepe as yt } from "@milkdown/crepe";
-import { editorViewCtx as vt, commandsCtx as Fr } from "@milkdown/kit/core";
+import { Crepe as vt } from "@milkdown/crepe";
+import { editorViewCtx as wt, commandsCtx as Fr } from "@milkdown/kit/core";
 import { lift as Hr } from "@milkdown/kit/prose/commands";
 import { wrapInList as qr, liftListItem as Wr } from "@milkdown/kit/prose/schema-list";
 import { TextSelection as Pt } from "@milkdown/kit/prose/state";
-import { orderedListSchema as Ur, bulletListSchema as Vr, listItemSchema as wt, paragraphSchema as Kr, setBlockTypeCommand as Or } from "@milkdown/kit/preset/commonmark";
-const Xr = "_button_3tg6r_1", Gr = "_primary_3tg6r_5", Yr = "_disabled_3tg6r_9", Qr = "_secondary_3tg6r_17", Zr = "_ghost_3tg6r_25", Jr = "_danger_3tg6r_33", en = "_small_3tg6r_41", tn = "_medium_3tg6r_45", rn = "_large_3tg6r_49", nn = "_roundedSquare_3tg6r_53", an = "_roundedSmall_3tg6r_57", sn = "_roundedMedium_3tg6r_61", ln = "_roundedLarge_3tg6r_62", on = "_roundedFull_3tg6r_66", cn = "_loadingSpinner_3tg6r_67", dn = "_loading_3tg6r_67", un = "_fullWidth_3tg6r_90", mn = "_icon_3tg6r_94", je = {
+import { orderedListSchema as Ur, bulletListSchema as Vr, listItemSchema as Nt, paragraphSchema as Kr, setBlockTypeCommand as Or } from "@milkdown/kit/preset/commonmark";
+const Xr = "_button_3tg6r_1", Gr = "_primary_3tg6r_5", Yr = "_disabled_3tg6r_9", Qr = "_secondary_3tg6r_17", Zr = "_ghost_3tg6r_25", Jr = "_danger_3tg6r_33", en = "_small_3tg6r_41", tn = "_medium_3tg6r_45", rn = "_large_3tg6r_49", nn = "_roundedSquare_3tg6r_53", an = "_roundedSmall_3tg6r_57", sn = "_roundedMedium_3tg6r_61", ln = "_roundedLarge_3tg6r_62", on = "_roundedFull_3tg6r_66", cn = "_loadingSpinner_3tg6r_67", dn = "_loading_3tg6r_67", un = "_fullWidth_3tg6r_90", mn = "_icon_3tg6r_94", Ie = {
   button: Xr,
   primary: Gr,
   disabled: Yr,
@@ -33,124 +33,124 @@ const Xr = "_button_3tg6r_1", Gr = "_primary_3tg6r_5", Yr = "_disabled_3tg6r_9",
   fullWidth: un,
   icon: mn
 }, pn = {
-  primary: je.primary,
-  secondary: je.secondary,
-  ghost: je.ghost,
-  danger: je.danger
+  primary: Ie.primary,
+  secondary: Ie.secondary,
+  ghost: Ie.ghost,
+  danger: Ie.danger
 }, hn = {
-  small: je.small,
-  medium: je.medium,
-  large: je.large
+  small: Ie.small,
+  medium: Ie.medium,
+  large: Ie.large
 }, fn = {
-  square: je.roundedSquare,
-  small: je.roundedSmall,
-  medium: je.roundedMedium,
-  large: je.roundedLarge,
-  full: je.roundedFull
-}, Fe = De.forwardRef(
+  square: Ie.roundedSquare,
+  small: Ie.roundedSmall,
+  medium: Ie.roundedMedium,
+  large: Ie.roundedLarge,
+  full: Ie.roundedFull
+}, Fe = je.forwardRef(
   ({
     type: t = "primary",
     size: n = "medium",
     isLoading: s,
     loading: l,
     disabled: a = !1,
-    children: u,
-    icon: f,
-    iconPosition: k = "left",
-    className: d,
-    fullWidth: m = !1,
-    rounded: p = "medium",
-    onClick: h,
-    ...N
+    children: d,
+    icon: h,
+    iconPosition: N = "left",
+    className: u,
+    fullWidth: c = !1,
+    rounded: b = "medium",
+    onClick: p,
+    ...f
   }, E) => {
-    const j = s ?? l ?? !1, z = a || j, _ = ge(() => j ? /* @__PURE__ */ r(Ue, { children: [
-      /* @__PURE__ */ e("span", { className: je.loadingSpinner }),
-      /* @__PURE__ */ e("span", { children: u })
-    ] }) : f ? /* @__PURE__ */ r(Ue, { children: [
-      k === "left" && /* @__PURE__ */ e("span", { className: je.icon, children: f }),
-      u && /* @__PURE__ */ e("span", { children: u }),
-      k === "right" && /* @__PURE__ */ e("span", { className: je.icon, children: f })
-    ] }) : u, [u, j, f, k]);
+    const _ = s ?? l ?? !1, $ = a || _, I = ge(() => _ ? /* @__PURE__ */ r(Ve, { children: [
+      /* @__PURE__ */ e("span", { className: Ie.loadingSpinner }),
+      /* @__PURE__ */ e("span", { children: d })
+    ] }) : h ? /* @__PURE__ */ r(Ve, { children: [
+      N === "left" && /* @__PURE__ */ e("span", { className: Ie.icon, children: h }),
+      d && /* @__PURE__ */ e("span", { children: d }),
+      N === "right" && /* @__PURE__ */ e("span", { className: Ie.icon, children: h })
+    ] }) : d, [d, _, h, N]);
     return /* @__PURE__ */ e(
       "button",
       {
         ref: E,
-        className: Pe(
-          je.button,
+        className: Ee(
+          Ie.button,
           pn[t],
           hn[n],
-          fn[p],
+          fn[b],
           {
-            [je.fullWidth]: m,
-            [je.loading]: j,
-            [je.disabled]: z
+            [Ie.fullWidth]: c,
+            [Ie.loading]: _,
+            [Ie.disabled]: $
           },
-          d
+          u
         ),
-        disabled: z,
-        onClick: h,
-        ...N,
-        children: _
+        disabled: $,
+        onClick: p,
+        ...f,
+        children: I
       }
     );
   }
 );
 Fe.displayName = "BaseButton";
-const xn = { small: "h-8", medium: "h-9", large: "h-14" }, ar = De.forwardRef(
+const xn = { small: "h-8", medium: "h-9", large: "h-14" }, ar = je.forwardRef(
   ({
     type: t = "text",
     placeholder: n,
     value: s,
     defaultValue: l,
     disabled: a = !1,
-    readOnly: u = !1,
-    error: f = !1,
-    size: k = "medium",
-    prefix: d,
-    suffix: m,
-    prefixIcon: p,
-    suffixIcon: h,
-    onChange: N,
+    readOnly: d = !1,
+    error: h = !1,
+    size: N = "medium",
+    prefix: u,
+    suffix: c,
+    prefixIcon: b,
+    suffixIcon: p,
+    onChange: f,
     onFocus: E,
-    onBlur: j,
-    onClear: z,
-    className: _,
+    onBlur: _,
+    onClear: $,
+    className: I,
     containerClassName: D,
-    clearable: V = !1,
+    clearable: K = !1,
     label: B,
-    helperText: $,
-    ...K
-  }, W) => {
-    const [P, M] = v(!1), O = me(null), x = Le((I) => {
-      O.current = I, typeof W == "function" ? W(I) : W && (W.current = I);
-    }, [W]), q = Le(() => {
-      var w, g;
-      const I = O.current;
-      I && ((g = (w = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")) == null ? void 0 : w.set) == null || g.call(I, ""), I.dispatchEvent(new Event("input", { bubbles: !0 })), I.focus(), z == null || z());
-    }, [z]), ne = ge(
+    helperText: z,
+    ...X
+  }, U) => {
+    const [P, M] = v(!1), G = he(null), x = Pe((ne) => {
+      G.current = ne, typeof U == "function" ? U(ne) : U && (U.current = ne);
+    }, [U]), F = Pe(() => {
+      var S, g;
+      const ne = G.current;
+      ne && ((g = (S = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")) == null ? void 0 : S.set) == null || g.call(ne, ""), ne.dispatchEvent(new Event("input", { bubbles: !0 })), ne.focus(), $ == null || $());
+    }, [$]), re = ge(
       () => {
-        var I;
-        return V && P && String(s ?? ((I = O.current) == null ? void 0 : I.value) ?? "").length > 0;
+        var ne;
+        return K && P && String(s ?? ((ne = G.current) == null ? void 0 : ne.value) ?? "").length > 0;
       },
-      [V, P, s]
+      [K, P, s]
     );
     return /* @__PURE__ */ r("div", { className: "flex flex-col gap-1", children: [
       B && /* @__PURE__ */ e("label", { className: "mb-2 block text-sm font-medium text-primaryText", children: B }),
       /* @__PURE__ */ r(
         "div",
         {
-          className: Pe(
+          className: Ee(
             "flex items-center rounded-lg border border-controlBorderDefault bg-surface px-5 shadow-sm transition-all duration-200",
-            xn[k],
-            !a && !f && "hover:border-controlBorder",
-            P && !a && !f && "border-primary ring-2 ring-brandFocus",
-            f && "border-danger",
-            f && P && "ring-2 ring-dangerFocus",
+            xn[N],
+            !a && !h && "hover:border-controlBorder",
+            P && !a && !h && "border-primary ring-2 ring-brandFocus",
+            h && "border-danger",
+            h && P && "ring-2 ring-dangerFocus",
             a && "cursor-not-allowed bg-surfaceMuted",
             D
           ),
           children: [
-            (d || p) && /* @__PURE__ */ e("div", { className: "mr-2 flex shrink-0 items-center justify-center text-mutedText", children: d || p }),
+            (u || b) && /* @__PURE__ */ e("div", { className: "mr-2 flex shrink-0 items-center justify-center text-mutedText", children: u || b }),
             /* @__PURE__ */ e(
               "input",
               {
@@ -160,62 +160,62 @@ const xn = { small: "h-8", medium: "h-9", large: "h-14" }, ar = De.forwardRef(
                 value: s,
                 defaultValue: l,
                 disabled: a,
-                readOnly: u,
-                className: Pe("min-w-0 flex-1 border-0 bg-transparent p-0 text-sm leading-5 text-primaryText outline-none placeholder:text-tertiaryText disabled:cursor-not-allowed disabled:text-mutedText", _),
-                onFocus: (I) => {
-                  M(!0), E == null || E(I);
+                readOnly: d,
+                className: Ee("min-w-0 flex-1 border-0 bg-transparent p-0 text-sm leading-5 text-primaryText outline-none placeholder:text-tertiaryText disabled:cursor-not-allowed disabled:text-mutedText", I),
+                onFocus: (ne) => {
+                  M(!0), E == null || E(ne);
                 },
-                onBlur: (I) => {
-                  M(!1), j == null || j(I);
+                onBlur: (ne) => {
+                  M(!1), _ == null || _(ne);
                 },
-                onChange: N,
-                ...K
+                onChange: f,
+                ...X
               }
             ),
             /* @__PURE__ */ r("div", { className: "ml-2 flex shrink-0 items-center justify-center gap-2 text-mutedText", children: [
-              ne && /* @__PURE__ */ e("button", { type: "button", className: "flex h-5 w-5 items-center justify-center border-0 bg-transparent p-0 text-mutedText transition-colors hover:text-primaryText", onMouseDown: (I) => I.preventDefault(), onClick: q, "aria-label": "清空", children: "✕" }),
-              m || h
+              re && /* @__PURE__ */ e("button", { type: "button", className: "flex h-5 w-5 items-center justify-center border-0 bg-transparent p-0 text-mutedText transition-colors hover:text-primaryText", onMouseDown: (ne) => ne.preventDefault(), onClick: F, "aria-label": "清空", children: "✕" }),
+              c || p
             ] })
           ]
         }
       ),
-      $ && /* @__PURE__ */ e("div", { className: Pe("text-xs leading-6", f ? "text-danger" : "text-mutedText"), children: $ })
+      z && /* @__PURE__ */ e("div", { className: Ee("text-xs leading-6", h ? "text-danger" : "text-mutedText"), children: z })
     ] });
   }
 );
 ar.displayName = "BaseInput";
-const bn = { small: "h-8", medium: "h-9", large: "h-14" }, gn = De.forwardRef(
-  ({ options: t = [], value: n, defaultValue: s, placeholder: l, disabled: a = !1, error: u = !1, size: f = "medium", label: k, helperText: d, onChange: m, className: p, ...h }, N) => {
-    const E = Le((j) => {
-      const z = j.target.value, _ = t.find((D) => String(D.value) === z);
-      m == null || m(z === "" ? "" : (_ == null ? void 0 : _.value) ?? z);
-    }, [m, t]);
+const bn = { small: "h-8", medium: "h-9", large: "h-14" }, gn = je.forwardRef(
+  ({ options: t = [], value: n, defaultValue: s, placeholder: l, disabled: a = !1, error: d = !1, size: h = "medium", label: N, helperText: u, onChange: c, className: b, ...p }, f) => {
+    const E = Pe((_) => {
+      const $ = _.target.value, I = t.find((D) => String(D.value) === $);
+      c == null || c($ === "" ? "" : (I == null ? void 0 : I.value) ?? $);
+    }, [c, t]);
     return /* @__PURE__ */ r("div", { className: "flex flex-col gap-1", children: [
-      k && /* @__PURE__ */ e("label", { className: "mb-2 block text-sm font-medium text-primaryText", children: k }),
+      N && /* @__PURE__ */ e("label", { className: "mb-2 block text-sm font-medium text-primaryText", children: N }),
       /* @__PURE__ */ r("div", { className: "relative", children: [
         /* @__PURE__ */ r(
           "select",
           {
-            ref: N,
-            className: Pe(
+            ref: f,
+            className: Ee(
               "w-full cursor-pointer appearance-none rounded-lg border border-controlBorderDefault bg-surface px-5 pr-11 text-sm leading-5 text-primaryText shadow-sm outline-none transition-all duration-200 hover:border-controlBorderHover focus:border-controlBorderHover disabled:cursor-not-allowed disabled:bg-surfaceMuted disabled:text-mutedText",
-              u && "border-danger focus:border-danger focus:ring-2 focus:ring-dangerFocus",
-              bn[f],
-              p
+              d && "border-danger focus:border-danger focus:ring-2 focus:ring-dangerFocus",
+              bn[h],
+              b
             ),
             value: n ?? s ?? "",
             disabled: a,
             onChange: E,
-            ...h,
+            ...p,
             children: [
               l && /* @__PURE__ */ e("option", { value: "", disabled: !0, children: l }),
-              t.map((j) => /* @__PURE__ */ e("option", { value: j.value, disabled: j.disabled, children: j.label }, j.value))
+              t.map((_) => /* @__PURE__ */ e("option", { value: _.value, disabled: _.disabled, children: _.label }, _.value))
             ]
           }
         ),
         /* @__PURE__ */ e("svg", { "aria-hidden": "true", className: "pointer-events-none absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-secondaryText", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ e("path", { d: "m6 9 6 6 6-6", strokeLinecap: "round", strokeLinejoin: "round" }) })
       ] }),
-      d && /* @__PURE__ */ e("div", { className: Pe("text-xs leading-6", u ? "text-danger" : "text-mutedText"), children: d })
+      u && /* @__PURE__ */ e("div", { className: Ee("text-xs leading-6", d ? "text-danger" : "text-mutedText"), children: u })
     ] });
   }
 );
@@ -239,80 +239,80 @@ function Ka({
   defaultValue: s,
   onChange: l,
   size: a = "middle",
-  disabled: u = !1,
-  className: f
+  disabled: d = !1,
+  className: h
 }) {
-  var h;
-  const [k, d] = v(
-    s ?? ((h = t[0]) == null ? void 0 : h.value) ?? ""
-  ), m = n ?? k, p = (N) => {
-    u || (n === void 0 && d(N), l == null || l(N));
+  var p;
+  const [N, u] = v(
+    s ?? ((p = t[0]) == null ? void 0 : p.value) ?? ""
+  ), c = n ?? N, b = (f) => {
+    d || (n === void 0 && u(f), l == null || l(f));
   };
-  return /* @__PURE__ */ e("div", { className: Pe(Qe.container, Sn[a], f), children: t.map((N) => {
-    const E = m === N.value;
+  return /* @__PURE__ */ e("div", { className: Ee(Qe.container, Sn[a], h), children: t.map((f) => {
+    const E = c === f.value;
     return /* @__PURE__ */ e(
       "button",
       {
         type: "button",
-        className: Pe(Qe.item, E && Qe.itemActive, u && Qe.itemDisabled),
-        onClick: () => p(N.value),
-        disabled: u,
+        className: Ee(Qe.item, E && Qe.itemActive, d && Qe.itemDisabled),
+        onClick: () => b(f.value),
+        disabled: d,
         "aria-pressed": E,
-        children: N.label
+        children: f.label
       },
-      N.value
+      f.value
     );
   }) });
 }
-const Mn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(0)} KB` : `${(t / (1024 * 1024)).toFixed(0)} MB`, $n = De.forwardRef(
-  ({ accept: t, multiple: n = !1, disabled: s = !1, onChange: l, onError: a, maxSize: u, children: f, className: k, dragable: d = !0, placeholderTitle: m, placeholderDescription: p, placeholderIcon: h, maxCount: N }, E) => {
-    const j = me(null), [z, _] = v(!1), D = Le((B) => {
-      if (N && B.length > N) {
-        a == null || a(new Error(`单次最多上传 ${N} 个文件`));
+const Mn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(0)} KB` : `${(t / (1024 * 1024)).toFixed(0)} MB`, $n = je.forwardRef(
+  ({ accept: t, multiple: n = !1, disabled: s = !1, onChange: l, onError: a, maxSize: d, children: h, className: N, dragable: u = !0, placeholderTitle: c, placeholderDescription: b, placeholderIcon: p, maxCount: f }, E) => {
+    const _ = he(null), [$, I] = v(!1), D = Pe((B) => {
+      if (f && B.length > f) {
+        a == null || a(new Error(`单次最多上传 ${f} 个文件`));
         return;
       }
-      if (u) {
-        for (const $ of Array.from(B))
-          if ($.size > u) {
-            a == null || a(new Error(`文件“${$.name}”超过大小限制（${Mn(u)}）`));
+      if (d) {
+        for (const z of Array.from(B))
+          if (z.size > d) {
+            a == null || a(new Error(`文件“${z.name}”超过大小限制（${Mn(d)}）`));
             return;
           }
       }
       l == null || l(B);
-    }, [N, u, l, a]), V = () => {
+    }, [f, d, l, a]), K = () => {
       var B;
-      s || (B = j.current) == null || B.click();
+      s || (B = _.current) == null || B.click();
     };
     return /* @__PURE__ */ r(
       "div",
       {
         ref: E,
-        className: Pe(
+        className: Ee(
           "cursor-pointer rounded-md border border-dashed border-borderSoft bg-surface px-4 py-5 text-center transition-all duration-200 hover:border-primary hover:bg-primary-soft",
-          z && "border-primary bg-primary-soft-strong ring-2 ring-brandFocus",
+          $ && "border-primary bg-primary-soft-strong ring-2 ring-brandFocus",
           s && "cursor-not-allowed opacity-60",
-          k
+          N
         ),
-        onClick: V,
+        onClick: K,
         onKeyDown: (B) => {
-          !s && (B.key === "Enter" || B.key === " ") && (B.preventDefault(), V());
+          !s && (B.key === "Enter" || B.key === " ") && (B.preventDefault(), K());
         },
         onDragOver: (B) => {
-          d && !s && (B.preventDefault(), _(!0));
+          u && !s && (B.preventDefault(), I(!0));
         },
-        onDragLeave: () => _(!1),
+        onDragLeave: () => I(!1),
         onDrop: (B) => {
-          d && !s && (B.preventDefault(), _(!1), D(B.dataTransfer.files));
+          u && !s && (B.preventDefault(), I(!1), D(B.dataTransfer.files));
         },
         role: "button",
         tabIndex: s ? -1 : 0,
         "aria-disabled": s,
         children: [
-          /* @__PURE__ */ e("input", { ref: j, type: "file", accept: t, multiple: n, disabled: s, onChange: (B) => B.target.files && D(B.target.files), className: "hidden" }),
-          f || /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center gap-2", children: [
-            /* @__PURE__ */ e("span", { className: "inline-flex h-12 w-12 items-center justify-center text-primary", "aria-hidden": !0, children: h ?? /* @__PURE__ */ e("svg", { width: "48", height: "48", viewBox: "0 0 48 48", fill: "none", stroke: "currentColor", strokeWidth: "3", children: /* @__PURE__ */ e("path", { d: "M24 8v21M16 16l8-8 8 8M10 27v8a4 4 0 0 0 4 4h20a4 4 0 0 0 4-4v-8", strokeLinecap: "round", strokeLinejoin: "round" }) }) }),
-            /* @__PURE__ */ e("div", { className: "text-lg font-semibold leading-7 text-primaryText", children: m ?? "点击或拖拽文件到此处上传" }),
-            /* @__PURE__ */ e("div", { className: "text-sm leading-6 text-mutedText", children: p ?? "支持单文件或批量上传" })
+          /* @__PURE__ */ e("input", { ref: _, type: "file", accept: t, multiple: n, disabled: s, onChange: (B) => B.target.files && D(B.target.files), className: "hidden" }),
+          h || /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center gap-2", children: [
+            /* @__PURE__ */ e("span", { className: "inline-flex h-12 w-12 items-center justify-center text-primary", "aria-hidden": !0, children: p ?? /* @__PURE__ */ e("svg", { width: "48", height: "48", viewBox: "0 0 48 48", fill: "none", stroke: "currentColor", strokeWidth: "3", children: /* @__PURE__ */ e("path", { d: "M24 8v21M16 16l8-8 8 8M10 27v8a4 4 0 0 0 4 4h20a4 4 0 0 0 4-4v-8", strokeLinecap: "round", strokeLinejoin: "round" }) }) }),
+            /* @__PURE__ */ e("div", { className: "text-lg font-semibold leading-7 text-primaryText", children: c ?? "点击或拖拽文件到此处上传" }),
+            /* @__PURE__ */ e("div", { className: "text-sm leading-6 text-mutedText", children: b ?? "支持单文件或批量上传" })
           ] })
         ]
       }
@@ -323,58 +323,58 @@ $n.displayName = "BaseUpload";
 const zn = "_maskAnimation_1h49h_1", Ln = "_modalAnimation_1h49h_5", Et = {
   maskAnimation: zn,
   modalAnimation: Ln
-}, Mt = ({
+}, $t = ({
   visible: t,
   open: n = t,
   show: s = n,
   title: l,
   width: a = 520,
-  centered: u = !0,
-  destroyOnClose: f = !1,
-  mask: k = !0,
-  maskClosable: d = !0,
-  okText: m = "确认",
-  cancelText: p = "取消",
-  confirmLoading: h = !1,
-  okButtonProps: N,
+  centered: d = !0,
+  destroyOnClose: h = !1,
+  mask: N = !0,
+  maskClosable: u = !0,
+  okText: c = "确认",
+  cancelText: b = "取消",
+  confirmLoading: p = !1,
+  okButtonProps: f,
   cancelButtonProps: E,
-  onConfirm: j,
-  onCancel: z,
-  onClose: _,
+  onConfirm: _,
+  onCancel: $,
+  onClose: I,
   onOk: D,
-  onDismiss: V,
+  onDismiss: K,
   children: B,
-  footer: $,
-  className: K,
-  bodyClassName: W
+  footer: z,
+  className: X,
+  bodyClassName: U
 }) => {
-  const P = s ?? !1, M = Le(async () => {
+  const P = s ?? !1, M = Pe(async () => {
     try {
-      j ? await j() : D && await D();
-    } catch (q) {
-      console.error("Modal confirm error:", q);
+      _ ? await _() : D && await D();
+    } catch (F) {
+      console.error("Modal confirm error:", F);
     }
-  }, [j, D]), O = Le(() => {
-    z ? z() : _ ? _() : V == null || V();
-  }, [z, _, V]), x = ge(() => {
-    if ($ === null) return null;
-    if ($) return $;
-    const { type: q, ...ne } = E ?? {}, { type: I, ...w } = N ?? {};
+  }, [_, D]), G = Pe(() => {
+    $ ? $() : I ? I() : K == null || K();
+  }, [$, I, K]), x = ge(() => {
+    if (z === null) return null;
+    if (z) return z;
+    const { type: F, ...re } = E ?? {}, { type: ne, ...S } = f ?? {};
     return /* @__PURE__ */ r("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
-      /* @__PURE__ */ e(Fe, { type: "secondary", size: "medium", onClick: O, ...ne, children: p }),
-      /* @__PURE__ */ e(Fe, { type: "primary", size: "medium", isLoading: h, onClick: M, ...w, children: h ? "加载中..." : m })
+      /* @__PURE__ */ e(Fe, { type: "secondary", size: "medium", onClick: G, ...re, children: b }),
+      /* @__PURE__ */ e(Fe, { type: "primary", size: "medium", isLoading: p, onClick: M, ...S, children: p ? "加载中..." : c })
     ] });
-  }, [E, p, h, $, O, M, N, m]);
-  return !P && f || !P ? null : /* @__PURE__ */ r(Ue, { children: [
-    k && /* @__PURE__ */ e("div", { className: Pe("fixed inset-0 z-[1000] bg-overlayMask", Et.maskAnimation), onClick: () => d && O(), role: "presentation" }),
+  }, [E, b, p, z, G, M, f, c]);
+  return !P && h || !P ? null : /* @__PURE__ */ r(Ve, { children: [
+    N && /* @__PURE__ */ e("div", { className: Ee("fixed inset-0 z-[1000] bg-overlayMask", Et.maskAnimation), onClick: () => u && G(), role: "presentation" }),
     /* @__PURE__ */ r(
       "div",
       {
-        className: Pe(
+        className: Ee(
           "fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-md bg-surface shadow-lg",
-          u && "left-1/2 top-1/2",
+          d && "left-1/2 top-1/2",
           Et.modalAnimation,
-          K
+          X
         ),
         style: { width: a },
         role: "dialog",
@@ -383,102 +383,102 @@ const zn = "_maskAnimation_1h49h_1", Ln = "_modalAnimation_1h49h_5", Et = {
         children: [
           l && /* @__PURE__ */ r("div", { className: "flex items-center justify-between border-b border-lineSoft px-5 py-4", children: [
             /* @__PURE__ */ e("h2", { id: "modal-title", className: "m-0 text-base font-semibold leading-6 text-primaryText", children: l }),
-            /* @__PURE__ */ e("button", { type: "button", className: "flex h-7 w-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-base leading-none text-mutedText transition-all hover:bg-surfaceMuted hover:text-primaryText", onClick: O, "aria-label": "关闭", children: "✕" })
+            /* @__PURE__ */ e("button", { type: "button", className: "flex h-7 w-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-base leading-none text-mutedText transition-all hover:bg-surfaceMuted hover:text-primaryText", onClick: G, "aria-label": "关闭", children: "✕" })
           ] }),
-          /* @__PURE__ */ e("div", { className: Pe("min-h-20 p-5 text-primaryText", W), children: B }),
+          /* @__PURE__ */ e("div", { className: Ee("min-h-20 p-5 text-primaryText", U), children: B }),
           x
         ]
       }
     )
   ] });
 };
-Mt.displayName = "BaseModal";
-const An = ({ title: t, extra: n, children: s, hoverable: l = !1, loading: a = !1, bordered: u = !0, className: f, bodyClassName: k, onClick: d }) => /* @__PURE__ */ r(
+$t.displayName = "BaseModal";
+const An = ({ title: t, extra: n, children: s, hoverable: l = !1, loading: a = !1, bordered: d = !0, className: h, bodyClassName: N, onClick: u }) => /* @__PURE__ */ r(
   "div",
   {
-    className: Pe(
+    className: Ee(
       "overflow-hidden rounded-md bg-surface transition-all duration-200",
-      u && "border border-borderGray",
+      d && "border border-borderGray",
       l && "cursor-pointer hover:border-borderGray hover:shadow-md",
       a && "pointer-events-none opacity-60",
-      f
+      h
     ),
-    onClick: d,
+    onClick: u,
     children: [
       (t || n) && /* @__PURE__ */ r("div", { className: "flex items-center justify-between px-4 pb-2 pt-4", children: [
         t && /* @__PURE__ */ e("h3", { className: "m-0 text-base font-medium text-primaryText", children: t }),
         n && /* @__PURE__ */ e("div", { className: "flex items-center gap-2", children: n })
       ] }),
-      /* @__PURE__ */ e("div", { className: Pe("p-4 text-primaryText", (t || n) && "pt-1", k), children: s })
+      /* @__PURE__ */ e("div", { className: Ee("p-4 text-primaryText", (t || n) && "pt-1", N), children: s })
     ]
   }
 );
 An.displayName = "BaseCard";
-const Pn = ({ columns: t, dataSource: n = [], rowKey: s = "id", loading: l = !1, bordered: a = !0, striped: u = !0, className: f, onRow: k }, d) => /* @__PURE__ */ r("div", { ref: d, className: Pe("relative w-full overflow-x-auto bg-surface", f), children: [
+const Pn = ({ columns: t, dataSource: n = [], rowKey: s = "id", loading: l = !1, bordered: a = !0, striped: d = !0, className: h, onRow: N }, u) => /* @__PURE__ */ r("div", { ref: u, className: Ee("relative w-full overflow-x-auto bg-surface", h), children: [
   /* @__PURE__ */ r("table", { className: "w-full border-collapse bg-surface text-sm leading-5", children: [
-    /* @__PURE__ */ e("thead", { children: /* @__PURE__ */ e("tr", { className: a ? "border-b border-lineSubtle" : void 0, children: t.map((m) => /* @__PURE__ */ e("th", { className: "whitespace-nowrap bg-transparent px-4 py-3 text-left font-normal text-headerText first:pl-0", style: { width: m.width, textAlign: m.align }, children: m.title }, m.key || String(m.dataIndex))) }) }),
-    /* @__PURE__ */ e("tbody", { children: n.length === 0 ? /* @__PURE__ */ e("tr", { children: /* @__PURE__ */ e("td", { colSpan: t.length, className: "px-4 py-12 text-center text-mutedText", children: "暂无数据" }) }) : n.map((m, p) => {
-      const h = String(typeof s == "string" ? m[s] ?? p : p);
-      return /* @__PURE__ */ e("tr", { className: Pe(a && "border-b border-lineSoft last:border-b-0", u && "odd:bg-surface"), ...(k == null ? void 0 : k(m, p)) || {}, children: t.map((N) => /* @__PURE__ */ e("td", { className: "px-4 py-[18px] text-primaryText first:pl-0", style: { textAlign: N.align }, children: N.render ? N.render(m[N.dataIndex], m, p) : String(m[N.dataIndex] ?? "") }, N.key || String(N.dataIndex))) }, h);
+    /* @__PURE__ */ e("thead", { children: /* @__PURE__ */ e("tr", { className: a ? "border-b border-lineSubtle" : void 0, children: t.map((c) => /* @__PURE__ */ e("th", { className: "whitespace-nowrap bg-transparent px-4 py-3 text-left font-normal text-headerText first:pl-0", style: { width: c.width, textAlign: c.align }, children: c.title }, c.key || String(c.dataIndex))) }) }),
+    /* @__PURE__ */ e("tbody", { children: n.length === 0 ? /* @__PURE__ */ e("tr", { children: /* @__PURE__ */ e("td", { colSpan: t.length, className: "px-4 py-12 text-center text-mutedText", children: "暂无数据" }) }) : n.map((c, b) => {
+      const p = String(typeof s == "string" ? c[s] ?? b : b);
+      return /* @__PURE__ */ e("tr", { className: Ee(a && "border-b border-lineSoft last:border-b-0", d && "odd:bg-surface"), ...(N == null ? void 0 : N(c, b)) || {}, children: t.map((f) => /* @__PURE__ */ e("td", { className: "px-4 py-[18px] text-primaryText first:pl-0", style: { textAlign: f.align }, children: f.render ? f.render(c[f.dataIndex], c, b) : String(c[f.dataIndex] ?? "") }, f.key || String(f.dataIndex))) }, p);
     }) })
   ] }),
   l && /* @__PURE__ */ e("div", { className: "absolute inset-0 z-10 flex items-center justify-center bg-overlaySurface text-mutedText", children: "加载中..." })
-] }), Oa = De.forwardRef(Pn), En = ({ current: t = 1, pageSize: n = 10, total: s = 0, onChange: l, showSizeChanger: a = !1, pageSizeOptions: u = [10, 20, 50, 100], onShowSizeChange: f, disabled: k = !1, className: d }) => {
-  const m = ge(() => Math.ceil(s / n) || 1, [n, s]), p = Le((N) => f == null ? void 0 : f(1, Number(N.target.value)), [f]), h = "rounded-md border border-borderSoft bg-surface px-3 py-1.5 text-sm text-primaryText transition-all hover:border-primary hover:text-primary disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
-  return /* @__PURE__ */ r("div", { className: Pe("flex flex-wrap items-center justify-center gap-4 p-4", d), children: [
-    /* @__PURE__ */ e("button", { type: "button", className: h, onClick: () => t > 1 && (l == null ? void 0 : l(t - 1)), disabled: k || t <= 1, children: "← 上一页" }),
+] }), Oa = je.forwardRef(Pn), En = ({ current: t = 1, pageSize: n = 10, total: s = 0, onChange: l, showSizeChanger: a = !1, pageSizeOptions: d = [10, 20, 50, 100], onShowSizeChange: h, disabled: N = !1, className: u }) => {
+  const c = ge(() => Math.ceil(s / n) || 1, [n, s]), b = Pe((f) => h == null ? void 0 : h(1, Number(f.target.value)), [h]), p = "rounded-md border border-borderSoft bg-surface px-3 py-1.5 text-sm text-primaryText transition-all hover:border-primary hover:text-primary disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
+  return /* @__PURE__ */ r("div", { className: Ee("flex flex-wrap items-center justify-center gap-4 p-4", u), children: [
+    /* @__PURE__ */ e("button", { type: "button", className: p, onClick: () => t > 1 && (l == null ? void 0 : l(t - 1)), disabled: N || t <= 1, children: "← 上一页" }),
     /* @__PURE__ */ r("span", { className: "whitespace-nowrap text-sm text-primaryText", children: [
       "第 ",
       t,
       " / ",
-      m,
+      c,
       " 页，共 ",
       s,
       " 条"
     ] }),
-    /* @__PURE__ */ e("button", { type: "button", className: h, onClick: () => t < m && (l == null ? void 0 : l(t + 1)), disabled: k || t >= m, children: "下一页 →" }),
-    a && /* @__PURE__ */ e("select", { className: "cursor-pointer rounded-md border border-borderSoft bg-surface px-2 py-1 text-xs text-primaryText outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-60", value: n, onChange: p, disabled: k, children: u.map((N) => /* @__PURE__ */ r("option", { value: N, children: [
-      N,
+    /* @__PURE__ */ e("button", { type: "button", className: p, onClick: () => t < c && (l == null ? void 0 : l(t + 1)), disabled: N || t >= c, children: "下一页 →" }),
+    a && /* @__PURE__ */ e("select", { className: "cursor-pointer rounded-md border border-borderSoft bg-surface px-2 py-1 text-xs text-primaryText outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-60", value: n, onChange: b, disabled: N, children: d.map((f) => /* @__PURE__ */ r("option", { value: f, children: [
+      f,
       " 条/页"
-    ] }, N)) })
+    ] }, f)) })
   ] });
 };
 En.displayName = "BasePagination";
-const $t = ({ description: t = "暂无数据", image: n, children: s }) => /* @__PURE__ */ r("div", { className: "flex min-h-[300px] flex-col items-center justify-center px-4 py-12 text-center text-mutedText", children: [
+const zt = ({ description: t = "暂无数据", image: n, children: s }) => /* @__PURE__ */ r("div", { className: "flex min-h-[300px] flex-col items-center justify-center px-4 py-12 text-center text-mutedText", children: [
   n && /* @__PURE__ */ e("div", { className: "mb-6 text-5xl text-controlBorder", children: n }),
   t && /* @__PURE__ */ e("p", { className: "m-0 text-sm text-mutedText", children: t }),
   s
 ] });
-$t.displayName = "BaseEmpty";
-const ut = ({ trigger: t, items: n, footerItems: s = [], open: l = !1, onOpenChange: a, onTriggerClick: u, onItemClick: f, placement: k = "bottom-start", width: d, portal: m = !1, className: p, triggerClassName: h, menuClassName: N, listClassName: E, footerClassName: j }) => {
-  const z = me(null), _ = me(null), [D, V] = v({}), B = k.endsWith("end"), $ = k.startsWith("top");
+zt.displayName = "BaseEmpty";
+const pt = ({ trigger: t, items: n, footerItems: s = [], open: l = !1, onOpenChange: a, onTriggerClick: d, onItemClick: h, placement: N = "bottom-start", width: u, portal: c = !1, className: b, triggerClassName: p, menuClassName: f, listClassName: E, footerClassName: _ }) => {
+  const $ = he(null), I = he(null), [D, K] = v({}), B = N.endsWith("end"), z = N.startsWith("top");
   ye(() => {
-    if (!l || !m || !z.current) return;
-    const M = z.current.getBoundingClientRect();
-    V({ position: "fixed", left: B ? M.right : M.left, top: $ ? M.top : M.bottom, transform: B ? "translateX(-100%)" : void 0 });
-  }, [$, B, l, m, k]), ye(() => {
-    !l || !m || !$ || !_.current || V((M) => ({ ...M, top: Number(M.top) - _.current.offsetHeight - 8 }));
-  }, [$, l, m]), ye(() => {
+    if (!l || !c || !$.current) return;
+    const M = $.current.getBoundingClientRect();
+    K({ position: "fixed", left: B ? M.right : M.left, top: z ? M.top : M.bottom, transform: B ? "translateX(-100%)" : void 0 });
+  }, [z, B, l, c, N]), ye(() => {
+    !l || !c || !z || !I.current || K((M) => ({ ...M, top: Number(M.top) - I.current.offsetHeight - 8 }));
+  }, [z, l, c]), ye(() => {
     if (!l || !a) return;
-    const M = (O) => {
-      var q, ne;
-      const x = O.target;
-      (q = z.current) != null && q.contains(x) || (ne = _.current) != null && ne.contains(x) || a(!1);
+    const M = (G) => {
+      var F, re;
+      const x = G.target;
+      (F = $.current) != null && F.contains(x) || (re = I.current) != null && re.contains(x) || a(!1);
     };
     return document.addEventListener("mousedown", M), () => document.removeEventListener("mousedown", M);
   }, [a, l]);
-  const K = ge(() => d ? { width: typeof d == "number" ? `${d}px` : d } : void 0, [d]), W = Le((M) => /* @__PURE__ */ r(
+  const X = ge(() => u ? { width: typeof u == "number" ? `${u}px` : u } : void 0, [u]), U = Pe((M) => /* @__PURE__ */ r(
     "button",
     {
       type: "button",
       role: "menuitem",
-      className: Pe(
+      className: Ee(
         "flex w-full cursor-pointer items-center gap-3 rounded-lg border-0 px-4 py-2.5 text-left text-sm leading-5 transition-colors disabled:cursor-not-allowed disabled:opacity-50",
         !M.danger && !M.active && "bg-transparent text-primaryText hover:bg-surfaceMuted",
         !M.danger && M.active && "bg-primary-soft font-medium text-primary",
         M.danger && "bg-transparent text-danger hover:bg-danger-soft"
       ),
-      onClick: (O) => f == null ? void 0 : f(M, O),
+      onClick: (G) => h == null ? void 0 : h(M, G),
       disabled: M.disabled,
       children: [
         M.icon && /* @__PURE__ */ e("span", { className: "inline-flex items-center justify-center leading-none", children: M.icon }),
@@ -486,62 +486,62 @@ const ut = ({ trigger: t, items: n, footerItems: s = [], open: l = !1, onOpenCha
       ]
     },
     M.key
-  ), [f]), P = l ? /* @__PURE__ */ r(
+  ), [h]), P = l ? /* @__PURE__ */ r(
     "div",
     {
-      ref: _,
-      className: Pe(
+      ref: I,
+      className: Ee(
         "z-[1200] flex min-w-[220px] flex-col gap-2 rounded-xl bg-surface p-2.5 shadow-lg",
-        !m && "absolute",
-        !m && !$ && "top-[calc(100%+8px)]",
-        !m && $ && "bottom-[calc(100%+8px)]",
-        !m && B ? "right-0" : m ? void 0 : "left-0",
-        N
+        !c && "absolute",
+        !c && !z && "top-[calc(100%+8px)]",
+        !c && z && "bottom-[calc(100%+8px)]",
+        !c && B ? "right-0" : c ? void 0 : "left-0",
+        f
       ),
-      style: m ? { ...D, ...K } : K,
+      style: c ? { ...D, ...X } : X,
       role: "menu",
       children: [
-        /* @__PURE__ */ e("div", { className: Pe("flex min-h-0 flex-col gap-1", E), children: n.map(W) }),
-        s.length > 0 && /* @__PURE__ */ e("div", { className: Pe("flex flex-col gap-1 border-t border-lineSoft pt-2", j), children: s.map(W) })
+        /* @__PURE__ */ e("div", { className: Ee("flex min-h-0 flex-col gap-1", E), children: n.map(U) }),
+        s.length > 0 && /* @__PURE__ */ e("div", { className: Ee("flex flex-col gap-1 border-t border-lineSoft pt-2", _), children: s.map(U) })
       ]
     }
   ) : null;
-  return /* @__PURE__ */ r("div", { ref: z, className: Pe("relative inline-block", p), children: [
-    /* @__PURE__ */ e("button", { type: "button", className: Pe("m-0 inline-flex cursor-pointer items-center justify-center border-0 bg-transparent p-0", h), onClick: (M) => {
-      u == null || u(M), a == null || a(!l);
+  return /* @__PURE__ */ r("div", { ref: $, className: Ee("relative inline-block", b), children: [
+    /* @__PURE__ */ e("button", { type: "button", className: Ee("m-0 inline-flex cursor-pointer items-center justify-center border-0 bg-transparent p-0", p), onClick: (M) => {
+      d == null || d(M), a == null || a(!l);
     }, "aria-haspopup": "menu", "aria-expanded": l, children: t }),
-    m ? P && Dr(P, document.body) : P
+    c ? P && Dr(P, document.body) : P
   ] });
 };
-ut.displayName = "BaseActionMenu";
+pt.displayName = "BaseActionMenu";
 const _n = ({
   markdownContent: t,
   copyLabel: n = "复制 Markdown",
   onRefresh: s,
   feedback: l,
   onFeedback: a,
-  disabled: u = !1
+  disabled: d = !1
 }) => {
-  const [f, k] = v(!1), d = !!(s || a), m = Le(async () => {
+  const [h, N] = v(!1), u = !!(s || a), c = Pe(async () => {
     if (t.trim())
       try {
-        await navigator.clipboard.writeText(t), k(!0), window.setTimeout(() => k(!1), 1200);
+        await navigator.clipboard.writeText(t), N(!0), window.setTimeout(() => N(!1), 1200);
       } catch {
       }
   }, [t]);
   return /* @__PURE__ */ r(
     "div",
     {
-      className: `inline-flex items-center gap-1 rounded-full text-tertiaryText ${d ? "bg-white py-1" : ""}`,
+      className: `inline-flex items-center gap-1 rounded-full text-tertiaryText ${u ? "bg-white py-1" : ""}`,
       children: [
         /* @__PURE__ */ e(
           "button",
           {
             type: "button",
-            onClick: m,
-            className: `h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors ${f ? "bg-bgLight text-primaryText" : "hover:bg-bgLight"}`,
-            title: f ? "已复制" : n,
-            children: f ? /* @__PURE__ */ e(et, { size: 15 }) : /* @__PURE__ */ e(pt, { size: 15 })
+            onClick: c,
+            className: `h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors ${h ? "bg-bgLight text-primaryText" : "hover:bg-bgLight"}`,
+            title: h ? "已复制" : n,
+            children: h ? /* @__PURE__ */ e(Je, { size: 15 }) : /* @__PURE__ */ e(ft, { size: 15 })
           }
         ),
         s && /* @__PURE__ */ e(
@@ -549,13 +549,13 @@ const _n = ({
           {
             type: "button",
             onClick: s,
-            disabled: u,
+            disabled: d,
             className: "h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors hover:bg-bgLight disabled:cursor-not-allowed disabled:opacity-50",
             title: "重新生成",
             children: /* @__PURE__ */ e(hr, { size: 15 })
           }
         ),
-        a && /* @__PURE__ */ r(Ue, { children: [
+        a && /* @__PURE__ */ r(Ve, { children: [
           /* @__PURE__ */ e(
             "button",
             {
@@ -580,14 +580,14 @@ const _n = ({
       ]
     }
   );
-}, _t = De.memo(_n), Bn = {
+}, _t = je.memo(_n), Bn = {
   clarification: {
     icon: /* @__PURE__ */ e(Vt, { size: 16 }),
     className: "border-warning bg-warning-soft",
     iconClassName: "text-warning"
   },
   confirmation: {
-    icon: /* @__PURE__ */ e(ct, { size: 16 }),
+    icon: /* @__PURE__ */ e(ut, { size: 16 }),
     className: "border-primary-soft-strong bg-primary-soft",
     iconClassName: "text-primary"
   },
@@ -597,12 +597,12 @@ const _n = ({
     iconClassName: "text-warning"
   },
   result: {
-    icon: /* @__PURE__ */ e(ct, { size: 16 }),
+    icon: /* @__PURE__ */ e(ut, { size: 16 }),
     className: "border-lineSubtle bg-surface",
     iconClassName: "text-primary"
   },
   warning: {
-    icon: /* @__PURE__ */ e(St, { size: 16 }),
+    icon: /* @__PURE__ */ e(Mt, { size: 16 }),
     className: "border-warning bg-warning-soft",
     iconClassName: "text-warning"
   },
@@ -627,7 +627,7 @@ function In({ card: t, actionPending: n = !1, onAction: s }) {
         t.statusLabel && /* @__PURE__ */ e("span", { className: "rounded-full bg-surface px-2 py-0.5 text-[11px] text-secondaryText", children: t.statusLabel })
       ] }),
       t.summary && /* @__PURE__ */ e("p", { className: "m-0 mt-1.5 whitespace-pre-wrap text-sm leading-6 text-secondaryText", children: t.summary }),
-      t.items && t.items.length > 0 && /* @__PURE__ */ e("ul", { className: "m-0 mt-2 space-y-1 pl-4 text-sm leading-6 text-secondaryText", children: t.items.map((a, u) => /* @__PURE__ */ e("li", { children: a }, `${u}-${a}`)) }),
+      t.items && t.items.length > 0 && /* @__PURE__ */ e("ul", { className: "m-0 mt-2 space-y-1 pl-4 text-sm leading-6 text-secondaryText", children: t.items.map((a, d) => /* @__PURE__ */ e("li", { children: a }, `${d}-${a}`)) }),
       t.links && t.links.length > 0 && /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2", children: t.links.map((a) => /* @__PURE__ */ r(
         "a",
         {
@@ -657,18 +657,18 @@ function In({ card: t, actionPending: n = !1, onAction: s }) {
   ] }) });
 }
 function Rn({ draft: t, onPreview: n, onConfirm: s, onCancel: l }) {
-  const a = t.status === "saving", u = t.status === "saved", f = t.actionable ?? !0, k = t.previewable ?? !0, d = a || u || !f || !s;
+  const a = t.status === "saving", d = t.status === "saved", h = t.actionable ?? !0, N = t.previewable ?? !0, u = a || d || !h || !s;
   return /* @__PURE__ */ r("article", { className: "not-prose w-full max-w-[460px] rounded-xl border border-borderGray bg-surface p-4 shadow-sm", children: [
     /* @__PURE__ */ r(
       "button",
       {
         type: "button",
-        disabled: !n || !k,
+        disabled: !n || !N,
         onClick: () => n == null ? void 0 : n(t.actionKey),
         className: "flex w-full min-w-0 items-start gap-3 rounded-lg text-left outline-none transition-colors enabled:hover:bg-bgLight enabled:focus-visible:ring-2 enabled:focus-visible:ring-primary-soft-strong disabled:cursor-default",
         "aria-label": `预览草稿：${t.title}`,
         children: [
-          /* @__PURE__ */ e("div", { className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary", children: /* @__PURE__ */ e(ht, { size: 20, strokeWidth: 1.8, "aria-hidden": "true" }) }),
+          /* @__PURE__ */ e("div", { className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary", children: /* @__PURE__ */ e(xt, { size: 20, strokeWidth: 1.8, "aria-hidden": "true" }) }),
           /* @__PURE__ */ r("div", { className: "min-w-0 flex-1", children: [
             /* @__PURE__ */ e("p", { className: "m-0 text-xs leading-5 text-tertiaryText", children: "Mira 文档草稿" }),
             /* @__PURE__ */ e("h3", { className: "m-0 line-clamp-2 text-sm font-medium leading-5 text-primaryText", children: t.title }),
@@ -678,9 +678,9 @@ function Rn({ draft: t, onPreview: n, onConfirm: s, onCancel: l }) {
       }
     ),
     /* @__PURE__ */ r("div", { className: "mt-4 flex items-center justify-between gap-3 border-t border-lineSubtle pt-3", children: [
-      /* @__PURE__ */ e("p", { className: "m-0 min-w-0 truncate text-xs text-tertiaryText", children: u ? "已保存到项目" : `保存到 ${t.targetLabel || "当前项目"}` }),
+      /* @__PURE__ */ e("p", { className: "m-0 min-w-0 truncate text-xs text-tertiaryText", children: d ? "已保存到项目" : `保存到 ${t.targetLabel || "当前项目"}` }),
       /* @__PURE__ */ r("div", { className: "flex shrink-0 items-center gap-2", children: [
-        !u && f && l && /* @__PURE__ */ e(
+        !d && h && l && /* @__PURE__ */ e(
           Fe,
           {
             type: "secondary",
@@ -690,18 +690,18 @@ function Rn({ draft: t, onPreview: n, onConfirm: s, onCancel: l }) {
             children: "取消"
           }
         ),
-        (f || u) && /* @__PURE__ */ e(
+        (h || d) && /* @__PURE__ */ e(
           Fe,
           {
-            type: u ? "secondary" : "primary",
+            type: d ? "secondary" : "primary",
             size: "small",
-            disabled: d,
+            disabled: u,
             onClick: () => s == null ? void 0 : s(t.actionKey),
-            children: a ? /* @__PURE__ */ r(Ue, { children: [
+            children: a ? /* @__PURE__ */ r(Ve, { children: [
               /* @__PURE__ */ e(Kt, { size: 14, className: "animate-spin", "aria-hidden": "true" }),
               "保存中"
-            ] }) : u ? /* @__PURE__ */ r(Ue, { children: [
-              /* @__PURE__ */ e(et, { size: 14, "aria-hidden": "true" }),
+            ] }) : d ? /* @__PURE__ */ r(Ve, { children: [
+              /* @__PURE__ */ e(Je, { size: 14, "aria-hidden": "true" }),
               "已保存"
             ] }) : "确认保存"
           }
@@ -712,17 +712,17 @@ function Rn({ draft: t, onPreview: n, onConfirm: s, onCancel: l }) {
   ] });
 }
 const Bt = "[[PAPER_LIST_JSON]]";
-let It = !1, st = null, lt = null, it = null;
-const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("rehype-katex")]).then(([t, n]) => ({
+let It = !1, it = null, ot = null, ct = null;
+const jn = async () => (ot || (ot = Promise.all([import("remark-math"), import("rehype-katex")]).then(([t, n]) => ({
   remark: t.default,
   rehype: n.default
 })).catch((t) => {
-  throw lt = null, t;
-})), lt), Dn = async () => (it || (it = import("remark-emoji").then((t) => t.default).catch(() => (it = null, null))), it), Fn = async () => {
-  st || (st = import("mermaid").then((n) => n.default ?? n).catch((n) => {
-    throw st = null, n;
+  throw ot = null, t;
+})), ot), Dn = async () => (ct || (ct = import("remark-emoji").then((t) => t.default).catch(() => (ct = null, null))), ct), Fn = async () => {
+  it || (it = import("mermaid").then((n) => n.default ?? n).catch((n) => {
+    throw it = null, n;
   }));
-  const t = await st;
+  const t = await it;
   if (!It) {
     const n = getComputedStyle(document.documentElement).getPropertyValue("--chatui-color-brand-primary").trim();
     t.initialize({
@@ -734,7 +734,7 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
     }), It = !0;
   }
   return t;
-}, mt = (t) => typeof t == "string" || typeof t == "number" ? String(t) : Array.isArray(t) ? t.map((n) => mt(n)).join("") : De.isValidElement(t) ? mt(t.props.children) : "", Rt = (t) => {
+}, ht = (t) => typeof t == "string" || typeof t == "number" ? String(t) : Array.isArray(t) ? t.map((n) => ht(n)).join("") : je.isValidElement(t) ? ht(t.props.children) : "", Rt = (t) => {
   const n = t.trim().toLowerCase();
   return /\.pdf($|[?#])/i.test(n);
 }, Hn = ({ href: t, label: n }) => {
@@ -742,8 +742,8 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
     const l = n.trim();
     if (l) return l;
     try {
-      const u = new URL(t, typeof window < "u" ? window.location.origin : "http://localhost").pathname.split("/").filter(Boolean).pop();
-      if (u) return decodeURIComponent(u);
+      const d = new URL(t, typeof window < "u" ? window.location.origin : "http://localhost").pathname.split("/").filter(Boolean).pop();
+      if (d) return decodeURIComponent(d);
     } catch {
     }
     return t;
@@ -767,10 +767,10 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
     )
   ] });
 }, qn = ({ language: t, rawCode: n, className: s, children: l }) => {
-  const [a, u] = v(!1), f = Le(async () => {
+  const [a, d] = v(!1), h = Pe(async () => {
     if (n.trim())
       try {
-        await navigator.clipboard.writeText(n), u(!0), window.setTimeout(() => u(!1), 1200);
+        await navigator.clipboard.writeText(n), d(!0), window.setTimeout(() => d(!1), 1200);
       } catch {
       }
   }, [n]);
@@ -781,11 +781,11 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
         "button",
         {
           type: "button",
-          onClick: f,
+          onClick: h,
           className: `code-block-copy-btn ${a ? "copied" : ""}`,
           title: a ? "已复制代码" : "复制代码",
           children: [
-            a ? /* @__PURE__ */ e(et, { size: 12 }) : /* @__PURE__ */ e(pt, { size: 12 }),
+            a ? /* @__PURE__ */ e(Je, { size: 12 }) : /* @__PURE__ */ e(ft, { size: 12 }),
             a ? "已复制" : "复制"
           ]
         }
@@ -794,7 +794,7 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
     /* @__PURE__ */ e("pre", { className: "!m-0 !rounded-none !border-0 !bg-transparent px-4 py-3 whitespace-pre-wrap break-words", children: /* @__PURE__ */ e("code", { className: `code-block-content ${s ?? ""}`.trim(), children: l }) })
   ] });
 }, Wn = ({ rawCode: t }) => {
-  const [n, s] = v(!1), l = Le(async () => {
+  const [n, s] = v(!1), l = Pe(async () => {
     if (t.trim())
       try {
         await navigator.clipboard.writeText(t), s(!0), window.setTimeout(() => s(!1), 1200);
@@ -812,7 +812,7 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
           className: `code-block-copy-btn ${n ? "copied" : ""}`,
           title: n ? "已复制图表代码" : "复制图表代码",
           children: [
-            n ? /* @__PURE__ */ e(et, { size: 12 }) : /* @__PURE__ */ e(pt, { size: 12 }),
+            n ? /* @__PURE__ */ e(Je, { size: 12 }) : /* @__PURE__ */ e(ft, { size: 12 }),
             n ? "已复制" : "复制"
           ]
         }
@@ -829,15 +829,15 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
   if (n.length === 0) return null;
   const s = [];
   return n.forEach((l, a) => {
-    var h;
-    const u = l.match(/PMID\s*[:：]\s*(\d{4,})/i), f = l.match(/DOI\s*[:：]\s*([^\s,，;；]+)/i);
-    if (!u || !f) return;
-    const k = l.slice(0, u.index ?? 0).replace(/[，,;；:\-—]+\s*$/g, "").trim(), d = ((h = n[a - 1]) == null ? void 0 : h.replace(/^[-*•\d.\s)]+/, "").trim()) ?? "", p = sr({
-      title: k || d,
-      pmid: u[1],
-      doi: f[1]
+    var p;
+    const d = l.match(/PMID\s*[:：]\s*(\d{4,})/i), h = l.match(/DOI\s*[:：]\s*([^\s,，;；]+)/i);
+    if (!d || !h) return;
+    const N = l.slice(0, d.index ?? 0).replace(/[，,;；:\-—]+\s*$/g, "").trim(), u = ((p = n[a - 1]) == null ? void 0 : p.replace(/^[-*•\d.\s)]+/, "").trim()) ?? "", b = sr({
+      title: N || u,
+      pmid: d[1],
+      doi: h[1]
     });
-    p && s.push(p);
+    b && s.push(b);
   }), s.length === 0 ? null : { items: s };
 }, Un = (t) => {
   if (!t.startsWith(Bt))
@@ -858,113 +858,113 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
   feedback: s,
   onFeedback: l,
   onRefresh: a,
-  onConfirmMiraDraft: u,
-  onPreviewMiraDraft: f,
-  onCancelMiraDraft: k,
-  pendingDisplayActionKey: d,
-  onDisplayCardAction: m,
-  isTyping: p = !1,
-  isStreaming: h
+  onConfirmMiraDraft: d,
+  onPreviewMiraDraft: h,
+  onCancelMiraDraft: N,
+  pendingDisplayActionKey: u,
+  onDisplayCardAction: c,
+  isTyping: b = !1,
+  isStreaming: p
 }) => {
-  var g, X;
-  const N = t.role === "user", E = h ?? p, j = me(null), [z, _] = v(null), [D, V] = v(null), [B, $] = v(null), [K, W] = v(!1), P = ge(() => /```\s*mermaid/i.test(t.content), [t.content]), M = ge(() => /\$\$[\s\S]*?\$\$|(^|[^\\])\$[^\n$]+\$|\\\(|\\\[|\\begin\{|\\ce\{/.test(t.content), [t.content]), O = ge(() => /:[a-zA-Z0-9_+-]+:/.test(t.content), [t.content]), x = ge(
-    () => N ? null : Un(t.content),
-    [N, t.content]
-  ), q = !!(x && x.items.length > 0);
+  var g, q;
+  const f = t.role === "user", E = p ?? b, _ = he(null), [$, I] = v(null), [D, K] = v(null), [B, z] = v(null), [X, U] = v(!1), P = ge(() => /```\s*mermaid/i.test(t.content), [t.content]), M = ge(() => /\$\$[\s\S]*?\$\$|(^|[^\\])\$[^\n$]+\$|\\\(|\\\[|\\begin\{|\\ce\{/.test(t.content), [t.content]), G = ge(() => /:[a-zA-Z0-9_+-]+:/.test(t.content), [t.content]), x = ge(
+    () => f ? null : Un(t.content),
+    [f, t.content]
+  ), F = !!(x && x.items.length > 0);
   ye(() => {
-    if (!M || z || D) return;
-    let y = !1;
-    return jn().then((S) => {
-      y || (_(() => S.remark), V(() => S.rehype));
+    if (!M || $ || D) return;
+    let m = !1;
+    return jn().then((T) => {
+      m || (I(() => T.remark), K(() => T.rehype));
     }).catch(() => {
     }), () => {
-      y = !0;
+      m = !0;
     };
-  }, [M, z, D]), ye(() => {
-    if (!O || K) return;
-    let y = !1;
-    return Dn().then((S) => {
-      y || (S && $(() => S), W(!0));
+  }, [M, $, D]), ye(() => {
+    if (!G || X) return;
+    let m = !1;
+    return Dn().then((T) => {
+      m || (T && z(() => T), U(!0));
     }), () => {
-      y = !0;
+      m = !0;
     };
-  }, [O, K]);
-  const ne = ge(() => {
-    const y = [nr];
-    return B && y.push(B), z && y.push(z), y;
-  }, [B, z]), I = ge(() => {
-    const y = [jr];
-    return D && y.push(D), y;
-  }, [D]), w = ge(
+  }, [G, X]);
+  const re = ge(() => {
+    const m = [nr];
+    return B && m.push(B), $ && m.push($), m;
+  }, [B, $]), ne = ge(() => {
+    const m = [jr];
+    return D && m.push(D), m;
+  }, [D]), S = ge(
     () => ({
-      table: ({ node: y, ...S }) => /* @__PURE__ */ e("div", { className: "my-2 overflow-x-auto rounded-xl border border-borderGray bg-surface", children: /* @__PURE__ */ e("table", { className: "!my-0 min-w-full border-collapse text-sm leading-6", ...S }) }),
-      tr: ({ node: y, ...S }) => /* @__PURE__ */ e("tr", { className: "border-b border-borderGray last:border-b-0", ...S }),
-      th: ({ node: y, ...S }) => /* @__PURE__ */ e(
+      table: ({ node: m, ...T }) => /* @__PURE__ */ e("div", { className: "my-2 overflow-x-auto rounded-xl border border-borderGray bg-surface", children: /* @__PURE__ */ e("table", { className: "!my-0 min-w-full border-collapse text-sm leading-6", ...T }) }),
+      tr: ({ node: m, ...T }) => /* @__PURE__ */ e("tr", { className: "border-b border-borderGray last:border-b-0", ...T }),
+      th: ({ node: m, ...T }) => /* @__PURE__ */ e(
         "th",
         {
           className: "border-r border-borderGray bg-bgLight px-4 py-2.5 text-left text-xs font-medium text-tertiaryText last:border-r-0",
-          ...S
+          ...T
         }
       ),
-      td: ({ node: y, ...S }) => /* @__PURE__ */ e("td", { className: "border-r border-borderGray px-4 py-2.5 text-sm text-primaryText last:border-r-0", ...S }),
-      blockquote: ({ node: y, ...S }) => /* @__PURE__ */ e(
+      td: ({ node: m, ...T }) => /* @__PURE__ */ e("td", { className: "border-r border-borderGray px-4 py-2.5 text-sm text-primaryText last:border-r-0", ...T }),
+      blockquote: ({ node: m, ...T }) => /* @__PURE__ */ e(
         "blockquote",
         {
           className: "my-3 rounded-r-md border-l-2 border-borderGray bg-transparent py-0.5 pl-4 text-base leading-7 text-tertiaryText font-normal [&>*]:my-0 [&>*]:!font-normal",
-          ...S
+          ...T
         }
       ),
-      input: ({ node: y, type: S, checked: U, ...ae }) => S === "checkbox" ? /* @__PURE__ */ e(
+      input: ({ node: m, type: T, checked: V, ...ue }) => T === "checkbox" ? /* @__PURE__ */ e(
         "input",
         {
           type: "checkbox",
-          checked: !!U,
+          checked: !!V,
           disabled: !0,
           className: "mr-2 accent-primary",
-          ...ae
+          ...ue
         }
-      ) : /* @__PURE__ */ e("input", { type: S, ...ae }),
-      section: ({ node: y, ...S }) => /* @__PURE__ */ e("section", { className: "mt-8 border-t border-chatContentDivider pt-4 text-sm text-chatContentMuted", ...S }),
-      p: ({ node: y, children: S, ...U }) => {
-        const ae = De.Children.toArray(S);
-        if (ae.length === 1 && De.isValidElement(ae[0])) {
-          const ve = ae[0];
+      ) : /* @__PURE__ */ e("input", { type: T, ...ue }),
+      section: ({ node: m, ...T }) => /* @__PURE__ */ e("section", { className: "mt-8 border-t border-chatContentDivider pt-4 text-sm text-chatContentMuted", ...T }),
+      p: ({ node: m, children: T, ...V }) => {
+        const ue = je.Children.toArray(T);
+        if (ue.length === 1 && je.isValidElement(ue[0])) {
+          const ve = ue[0];
           if (typeof ve.props.href == "string" && Rt(ve.props.href)) {
-            const Q = mt(ve.props.children).trim();
-            return /* @__PURE__ */ e(Hn, { href: ve.props.href, label: Q });
+            const Y = ht(ve.props.children).trim();
+            return /* @__PURE__ */ e(Hn, { href: ve.props.href, label: Y });
           }
         }
-        return /* @__PURE__ */ e("p", { ...U, children: S });
+        return /* @__PURE__ */ e("p", { ...V, children: T });
       },
-      a: ({ node: y, href: S, ...U }) => {
-        const ae = S ?? "", ve = /^https?:\/\/(dx\.)?doi\.org\//i.test(ae) || /^doi:/i.test(ae), Q = /pubmed\.ncbi\.nlm\.nih\.gov/i.test(ae) || /\/pmc\/|\/pmid\//i.test(ae), T = Rt(ae);
-        return ve || Q || T ? /* @__PURE__ */ e(
+      a: ({ node: m, href: T, ...V }) => {
+        const ue = T ?? "", ve = /^https?:\/\/(dx\.)?doi\.org\//i.test(ue) || /^doi:/i.test(ue), Y = /pubmed\.ncbi\.nlm\.nih\.gov/i.test(ue) || /\/pmc\/|\/pmid\//i.test(ue), C = Rt(ue);
+        return ve || Y || C ? /* @__PURE__ */ e(
           "a",
           {
-            href: S,
+            href: T,
             target: "_blank",
             rel: "noreferrer",
             className: "text-[13px] font-medium text-primary no-underline hover:underline",
-            ...U
+            ...V
           }
-        ) : /* @__PURE__ */ e("a", { href: S, target: "_blank", rel: "noreferrer", ...U });
+        ) : /* @__PURE__ */ e("a", { href: T, target: "_blank", rel: "noreferrer", ...V });
       },
-      pre({ children: y, ...S }) {
-        const U = De.Children.toArray(y).find(
-          (L) => De.isValidElement(L) && typeof L.props.className == "string" && L.props.className.includes("language-")
+      pre({ children: m, ...T }) {
+        const V = je.Children.toArray(m).find(
+          (R) => je.isValidElement(R) && typeof R.props.className == "string" && R.props.className.includes("language-")
         );
-        if (!U)
-          return /* @__PURE__ */ e("pre", { ...S, children: y });
-        const ae = U.props.className ?? "", ve = ae.match(/language-([\w-]+)/), Q = ve ? ve[1].toLowerCase() : "code", T = mt(U.props.children).replace(/\n$/, "");
-        return Q === "mermaid" ? /* @__PURE__ */ e(Wn, { rawCode: T }) : /* @__PURE__ */ e(qn, { language: Q, rawCode: T, className: ae, children: U.props.children });
+        if (!V)
+          return /* @__PURE__ */ e("pre", { ...T, children: m });
+        const ue = V.props.className ?? "", ve = ue.match(/language-([\w-]+)/), Y = ve ? ve[1].toLowerCase() : "code", C = ht(V.props.children).replace(/\n$/, "");
+        return Y === "mermaid" ? /* @__PURE__ */ e(Wn, { rawCode: C }) : /* @__PURE__ */ e(qn, { language: Y, rawCode: C, className: ue, children: V.props.children });
       },
-      code({ children: y, className: S, ...U }) {
-        return S ? /* @__PURE__ */ e("code", { className: S, ...U, children: y }) : /* @__PURE__ */ e(
+      code({ children: m, className: T, ...V }) {
+        return T ? /* @__PURE__ */ e("code", { className: T, ...V, children: m }) : /* @__PURE__ */ e(
           "code",
           {
             className: "inline-flex items-center rounded-md bg-bgLight px-2.5 py-1 text-sm leading-[1.6] !font-normal tracking-[0.01em] text-primaryText",
-            ...U,
-            children: y
+            ...V,
+            children: m
           }
         );
       }
@@ -972,52 +972,52 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
     []
   );
   return ye(() => {
-    if (N || E || !P) return;
-    const y = j.current;
-    if (!y) return;
-    const S = Array.from(y.querySelectorAll(".mermaid")).filter(
-      (U) => U.dataset.processed !== "true"
+    if (f || E || !P) return;
+    const m = _.current;
+    if (!m) return;
+    const T = Array.from(m.querySelectorAll(".mermaid")).filter(
+      (V) => V.dataset.processed !== "true"
     );
-    S.length !== 0 && Fn().then(async (U) => {
+    T.length !== 0 && Fn().then(async (V) => {
       await Promise.all(
-        S.map(async (ae, ve) => {
-          var F;
-          const Q = (F = ae.textContent) == null ? void 0 : F.trim();
-          if (!Q) return;
-          const T = `mermaid-${Date.now()}-${ve}`, { svg: L } = await U.render(T, Q);
-          ae.innerHTML = L, ae.dataset.processed = "true";
+        T.map(async (ue, ve) => {
+          var j;
+          const Y = (j = ue.textContent) == null ? void 0 : j.trim();
+          if (!Y) return;
+          const C = `mermaid-${Date.now()}-${ve}`, { svg: R } = await V.render(C, Y);
+          ue.innerHTML = R, ue.dataset.processed = "true";
         })
       );
     }).catch(() => {
     });
-  }, [N, E, P, t.content]), /* @__PURE__ */ e("div", { className: "flex w-full justify-center px-2", children: /* @__PURE__ */ e("div", { className: `flex w-full max-w-[860px] px-1 md:px-2 ${N ? "justify-end" : "justify-start"}`, children: N ? /* @__PURE__ */ r("div", { className: "flex w-full flex-col items-end gap-1", children: [
+  }, [f, E, P, t.content]), /* @__PURE__ */ e("div", { className: "flex w-full justify-center px-2", children: /* @__PURE__ */ e("div", { className: `flex w-full max-w-[860px] px-1 md:px-2 ${f ? "justify-end" : "justify-start"}`, children: f ? /* @__PURE__ */ r("div", { className: "flex w-full flex-col items-end gap-1", children: [
     /* @__PURE__ */ r("div", { className: "message-bubble-user", children: [
       (t.references && t.references.length > 0 || t.attachments && t.attachments.length > 0) && /* @__PURE__ */ r("div", { className: "mb-2 flex flex-wrap gap-2", children: [
-        (g = t.references) == null ? void 0 : g.map((y) => /* @__PURE__ */ r(
+        (g = t.references) == null ? void 0 : g.map((m) => /* @__PURE__ */ r(
           "div",
           {
-            className: `inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5 text-sm shadow-sm ${y.type === "skill" ? "border border-chatSkillBorder bg-chatSkillSurface text-chatSkillText" : "border border-chatReferenceBorder bg-chatReferenceSurface text-chatReferenceText"}`,
+            className: `inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5 text-sm shadow-sm ${m.type === "skill" ? "border border-chatSkillBorder bg-chatSkillSurface text-chatSkillText" : "border border-chatReferenceBorder bg-chatReferenceSurface text-chatReferenceText"}`,
             children: [
-              y.type === "skill" ? /* @__PURE__ */ e(Ot, { size: 12, className: "shrink-0 text-chatSkillText" }) : /* @__PURE__ */ e(Xt, { size: 12, className: "shrink-0 text-chatReferenceText" }),
-              /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate", title: y.label, children: y.label })
+              m.type === "skill" ? /* @__PURE__ */ e(Ot, { size: 12, className: "shrink-0 text-chatSkillText" }) : /* @__PURE__ */ e(Xt, { size: 12, className: "shrink-0 text-chatReferenceText" }),
+              /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate", title: m.label, children: m.label })
             ]
           },
-          y.id
+          m.id
         )),
-        (X = t.attachments) == null ? void 0 : X.map((y) => /* @__PURE__ */ r(
+        (q = t.attachments) == null ? void 0 : q.map((m) => /* @__PURE__ */ r(
           "div",
           {
-            className: `inline-flex max-w-full items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm shadow-sm ${y.status === "error" ? "border-danger bg-danger-soft text-danger" : "border-chatAttachmentBorder bg-white text-primaryText"}`,
-            role: y.status === "error" ? "alert" : void 0,
-            title: y.errorMessage,
+            className: `inline-flex max-w-full items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm shadow-sm ${m.status === "error" ? "border-danger bg-danger-soft text-danger" : "border-chatAttachmentBorder bg-white text-primaryText"}`,
+            role: m.status === "error" ? "alert" : void 0,
+            title: m.errorMessage,
             children: [
-              y.status === "uploading" ? /* @__PURE__ */ e(Kt, { size: 13, className: "shrink-0 animate-spin text-primary", "aria-hidden": "true" }) : y.status === "error" ? /* @__PURE__ */ e(vr, { size: 13, className: "shrink-0 text-danger", "aria-hidden": "true" }) : y.previewUrl ? /* @__PURE__ */ e("span", { className: "inline-flex h-[14px] w-[14px] shrink-0 overflow-hidden rounded-[3px] bg-chatAttachmentIconSurface", children: /* @__PURE__ */ e("img", { src: y.previewUrl, alt: y.name, className: "h-full w-full object-cover" }) }) : /* @__PURE__ */ e(Gt, { size: 13, className: "shrink-0 text-tertiaryText" }),
-              /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate", title: y.name, children: y.name }),
-              y.status === "uploading" && /* @__PURE__ */ e("span", { className: "shrink-0 text-xs text-tertiaryText", children: "上传中" }),
-              y.status === "error" && /* @__PURE__ */ e("span", { className: "shrink-0 text-xs text-danger", children: "上传失败" })
+              m.status === "uploading" ? /* @__PURE__ */ e(Kt, { size: 13, className: "shrink-0 animate-spin text-primary", "aria-hidden": "true" }) : m.status === "error" ? /* @__PURE__ */ e(vr, { size: 13, className: "shrink-0 text-danger", "aria-hidden": "true" }) : m.previewUrl ? /* @__PURE__ */ e("span", { className: "inline-flex h-[14px] w-[14px] shrink-0 overflow-hidden rounded-[3px] bg-chatAttachmentIconSurface", children: /* @__PURE__ */ e("img", { src: m.previewUrl, alt: m.name, className: "h-full w-full object-cover" }) }) : /* @__PURE__ */ e(Gt, { size: 13, className: "shrink-0 text-tertiaryText" }),
+              /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate", title: m.name, children: m.name }),
+              m.status === "uploading" && /* @__PURE__ */ e("span", { className: "shrink-0 text-xs text-tertiaryText", children: "上传中" }),
+              m.status === "error" && /* @__PURE__ */ e("span", { className: "shrink-0 text-xs text-danger", children: "上传失败" })
             ]
           },
-          y.id
+          m.id
         ))
       ] }),
       /* @__PURE__ */ e("p", { className: "whitespace-pre-wrap", children: t.content })
@@ -1030,25 +1030,25 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
       }
     )
   ] }) : /* @__PURE__ */ r("div", { className: "flex w-full min-w-0 max-w-[85%] flex-col items-start gap-2", children: [
-    q && x ? /* @__PURE__ */ e("div", { className: "w-full space-y-2.5", children: x.items.map((y, S) => /* @__PURE__ */ r(
+    F && x ? /* @__PURE__ */ e("div", { className: "w-full space-y-2.5", children: x.items.map((m, T) => /* @__PURE__ */ r(
       "article",
       {
         className: "group not-prose inline-flex w-full items-center gap-3 rounded-xl border border-borderGray bg-surface px-3 py-2.5 shadow-sm",
         children: [
           /* @__PURE__ */ e("div", { className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary text-[11px] font-semibold tracking-wide text-white", children: "文献" }),
           /* @__PURE__ */ r("div", { className: "min-w-0 flex-1", children: [
-            /* @__PURE__ */ e("p", { className: "m-0 truncate text-base font-medium text-primaryText", children: y.title }),
+            /* @__PURE__ */ e("p", { className: "m-0 truncate text-base font-medium text-primaryText", children: m.title }),
             /* @__PURE__ */ r("p", { className: "m-0 text-xs text-secondaryText", children: [
               "PMID:",
               " ",
               /* @__PURE__ */ e(
                 "a",
                 {
-                  href: `https://pubmed.ncbi.nlm.nih.gov/${y.pmid}/`,
+                  href: `https://pubmed.ncbi.nlm.nih.gov/${m.pmid}/`,
                   target: "_blank",
                   rel: "noreferrer",
                   className: "font-medium text-primary no-underline hover:underline",
-                  children: y.pmid
+                  children: m.pmid
                 }
               ),
               "  ",
@@ -1059,11 +1059,11 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
               /* @__PURE__ */ e(
                 "a",
                 {
-                  href: `https://doi.org/${y.doi}`,
+                  href: `https://doi.org/${m.doi}`,
                   target: "_blank",
                   rel: "noreferrer",
                   className: "font-medium text-primary no-underline hover:underline",
-                  children: y.doi
+                  children: m.doi
                 }
               )
             ] })
@@ -1071,7 +1071,7 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
           /* @__PURE__ */ e(
             "a",
             {
-              href: `https://pubmed.ncbi.nlm.nih.gov/${y.pmid}/`,
+              href: `https://pubmed.ncbi.nlm.nih.gov/${m.pmid}/`,
               target: "_blank",
               rel: "noreferrer",
               "aria-label": "打开文献详情",
@@ -1081,18 +1081,18 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
           )
         ]
       },
-      `${y.pmid}-${S}`
+      `${m.pmid}-${T}`
     )) }) : /* @__PURE__ */ e(
       "div",
       {
-        ref: j,
+        ref: _,
         className: "prose prose-slate max-w-none break-words text-primaryText prose-p:my-3 prose-p:text-[14px] prose-p:leading-[1.8] prose-li:text-[14px] prose-li:leading-[1.75] prose-headings:text-primaryText prose-headings:tracking-[-0.01em] prose-h1:mt-6 prose-h1:mb-3 prose-h1:text-[20px] md:prose-h1:text-[22px] prose-h1:leading-[1.3] prose-h1:font-semibold prose-h2:mt-7 prose-h2:mb-3 prose-h2:text-[16px] prose-h2:leading-[1.35] prose-h2:font-semibold prose-h3:mt-6 prose-h3:mb-2 prose-h3:text-[16px] prose-h3:leading-[1.45] prose-h3:font-semibold prose-strong:text-primaryText prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-hr:my-6 prose-li:my-1 prose-li:marker:text-secondaryText prose-ol:pl-6 prose-ul:pl-6 prose-a:text-primary prose-a:no-underline hover:prose-a:underline",
         children: /* @__PURE__ */ e(
           rr,
           {
-            remarkPlugins: ne,
-            rehypePlugins: I,
-            components: w,
+            remarkPlugins: re,
+            rehypePlugins: ne,
+            components: S,
             children: t.content
           }
         )
@@ -1102,31 +1102,31 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
       Rn,
       {
         draft: t.miraDraft,
-        onPreview: f,
-        onConfirm: u,
-        onCancel: k
+        onPreview: h,
+        onConfirm: d,
+        onCancel: N
       }
     ),
     t.displayCard && /* @__PURE__ */ e(
       In,
       {
         card: t.displayCard,
-        actionPending: d === t.displayCard.actionKey,
-        onAction: m
+        actionPending: u === t.displayCard.actionKey,
+        onAction: c
       }
     ),
-    !q && t.content && !E && /* @__PURE__ */ e(
+    !F && t.content && !E && /* @__PURE__ */ e(
       _t,
       {
         markdownContent: t.content,
         onRefresh: a,
         feedback: s,
-        onFeedback: n && l ? (y) => l(n, y) : void 0,
+        onFeedback: n && l ? (m) => l(n, m) : void 0,
         disabled: E
       }
     )
   ] }) }) });
-}, Vn = De.memo(lr), Kn = {
+}, Vn = je.memo(lr), Kn = {
   queued: "等待中…",
   thinking: "思考中…",
   analyzing: "分析中…",
@@ -1139,16 +1139,16 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
   warning: "处理时出现提醒",
   failed: "处理失败"
 }, On = {
-  queued: /* @__PURE__ */ e(ft, { size: 14, className: "text-tertiaryText" }),
-  thinking: /* @__PURE__ */ e(Xe, { size: 14, className: "animate-spin text-primary" }),
-  analyzing: /* @__PURE__ */ e(Xe, { size: 14, className: "animate-spin text-primary" }),
-  searching: /* @__PURE__ */ e(Xe, { size: 14, className: "animate-spin text-primary" }),
-  executing: /* @__PURE__ */ e(Xe, { size: 14, className: "animate-spin text-primary" }),
+  queued: /* @__PURE__ */ e(bt, { size: 14, className: "text-tertiaryText" }),
+  thinking: /* @__PURE__ */ e(Ge, { size: 14, className: "animate-spin text-primary" }),
+  analyzing: /* @__PURE__ */ e(Ge, { size: 14, className: "animate-spin text-primary" }),
+  searching: /* @__PURE__ */ e(Ge, { size: 14, className: "animate-spin text-primary" }),
+  executing: /* @__PURE__ */ e(Ge, { size: 14, className: "animate-spin text-primary" }),
   generating: /* @__PURE__ */ e(Zt, { size: 14, className: "animate-pulse text-primary" }),
   awaiting_clarification: /* @__PURE__ */ e(Vt, { size: 14, className: "text-warning" }),
-  awaiting_confirmation: /* @__PURE__ */ e(ct, { size: 14, className: "text-primary" }),
+  awaiting_confirmation: /* @__PURE__ */ e(ut, { size: 14, className: "text-primary" }),
   awaiting_approval: /* @__PURE__ */ e(Ut, { size: 14, className: "text-warning" }),
-  warning: /* @__PURE__ */ e(St, { size: 14, className: "text-warning" }),
+  warning: /* @__PURE__ */ e(Mt, { size: 14, className: "text-warning" }),
   failed: /* @__PURE__ */ e(Qt, { size: 14, className: "text-danger" })
 }, Dt = {
   knowledge: {
@@ -1181,11 +1181,11 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
   }
 }, Xn = {
   running: {
-    icon: /* @__PURE__ */ e(Xe, { size: 13, className: "animate-spin" }),
+    icon: /* @__PURE__ */ e(Ge, { size: 13, className: "animate-spin" }),
     colorClass: "text-primary"
   },
   completed: {
-    icon: /* @__PURE__ */ e(ct, { size: 13 }),
+    icon: /* @__PURE__ */ e(ut, { size: 13 }),
     colorClass: "text-primary"
   },
   failed: {
@@ -1197,32 +1197,32 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
     colorClass: "text-tertiaryText"
   },
   warning: {
-    icon: /* @__PURE__ */ e(St, { size: 13 }),
+    icon: /* @__PURE__ */ e(Mt, { size: 13 }),
     colorClass: "text-warning"
   }
-}, Ct = ({
+}, St = ({
   phase: t,
   searchSteps: n = [],
   label: s,
   defaultExpanded: l = !0
 }) => {
-  const [a, u] = v(l), f = me(null);
+  const [a, d] = v(l), h = he(null);
   ye(() => {
-    n.length > 0 && u(!0);
+    n.length > 0 && d(!0);
   }, [n.length]);
-  const k = n.length > 0;
+  const N = n.length > 0;
   return /* @__PURE__ */ r("div", { className: "flex w-full flex-col items-start", children: [
     /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
       /* @__PURE__ */ e("span", { className: "relative flex h-4 w-4 items-center justify-center", children: On[t] }),
       /* @__PURE__ */ e("span", { className: "text-[13px] leading-5 text-secondaryText select-none", children: s || Kn[t] }),
-      k && /* @__PURE__ */ r(
+      N && /* @__PURE__ */ r(
         "button",
         {
           type: "button",
-          onClick: () => u((d) => !d),
+          onClick: () => d((u) => !u),
           className: "ml-0.5 inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[12px] text-tertiaryText hover:bg-bgLight hover:text-secondaryText transition-colors",
           children: [
-            a ? /* @__PURE__ */ e(dt, { size: 12 }) : /* @__PURE__ */ e(ot, { size: 12 }),
+            a ? /* @__PURE__ */ e(mt, { size: 12 }) : /* @__PURE__ */ e(dt, { size: 12 }),
             /* @__PURE__ */ r("span", { children: [
               n.length,
               " 条进度"
@@ -1231,46 +1231,46 @@ const jn = async () => (lt || (lt = Promise.all([import("remark-math"), import("
         }
       )
     ] }),
-    k && /* @__PURE__ */ e(
+    N && /* @__PURE__ */ e(
       "div",
       {
-        ref: f,
+        ref: h,
         className: `ml-6 mt-1 space-y-1 overflow-hidden transition-all duration-300 ease-out ${a ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`,
-        children: n.map((d, m) => {
-          const p = Dt[d.type] ?? Dt.tool, h = d.status ? Xn[d.status] : void 0;
+        children: n.map((u, c) => {
+          const b = Dt[u.type] ?? Dt.tool, p = u.status ? Xn[u.status] : void 0;
           return /* @__PURE__ */ r(
             "div",
             {
               className: "flex items-start gap-2 text-[13px] leading-5 text-secondaryText",
               children: [
-                /* @__PURE__ */ e("span", { className: `mt-1 ${p.colorClass}`, children: p.icon }),
+                /* @__PURE__ */ e("span", { className: `mt-1 ${b.colorClass}`, children: b.icon }),
                 /* @__PURE__ */ r("span", { className: "min-w-0 max-w-[480px]", children: [
                   /* @__PURE__ */ r("span", { className: "flex items-center gap-1.5", children: [
-                    /* @__PURE__ */ e("span", { className: "block min-w-0 truncate", children: d.label }),
-                    h && /* @__PURE__ */ e(
+                    /* @__PURE__ */ e("span", { className: "block min-w-0 truncate", children: u.label }),
+                    p && /* @__PURE__ */ e(
                       "span",
                       {
-                        className: `shrink-0 ${h.colorClass}`,
-                        "aria-label": d.status,
-                        children: h.icon
+                        className: `shrink-0 ${p.colorClass}`,
+                        "aria-label": u.status,
+                        children: p.icon
                       }
                     )
                   ] }),
-                  (d.detail || d.resultCount !== void 0) && /* @__PURE__ */ r("span", { className: "block truncate text-[12px] text-tertiaryText", children: [
-                    d.detail,
-                    d.detail && d.resultCount !== void 0 ? " · " : "",
-                    d.resultCount !== void 0 ? `${d.resultCount} 条结果` : ""
+                  (u.detail || u.resultCount !== void 0) && /* @__PURE__ */ r("span", { className: "block truncate text-[12px] text-tertiaryText", children: [
+                    u.detail,
+                    u.detail && u.resultCount !== void 0 ? " · " : "",
+                    u.resultCount !== void 0 ? `${u.resultCount} 条结果` : ""
                   ] })
                 ] })
               ]
             },
-            d.id ?? `${d.type}-${m}-${d.label}`
+            u.id ?? `${u.type}-${c}-${u.label}`
           );
         })
       }
     )
   ] });
-}, Gn = De.memo(Ct);
+}, Gn = je.memo(St);
 function Yn(t, n) {
   if (typeof t == "function") {
     t(n);
@@ -1278,7 +1278,7 @@ function Yn(t, n) {
   }
   t && (t.current = n);
 }
-function Nt(t) {
+function kt(t) {
   const n = Number.parseFloat(t);
   return Number.isFinite(n) ? n : 0;
 }
@@ -1288,77 +1288,77 @@ function Qn({
   statusPhase: s = "thinking",
   statusLabel: l,
   statusVisible: a,
-  searchSteps: u = [],
-  hasReceivedAssistantChunk: f = !1,
-  contentMaxWidth: k = 800,
-  selection: d,
-  scrollbar: m,
-  feedbackByMessageKey: p,
-  getMessageKey: h = (W, P) => String(P),
-  onFeedback: N,
+  searchSteps: d = [],
+  hasReceivedAssistantChunk: h = !1,
+  contentMaxWidth: N = 800,
+  selection: u,
+  scrollbar: c,
+  feedbackByMessageKey: b,
+  getMessageKey: p = (U, P) => String(P),
+  onFeedback: f,
   onRegenerate: E,
-  onConfirmMiraDraft: j,
-  onPreviewMiraDraft: z,
-  onCancelMiraDraft: _,
+  onConfirmMiraDraft: _,
+  onPreviewMiraDraft: $,
+  onCancelMiraDraft: I,
   pendingDisplayActionKey: D,
-  onDisplayCardAction: V,
+  onDisplayCardAction: K,
   onScroll: B,
-  scrollContainerRef: $,
-  onMessageElement: K
+  scrollContainerRef: z,
+  onMessageElement: X
 }) {
-  var ve, Q;
-  const W = !!d, P = me(null), M = me(null), O = me(/* @__PURE__ */ new Map()), x = me(), [q, ne] = v(), w = n && (a ?? !f) || a === !0 && (s === "awaiting_clarification" || s === "awaiting_confirmation" || s === "awaiting_approval" || s === "warning" || s === "failed");
-  let g = -1, X = -1;
+  var ve, Y;
+  const U = !!u, P = he(null), M = he(null), G = he(/* @__PURE__ */ new Map()), x = he(), [F, re] = v(), S = n && (a ?? !h) || a === !0 && (s === "awaiting_clarification" || s === "awaiting_confirmation" || s === "awaiting_approval" || s === "warning" || s === "failed");
+  let g = -1, q = -1;
   if (n) {
-    for (let T = t.length - 1; T >= 0; T -= 1)
-      if (((ve = t[T]) == null ? void 0 : ve.role) === "user") {
-        X = T;
+    for (let C = t.length - 1; C >= 0; C -= 1)
+      if (((ve = t[C]) == null ? void 0 : ve.role) === "user") {
+        q = C;
         break;
       }
-    for (let T = t.length - 1; T > X; T -= 1)
-      if (((Q = t[T]) == null ? void 0 : Q.role) === "assistant") {
-        g = T;
+    for (let C = t.length - 1; C > q; C -= 1)
+      if (((Y = t[C]) == null ? void 0 : Y.role) === "assistant") {
+        g = C;
         break;
       }
   }
-  const y = X >= 0 ? h(t[X], X) : void 0, S = g >= 0 ? h(t[g], g) : void 0, U = y && S ? `${y}:${S}` : void 0, ae = Le(
-    (T) => {
-      P.current = T, Yn($, T);
+  const m = q >= 0 ? p(t[q], q) : void 0, T = g >= 0 ? p(t[g], g) : void 0, V = m && T ? `${m}:${T}` : void 0, ue = Pe(
+    (C) => {
+      P.current = C, Yn(z, C);
     },
-    [$]
+    [z]
   );
   return Lt(() => {
-    if (!U || !S || X < 0 || g < 0)
+    if (!V || !T || q < 0 || g < 0)
       return;
-    const T = P.current, L = M.current, F = O.current.get(X);
-    if (!T || !L || !F) return;
-    const Ce = () => {
-      const Ae = window.getComputedStyle(T), $e = window.getComputedStyle(L), Z = T.clientHeight - Nt(Ae.paddingTop) - Nt(Ae.paddingBottom), te = Nt($e.rowGap || $e.gap), G = Math.max(
+    const C = P.current, R = M.current, j = G.current.get(q);
+    if (!C || !R || !j) return;
+    const we = () => {
+      const Ce = window.getComputedStyle(C), Me = window.getComputedStyle(R), J = C.clientHeight - kt(Ce.paddingTop) - kt(Ce.paddingBottom), ae = kt(Me.rowGap || Me.gap), Q = Math.max(
         0,
-        Math.floor(Z - F.offsetHeight - te)
+        Math.floor(J - j.offsetHeight - ae)
       );
-      ne(
-        (A) => (A == null ? void 0 : A.assistantKey) === S && A.minHeight === G ? A : { assistantKey: S, minHeight: G }
+      re(
+        (L) => (L == null ? void 0 : L.assistantKey) === T && L.minHeight === Q ? L : { assistantKey: T, minHeight: Q }
       );
     };
-    Ce();
-    const ke = new ResizeObserver(Ce);
-    return ke.observe(T), ke.observe(F), () => ke.disconnect();
+    we();
+    const Se = new ResizeObserver(we);
+    return Se.observe(C), Se.observe(j), () => Se.disconnect();
   }, [
     g,
-    S,
-    U,
-    X
+    T,
+    V,
+    q
   ]), Lt(() => {
-    if (!U || !S || (q == null ? void 0 : q.assistantKey) !== S || X < 0 || x.current === U)
+    if (!V || !T || (F == null ? void 0 : F.assistantKey) !== T || q < 0 || x.current === V)
       return;
-    const T = P.current, L = O.current.get(X);
-    !T || !L || (T.scrollTo({ top: L.offsetTop, behavior: "auto" }), x.current = U);
-  }, [S, U, X, q]), /* @__PURE__ */ r("div", { className: "relative h-full", children: [
+    const C = P.current, R = G.current.get(q);
+    !C || !R || (C.scrollTo({ top: R.offsetTop, behavior: "auto" }), x.current = V);
+  }, [T, V, q, F]), /* @__PURE__ */ r("div", { className: "relative h-full", children: [
     /* @__PURE__ */ e(
       "div",
       {
-        ref: ae,
+        ref: ue,
         "data-chat-scroll-container": !0,
         onScroll: B,
         className: "flex h-full flex-col items-center overflow-y-auto px-4 py-8 pt-20 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden",
@@ -1366,59 +1366,59 @@ function Qn({
           "div",
           {
             ref: M,
-            className: `flex w-full flex-col ${W ? "gap-3" : "gap-8"}`,
-            style: { maxWidth: k },
+            className: `flex w-full flex-col ${U ? "gap-3" : "gap-8"}`,
+            style: { maxWidth: N },
             children: [
-              t.map((T, L) => {
-                const F = h(T, L), Ce = (d == null ? void 0 : d.selectedMessageKeys.has(F)) ?? !1;
+              t.map((C, R) => {
+                const j = p(C, R), we = (u == null ? void 0 : u.selectedMessageKeys.has(j)) ?? !1;
                 return /* @__PURE__ */ r(
                   "div",
                   {
-                    "data-chat-message-index": L,
-                    "data-chat-turn-reserved": (q == null ? void 0 : q.assistantKey) === F ? "true" : void 0,
-                    ref: (ke) => {
-                      ke ? O.current.set(L, ke) : O.current.delete(L), K == null || K(L, ke);
+                    "data-chat-message-index": R,
+                    "data-chat-turn-reserved": (F == null ? void 0 : F.assistantKey) === j ? "true" : void 0,
+                    ref: (Se) => {
+                      Se ? G.current.set(R, Se) : G.current.delete(R), X == null || X(R, Se);
                     },
-                    className: W ? "flex w-full items-start gap-2" : void 0,
-                    style: (q == null ? void 0 : q.assistantKey) === F ? { minHeight: q.minHeight } : void 0,
+                    className: U ? "flex w-full items-start gap-2" : void 0,
+                    style: (F == null ? void 0 : F.assistantKey) === j ? { minHeight: F.minHeight } : void 0,
                     children: [
-                      d && /* @__PURE__ */ e(
+                      u && /* @__PURE__ */ e(
                         "button",
                         {
                           type: "button",
-                          onClick: () => d.onToggleMessage(F),
+                          onClick: () => u.onToggleMessage(j),
                           className: "mt-3 shrink-0 rounded-md p-1 text-tertiaryText transition-colors hover:bg-bgLight",
-                          "aria-label": Ce ? "取消选择消息" : "选择消息",
-                          children: Ce ? /* @__PURE__ */ e("span", { className: "inline-flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-primary text-white", children: /* @__PURE__ */ e(et, { size: 12, strokeWidth: 2.8 }) }) : /* @__PURE__ */ e("span", { className: "inline-flex h-[18px] w-[18px] rounded-[5px] border border-borderGray bg-white" })
+                          "aria-label": we ? "取消选择消息" : "选择消息",
+                          children: we ? /* @__PURE__ */ e("span", { className: "inline-flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-primary text-white", children: /* @__PURE__ */ e(Je, { size: 12, strokeWidth: 2.8 }) }) : /* @__PURE__ */ e("span", { className: "inline-flex h-[18px] w-[18px] rounded-[5px] border border-borderGray bg-white" })
                         }
                       ),
                       /* @__PURE__ */ r(
                         "div",
                         {
-                          className: d ? `min-w-0 flex-1 rounded-xl px-2 transition-colors ${Ce ? "bg-surfaceMuted" : "bg-transparent hover:bg-bgLight"} ${T.role === "user" ? "py-2.5" : "py-1.5"}` : void 0,
+                          className: u ? `min-w-0 flex-1 rounded-xl px-2 transition-colors ${we ? "bg-surfaceMuted" : "bg-transparent hover:bg-bgLight"} ${C.role === "user" ? "py-2.5" : "py-1.5"}` : void 0,
                           children: [
                             /* @__PURE__ */ e(
                               lr,
                               {
-                                msg: T,
-                                actionKey: F,
-                                feedback: p == null ? void 0 : p[F],
-                                onFeedback: N,
-                                onRefresh: E ? () => E(L) : void 0,
-                                onConfirmMiraDraft: j,
-                                onPreviewMiraDraft: z,
-                                onCancelMiraDraft: _,
+                                msg: C,
+                                actionKey: j,
+                                feedback: b == null ? void 0 : b[j],
+                                onFeedback: f,
+                                onRefresh: E ? () => E(R) : void 0,
+                                onConfirmMiraDraft: _,
+                                onPreviewMiraDraft: $,
+                                onCancelMiraDraft: I,
                                 pendingDisplayActionKey: D,
-                                onDisplayCardAction: V,
-                                isTyping: n && L === g
+                                onDisplayCardAction: K,
+                                isTyping: n && R === g
                               }
                             ),
-                            L === g && w && /* @__PURE__ */ e("div", { className: "flex w-full justify-start px-1 md:px-2", children: /* @__PURE__ */ e(
-                              Ct,
+                            R === g && S && /* @__PURE__ */ e("div", { className: "flex w-full justify-start px-1 md:px-2", children: /* @__PURE__ */ e(
+                              St,
                               {
                                 phase: s,
                                 label: l,
-                                searchSteps: [...u]
+                                searchSteps: [...d]
                               }
                             ) })
                           ]
@@ -1426,15 +1426,15 @@ function Qn({
                       )
                     ]
                   },
-                  F
+                  j
                 );
               }),
-              g < 0 && w && /* @__PURE__ */ e("div", { className: "flex w-full justify-center px-2", children: /* @__PURE__ */ e("div", { className: "flex w-full max-w-[860px] justify-start px-1 md:px-2", children: /* @__PURE__ */ e(
-                Ct,
+              g < 0 && S && /* @__PURE__ */ e("div", { className: "flex w-full justify-center px-2", children: /* @__PURE__ */ e("div", { className: "flex w-full max-w-[860px] justify-start px-1 md:px-2", children: /* @__PURE__ */ e(
+                St,
                 {
                   phase: s,
                   label: l,
-                  searchSteps: [...u]
+                  searchSteps: [...d]
                 }
               ) }) })
             ]
@@ -1442,19 +1442,19 @@ function Qn({
         )
       }
     ),
-    m && m.height > 0 && /* @__PURE__ */ e(
+    c && c.height > 0 && /* @__PURE__ */ e(
       "div",
       {
-        className: `pointer-events-none absolute right-1 top-0 w-[6px] rounded-full bg-scrollbar-subtle transition-opacity duration-200 ${m.visible ? "opacity-100" : "opacity-0"}`,
+        className: `pointer-events-none absolute right-1 top-0 w-[6px] rounded-full bg-scrollbar-subtle transition-opacity duration-200 ${c.visible ? "opacity-100" : "opacity-0"}`,
         style: {
-          height: m.height,
-          transform: `translateY(${m.top}px)`
+          height: c.height,
+          transform: `translateY(${c.top}px)`
         }
       }
     )
   ] });
 }
-De.memo(Qn);
+je.memo(Qn);
 function Xa({
   children: t,
   maxWidth: n = 840,
@@ -1483,15 +1483,15 @@ const Ga = Wt(
     ] });
   }
 ), Ya = Wt(
-  function({ open: n, width: s, resizing: l = !1, overlay: a = !1, overlayRight: u = 0, children: f }, k) {
+  function({ open: n, width: s, resizing: l = !1, overlay: a = !1, overlayRight: d = 0, children: h }, N) {
     return /* @__PURE__ */ e(
       "aside",
       {
-        ref: k,
+        ref: N,
         "data-overlay": a ? "true" : "false",
-        style: { width: n ? s : 0, ...a ? { right: u } : {} },
+        style: { width: n ? s : 0, ...a ? { right: d } : {} },
         className: `h-full min-h-0 shrink-0 overflow-hidden ${a ? "absolute inset-y-0 z-30 shadow-lg" : ""} ${l ? "transition-none" : "transition-[width] duration-300 ease-out"} ${n ? "min-w-0" : "pointer-events-none"}`,
-        children: /* @__PURE__ */ e("div", { style: { width: s }, className: "h-full min-w-0", children: f })
+        children: /* @__PURE__ */ e("div", { style: { width: s }, className: "h-full min-w-0", children: h })
       }
     );
   }
@@ -1502,12 +1502,12 @@ function Zn({
   editingTitle: s,
   titleInputRef: l,
   divided: a = !1,
-  actions: u,
-  onOpenSidebar: f,
-  onStartEditTitle: k,
-  onEditingTitleChange: d,
-  onCommitTitle: m,
-  onEditingTitleKeyDown: p
+  actions: d,
+  onOpenSidebar: h,
+  onStartEditTitle: N,
+  onEditingTitleChange: u,
+  onCommitTitle: c,
+  onEditingTitleKeyDown: b
 }) {
   return /* @__PURE__ */ r(
     "header",
@@ -1519,7 +1519,7 @@ function Zn({
             "button",
             {
               type: "button",
-              onClick: f,
+              onClick: h,
               className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight",
               title: "展开边栏",
               "aria-label": "展开边栏",
@@ -1531,9 +1531,9 @@ function Zn({
             {
               ref: l,
               value: s,
-              onChange: (N) => d == null ? void 0 : d(N.target.value),
-              onBlur: m,
-              onKeyDown: p,
+              onChange: (f) => u == null ? void 0 : u(f.target.value),
+              onBlur: c,
+              onKeyDown: b,
               className: "w-full max-w-[560px] rounded-md border border-shellChatEditBorder bg-white px-2.5 py-1 text-sm font-medium text-primaryText outline-none transition-colors focus:border-shellChatEditBorder",
               maxLength: 80,
               "aria-label": "编辑对话名称"
@@ -1541,14 +1541,14 @@ function Zn({
           ) : /* @__PURE__ */ e(
             "h1",
             {
-              className: `truncate text-sm font-medium text-primaryText ${k ? "cursor-pointer" : ""}`,
-              onClick: k,
-              title: k ? "点击编辑对话名称" : n,
+              className: `truncate text-sm font-medium text-primaryText ${N ? "cursor-pointer" : ""}`,
+              onClick: N,
+              title: N ? "点击编辑对话名称" : n,
               children: n
             }
           ) })
         ] }),
-        u && /* @__PURE__ */ e("div", { className: "flex shrink-0 items-center gap-2", children: u })
+        d && /* @__PURE__ */ e("div", { className: "flex shrink-0 items-center gap-2", children: d })
       ]
     }
   );
@@ -1573,91 +1573,91 @@ function Za({
   initiallyExpanded: s = !1,
   onSelect: l
 }) {
-  const [a, u] = v(s), [f, k] = v(null), [d, m] = v(0), [p, h] = v(0), [N, E] = v(!1), j = me(null), z = me({}), _ = me(null), D = Le(() => {
-    const $ = j.current;
-    if (!$) {
-      m(0), h(0);
+  const [a, d] = v(s), [h, N] = v(null), [u, c] = v(0), [b, p] = v(0), [f, E] = v(!1), _ = he(null), $ = he({}), I = he(null), D = Pe(() => {
+    const z = _.current;
+    if (!z) {
+      c(0), p(0);
       return;
     }
-    const { scrollTop: K, scrollHeight: W, clientHeight: P } = $;
-    if (W <= P || P <= 0) {
-      m(0), h(0);
+    const { scrollTop: X, scrollHeight: U, clientHeight: P } = z;
+    if (U <= P || P <= 0) {
+      c(0), p(0);
       return;
     }
-    const M = Math.max(P / W * P, 24), O = P - M, x = K / Math.max(W - P, 1);
-    m(M), h(O * x);
-  }, []), V = Le(() => {
-    D(), E(!0), _.current !== null && window.clearTimeout(_.current), _.current = window.setTimeout(() => E(!1), 650);
+    const M = Math.max(P / U * P, 24), G = P - M, x = X / Math.max(U - P, 1);
+    c(M), p(G * x);
+  }, []), K = Pe(() => {
+    D(), E(!0), I.current !== null && window.clearTimeout(I.current), I.current = window.setTimeout(() => E(!1), 650);
   }, [D]), B = () => {
-    _.current !== null && (window.clearTimeout(_.current), _.current = null), u(!1), k(null), E(!1);
+    I.current !== null && (window.clearTimeout(I.current), I.current = null), d(!1), N(null), E(!1);
   };
   return ye(() => {
     if (!a) return;
-    const $ = window.requestAnimationFrame(D);
-    return () => window.cancelAnimationFrame($);
+    const z = window.requestAnimationFrame(D);
+    return () => window.cancelAnimationFrame(z);
   }, [a, t.length, D]), ye(() => {
-    const $ = j.current, K = z.current[n];
-    if (!$ || !K) return;
-    const W = $.scrollTop, P = W + $.clientHeight, M = K.offsetTop, O = M + K.offsetHeight, x = 16;
-    M < W + x ? $.scrollTo({ top: Math.max(M - x, 0), behavior: "auto" }) : O > P - x && $.scrollTo({
-      top: Math.max(O - $.clientHeight + x, 0),
+    const z = _.current, X = $.current[n];
+    if (!z || !X) return;
+    const U = z.scrollTop, P = U + z.clientHeight, M = X.offsetTop, G = M + X.offsetHeight, x = 16;
+    M < U + x ? z.scrollTo({ top: Math.max(M - x, 0), behavior: "auto" }) : G > P - x && z.scrollTo({
+      top: Math.max(G - z.clientHeight + x, 0),
       behavior: "auto"
     });
   }, [n, t.length]), ye(() => () => {
-    _.current !== null && window.clearTimeout(_.current);
+    I.current !== null && window.clearTimeout(I.current);
   }, []), t.length === 0 ? null : /* @__PURE__ */ e("div", { className: "pointer-events-none absolute right-6 top-1/2 z-[5] -translate-y-1/2", children: /* @__PURE__ */ e(
     "div",
     {
       className: "pointer-events-auto relative",
-      onMouseEnter: () => u(!0),
+      onMouseEnter: () => d(!0),
       onMouseLeave: B,
       children: /* @__PURE__ */ e(
         "div",
         {
-          ref: j,
-          onScroll: V,
+          ref: _,
+          onScroll: K,
           className: `ml-auto max-h-[332px] overflow-y-auto rounded-lg border [scrollbar-width:none] transition-[width,padding,background-color,border-color,box-shadow] duration-200 [&::-webkit-scrollbar]:hidden ${a ? "w-[244px] border-chatTimelineBorder bg-white px-4 py-4 shadow-chatTimeline" : "w-[12px] border-transparent bg-transparent px-0 py-0 shadow-none"}`,
           children: /* @__PURE__ */ r("div", { className: "relative", children: [
-            /* @__PURE__ */ e("div", { className: "flex flex-col items-end gap-5", children: t.map(($) => {
-              const K = $.messageIndex === n, W = f === $.messageIndex;
+            /* @__PURE__ */ e("div", { className: "flex flex-col items-end gap-5", children: t.map((z) => {
+              const X = z.messageIndex === n, U = h === z.messageIndex;
               return /* @__PURE__ */ r(
                 "button",
                 {
                   ref: (P) => {
-                    z.current[$.messageIndex] = P;
+                    $.current[z.messageIndex] = P;
                   },
                   type: "button",
-                  onClick: () => l($.messageIndex),
-                  onMouseEnter: () => k($.messageIndex),
-                  onMouseLeave: () => k(null),
+                  onClick: () => l(z.messageIndex),
+                  onMouseEnter: () => N(z.messageIndex),
+                  onMouseLeave: () => N(null),
                   className: `flex h-4 items-center justify-end transition-[width,gap] duration-200 ${a ? "w-full gap-2" : "w-[12px] gap-0"}`,
                   style: { fontFamily: '"Inter", "PingFang SC", "Microsoft YaHei", sans-serif' },
-                  "aria-label": `定位到第 ${$.messageIndex + 1} 条用户消息`,
-                  title: $.preview,
+                  "aria-label": `定位到第 ${z.messageIndex + 1} 条用户消息`,
+                  title: z.preview,
                   children: [
                     /* @__PURE__ */ e(
                       "span",
                       {
-                        className: `min-w-0 overflow-hidden whitespace-nowrap text-right text-sm leading-4 transition-[max-width,opacity,color] duration-200 ${a ? "max-w-[190px] opacity-100" : "max-w-0 opacity-0"} ${K ? "text-primary" : W ? "text-chatTimelineTextHover" : "text-chatTimelineText"}`,
-                        children: $.preview
+                        className: `min-w-0 overflow-hidden whitespace-nowrap text-right text-sm leading-4 transition-[max-width,opacity,color] duration-200 ${a ? "max-w-[190px] opacity-100" : "max-w-0 opacity-0"} ${X ? "text-primary" : U ? "text-chatTimelineTextHover" : "text-chatTimelineText"}`,
+                        children: z.preview
                       }
                     ),
                     /* @__PURE__ */ e(
                       "span",
                       {
-                        className: `shrink-0 rounded-full transition-colors duration-200 ${K ? "h-[4px] w-[12px] bg-primary" : W ? "h-[2px] w-[8px] bg-chatTimelineTextHover" : "h-[2px] w-[8px] bg-chatTimelineMarker"}`
+                        className: `shrink-0 rounded-full transition-colors duration-200 ${X ? "h-[4px] w-[12px] bg-primary" : U ? "h-[2px] w-[8px] bg-chatTimelineTextHover" : "h-[2px] w-[8px] bg-chatTimelineMarker"}`
                       }
                     )
                   ]
                 },
-                $.messageIndex
+                z.messageIndex
               );
             }) }),
-            a && d > 0 && /* @__PURE__ */ e(
+            a && u > 0 && /* @__PURE__ */ e(
               "div",
               {
-                className: `pointer-events-none absolute right-[-2px] top-0 w-[4px] rounded-full bg-chatTimelineScrollbar transition-opacity duration-200 ${N ? "opacity-100" : "opacity-0"}`,
-                style: { height: d, transform: `translateY(${p}px)` }
+                className: `pointer-events-none absolute right-[-2px] top-0 w-[4px] rounded-full bg-chatTimelineScrollbar transition-opacity duration-200 ${f ? "opacity-100" : "opacity-0"}`,
+                style: { height: u, transform: `translateY(${b}px)` }
               }
             )
           ] })
@@ -1672,12 +1672,12 @@ function Ja({
   modalOpen: s,
   copied: l = !1,
   contentMaxWidth: a = 840,
-  onCancel: u,
-  onCreateLink: f,
-  onCloseModal: k,
-  onCopyLink: d
+  onCancel: d,
+  onCreateLink: h,
+  onCloseModal: N,
+  onCopyLink: u
 }) {
-  return /* @__PURE__ */ r(Ue, { children: [
+  return /* @__PURE__ */ r(Ve, { children: [
     /* @__PURE__ */ e("div", { className: "w-full shrink-0 border-t border-chatWorkspaceDivider bg-chatShareDockSurface px-6 py-3 backdrop-blur", children: /* @__PURE__ */ r(
       "div",
       {
@@ -1690,14 +1690,14 @@ function Ja({
             " 条对话"
           ] }),
           /* @__PURE__ */ r("div", { className: "flex shrink-0 items-center gap-2", children: [
-            /* @__PURE__ */ e(Fe, { type: "secondary", size: "small", onClick: u, children: "取消" }),
+            /* @__PURE__ */ e(Fe, { type: "secondary", size: "small", onClick: d, children: "取消" }),
             /* @__PURE__ */ e(
               Fe,
               {
                 type: "primary",
                 size: "small",
                 disabled: t <= 0,
-                onClick: f,
+                onClick: h,
                 children: "创建分享链接"
               }
             )
@@ -1706,12 +1706,12 @@ function Ja({
       }
     ) }),
     /* @__PURE__ */ e(
-      Mt,
+      $t,
       {
         visible: s,
         title: "创建分享链接",
         width: 450,
-        onCancel: k,
+        onCancel: N,
         footer: null,
         children: /* @__PURE__ */ r("div", { className: "space-y-4", children: [
           /* @__PURE__ */ e("p", { className: "m-0 text-sm leading-6 text-primaryText", children: "任何获得链接的实验室成员均可以查看你分享的对话，请检查是否包含敏感/隐私内容。" }),
@@ -1721,10 +1721,10 @@ function Ja({
               "button",
               {
                 type: "button",
-                onClick: d,
+                onClick: u,
                 className: "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover",
                 children: [
-                  l ? /* @__PURE__ */ e(et, { size: 14 }) : /* @__PURE__ */ e(pt, { size: 14 }),
+                  l ? /* @__PURE__ */ e(Je, { size: 14 }) : /* @__PURE__ */ e(ft, { size: 14 }),
                   /* @__PURE__ */ e("span", { children: l ? "已复制" : "复制" })
                 ]
               }
@@ -1741,63 +1741,63 @@ function ir({
   uploading: s = !1,
   deletingAttachmentId: l,
   unavailableHint: a,
-  error: u,
-  onRequestUpload: f,
-  onDeleteAttachment: k
+  error: d,
+  onRequestUpload: h,
+  onDeleteAttachment: N
 }) {
   return /* @__PURE__ */ r("div", { className: n, children: [
     /* @__PURE__ */ r("div", { className: "flex items-start justify-between gap-3", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "附件" }),
-      f && /* @__PURE__ */ e(
+      h && /* @__PURE__ */ e(
         Fe,
         {
           type: "secondary",
           size: "small",
           disabled: s,
-          onClick: f,
+          onClick: h,
           children: /* @__PURE__ */ r("span", { className: "inline-flex items-center gap-1.5", children: [
-            s ? /* @__PURE__ */ e(Xe, { size: 14, className: "animate-spin" }) : /* @__PURE__ */ e(Tr, { size: 14 }),
+            s ? /* @__PURE__ */ e(Ge, { size: 14, className: "animate-spin" }) : /* @__PURE__ */ e(Tr, { size: 14 }),
             s ? "上传中" : "上传附件"
           ] })
         }
       )
     ] }),
-    t.length ? /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2.5", children: t.map((d) => {
-      const m = l === d.id;
+    t.length ? /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2.5", children: t.map((u) => {
+      const c = l === u.id;
       return /* @__PURE__ */ r(
         "div",
         {
           className: "inline-flex max-w-full items-center gap-2 rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText",
-          title: d.statusLabel,
+          title: u.statusLabel,
           children: [
-            /* @__PURE__ */ e(ht, { size: 14, className: "shrink-0" }),
-            /* @__PURE__ */ e("span", { className: "max-w-72 truncate", children: d.name }),
-            d.status === "processing" && /* @__PURE__ */ e(Xe, { size: 12, className: "animate-spin" }),
-            k && /* @__PURE__ */ e(
+            /* @__PURE__ */ e(xt, { size: 14, className: "shrink-0" }),
+            /* @__PURE__ */ e("span", { className: "max-w-72 truncate", children: u.name }),
+            u.status === "processing" && /* @__PURE__ */ e(Ge, { size: 12, className: "animate-spin" }),
+            N && /* @__PURE__ */ e(
               "button",
               {
                 type: "button",
-                disabled: m,
-                onClick: () => k(d.id),
+                disabled: c,
+                onClick: () => N(u.id),
                 className: "-my-1 -mr-2 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-tertiaryText transition-colors hover:bg-bgLight hover:text-danger disabled:cursor-wait",
-                "aria-label": `删除附件 ${d.name}`,
+                "aria-label": `删除附件 ${u.name}`,
                 title: "删除附件",
-                children: m ? /* @__PURE__ */ e(Xe, { size: 13, className: "animate-spin" }) : /* @__PURE__ */ e(er, { size: 13 })
+                children: c ? /* @__PURE__ */ e(Ge, { size: 13, className: "animate-spin" }) : /* @__PURE__ */ e(er, { size: 13 })
               }
             )
           ]
         },
-        d.id
+        u.id
       );
     }) }) : /* @__PURE__ */ e("p", { className: "mt-2 text-sm text-tertiaryText", children: "暂无附件" }),
     a && /* @__PURE__ */ e("p", { className: "mt-2 text-xs text-tertiaryText", children: a }),
-    u && /* @__PURE__ */ e("p", { role: "alert", className: "mt-2 text-sm text-danger", children: u })
+    d && /* @__PURE__ */ e("p", { role: "alert", className: "mt-2 text-sm text-danger", children: d })
   ] });
 }
 const Jn = {
   disabled: /* @__PURE__ */ e(Cr, { size: 14 }),
-  pending: /* @__PURE__ */ e(ft, { size: 14 }),
-  indexed: /* @__PURE__ */ e(at, { size: 14 })
+  pending: /* @__PURE__ */ e(bt, { size: 14 }),
+  indexed: /* @__PURE__ */ e(nt, { size: 14 })
 };
 function or({
   createdByName: t,
@@ -1829,15 +1829,15 @@ function ra({
   document: t,
   layout: n = "page"
 }) {
-  const [s, l] = v(!1), a = me(null), u = n === "page" ? "px-[120px]" : "px-6 md:px-8";
+  const [s, l] = v(!1), a = he(null), d = n === "page" ? "px-[120px]" : "px-6 md:px-8";
   ye(() => () => {
     a.current !== null && window.clearTimeout(a.current);
   }, []);
-  const f = () => {
+  const h = () => {
     l(!0), a.current !== null && window.clearTimeout(a.current), a.current = window.setTimeout(() => l(!1), 700);
   };
   return /* @__PURE__ */ r("div", { className: "flex h-full min-h-0 flex-col", children: [
-    /* @__PURE__ */ r("section", { className: `mb-4 shrink-0 ${u}`, children: [
+    /* @__PURE__ */ r("section", { className: `mb-4 shrink-0 ${d}`, children: [
       /* @__PURE__ */ e("h1", { className: "break-words text-2xl font-semibold text-primaryText", children: t.title }),
       /* @__PURE__ */ e(
         or,
@@ -1853,10 +1853,10 @@ function ra({
     /* @__PURE__ */ r(
       "section",
       {
-        onScroll: f,
+        onScroll: h,
         className: `auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${s ? "is-scrolling" : ""}`,
         children: [
-          t.markdown.trim() ? /* @__PURE__ */ e("div", { className: `${cr.preview} ${u}`, children: /* @__PURE__ */ e(rr, { remarkPlugins: [nr], children: t.markdown }) }) : /* @__PURE__ */ e("div", { className: `${n === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} rounded-lg border border-dashed border-borderSoft`, children: /* @__PURE__ */ e($t, { description: "正文暂无内容" }) }),
+          t.markdown.trim() ? /* @__PURE__ */ e("div", { className: `${cr.preview} ${d}`, children: /* @__PURE__ */ e(rr, { remarkPlugins: [nr], children: t.markdown }) }) : /* @__PURE__ */ e("div", { className: `${n === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} rounded-lg border border-dashed border-borderSoft`, children: /* @__PURE__ */ e(zt, { description: "正文暂无内容" }) }),
           /* @__PURE__ */ e(
             ir,
             {
@@ -1875,12 +1875,13 @@ function es({
   onSelectTab: s,
   onCloseTab: l,
   onClose: a,
-  pendingActionKey: u,
-  onAction: f,
-  onResizeStart: k
+  pendingActionKey: d,
+  onAction: h,
+  renderContent: N,
+  onResizeStart: u
 }) {
-  var m;
-  const d = t.find((p) => p.key === n) ?? null;
+  var p;
+  const c = t.find((f) => f.key === n) ?? null, b = c ? N == null ? void 0 : N(c) : void 0;
   return /* @__PURE__ */ r("div", { "data-testid": "chat-document-preview", className: "relative flex h-full w-full min-w-0 flex-col border-l border-chatWorkspaceDivider bg-white", children: [
     /* @__PURE__ */ e(
       "div",
@@ -1888,23 +1889,23 @@ function es({
         role: "separator",
         "aria-orientation": "vertical",
         "aria-label": "调整项目文件预览面板宽度",
-        onMouseDown: k,
+        onMouseDown: u,
         className: "absolute left-0 top-0 z-10 h-full w-1.5 cursor-col-resize bg-transparent"
       }
     ),
     /* @__PURE__ */ r("div", { className: "flex h-12 shrink-0 items-center justify-between gap-2 px-3", children: [
-      /* @__PURE__ */ e("div", { className: "flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden", children: t.map((p) => {
-        const h = p.key === n;
+      /* @__PURE__ */ e("div", { className: "flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden", children: t.map((f) => {
+        const E = f.key === n;
         return /* @__PURE__ */ r("div", { className: "group relative w-[150px] shrink-0", children: [
           /* @__PURE__ */ r(
             "button",
             {
               type: "button",
-              onClick: () => s(p.key),
-              className: `inline-flex w-full items-center gap-1.5 rounded-lg px-3 py-1.5 pr-6 text-sm transition-colors ${h ? "bg-chatPanelItemSurface text-primaryText" : "text-secondaryText hover:bg-chatPanelItemSurface"}`,
+              onClick: () => s(f.key),
+              className: `inline-flex w-full items-center gap-1.5 rounded-lg px-3 py-1.5 pr-6 text-sm transition-colors ${E ? "bg-chatPanelItemSurface text-primaryText" : "text-secondaryText hover:bg-chatPanelItemSurface"}`,
               children: [
-                p.type === "knowledge" || p.type === "draft" ? /* @__PURE__ */ e(ht, { size: 14, className: "shrink-0 text-tertiaryText" }) : /* @__PURE__ */ e(Sr, { size: 14, className: "shrink-0 text-tertiaryText" }),
-                /* @__PURE__ */ e("span", { className: "min-w-0 truncate text-left", children: p.title })
+                f.type === "knowledge" || f.type === "draft" ? /* @__PURE__ */ e(xt, { size: 14, className: "shrink-0 text-tertiaryText" }) : /* @__PURE__ */ e(Sr, { size: 14, className: "shrink-0 text-tertiaryText" }),
+                /* @__PURE__ */ e("span", { className: "min-w-0 truncate text-left", children: f.title })
               ]
             }
           ),
@@ -1912,29 +1913,29 @@ function es({
             "button",
             {
               type: "button",
-              onClick: (N) => {
-                N.stopPropagation(), l(p.key);
+              onClick: (_) => {
+                _.stopPropagation(), l(f.key);
               },
               className: "absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-tertiaryText opacity-0 transition-opacity hover:text-primaryText group-hover:opacity-100",
-              "aria-label": `关闭预览：${p.title}`,
+              "aria-label": `关闭预览：${f.title}`,
               title: "关闭标签",
-              children: /* @__PURE__ */ e(nt, { size: 12 })
+              children: /* @__PURE__ */ e(rt, { size: 12 })
             }
           )
-        ] }, p.key);
+        ] }, f.key);
       }) }),
       /* @__PURE__ */ r("div", { className: "flex shrink-0 items-center gap-2", children: [
-        (m = d == null ? void 0 : d.actions) == null ? void 0 : m.map((p) => /* @__PURE__ */ e(
+        !b && ((p = c == null ? void 0 : c.actions) == null ? void 0 : p.map((f) => /* @__PURE__ */ e(
           Fe,
           {
-            type: p.tone ?? "secondary",
+            type: f.tone ?? "secondary",
             size: "small",
-            disabled: u === d.key || !f,
-            onClick: () => f == null ? void 0 : f(d.key, p.id),
-            children: p.label
+            disabled: d === c.key || !h,
+            onClick: () => h == null ? void 0 : h(c.key, f.id),
+            children: f.label
           },
-          p.id
-        )),
+          f.id
+        ))),
         /* @__PURE__ */ e(
           "button",
           {
@@ -1943,12 +1944,12 @@ function es({
             className: "rounded-full p-1.5 text-secondaryText transition-colors hover:bg-bgLight",
             title: "关闭预览",
             "aria-label": "关闭预览",
-            children: /* @__PURE__ */ e(nt, { size: 14 })
+            children: /* @__PURE__ */ e(rt, { size: 14 })
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden pb-4 pt-2", children: d ? d.document ? /* @__PURE__ */ e(ra, { document: d.document, layout: "panel" }) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText", children: d.loading ? "正在加载文档…" : d.error || "文档暂时无法预览" }) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-4 text-center text-sm text-secondaryText", children: "点击右侧项目文件内容可在此处预览" }) })
+    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden pb-4 pt-2", children: c ? b || (c.document ? /* @__PURE__ */ e(ra, { document: c.document, layout: "panel" }) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText", children: c.loading ? "正在加载文档…" : c.error || "文档暂时无法预览" })) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-4 text-center text-sm text-secondaryText", children: "点击右侧项目文件内容可在此处预览" }) })
   ] });
 }
 function ts({
@@ -1957,13 +1958,13 @@ function ts({
   error: s,
   knowledgeDocs: l,
   experiments: a,
-  activePreviewKey: u,
-  onSearchQueryChange: f,
-  onOpenKnowledge: k,
-  onOpenExperiment: d,
-  onResizeStart: m
+  activePreviewKey: d,
+  onSearchQueryChange: h,
+  onOpenKnowledge: N,
+  onOpenExperiment: u,
+  onResizeStart: c
 }) {
-  const p = l.length + a.length;
+  const b = l.length + a.length;
   return /* @__PURE__ */ r("div", { className: "relative flex h-full min-w-0 flex-col border-l border-chatWorkspaceDivider bg-white", children: [
     /* @__PURE__ */ e(
       "div",
@@ -1971,7 +1972,7 @@ function ts({
         role: "separator",
         "aria-orientation": "vertical",
         "aria-label": "调整项目文件面板宽度",
-        onMouseDown: m,
+        onMouseDown: c,
         className: "absolute -ml-1 left-0 top-0 z-10 h-full w-3 cursor-col-resize bg-transparent"
       }
     ),
@@ -1984,44 +1985,44 @@ function ts({
             "input",
             {
               value: n,
-              onChange: (h) => f(h.target.value),
+              onChange: (p) => h(p.target.value),
               placeholder: "搜索文件",
               className: "h-9 w-full rounded-lg border border-borderGray bg-white pl-9 pr-3 text-sm text-primaryText outline-none placeholder:text-tertiaryText focus:border-controlBorderHover"
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ e("section", { children: /* @__PURE__ */ e("div", { className: "space-y-1", children: s ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-danger-soft px-3 py-2 text-xs text-danger", role: "alert", children: s }) : p === 0 ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-bgLight px-3 py-2 text-xs text-secondaryText", children: n.trim() ? "未找到匹配的文件" : "暂无项目文件" }) : /* @__PURE__ */ r(Ue, { children: [
-        l.map((h) => {
-          const N = `knowledge:${h.id}`, E = u === N;
+      /* @__PURE__ */ e("section", { children: /* @__PURE__ */ e("div", { className: "space-y-1", children: s ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-danger-soft px-3 py-2 text-xs text-danger", role: "alert", children: s }) : b === 0 ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-bgLight px-3 py-2 text-xs text-secondaryText", children: n.trim() ? "未找到匹配的文件" : "暂无项目文件" }) : /* @__PURE__ */ r(Ve, { children: [
+        l.map((p) => {
+          const f = `knowledge:${p.id}`, E = d === f;
           return /* @__PURE__ */ r(
             "button",
             {
               type: "button",
-              onClick: () => k(h.id),
+              onClick: () => N(p.id),
               className: `w-full rounded-lg px-2 py-1.5 text-left transition-colors ${E ? "bg-chatPanelItemSurface" : "hover:bg-chatPanelItemSurface"}`,
               children: [
-                /* @__PURE__ */ e("div", { className: `truncate text-sm text-primaryText ${E ? "font-semibold" : "font-normal"}`, children: h.title }),
-                /* @__PURE__ */ e("div", { className: "mt-0.5 truncate text-xs text-tertiaryText", children: h.tags[0] ?? "未分类" })
+                /* @__PURE__ */ e("div", { className: `truncate text-sm text-primaryText ${E ? "font-semibold" : "font-normal"}`, children: p.title }),
+                /* @__PURE__ */ e("div", { className: "mt-0.5 truncate text-xs text-tertiaryText", children: p.tags[0] ?? "未分类" })
               ]
             },
-            h.id
+            p.id
           );
         }),
-        a.map((h) => {
-          const N = `experiment:${h.id}`, E = u === N;
+        a.map((p) => {
+          const f = `experiment:${p.id}`, E = d === f;
           return /* @__PURE__ */ r(
             "button",
             {
               type: "button",
-              onClick: () => d(h.id),
+              onClick: () => u(p.id),
               className: `w-full rounded-lg px-2 py-1.5 text-left transition-colors ${E ? "bg-chatPanelItemSurface" : "hover:bg-chatPanelItemSurface"}`,
               children: [
-                /* @__PURE__ */ e("div", { className: `truncate text-sm text-primaryText ${E ? "font-semibold" : "font-normal"}`, children: h.title }),
-                /* @__PURE__ */ e("div", { className: "mt-0.5 truncate text-xs text-tertiaryText", children: h.tags[0] ?? h.status })
+                /* @__PURE__ */ e("div", { className: `truncate text-sm text-primaryText ${E ? "font-semibold" : "font-normal"}`, children: p.title }),
+                /* @__PURE__ */ e("div", { className: "mt-0.5 truncate text-xs text-tertiaryText", children: p.tags[0] ?? p.status })
               ]
             },
-            h.id
+            p.id
           );
         })
       ] }) }) })
@@ -2046,26 +2047,26 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
   const l = t.slice(0, n).match(oa);
   return l ? l[1] : null;
 }, rs = (t, n, s, l) => {
-  const a = t.slice(0, n), u = t.slice(s), f = a.match(/(?:^|\s)\/[^\s/]*$/);
-  if (!f) {
-    const h = `/${l} `;
-    return { value: `${a}${h}${u}`, cursor: a.length + h.length };
+  const a = t.slice(0, n), d = t.slice(s), h = a.match(/(?:^|\s)\/[^\s/]*$/);
+  if (!h) {
+    const p = `/${l} `;
+    return { value: `${a}${p}${d}`, cursor: a.length + p.length };
   }
-  const k = a.length - f[0].length, m = `${f[0].startsWith(" ") ? " " : ""}/${l} `, p = `${a.slice(0, k)}${m}`;
+  const N = a.length - h[0].length, c = `${h[0].startsWith(" ") ? " " : ""}/${l} `, b = `${a.slice(0, N)}${c}`;
   return {
-    value: `${p}${u}`,
-    cursor: p.length
+    value: `${b}${d}`,
+    cursor: b.length
   };
 }, ns = (t, n, s, l) => {
-  const a = t.slice(0, n), u = t.slice(s), f = a.match(/(?:^|\s)@[^\s@]*$/);
-  if (!f) {
-    const h = `@${l} `;
-    return { value: `${a}${h}${u}`, cursor: a.length + h.length };
+  const a = t.slice(0, n), d = t.slice(s), h = a.match(/(?:^|\s)@[^\s@]*$/);
+  if (!h) {
+    const p = `@${l} `;
+    return { value: `${a}${p}${d}`, cursor: a.length + p.length };
   }
-  const k = a.length - f[0].length, m = `${f[0].startsWith(" ") ? " " : ""}@${l} `, p = `${a.slice(0, k)}${m}`;
+  const N = a.length - h[0].length, c = `${h[0].startsWith(" ") ? " " : ""}@${l} `, b = `${a.slice(0, N)}${c}`;
   return {
-    value: `${p}${u}`,
-    cursor: p.length
+    value: `${b}${d}`,
+    cursor: b.length
   };
 }, ua = [], as = [], dr = ({
   onSend: t,
@@ -2073,13 +2074,13 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
   isStreaming: s = !1,
   onCancel: l,
   leadingControls: a,
-  skillOptions: u = la,
-  fileOptions: f = ua,
-  uploadAccept: k,
-  validateUploadFile: d,
-  onUploadValidationError: m
+  skillOptions: d = la,
+  fileOptions: h = ua,
+  uploadAccept: N,
+  validateUploadFile: u,
+  onUploadValidationError: c
 }) => {
-  const [p, h] = v(""), [N, E] = v(!1), [j, z] = v(!1), [_, D] = v(""), [V, B] = v(-1), [$, K] = v(!1), [W, P] = v(""), [M, O] = v(-1), [x, q] = v([]), [ne, I] = v([]), [w, g] = v([]), [X, y] = v(!1), S = me(null), U = me(null), ae = pr(), ve = me([]), Q = s && !!l;
+  const [b, p] = v(""), [f, E] = v(!1), [_, $] = v(!1), [I, D] = v(""), [K, B] = v(-1), [z, X] = v(!1), [U, P] = v(""), [M, G] = v(-1), [x, F] = v([]), [re, ne] = v([]), [S, g] = v([]), [q, m] = v(!1), T = he(null), V = he(null), ue = pr(), ve = he([]), Y = s && !!l;
   ye(() => {
     ve.current = x;
   }, [x]), ye(() => () => {
@@ -2087,62 +2088,62 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
       i.previewUrl && URL.revokeObjectURL(i.previewUrl);
     });
   }, []);
-  const T = ge(() => {
-    const i = _.trim().toLowerCase();
-    return i ? u.filter((b) => `${b.id} ${b.description} ${b.source}`.toLowerCase().includes(i)) : u;
-  }, [u, _]), L = ge(() => {
-    const i = W.trim().toLowerCase();
-    return i ? f.filter((b) => `${b.name} ${b.projectName} ${b.sourceType} ${b.operatorName ?? ""} ${b.operatedAt ?? ""}`.toLowerCase().includes(i)) : f.filter((b) => b.isRecent).slice(0, 10);
-  }, [f, W]), F = Le((i, b) => {
-    const re = b ?? i.length, fe = ca(i, re);
-    if (fe !== null) {
-      z(!0), D(fe), B(-1), K(!1), P(""), O(-1);
+  const C = ge(() => {
+    const i = I.trim().toLowerCase();
+    return i ? d.filter((y) => `${y.id} ${y.description} ${y.source}`.toLowerCase().includes(i)) : d;
+  }, [d, I]), R = ge(() => {
+    const i = U.trim().toLowerCase();
+    return i ? h.filter((y) => `${y.name} ${y.projectName} ${y.sourceType} ${y.operatorName ?? ""} ${y.operatedAt ?? ""}`.toLowerCase().includes(i)) : h.filter((y) => y.isRecent).slice(0, 10);
+  }, [h, U]), j = Pe((i, y) => {
+    const se = y ?? i.length, ce = ca(i, se);
+    if (ce !== null) {
+      $(!0), D(ce), B(-1), X(!1), P(""), G(-1);
       return;
     }
-    const se = da(i, re);
-    if (se !== null) {
-      K(!0), P(se), O(-1), z(!1), D(""), B(-1);
+    const ie = da(i, se);
+    if (ie !== null) {
+      X(!0), P(ie), G(-1), $(!1), D(""), B(-1);
       return;
     }
-    z(!1), D(""), B(-1), K(!1), P(""), O(-1);
-  }, []), Ce = Le((i) => {
+    $(!1), D(""), B(-1), X(!1), P(""), G(-1);
+  }, []), we = Pe((i) => {
     if (i.disabled) return;
-    const b = S.current, re = (b == null ? void 0 : b.selectionStart) ?? p.length, fe = (b == null ? void 0 : b.selectionEnd) ?? re, se = p.slice(0, re), de = p.slice(fe), pe = (() => {
-      const ue = se.match(/(?:^|\s)\/[^\s/]*$/);
-      if (!ue)
-        return { value: p, cursor: re };
-      const xe = se.length - ue[0].length, be = ue[0].startsWith(" ") ? " " : "", o = `${se.slice(0, xe)}${be}`;
+    const y = T.current, se = (y == null ? void 0 : y.selectionStart) ?? b.length, ce = (y == null ? void 0 : y.selectionEnd) ?? se, ie = b.slice(0, se), me = b.slice(ce), fe = (() => {
+      const pe = ie.match(/(?:^|\s)\/[^\s/]*$/);
+      if (!pe)
+        return { value: b, cursor: se };
+      const xe = ie.length - pe[0].length, be = pe[0].startsWith(" ") ? " " : "", W = `${ie.slice(0, xe)}${be}`;
       return {
-        value: `${o}${de}`,
-        cursor: o.length
+        value: `${W}${me}`,
+        cursor: W.length
       };
     })();
-    I((ue) => {
+    ne((pe) => {
       const xe = `skill-${i.id}`;
-      return ue.some((be) => be.id === xe) ? ue : [...ue, { id: xe, type: "skill", label: i.id, sourceId: i.id }];
-    }), h(pe.value), z(!1), D(""), B(-1), requestAnimationFrame(() => {
-      b && (b.focus(), b.setSelectionRange(pe.cursor, pe.cursor));
+      return pe.some((be) => be.id === xe) ? pe : [...pe, { id: xe, type: "skill", label: i.id, sourceId: i.id }];
+    }), p(fe.value), $(!1), D(""), B(-1), requestAnimationFrame(() => {
+      y && (y.focus(), y.setSelectionRange(fe.cursor, fe.cursor));
     });
-  }, [p]), ke = Le((i) => {
-    const b = S.current, re = (b == null ? void 0 : b.selectionStart) ?? p.length, fe = (b == null ? void 0 : b.selectionEnd) ?? re, se = p.slice(0, re), de = p.slice(fe), pe = (() => {
-      const ue = se.match(/(?:^|\s)@[^\s@]*$/);
-      if (!ue)
-        return { value: p, cursor: re };
-      const xe = se.length - ue[0].length, be = ue[0].startsWith(" ") ? " " : "", o = `${se.slice(0, xe)}${be}`;
+  }, [b]), Se = Pe((i) => {
+    const y = T.current, se = (y == null ? void 0 : y.selectionStart) ?? b.length, ce = (y == null ? void 0 : y.selectionEnd) ?? se, ie = b.slice(0, se), me = b.slice(ce), fe = (() => {
+      const pe = ie.match(/(?:^|\s)@[^\s@]*$/);
+      if (!pe)
+        return { value: b, cursor: se };
+      const xe = ie.length - pe[0].length, be = pe[0].startsWith(" ") ? " " : "", W = `${ie.slice(0, xe)}${be}`;
       return {
-        value: `${o}${de}`,
-        cursor: o.length
+        value: `${W}${me}`,
+        cursor: W.length
       };
     })();
-    g((ue) => {
+    g((pe) => {
       const xe = `doc-${i.id}`;
-      return ue.some((be) => be.id === xe) ? ue : [...ue, { id: xe, type: "doc", label: i.name, sourceId: i.id }];
-    }), h(pe.value), K(!1), P(""), O(-1), requestAnimationFrame(() => {
-      b && (b.focus(), b.setSelectionRange(pe.cursor, pe.cursor));
+      return pe.some((be) => be.id === xe) ? pe : [...pe, { id: xe, type: "doc", label: i.name, sourceId: i.id }];
+    }), p(fe.value), X(!1), P(""), G(-1), requestAnimationFrame(() => {
+      y && (y.focus(), y.setSelectionRange(fe.cursor, fe.cursor));
     });
-  }, [p]), Ae = Le(() => {
-    y(!1);
-    const i = U.current;
+  }, [b]), Ce = Pe(() => {
+    m(!1);
+    const i = V.current;
     if (i) {
       try {
         if ("showPicker" in i && typeof i.showPicker == "function") {
@@ -2153,41 +2154,41 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
       }
       i.click();
     }
-  }, []), $e = Le((i) => {
-    const b = Array.from(i.target.files ?? []);
-    if (b.length === 0) return;
-    const re = b.filter((fe) => {
-      const se = d == null ? void 0 : d(fe);
-      return se ? (m == null || m(se), !1) : !0;
+  }, []), Me = Pe((i) => {
+    const y = Array.from(i.target.files ?? []);
+    if (y.length === 0) return;
+    const se = y.filter((ce) => {
+      const ie = u == null ? void 0 : u(ce);
+      return ie ? (c == null || c(ie), !1) : !0;
     });
-    q((fe) => {
-      const se = new Set(fe.map((pe) => pe.id)), de = [...fe];
-      return re.forEach((pe) => {
-        if (pe.size > aa || de.length >= na) return;
-        const ue = `${pe.name}-${pe.size}-${pe.lastModified}`;
-        if (se.has(ue)) return;
-        const xe = pe.type.startsWith("image/");
-        se.add(ue), de.push({
-          id: ue,
-          name: pe.name,
-          mimeType: pe.type || "application/octet-stream",
-          previewUrl: xe ? URL.createObjectURL(pe) : void 0,
-          file: pe
+    F((ce) => {
+      const ie = new Set(ce.map((fe) => fe.id)), me = [...ce];
+      return se.forEach((fe) => {
+        if (fe.size > aa || me.length >= na) return;
+        const pe = `${fe.name}-${fe.size}-${fe.lastModified}`;
+        if (ie.has(pe)) return;
+        const xe = fe.type.startsWith("image/");
+        ie.add(pe), me.push({
+          id: pe,
+          name: fe.name,
+          mimeType: fe.type || "application/octet-stream",
+          previewUrl: xe ? URL.createObjectURL(fe) : void 0,
+          file: fe
         });
-      }), de;
+      }), me;
     }), i.target.value = "";
-  }, [m, d]), Z = Le((i) => {
-    q((b) => {
-      const re = b.find((fe) => fe.id === i);
-      return re != null && re.previewUrl && URL.revokeObjectURL(re.previewUrl), b.filter((fe) => fe.id !== i);
+  }, [c, u]), J = Pe((i) => {
+    F((y) => {
+      const se = y.find((ce) => ce.id === i);
+      return se != null && se.previewUrl && URL.revokeObjectURL(se.previewUrl), y.filter((ce) => ce.id !== i);
     });
-  }, []), te = Le((i) => {
-    I((b) => b.filter((re) => re.id !== i));
-  }, []), G = Le((i) => {
-    g((b) => b.filter((re) => re.id !== i));
-  }, []), A = Le(() => {
-    !p.trim() || n || (t({
-      content: p,
+  }, []), ae = Pe((i) => {
+    ne((y) => y.filter((se) => se.id !== i));
+  }, []), Q = Pe((i) => {
+    g((y) => y.filter((se) => se.id !== i));
+  }, []), L = Pe(() => {
+    !b.trim() || n || (t({
+      content: b,
       attachments: x.map((i) => ({
         id: i.id,
         name: i.name,
@@ -2195,24 +2196,24 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
         previewUrl: i.previewUrl,
         file: i.file
       })),
-      references: [...ne, ...w]
-    }), h(""), q([]), I([]), g([]), z(!1), D(""), B(-1), K(!1), P(""), O(-1));
-  }, [p, n, t, x, w, ne]);
+      references: [...re, ...S]
+    }), p(""), F([]), ne([]), g([]), $(!1), D(""), B(-1), X(!1), P(""), G(-1));
+  }, [b, n, t, x, S, re]);
   return /* @__PURE__ */ e("div", { className: "w-full max-w-[840px] mx-auto", children: /* @__PURE__ */ r("div", { className: "relative bg-white rounded-3xl shadow-sm border border-borderGray flex flex-col transition-all focus-within:shadow-lg focus-within:border-borderGray", children: [
     /* @__PURE__ */ e(
       "input",
       {
-        id: ae,
-        ref: U,
+        id: ue,
+        ref: V,
         type: "file",
         multiple: !0,
-        accept: k,
+        accept: N,
         className: "pointer-events-none absolute h-0 w-0 opacity-0",
-        onChange: $e
+        onChange: Me
       }
     ),
-    (x.length > 0 || ne.length > 0 || w.length > 0) && /* @__PURE__ */ e("div", { className: "px-5 pt-4 pb-1", children: /* @__PURE__ */ r("div", { className: "flex flex-wrap gap-2", children: [
-      ne.map((i) => /* @__PURE__ */ r(
+    (x.length > 0 || re.length > 0 || S.length > 0) && /* @__PURE__ */ e("div", { className: "px-5 pt-4 pb-1", children: /* @__PURE__ */ r("div", { className: "flex flex-wrap gap-2", children: [
+      re.map((i) => /* @__PURE__ */ r(
         "div",
         {
           className: "group relative inline-flex max-w-full items-center gap-1.5 rounded-full border border-chatSkillBorder bg-chatSkillSurface pl-3 pr-3 py-1.5 text-sm text-chatSkillText shadow-sm transition-[padding] duration-150 hover:pr-7",
@@ -2223,17 +2224,17 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
               "button",
               {
                 type: "button",
-                onClick: () => te(i.id),
+                onClick: () => ae(i.id),
                 className: "pointer-events-none absolute right-2 top-1/2 inline-flex h-4 w-4 -translate-y-1/2 translate-x-1 items-center justify-center rounded text-chatSkillTextMuted opacity-0 transition-all hover:bg-chatSkillHover hover:text-chatSkillText group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100",
                 "aria-label": `移除 skill ${i.label}`,
-                children: /* @__PURE__ */ e(nt, { size: 12 })
+                children: /* @__PURE__ */ e(rt, { size: 12 })
               }
             )
           ]
         },
         i.id
       )),
-      w.map((i) => /* @__PURE__ */ r(
+      S.map((i) => /* @__PURE__ */ r(
         "div",
         {
           className: "group relative inline-flex max-w-full items-center gap-1.5 rounded-full border border-chatReferenceBorder bg-chatReferenceSurface pl-3 pr-3 py-1.5 text-sm text-chatReferenceText shadow-sm transition-[padding] duration-150 hover:pr-7",
@@ -2244,10 +2245,10 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
               "button",
               {
                 type: "button",
-                onClick: () => G(i.id),
+                onClick: () => Q(i.id),
                 className: "pointer-events-none absolute right-2 top-1/2 inline-flex h-4 w-4 -translate-y-1/2 translate-x-1 items-center justify-center rounded text-chatReferenceTextMuted opacity-0 transition-all hover:bg-chatReferenceHover hover:text-chatReferenceTextHover group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100",
                 "aria-label": `移除文档引用 ${i.label}`,
-                children: /* @__PURE__ */ e(nt, { size: 12 })
+                children: /* @__PURE__ */ e(rt, { size: 12 })
               }
             )
           ]
@@ -2268,10 +2269,10 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
               "button",
               {
                 type: "button",
-                onClick: () => Z(i.id),
+                onClick: () => J(i.id),
                 className: "pointer-events-none absolute right-2 top-1/2 inline-flex h-4 w-4 -translate-y-1/2 translate-x-1 items-center justify-center rounded text-chatAttachmentTextMuted opacity-0 transition-all hover:bg-chatAttachmentHover hover:text-secondaryText group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100",
                 "aria-label": `删除文件 ${i.name}`,
-                children: /* @__PURE__ */ e(nt, { size: 12 })
+                children: /* @__PURE__ */ e(rt, { size: 12 })
               }
             )
           ]
@@ -2282,92 +2283,92 @@ const na = 50, aa = 100 * 1024 * 1024, sa = "⏎发送 | ⇧+⏎换行 | @引用
     /* @__PURE__ */ e(
       "textarea",
       {
-        ref: S,
-        value: p,
+        ref: T,
+        value: b,
         onChange: (i) => {
-          const b = i.target.value;
-          h(b), F(b, i.target.selectionStart);
+          const y = i.target.value;
+          p(y), j(y, i.target.selectionStart);
         },
         onClick: (i) => {
-          F(i.currentTarget.value, i.currentTarget.selectionStart);
+          j(i.currentTarget.value, i.currentTarget.selectionStart);
         },
         onKeyUp: (i) => {
-          ["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(i.key) || F(i.currentTarget.value, i.currentTarget.selectionStart);
+          ["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(i.key) || j(i.currentTarget.value, i.currentTarget.selectionStart);
         },
         onKeyDown: (i) => {
           if (i.key === "Enter" && (i.shiftKey || i.metaKey || i.ctrlKey)) {
             i.preventDefault();
-            const b = i.currentTarget, re = b.selectionStart ?? p.length, fe = b.selectionEnd ?? re, se = `${p.slice(0, re)}
-${p.slice(fe)}`, de = re + 1;
-            h(se), F(se, de), requestAnimationFrame(() => {
-              b.setSelectionRange(de, de);
+            const y = i.currentTarget, se = y.selectionStart ?? b.length, ce = y.selectionEnd ?? se, ie = `${b.slice(0, se)}
+${b.slice(ce)}`, me = se + 1;
+            p(ie), j(ie, me), requestAnimationFrame(() => {
+              y.setSelectionRange(me, me);
             });
             return;
           }
-          if (j) {
+          if (_) {
             if (i.key === "ArrowDown") {
-              i.preventDefault(), B((b) => T.length === 0 ? -1 : b < 0 ? 0 : (b + 1) % T.length);
+              i.preventDefault(), B((y) => C.length === 0 ? -1 : y < 0 ? 0 : (y + 1) % C.length);
               return;
             }
             if (i.key === "ArrowUp") {
-              i.preventDefault(), B((b) => T.length === 0 ? -1 : b < 0 ? T.length - 1 : (b - 1 + T.length) % T.length);
+              i.preventDefault(), B((y) => C.length === 0 ? -1 : y < 0 ? C.length - 1 : (y - 1 + C.length) % C.length);
               return;
             }
             if (i.key === "Escape") {
-              i.preventDefault(), z(!1), D(""), B(-1);
+              i.preventDefault(), $(!1), D(""), B(-1);
               return;
             }
             if (i.key === "Enter" && !i.shiftKey) {
               i.preventDefault();
-              const b = V >= 0 ? T[V] : void 0;
-              b && Ce(b);
+              const y = K >= 0 ? C[K] : void 0;
+              y && we(y);
               return;
             }
           }
-          if ($) {
+          if (z) {
             if (i.key === "ArrowDown") {
-              i.preventDefault(), O((b) => L.length === 0 ? -1 : b < 0 ? 0 : (b + 1) % L.length);
+              i.preventDefault(), G((y) => R.length === 0 ? -1 : y < 0 ? 0 : (y + 1) % R.length);
               return;
             }
             if (i.key === "ArrowUp") {
-              i.preventDefault(), O((b) => L.length === 0 ? -1 : b < 0 ? L.length - 1 : (b - 1 + L.length) % L.length);
+              i.preventDefault(), G((y) => R.length === 0 ? -1 : y < 0 ? R.length - 1 : (y - 1 + R.length) % R.length);
               return;
             }
             if (i.key === "Escape") {
-              i.preventDefault(), K(!1), P(""), O(-1);
+              i.preventDefault(), X(!1), P(""), G(-1);
               return;
             }
             if (i.key === "Enter" && !i.shiftKey) {
               i.preventDefault();
-              const b = M >= 0 ? L[M] : void 0;
-              b && ke(b);
+              const y = M >= 0 ? R[M] : void 0;
+              y && Se(y);
               return;
             }
           }
-          i.key === "Enter" && !i.shiftKey && (i.preventDefault(), A());
+          i.key === "Enter" && !i.shiftKey && (i.preventDefault(), L());
         },
         disabled: n,
         onFocus: () => E(!0),
         onBlur: () => {
-          E(!1), z(!1), K(!1);
+          E(!1), $(!1), X(!1);
         },
-        placeholder: N ? sa : "输入你的科研问题...",
-        className: `w-full min-h-[72px] max-h-[180px] px-5 ${x.length > 0 || ne.length > 0 || w.length > 0 ? "pt-2" : "pt-4"} pb-3 outline-none resize-none text-[14px] bg-transparent text-primaryText placeholder:text-tertiaryText leading-relaxed`
+        placeholder: f ? sa : "输入你的科研问题...",
+        className: `w-full min-h-[72px] max-h-[180px] px-5 ${x.length > 0 || re.length > 0 || S.length > 0 ? "pt-2" : "pt-4"} pb-3 outline-none resize-none text-[14px] bg-transparent text-primaryText placeholder:text-tertiaryText leading-relaxed`
       }
     ),
-    j && /* @__PURE__ */ e("div", { className: "absolute inset-x-4 bottom-full mb-2 z-40", onMouseDown: (i) => i.preventDefault(), children: /* @__PURE__ */ r("div", { className: "overflow-hidden rounded-xl border border-chatPopupBorder bg-white shadow-chatPopup", children: [
+    _ && /* @__PURE__ */ e("div", { className: "absolute inset-x-4 bottom-full mb-2 z-40", onMouseDown: (i) => i.preventDefault(), children: /* @__PURE__ */ r("div", { className: "overflow-hidden rounded-xl border border-chatPopupBorder bg-white shadow-chatPopup", children: [
       /* @__PURE__ */ r("div", { className: "flex items-center gap-2 border-b border-chatAttachmentHover px-3 py-2 text-[13px] text-tertiaryText", children: [
         /* @__PURE__ */ e(Ze, { size: 14, className: "text-tertiaryText" }),
-        /* @__PURE__ */ e("span", { className: "truncate", children: _ ? `搜索 skill：${_}` : "搜索 skill" })
+        /* @__PURE__ */ e("span", { className: "truncate", children: I ? `搜索 skill：${I}` : "搜索 skill" })
       ] }),
-      /* @__PURE__ */ e("div", { className: "max-h-64 overflow-y-auto py-1", children: T.length === 0 ? /* @__PURE__ */ e("div", { className: "px-3 py-6 text-center text-sm text-tertiaryText", children: "未找到匹配的 Skill" }) : T.map((i, b) => /* @__PURE__ */ r(
+      /* @__PURE__ */ e("div", { className: "max-h-64 overflow-y-auto py-1", children: C.length === 0 ? /* @__PURE__ */ e("div", { className: "px-3 py-6 text-center text-sm text-tertiaryText", children: "未找到匹配的 Skill" }) : C.map((i, y) => /* @__PURE__ */ r(
         "button",
         {
           type: "button",
           disabled: i.disabled,
           title: i.disabledReason,
-          className: `mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${i.disabled ? "cursor-not-allowed opacity-50" : b === V ? "bg-chatMenuActive" : "hover:bg-chatMenuHover"}`,
-          onClick: () => Ce(i),
+          className: `mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${i.disabled ? "cursor-not-allowed opacity-50" : y === K ? "bg-chatMenuActive" : "hover:bg-chatMenuHover"}`,
+          onClick: () => we(i),
           children: [
             /* @__PURE__ */ e("span", { className: "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded bg-chatAttachmentIconSurface text-[10px] font-semibold leading-none text-chatMenuIcon", children: i.badge }),
             /* @__PURE__ */ r("span", { className: "min-w-0 flex flex-1 items-center gap-1", children: [
@@ -2380,26 +2381,26 @@ ${p.slice(fe)}`, de = re + 1;
         i.id
       )) })
     ] }) }),
-    $ && /* @__PURE__ */ e("div", { className: "absolute inset-x-4 bottom-full mb-2 z-40", onMouseDown: (i) => i.preventDefault(), children: /* @__PURE__ */ r("div", { className: "overflow-hidden rounded-xl border border-chatPopupBorder bg-white shadow-chatPopup", children: [
+    z && /* @__PURE__ */ e("div", { className: "absolute inset-x-4 bottom-full mb-2 z-40", onMouseDown: (i) => i.preventDefault(), children: /* @__PURE__ */ r("div", { className: "overflow-hidden rounded-xl border border-chatPopupBorder bg-white shadow-chatPopup", children: [
       /* @__PURE__ */ r("div", { className: "flex items-center gap-2 border-b border-chatAttachmentHover px-3 py-2 text-[13px] text-tertiaryText", children: [
         /* @__PURE__ */ e(Ze, { size: 14, className: "text-tertiaryText" }),
-        /* @__PURE__ */ e("span", { className: "truncate", children: W ? `搜索文件：${W}` : "搜索文件" })
+        /* @__PURE__ */ e("span", { className: "truncate", children: U ? `搜索文件：${U}` : "搜索文件" })
       ] }),
       /* @__PURE__ */ r("div", { className: "max-h-64 overflow-y-auto py-1", children: [
-        !W && /* @__PURE__ */ e("div", { className: "px-3 py-2", children: /* @__PURE__ */ r("div", { className: "flex items-center gap-1 text-[12px] text-tertiaryText", children: [
-          /* @__PURE__ */ e(ft, { size: 12 }),
+        !U && /* @__PURE__ */ e("div", { className: "px-3 py-2", children: /* @__PURE__ */ r("div", { className: "flex items-center gap-1 text-[12px] text-tertiaryText", children: [
+          /* @__PURE__ */ e(bt, { size: 12 }),
           /* @__PURE__ */ e("span", { children: "最近使用的文档" })
         ] }) }),
-        L.length === 0 ? /* @__PURE__ */ e("div", { className: "px-3 py-6 text-center text-sm text-tertiaryText", children: "未找到匹配的文件" }) : L.map((i, b) => /* @__PURE__ */ r(
+        R.length === 0 ? /* @__PURE__ */ e("div", { className: "px-3 py-6 text-center text-sm text-tertiaryText", children: "未找到匹配的文件" }) : R.map((i, y) => /* @__PURE__ */ r(
           "button",
           {
             type: "button",
-            className: `mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${b === M ? "bg-chatMenuActive" : "hover:bg-chatMenuHover"}`,
-            onClick: () => ke(i),
+            className: `mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${y === M ? "bg-chatMenuActive" : "hover:bg-chatMenuHover"}`,
+            onClick: () => Se(i),
             children: [
-              /* @__PURE__ */ e("span", { className: "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded bg-chatAttachmentIconSurface text-chatMenuIcon", children: /* @__PURE__ */ e(ht, { size: 11 }) }),
+              /* @__PURE__ */ e("span", { className: "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded bg-chatAttachmentIconSurface text-chatMenuIcon", children: /* @__PURE__ */ e(xt, { size: 11 }) }),
               /* @__PURE__ */ e("span", { className: "min-w-0 flex-1 truncate text-[13px] font-semibold text-primaryText", children: i.name }),
-              !W && i.operatorName && i.operatedAt && /* @__PURE__ */ e("span", { className: "shrink-0 max-w-[55%] truncate text-right text-[12px] text-tertiaryText", children: `- by ${i.operatorName} ${i.operatedAt}` })
+              !U && i.operatorName && i.operatedAt && /* @__PURE__ */ e("span", { className: "shrink-0 max-w-[55%] truncate text-right text-[12px] text-tertiaryText", children: `- by ${i.operatorName} ${i.operatedAt}` })
             ]
           },
           i.id
@@ -2413,15 +2414,15 @@ ${p.slice(fe)}`, de = re + 1;
           "div",
           {
             className: "relative",
-            onMouseEnter: () => y(!0),
-            onMouseLeave: () => y(!1),
+            onMouseEnter: () => m(!0),
+            onMouseLeave: () => m(!1),
             children: [
               /* @__PURE__ */ e(
                 "button",
                 {
                   type: "button",
-                  onClick: Ae,
-                  "aria-controls": ae,
+                  onClick: Ce,
+                  "aria-controls": ue,
                   className: "w-8 h-8 rounded-full border border-borderGray flex items-center justify-center text-tertiaryText hover:bg-bgLight transition-colors bg-white",
                   children: /* @__PURE__ */ e(tr, { size: 16 })
                 }
@@ -2429,7 +2430,7 @@ ${p.slice(fe)}`, de = re + 1;
               /* @__PURE__ */ r(
                 "div",
                 {
-                  className: `pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-max whitespace-nowrap rounded-lg bg-chatFloatingSurface px-3 py-2 text-[13px] leading-6 text-white shadow-chatHint ${X ? "block" : "hidden"}`,
+                  className: `pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-max whitespace-nowrap rounded-lg bg-chatFloatingSurface px-3 py-2 text-[13px] leading-6 text-white shadow-chatHint ${q ? "block" : "hidden"}`,
                   children: [
                     /* @__PURE__ */ e("div", { children: "上传文件，支持各类文档和图片" }),
                     /* @__PURE__ */ e("div", { children: "最多 50 个，每个 100 MB" })
@@ -2444,39 +2445,39 @@ ${p.slice(fe)}`, de = re + 1;
         "button",
         {
           type: "button",
-          onClick: Q ? l : A,
-          disabled: Q ? !1 : n || !p.trim(),
-          "aria-label": Q ? "停止生成" : "发送消息",
-          title: Q ? "停止生成" : "发送消息",
-          className: `w-9 h-9 rounded-full flex items-center justify-center transition-all ${Q || p.trim() && !n ? "bg-primary text-white shadow-md hover:bg-primary-hover" : "bg-tertiaryText text-white"}`,
-          children: Q ? /* @__PURE__ */ e(Mr, { size: 12, fill: "currentColor" }) : /* @__PURE__ */ e($r, { size: 16 })
+          onClick: Y ? l : L,
+          disabled: Y ? !1 : n || !b.trim(),
+          "aria-label": Y ? "停止生成" : "发送消息",
+          title: Y ? "停止生成" : "发送消息",
+          className: `w-9 h-9 rounded-full flex items-center justify-center transition-all ${Y || b.trim() && !n ? "bg-primary text-white shadow-md hover:bg-primary-hover" : "bg-tertiaryText text-white"}`,
+          children: Y ? /* @__PURE__ */ e(Mr, { size: 12, fill: "currentColor" }) : /* @__PURE__ */ e($r, { size: 16 })
         }
       ) })
     ] })
   ] }) });
 };
-De.memo(dr);
+je.memo(dr);
 const ma = ({ messages: t, isTyping: n, statusPhase: s = "thinking", searchSteps: l = [] }) => {
-  const a = me(null);
+  const a = he(null);
   ye(() => {
-    var f;
-    (f = a.current) == null || f.scrollIntoView({ behavior: "smooth" });
+    var h;
+    (h = a.current) == null || h.scrollIntoView({ behavior: "smooth" });
   }, [t.length, n]);
-  const u = ge(() => t.map((f, k) => /* @__PURE__ */ e(Vn, { msg: f }, `${k}-${f.role}`)), [t]);
+  const d = ge(() => t.map((h, N) => /* @__PURE__ */ e(Vn, { msg: h }, `${N}-${h.role}`)), [t]);
   return /* @__PURE__ */ r("div", { className: "flex-1 overflow-y-auto px-8 py-6", children: [
-    u,
+    d,
     n && /* @__PURE__ */ e(Gn, { phase: s, searchSteps: l }),
     /* @__PURE__ */ e("div", { ref: a })
   ] });
 };
-De.memo(ma);
+je.memo(ma);
 const pa = [
   "整理实验笔记",
   "设计实验方案",
   "文献解读",
   "每周工作总结"
 ], ur = ({ onSelect: t, prompts: n = pa, disabled: s = !1 }) => {
-  const l = Le((a) => {
+  const l = Pe((a) => {
     t(a);
   }, [t]);
   return /* @__PURE__ */ e("div", { className: "flex justify-center flex-wrap gap-4 mt-2", children: n.map((a) => /* @__PURE__ */ e(
@@ -2491,7 +2492,7 @@ const pa = [
     a
   )) });
 };
-De.memo(ur);
+je.memo(ur);
 const ha = (t, n) => {
   const s = Math.random() * t, l = Math.random() * n;
   return {
@@ -2506,108 +2507,108 @@ const ha = (t, n) => {
   };
 };
 function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
-  const l = me(null), a = me(null), [u, f] = v(""), [k, d] = v(""), [m, p] = v(!0), [h, N] = v(!1), [E, j] = v(!1), [z, _] = v(null), D = me(null), [V, B] = v(!1), [$, K] = v("email"), [W, P] = v(""), [M, O] = v(""), [x, q] = v(""), [ne, I] = v(""), [w, g] = v(0), [X, y] = v(!1), S = ge(() => u.trim().length > 0 && k.trim().length > 0 && !h, [
-    u,
-    h,
-    k
+  const l = he(null), a = he(null), [d, h] = v(""), [N, u] = v(""), [c, b] = v(!0), [p, f] = v(!1), [E, _] = v(!1), [$, I] = v(null), D = he(null), [K, B] = v(!1), [z, X] = v("email"), [U, P] = v(""), [M, G] = v(""), [x, F] = v(""), [re, ne] = v(""), [S, g] = v(0), [q, m] = v(!1), T = ge(() => d.trim().length > 0 && N.trim().length > 0 && !p, [
+    d,
+    p,
+    N
   ]);
   ye(() => {
-    if (w <= 0) return;
-    const T = window.setTimeout(() => g((L) => L - 1), 1e3);
-    return () => clearTimeout(T);
-  }, [w]), ye(
+    if (S <= 0) return;
+    const C = window.setTimeout(() => g((R) => R - 1), 1e3);
+    return () => clearTimeout(C);
+  }, [S]), ye(
     () => () => {
       D.current !== null && window.clearTimeout(D.current);
     },
     []
   ), ye(() => {
-    const T = l.current, L = a.current;
-    if (!T || !L) return;
-    const F = T.getContext("2d");
-    if (!F) return;
-    const Ce = window.getComputedStyle(document.documentElement), ke = Ce.getPropertyValue("--chatui-color-auth-particle-active").trim(), Ae = Ce.getPropertyValue("--chatui-color-auth-particle-idle").trim(), $e = Ce.getPropertyValue("--chatui-color-auth-particle-line").trim();
-    let Z = 0, te = 0, G = 0, A = window.devicePixelRatio || 1, i = [];
-    const b = {
+    const C = l.current, R = a.current;
+    if (!C || !R) return;
+    const j = C.getContext("2d");
+    if (!j) return;
+    const we = window.getComputedStyle(document.documentElement), Se = we.getPropertyValue("--chatui-color-auth-particle-active").trim(), Ce = we.getPropertyValue("--chatui-color-auth-particle-idle").trim(), Me = we.getPropertyValue("--chatui-color-auth-particle-line").trim();
+    let J = 0, ae = 0, Q = 0, L = window.devicePixelRatio || 1, i = [];
+    const y = {
       x: -1e3,
       y: -1e3,
       radius: 120
-    }, re = 150, fe = () => {
-      const be = L.getBoundingClientRect();
-      A = window.devicePixelRatio || 1, te = be.width, G = be.height, T.width = te * A, T.height = G * A, T.style.width = `${te}px`, T.style.height = `${G}px`, F.setTransform(A, 0, 0, A, 0, 0);
-      const o = te < 768 ? 40 : 90;
-      i = Array.from({ length: o }, () => ha(te, G));
-    }, se = (be) => {
-      F.beginPath(), F.arc(be.x, be.y, be.size, 0, Math.PI * 2), F.closePath(), F.fill();
-    }, de = () => {
-      F.clearRect(0, 0, te, G);
+    }, se = 150, ce = () => {
+      const be = R.getBoundingClientRect();
+      L = window.devicePixelRatio || 1, ae = be.width, Q = be.height, C.width = ae * L, C.height = Q * L, C.style.width = `${ae}px`, C.style.height = `${Q}px`, j.setTransform(L, 0, 0, L, 0, 0);
+      const W = ae < 768 ? 40 : 90;
+      i = Array.from({ length: W }, () => ha(ae, Q));
+    }, ie = (be) => {
+      j.beginPath(), j.arc(be.x, be.y, be.size, 0, Math.PI * 2), j.closePath(), j.fill();
+    }, me = () => {
+      j.clearRect(0, 0, ae, Q);
       for (let be = 0; be < i.length; be += 1) {
-        const o = i[be];
-        o.x += o.vx, o.y += o.vy, (o.x < 0 || o.x > te) && (o.vx = -o.vx), (o.y < 0 || o.y > G) && (o.vy = -o.vy);
-        const C = b.x - o.x, J = b.y - o.y, Y = Math.sqrt(C * C + J * J) || 1, he = C / Y, Ne = J / Y, ie = (b.radius - Y) / b.radius, R = he * ie * o.density, _e = Ne * ie * o.density;
-        if (Y < b.radius)
-          o.x -= R * 0.5, o.y -= _e * 0.5, F.fillStyle = ke, o.size = Math.min(o.size + 0.1, 2.5);
+        const W = i[be];
+        W.x += W.vx, W.y += W.vy, (W.x < 0 || W.x > ae) && (W.vx = -W.vx), (W.y < 0 || W.y > Q) && (W.vy = -W.vy);
+        const Ke = y.x - W.x, k = y.y - W.y, w = Math.sqrt(Ke * Ke + k * k) || 1, ee = Ke / w, Z = k / w, O = (y.radius - w) / y.radius, A = ee * O * W.density, Be = Z * O * W.density;
+        if (w < y.radius)
+          W.x -= A * 0.5, W.y -= Be * 0.5, j.fillStyle = Se, W.size = Math.min(W.size + 0.1, 2.5);
         else {
-          if (o.x !== o.baseX) {
-            const Be = o.x - o.baseX;
-            o.x -= Be / 50;
+          if (W.x !== W.baseX) {
+            const Ne = W.x - W.baseX;
+            W.x -= Ne / 50;
           }
-          if (o.y !== o.baseY) {
-            const Be = o.y - o.baseY;
-            o.y -= Be / 50;
+          if (W.y !== W.baseY) {
+            const Ne = W.y - W.baseY;
+            W.y -= Ne / 50;
           }
-          F.fillStyle = Ae, o.size = Math.max(o.size - 0.05, 1);
+          j.fillStyle = Ce, W.size = Math.max(W.size - 0.05, 1);
         }
-        se(o);
-        for (let Be = be; Be < i.length; Be += 1) {
-          const we = i[Be], le = o.x - we.x, oe = o.y - we.y, Re = Math.sqrt(le * le + oe * oe);
-          if (Re < re) {
-            const Se = (1 - Re / re) * 0.4;
-            F.beginPath(), F.strokeStyle = $e, F.globalAlpha = Se, F.lineWidth = 1, F.moveTo(o.x, o.y), F.lineTo(we.x, we.y), F.stroke(), F.globalAlpha = 1, F.closePath();
+        ie(W);
+        for (let Ne = be; Ne < i.length; Ne += 1) {
+          const Le = i[Ne], He = W.x - Le.x, Te = W.y - Le.y, le = Math.sqrt(He * He + Te * Te);
+          if (le < se) {
+            const de = (1 - le / se) * 0.4;
+            j.beginPath(), j.strokeStyle = Me, j.globalAlpha = de, j.lineWidth = 1, j.moveTo(W.x, W.y), j.lineTo(Le.x, Le.y), j.stroke(), j.globalAlpha = 1, j.closePath();
           }
         }
       }
-      Z = window.requestAnimationFrame(de);
-    }, pe = (be) => {
-      const o = L.getBoundingClientRect();
-      b.x = be.clientX - o.left, b.y = be.clientY - o.top;
-    }, ue = () => {
-      b.x = -1e3, b.y = -1e3;
+      J = window.requestAnimationFrame(me);
+    }, fe = (be) => {
+      const W = R.getBoundingClientRect();
+      y.x = be.clientX - W.left, y.y = be.clientY - W.top;
+    }, pe = () => {
+      y.x = -1e3, y.y = -1e3;
     }, xe = (be) => {
       if (be.touches.length < 1) return;
-      const o = L.getBoundingClientRect();
-      b.x = be.touches[0].clientX - o.left, b.y = be.touches[0].clientY - o.top;
+      const W = R.getBoundingClientRect();
+      y.x = be.touches[0].clientX - W.left, y.y = be.touches[0].clientY - W.top;
     };
-    return fe(), de(), window.addEventListener("resize", fe), L.addEventListener("mousemove", pe), L.addEventListener("mouseleave", ue), L.addEventListener("touchmove", xe, { passive: !0 }), L.addEventListener("touchend", ue), () => {
-      window.cancelAnimationFrame(Z), window.removeEventListener("resize", fe), L.removeEventListener("mousemove", pe), L.removeEventListener("mouseleave", ue), L.removeEventListener("touchmove", xe), L.removeEventListener("touchend", ue);
+    return ce(), me(), window.addEventListener("resize", ce), R.addEventListener("mousemove", fe), R.addEventListener("mouseleave", pe), R.addEventListener("touchmove", xe, { passive: !0 }), R.addEventListener("touchend", pe), () => {
+      window.cancelAnimationFrame(J), window.removeEventListener("resize", ce), R.removeEventListener("mousemove", fe), R.removeEventListener("mouseleave", pe), R.removeEventListener("touchmove", xe), R.removeEventListener("touchend", pe);
     };
   }, []);
-  const U = async (T) => {
-    if (T.preventDefault(), !!S) {
-      N(!0), _(null);
+  const V = async (C) => {
+    if (C.preventDefault(), !!T) {
+      f(!0), I(null);
       try {
-        const L = await t({ email: u.trim(), password: k, rememberLogin: m });
-        if (!L.ok) {
-          _(L.message);
+        const R = await t({ email: d.trim(), password: N, rememberLogin: c });
+        if (!R.ok) {
+          I(R.message);
           return;
         }
-        j(!0), D.current = window.setTimeout(() => {
-          j(!1), n();
+        _(!0), D.current = window.setTimeout(() => {
+          _(!1), n();
         }, 900);
       } catch {
-        _("登录失败，请稍后重试。");
+        I("登录失败，请稍后重试。");
       } finally {
-        N(!1);
+        f(!1);
       }
     }
-  }, ae = async () => {
-    !W.trim() || w > 0 || (N(!0), await new Promise((T) => window.setTimeout(T, 1e3)), N(!1), y(!0), g(60));
+  }, ue = async () => {
+    !U.trim() || S > 0 || (f(!0), await new Promise((C) => window.setTimeout(C, 1e3)), f(!1), m(!0), g(60));
   }, ve = async () => {
-    if ($ === "email") {
-      if (!W.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(W) || !M.trim() || M.length < 6 || !x.trim() || x.length < 6 || x !== ne) return;
-      K("success");
+    if (z === "email") {
+      if (!U.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(U) || !M.trim() || M.length < 6 || !x.trim() || x.length < 6 || x !== re) return;
+      X("success");
     }
-  }, Q = () => {
-    B(!1), K("email"), P(""), O(""), q(""), I(""), g(0), y(!1);
+  }, Y = () => {
+    B(!1), X("email"), P(""), G(""), F(""), ne(""), g(0), m(!1);
   };
   return /* @__PURE__ */ r("div", { ref: a, className: "relative h-screen w-full overflow-hidden bg-bgLight text-primaryText", children: [
     /* @__PURE__ */ e("div", { className: "absolute inset-0 z-0", children: /* @__PURE__ */ e("canvas", { ref: l, className: "h-full w-full" }) }),
@@ -2618,15 +2619,15 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
         /* @__PURE__ */ e("h1", { className: "bg-authTitle bg-clip-text text-4xl font-semibold tracking-[-0.02em] text-transparent", children: "Helia" }),
         /* @__PURE__ */ e("p", { className: "mt-2 text-sm text-authTextMuted", children: "欢迎回来，请登录以进入科研工作台。" })
       ] }),
-      /* @__PURE__ */ r("form", { onSubmit: U, className: "space-y-6", children: [
+      /* @__PURE__ */ r("form", { onSubmit: V, className: "space-y-6", children: [
         /* @__PURE__ */ r("label", { className: "relative block", children: [
           /* @__PURE__ */ e(
             "input",
             {
               type: "email",
-              value: u,
-              onChange: (T) => {
-                f(T.target.value), _(null);
+              value: d,
+              onChange: (C) => {
+                h(C.target.value), I(null);
               },
               required: !0,
               placeholder: " ",
@@ -2641,9 +2642,9 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
             "input",
             {
               type: "password",
-              value: k,
-              onChange: (T) => {
-                d(T.target.value), _(null);
+              value: N,
+              onChange: (C) => {
+                u(C.target.value), I(null);
               },
               required: !0,
               placeholder: " ",
@@ -2652,7 +2653,7 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
           ),
           /* @__PURE__ */ e("span", { className: "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary", children: "密码" })
         ] }),
-        z && /* @__PURE__ */ e("p", { role: "alert", className: "-mt-2 text-sm text-authErrorText", children: z }),
+        $ && /* @__PURE__ */ e("p", { role: "alert", className: "-mt-2 text-sm text-authErrorText", children: $ }),
         /* @__PURE__ */ r("div", { className: "flex items-center justify-between px-1", children: [
           /* @__PURE__ */ r("label", { className: "group inline-flex cursor-pointer items-center gap-2", children: [
             /* @__PURE__ */ r("span", { className: "relative inline-flex h-4 w-4 items-center justify-center rounded border border-authDivider bg-surface shadow-sm transition-colors group-hover:border-primary", children: [
@@ -2660,8 +2661,8 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
                 "input",
                 {
                   type: "checkbox",
-                  checked: m,
-                  onChange: (T) => p(T.target.checked),
+                  checked: c,
+                  onChange: (C) => b(C.target.checked),
                   className: "peer absolute inset-0 cursor-pointer opacity-0"
                 }
               ),
@@ -2684,11 +2685,11 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
           "button",
           {
             type: "submit",
-            disabled: !S,
+            disabled: !T,
             className: "mt-2 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0",
             children: [
-              /* @__PURE__ */ e("span", { children: h ? "认证中..." : "登录" }),
-              h && /* @__PURE__ */ r(
+              /* @__PURE__ */ e("span", { children: p ? "认证中..." : "登录" }),
+              p && /* @__PURE__ */ r(
                 "svg",
                 {
                   className: "ml-2 h-5 w-5 animate-spin text-white",
@@ -2712,7 +2713,7 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
           }
         )
       ] }),
-      !V && /* @__PURE__ */ r("div", { className: "mt-7", children: [
+      !K && /* @__PURE__ */ r("div", { className: "mt-7", children: [
         /* @__PURE__ */ r("div", { className: "flex items-center justify-center text-sm text-authTextFaint", children: [
           /* @__PURE__ */ e("span", { className: "h-px w-12 bg-authDivider" }),
           /* @__PURE__ */ e("span", { className: "mx-3", children: "首次使用？" }),
@@ -2746,17 +2747,17 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
           )
         ] })
       ] }),
-      V && /* @__PURE__ */ r("div", { className: "space-y-6", children: [
+      K && /* @__PURE__ */ r("div", { className: "space-y-6", children: [
         /* @__PURE__ */ e("div", { className: "mb-6", children: /* @__PURE__ */ e(
           "button",
           {
             type: "button",
-            onClick: Q,
+            onClick: Y,
             className: "text-sm font-medium text-authLink transition-colors hover:text-primary",
             children: "← 返回登录"
           }
         ) }),
-        $ === "email" && /* @__PURE__ */ r("div", { className: "space-y-5", children: [
+        z === "email" && /* @__PURE__ */ r("div", { className: "space-y-5", children: [
           /* @__PURE__ */ r("div", { className: "mb-6", children: [
             /* @__PURE__ */ e("h2", { className: "text-lg font-semibold text-primaryText", children: "重置密码" }),
             /* @__PURE__ */ e("p", { className: "mt-1 text-sm text-authTextMuted", children: "输入邮箱并验证后，重新设置密码" })
@@ -2766,8 +2767,8 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
               "input",
               {
                 type: "email",
-                value: W,
-                onChange: (T) => P(T.target.value),
+                value: U,
+                onChange: (C) => P(C.target.value),
                 placeholder: " ",
                 autoComplete: "off",
                 className: "peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus"
@@ -2782,7 +2783,7 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
                 {
                   type: "text",
                   value: M,
-                  onChange: (T) => O(T.target.value.replace(/\D/g, "").slice(0, 6)),
+                  onChange: (C) => G(C.target.value.replace(/\D/g, "").slice(0, 6)),
                   placeholder: " ",
                   autoComplete: "off",
                   maxLength: 6,
@@ -2795,10 +2796,10 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
               "button",
               {
                 type: "button",
-                onClick: ae,
-                disabled: w > 0 || h || !W.trim(),
-                className: `h-14 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium transition-all ${w > 0 ? "cursor-not-allowed border border-controlBorderDefault bg-surface text-authTextFaint" : "border border-controlBorderDefault bg-surface text-authTextDefault"}`,
-                children: w > 0 ? `${w}s后获取` : "获取验证码"
+                onClick: ue,
+                disabled: S > 0 || p || !U.trim(),
+                className: `h-14 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium transition-all ${S > 0 ? "cursor-not-allowed border border-controlBorderDefault bg-surface text-authTextFaint" : "border border-controlBorderDefault bg-surface text-authTextDefault"}`,
+                children: S > 0 ? `${S}s后获取` : "获取验证码"
               }
             )
           ] }),
@@ -2808,7 +2809,7 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
               {
                 type: "password",
                 value: x,
-                onChange: (T) => q(T.target.value),
+                onChange: (C) => F(C.target.value),
                 placeholder: " ",
                 className: "peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus"
               }
@@ -2820,30 +2821,30 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
               "input",
               {
                 type: "password",
-                value: ne,
-                onChange: (T) => I(T.target.value),
+                value: re,
+                onChange: (C) => ne(C.target.value),
                 placeholder: " ",
-                className: `peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus ${ne.length > 0 && x !== ne ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
+                className: `peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus ${re.length > 0 && x !== re ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
               }
             ),
             /* @__PURE__ */ e("span", { className: "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary", children: "确认密码" })
           ] }),
-          ne.length > 0 && x !== ne && /* @__PURE__ */ e("span", { className: "block text-xs text-authErrorText", children: "两次输入的密码不一致" }),
+          re.length > 0 && x !== re && /* @__PURE__ */ e("span", { className: "block text-xs text-authErrorText", children: "两次输入的密码不一致" }),
           /* @__PURE__ */ e(
             "button",
             {
               type: "button",
               onClick: ve,
-              disabled: !W.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(W) || !M.trim() || M.length < 6 || !x.trim() || x.length < 6 || x !== ne,
+              disabled: !U.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(U) || !M.trim() || M.length < 6 || !x.trim() || x.length < 6 || x !== re,
               className: "mt-2 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0",
               children: "重置密码"
             }
           )
         ] }),
-        $ === "success" && /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center space-y-6", children: [
+        z === "success" && /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center space-y-6", children: [
           /* @__PURE__ */ r("div", { className: "relative", children: [
             /* @__PURE__ */ e("div", { className: "absolute inset-0 animate-pulse rounded-full bg-authSuccessPulse" }),
-            /* @__PURE__ */ e("div", { className: "relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft", children: /* @__PURE__ */ e(at, { size: 40, className: "text-primary" }) })
+            /* @__PURE__ */ e("div", { className: "relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft", children: /* @__PURE__ */ e(nt, { size: 40, className: "text-primary" }) })
           ] }),
           /* @__PURE__ */ r("div", { className: "text-center", children: [
             /* @__PURE__ */ e("h3", { className: "text-2xl font-bold text-primaryText", children: "密码重置成功" }),
@@ -2853,7 +2854,7 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
             "button",
             {
               type: "button",
-              onClick: Q,
+              onClick: Y,
               className: "mt-4 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg",
               children: "返回登录"
             }
@@ -2866,7 +2867,7 @@ function ss({ onLogin: t, onLoginSuccess: n, onNavigate: s }) {
       {
         className: `pointer-events-none fixed left-1/2 top-5 z-50 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-authToastBorder bg-authToastSurface px-6 py-3 text-sm font-medium text-authToastText shadow-lg backdrop-blur-md transition-opacity duration-300 ${E ? "opacity-100" : "opacity-0"}`,
         children: [
-          /* @__PURE__ */ e(at, { size: 18, className: "text-primary" }),
+          /* @__PURE__ */ e(nt, { size: 18, className: "text-primary" }),
           /* @__PURE__ */ e("span", { children: "认证成功，正在进入工作台..." })
         ]
       }
@@ -2892,125 +2893,125 @@ function ls({
   onVerifyIdentity: s,
   onRegister: l,
   onEnterWorkspace: a,
-  onNavigate: u
+  onNavigate: d
 }) {
-  const f = me(null), k = me(null), d = me(null), [m, p] = v("identity"), [h, N] = v(""), [E, j] = v(""), [z, _] = v(""), [D, V] = v(""), [B, $] = v(""), [K, W] = v(""), P = t === "create-lab", [M, O] = v(""), [x, q] = v(""), [ne, I] = v(!1), [w, g] = v(0), [X, y] = v(""), [S, U] = v(null), ae = M.length > 0 && M.trim().length < 6;
+  const h = he(null), N = he(null), u = he(null), [c, b] = v("identity"), [p, f] = v(""), [E, _] = v(""), [$, I] = v(""), [D, K] = v(""), [B, z] = v(""), [X, U] = v(""), P = t === "create-lab", [M, G] = v(""), [x, F] = v(""), [re, ne] = v(!1), [S, g] = v(0), [q, m] = v(""), [T, V] = v(null), ue = M.length > 0 && M.trim().length < 6;
   ye(() => {
-    if (w <= 0) return;
-    const Z = window.setTimeout(() => g((te) => te - 1), 1e3);
-    return () => clearTimeout(Z);
-  }, [w]), ye(
+    if (S <= 0) return;
+    const J = window.setTimeout(() => g((ae) => ae - 1), 1e3);
+    return () => clearTimeout(J);
+  }, [S]), ye(
     () => () => {
-      d.current !== null && window.clearTimeout(d.current);
+      u.current !== null && window.clearTimeout(u.current);
     },
     []
   ), ye(() => {
-    const Z = f.current, te = k.current;
-    if (!Z || !te) return;
-    const G = Z.getContext("2d");
-    if (!G) return;
-    const A = window.getComputedStyle(document.documentElement), i = A.getPropertyValue("--chatui-color-auth-particle-active").trim(), b = A.getPropertyValue("--chatui-color-auth-particle-idle").trim(), re = A.getPropertyValue("--chatui-color-auth-particle-line").trim();
-    let fe = 0, se = 0, de = 0, pe = window.devicePixelRatio || 1, ue = [];
-    const xe = { x: -1e3, y: -1e3, radius: 120 }, be = 150, o = () => {
-      const ie = te.getBoundingClientRect();
-      pe = window.devicePixelRatio || 1, se = ie.width, de = ie.height, Z.width = se * pe, Z.height = de * pe, Z.style.width = `${se}px`, Z.style.height = `${de}px`, G.setTransform(pe, 0, 0, pe, 0, 0);
-      const R = se < 768 ? 40 : 90;
-      ue = Array.from({ length: R }, () => fa(se, de));
-    }, C = (ie) => {
-      G.beginPath(), G.arc(ie.x, ie.y, ie.size, 0, Math.PI * 2), G.closePath(), G.fill();
-    }, J = () => {
-      G.clearRect(0, 0, se, de);
-      for (let ie = 0; ie < ue.length; ie += 1) {
-        const R = ue[ie];
-        R.x += R.vx, R.y += R.vy, (R.x < 0 || R.x > se) && (R.vx = -R.vx), (R.y < 0 || R.y > de) && (R.vy = -R.vy);
-        const _e = xe.x - R.x, Be = xe.y - R.y, we = Math.sqrt(_e * _e + Be * Be) || 1, le = _e / we, oe = Be / we, Re = (xe.radius - we) / xe.radius, Se = le * Re * R.density, Te = oe * Re * R.density;
-        we < xe.radius ? (R.x -= Se * 0.5, R.y -= Te * 0.5, G.fillStyle = i, R.size = Math.min(R.size + 0.1, 2.5)) : (R.x !== R.baseX && (R.x -= (R.x - R.baseX) / 50), R.y !== R.baseY && (R.y -= (R.y - R.baseY) / 50), G.fillStyle = b, R.size = Math.max(R.size - 0.05, 1)), C(R);
-        for (let ze = ie; ze < ue.length; ze += 1) {
-          const Me = ue[ze], Ee = R.x - Me.x, Ve = R.y - Me.y, Ie = Math.sqrt(Ee * Ee + Ve * Ve);
-          if (Ie < be) {
-            const qe = (1 - Ie / be) * 0.4;
-            G.beginPath(), G.strokeStyle = re, G.globalAlpha = qe, G.lineWidth = 1, G.moveTo(R.x, R.y), G.lineTo(Me.x, Me.y), G.stroke(), G.globalAlpha = 1, G.closePath();
+    const J = h.current, ae = N.current;
+    if (!J || !ae) return;
+    const Q = J.getContext("2d");
+    if (!Q) return;
+    const L = window.getComputedStyle(document.documentElement), i = L.getPropertyValue("--chatui-color-auth-particle-active").trim(), y = L.getPropertyValue("--chatui-color-auth-particle-idle").trim(), se = L.getPropertyValue("--chatui-color-auth-particle-line").trim();
+    let ce = 0, ie = 0, me = 0, fe = window.devicePixelRatio || 1, pe = [];
+    const xe = { x: -1e3, y: -1e3, radius: 120 }, be = 150, W = () => {
+      const O = ae.getBoundingClientRect();
+      fe = window.devicePixelRatio || 1, ie = O.width, me = O.height, J.width = ie * fe, J.height = me * fe, J.style.width = `${ie}px`, J.style.height = `${me}px`, Q.setTransform(fe, 0, 0, fe, 0, 0);
+      const A = ie < 768 ? 40 : 90;
+      pe = Array.from({ length: A }, () => fa(ie, me));
+    }, Ke = (O) => {
+      Q.beginPath(), Q.arc(O.x, O.y, O.size, 0, Math.PI * 2), Q.closePath(), Q.fill();
+    }, k = () => {
+      Q.clearRect(0, 0, ie, me);
+      for (let O = 0; O < pe.length; O += 1) {
+        const A = pe[O];
+        A.x += A.vx, A.y += A.vy, (A.x < 0 || A.x > ie) && (A.vx = -A.vx), (A.y < 0 || A.y > me) && (A.vy = -A.vy);
+        const Be = xe.x - A.x, Ne = xe.y - A.y, Le = Math.sqrt(Be * Be + Ne * Ne) || 1, He = Be / Le, Te = Ne / Le, le = (xe.radius - Le) / xe.radius, de = He * le * A.density, Re = Te * le * A.density;
+        Le < xe.radius ? (A.x -= de * 0.5, A.y -= Re * 0.5, Q.fillStyle = i, A.size = Math.min(A.size + 0.1, 2.5)) : (A.x !== A.baseX && (A.x -= (A.x - A.baseX) / 50), A.y !== A.baseY && (A.y -= (A.y - A.baseY) / 50), Q.fillStyle = y, A.size = Math.max(A.size - 0.05, 1)), Ke(A);
+        for (let $e = O; $e < pe.length; $e += 1) {
+          const ke = pe[$e], ze = A.x - ke.x, _e = A.y - ke.y, Ae = Math.sqrt(ze * ze + _e * _e);
+          if (Ae < be) {
+            const Oe = (1 - Ae / be) * 0.4;
+            Q.beginPath(), Q.strokeStyle = se, Q.globalAlpha = Oe, Q.lineWidth = 1, Q.moveTo(A.x, A.y), Q.lineTo(ke.x, ke.y), Q.stroke(), Q.globalAlpha = 1, Q.closePath();
           }
         }
       }
-      fe = window.requestAnimationFrame(J);
-    }, Y = (ie) => {
-      const R = te.getBoundingClientRect();
-      xe.x = ie.clientX - R.left, xe.y = ie.clientY - R.top;
-    }, he = () => {
+      ce = window.requestAnimationFrame(k);
+    }, w = (O) => {
+      const A = ae.getBoundingClientRect();
+      xe.x = O.clientX - A.left, xe.y = O.clientY - A.top;
+    }, ee = () => {
       xe.x = -1e3, xe.y = -1e3;
-    }, Ne = (ie) => {
-      if (ie.touches.length < 1) return;
-      const R = te.getBoundingClientRect();
-      xe.x = ie.touches[0].clientX - R.left, xe.y = ie.touches[0].clientY - R.top;
+    }, Z = (O) => {
+      if (O.touches.length < 1) return;
+      const A = ae.getBoundingClientRect();
+      xe.x = O.touches[0].clientX - A.left, xe.y = O.touches[0].clientY - A.top;
     };
-    return o(), J(), window.addEventListener("resize", o), te.addEventListener("mousemove", Y), te.addEventListener("mouseleave", he), te.addEventListener("touchmove", Ne, { passive: !0 }), te.addEventListener("touchend", he), () => {
-      window.cancelAnimationFrame(fe), window.removeEventListener("resize", o), te.removeEventListener("mousemove", Y), te.removeEventListener("mouseleave", he), te.removeEventListener("touchmove", Ne), te.removeEventListener("touchend", he);
+    return W(), k(), window.addEventListener("resize", W), ae.addEventListener("mousemove", w), ae.addEventListener("mouseleave", ee), ae.addEventListener("touchmove", Z, { passive: !0 }), ae.addEventListener("touchend", ee), () => {
+      window.cancelAnimationFrame(ce), window.removeEventListener("resize", W), ae.removeEventListener("mousemove", w), ae.removeEventListener("mouseleave", ee), ae.removeEventListener("touchmove", Z), ae.removeEventListener("touchend", ee);
     };
   }, []);
   const ve = async () => {
-    if (!(!/^1[3-9]\d{9}$/.test(z) || w > 0)) {
-      I(!0), U(null);
+    if (!(!/^1[3-9]\d{9}$/.test($) || S > 0)) {
+      ne(!0), V(null);
       try {
-        const Z = await n(z);
-        if (!Z.ok) {
-          U(Z);
+        const J = await n($);
+        if (!J.ok) {
+          V(J);
           return;
         }
-        g(Z.resendAfterSeconds ?? 60), y(Z.message ?? "短信验证码已发送");
+        g(J.resendAfterSeconds ?? 60), m(J.message ?? "短信验证码已发送");
       } catch {
-        U({ ok: !1, message: "操作失败，请稍后重试。" });
+        V({ ok: !1, message: "操作失败，请稍后重试。" });
       } finally {
-        I(!1);
+        ne(!1);
       }
     }
-  }, Q = () => ({
-    email: h.trim(),
+  }, Y = () => ({
+    email: p.trim(),
     name: E.trim(),
-    phoneNumber: z,
+    phoneNumber: $,
     phoneVerificationCode: D.trim(),
     mode: t,
-    ...P ? { labName: K.trim() } : { inviteCode: B.trim() }
-  }), T = () => {
-    const Z = ["identity", "password", "success"], te = Z.indexOf(m);
-    te < Z.length - 1 && p(Z[te + 1]);
-  }, L = ge(() => {
-    if (ne) return !1;
-    switch (m) {
+    ...P ? { labName: X.trim() } : { inviteCode: B.trim() }
+  }), C = () => {
+    const J = ["identity", "password", "success"], ae = J.indexOf(c);
+    ae < J.length - 1 && b(J[ae + 1]);
+  }, R = ge(() => {
+    if (re) return !1;
+    switch (c) {
       case "identity":
-        return P ? h.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(h) && E.trim().length > 0 && /^1[3-9]\d{9}$/.test(z) && D.length === 6 && K.trim().length > 0 : h.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(h) && E.trim().length > 0 && /^1[3-9]\d{9}$/.test(z) && D.length === 6 && B.trim().length > 0;
+        return P ? p.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p) && E.trim().length > 0 && /^1[3-9]\d{9}$/.test($) && D.length === 6 && X.trim().length > 0 : p.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p) && E.trim().length > 0 && /^1[3-9]\d{9}$/.test($) && D.length === 6 && B.trim().length > 0;
       case "password":
         return M.trim().length >= 6 && M === x;
       default:
         return !1;
     }
-  }, [m, h, E, z, D, B, K, P, M, x, ne]), F = async (Z) => {
-    if (Z.preventDefault(), !!L) {
-      I(!0), U(null);
+  }, [c, p, E, $, D, B, X, P, M, x, re]), j = async (J) => {
+    if (J.preventDefault(), !!R) {
+      ne(!0), V(null);
       try {
-        const te = Q(), G = m === "password" ? await l({ ...te, password: M }) : await s(te);
-        if (!G.ok) {
-          U(G);
+        const ae = Y(), Q = c === "password" ? await l({ ...ae, password: M }) : await s(ae);
+        if (!Q.ok) {
+          V(Q);
           return;
         }
-        T();
+        C();
       } catch {
-        U({ ok: !1, message: "操作失败，请稍后重试。" });
+        V({ ok: !1, message: "操作失败，请稍后重试。" });
       } finally {
-        I(!1);
+        ne(!1);
       }
     }
-  }, Ce = {
+  }, we = {
     identity: P ? "创建实验室" : "注册并加入实验室",
     password: "设置登录密码",
     success: ""
-  }, ke = {
+  }, Se = {
     identity: "",
     password: "",
     success: ""
-  }, Ae = "peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus", $e = "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary";
-  return /* @__PURE__ */ r("div", { ref: k, className: "relative h-screen w-full overflow-hidden bg-bgLight text-primaryText", children: [
-    /* @__PURE__ */ e("div", { className: "absolute inset-0 z-0", children: /* @__PURE__ */ e("canvas", { ref: f, className: "h-full w-full" }) }),
+  }, Ce = "peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus", Me = "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary";
+  return /* @__PURE__ */ r("div", { ref: N, className: "relative h-screen w-full overflow-hidden bg-bgLight text-primaryText", children: [
+    /* @__PURE__ */ e("div", { className: "absolute inset-0 z-0", children: /* @__PURE__ */ e("canvas", { ref: h, className: "h-full w-full" }) }),
     /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-1/2 z-[1] h-[80vh] w-[80vw] -translate-x-1/2 -translate-y-1/2 bg-authBackdropCenter" }),
     /* @__PURE__ */ e("div", { className: "pointer-events-none absolute bottom-[-20%] right-[-10%] z-[1] h-[60vh] w-[60vw] bg-authBackdropCorner" }),
     /* @__PURE__ */ e("div", { className: "relative z-10 mx-auto flex h-full w-full max-w-md items-center justify-center px-4", children: /* @__PURE__ */ r("div", { className: "w-full rounded-3xl border border-authCardBorder bg-authCardSurface p-10 shadow-authCard backdrop-blur-[20px]", children: [
@@ -3019,27 +3020,27 @@ function ls({
         /* @__PURE__ */ e("p", { className: "mt-2 text-sm text-authTextMuted", children: "注册账号，开启科研工作台。" })
       ] }),
       /* @__PURE__ */ r("div", { className: "mb-6", children: [
-        /* @__PURE__ */ e("h2", { className: "text-lg font-semibold text-primaryText", children: Ce[m] }),
-        ke[m] && /* @__PURE__ */ e("p", { className: "mt-1 text-sm text-tertiaryText", children: ke[m] })
+        /* @__PURE__ */ e("h2", { className: "text-lg font-semibold text-primaryText", children: we[c] }),
+        Se[c] && /* @__PURE__ */ e("p", { className: "mt-1 text-sm text-tertiaryText", children: Se[c] })
       ] }),
-      m !== "success" && /* @__PURE__ */ r("form", { onSubmit: F, className: "space-y-5", children: [
-        m === "identity" && /* @__PURE__ */ r(Ue, { children: [
+      c !== "success" && /* @__PURE__ */ r("form", { onSubmit: j, className: "space-y-5", children: [
+        c === "identity" && /* @__PURE__ */ r(Ve, { children: [
           /* @__PURE__ */ r("label", { className: "relative block", children: [
             /* @__PURE__ */ e(
               "input",
               {
                 type: "email",
-                value: h,
-                onChange: (Z) => {
-                  N(Z.target.value), U(null);
+                value: p,
+                onChange: (J) => {
+                  f(J.target.value), V(null);
                 },
                 required: !0,
                 placeholder: " ",
                 autoComplete: "off",
-                className: Ae
+                className: Ce
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "邮箱" })
+            /* @__PURE__ */ e("span", { className: Me, children: "邮箱" })
           ] }),
           /* @__PURE__ */ r("label", { className: "relative block", children: [
             /* @__PURE__ */ e(
@@ -3047,16 +3048,16 @@ function ls({
               {
                 type: "text",
                 value: E,
-                onChange: (Z) => {
-                  j(Z.target.value), U(null);
+                onChange: (J) => {
+                  _(J.target.value), V(null);
                 },
                 required: !0,
                 placeholder: " ",
                 autoComplete: "name",
-                className: Ae
+                className: Ce
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "姓名" })
+            /* @__PURE__ */ e("span", { className: Me, children: "姓名" })
           ] }),
           /* @__PURE__ */ r("div", { className: "flex gap-3", children: [
             /* @__PURE__ */ r("label", { className: "relative block flex-1", children: [
@@ -3065,27 +3066,27 @@ function ls({
                 {
                   type: "tel",
                   inputMode: "numeric",
-                  value: z,
-                  onChange: (Z) => {
-                    _(Z.target.value.replace(/\D/g, "").slice(0, 11)), y(""), U(null);
+                  value: $,
+                  onChange: (J) => {
+                    I(J.target.value.replace(/\D/g, "").slice(0, 11)), m(""), V(null);
                   },
                   required: !0,
                   placeholder: " ",
                   autoComplete: "tel",
                   maxLength: 11,
-                  className: Ae
+                  className: Ce
                 }
               ),
-              /* @__PURE__ */ e("span", { className: $e, children: "手机号" })
+              /* @__PURE__ */ e("span", { className: Me, children: "手机号" })
             ] }),
             /* @__PURE__ */ e(
               "button",
               {
                 type: "button",
                 onClick: ve,
-                disabled: w > 0 || ne || !/^1[3-9]\d{9}$/.test(z),
-                className: `h-14 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium transition-all ${w > 0 ? "cursor-not-allowed border border-controlBorderDefault bg-surface text-authTextFaint" : "border border-controlBorderDefault bg-surface text-authTextDefault"}`,
-                children: w > 0 ? `${w}s后获取` : "获取验证码"
+                disabled: S > 0 || re || !/^1[3-9]\d{9}$/.test($),
+                className: `h-14 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium transition-all ${S > 0 ? "cursor-not-allowed border border-controlBorderDefault bg-surface text-authTextFaint" : "border border-controlBorderDefault bg-surface text-authTextDefault"}`,
+                children: S > 0 ? `${S}s后获取` : "获取验证码"
               }
             )
           ] }),
@@ -3096,70 +3097,70 @@ function ls({
                 type: "text",
                 inputMode: "numeric",
                 value: D,
-                onChange: (Z) => {
-                  V(Z.target.value.replace(/\D/g, "").slice(0, 6)), U(null);
+                onChange: (J) => {
+                  K(J.target.value.replace(/\D/g, "").slice(0, 6)), V(null);
                 },
                 required: !0,
                 placeholder: " ",
                 autoComplete: "one-time-code",
                 maxLength: 6,
-                className: Ae
+                className: Ce
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "短信验证码" })
+            /* @__PURE__ */ e("span", { className: Me, children: "短信验证码" })
           ] }),
-          X && /* @__PURE__ */ e("p", { className: "text-xs text-primary", children: X }),
+          q && /* @__PURE__ */ e("p", { className: "text-xs text-primary", children: q }),
           P ? /* @__PURE__ */ r("label", { className: "relative block", children: [
             /* @__PURE__ */ e(
               "input",
               {
                 type: "text",
-                value: K,
-                onChange: (Z) => {
-                  W(Z.target.value), U(null);
+                value: X,
+                onChange: (J) => {
+                  U(J.target.value), V(null);
                 },
                 required: !0,
                 placeholder: " ",
                 autoComplete: "off",
-                className: Ae
+                className: Ce
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "实验室名称" })
+            /* @__PURE__ */ e("span", { className: Me, children: "实验室名称" })
           ] }) : /* @__PURE__ */ r("label", { className: "relative block", children: [
             /* @__PURE__ */ e(
               "input",
               {
                 type: "text",
                 value: B,
-                onChange: (Z) => {
-                  $(Z.target.value), U(null);
+                onChange: (J) => {
+                  z(J.target.value), V(null);
                 },
                 required: !0,
                 placeholder: " ",
                 autoComplete: "off",
-                className: Ae
+                className: Ce
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "邀请码" })
+            /* @__PURE__ */ e("span", { className: Me, children: "邀请码" })
           ] })
         ] }),
-        m === "password" && /* @__PURE__ */ r(Ue, { children: [
+        c === "password" && /* @__PURE__ */ r(Ve, { children: [
           /* @__PURE__ */ r("label", { className: "relative block", children: [
             /* @__PURE__ */ e(
               "input",
               {
                 type: "password",
                 value: M,
-                onChange: (Z) => {
-                  O(Z.target.value), U(null);
+                onChange: (J) => {
+                  G(J.target.value), V(null);
                 },
                 required: !0,
                 placeholder: " ",
-                className: `${Ae} ${(S == null ? void 0 : S.field) === "password" || ae ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
+                className: `${Ce} ${(T == null ? void 0 : T.field) === "password" || ue ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "设置密码" }),
-            ((S == null ? void 0 : S.field) === "password" || ae) && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-authErrorText", children: (S == null ? void 0 : S.field) === "password" ? S.message : "密码至少需要 6 位" })
+            /* @__PURE__ */ e("span", { className: Me, children: "设置密码" }),
+            ((T == null ? void 0 : T.field) === "password" || ue) && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-authErrorText", children: (T == null ? void 0 : T.field) === "password" ? T.message : "密码至少需要 6 位" })
           ] }),
           /* @__PURE__ */ r("label", { className: "relative block", children: [
             /* @__PURE__ */ e(
@@ -3167,28 +3168,28 @@ function ls({
               {
                 type: "password",
                 value: x,
-                onChange: (Z) => {
-                  q(Z.target.value), U(null);
+                onChange: (J) => {
+                  F(J.target.value), V(null);
                 },
                 required: !0,
                 placeholder: " ",
-                className: `${Ae} ${x.length > 0 && M !== x ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
+                className: `${Ce} ${x.length > 0 && M !== x ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
               }
             ),
-            /* @__PURE__ */ e("span", { className: $e, children: "确认密码" }),
+            /* @__PURE__ */ e("span", { className: Me, children: "确认密码" }),
             x.length > 0 && M !== x && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-authErrorText", children: "两次输入的密码不一致" })
           ] })
         ] }),
-        S && S.field !== "password" && /* @__PURE__ */ e("p", { role: "alert", className: "text-sm text-authErrorText", children: S.message }),
+        T && T.field !== "password" && /* @__PURE__ */ e("p", { role: "alert", className: "text-sm text-authErrorText", children: T.message }),
         /* @__PURE__ */ r(
           "button",
           {
             type: "submit",
-            disabled: !L,
+            disabled: !R,
             className: "inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary pt-2 text-base font-semibold text-white shadow-md transition-all hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:shadow-md",
             children: [
-              /* @__PURE__ */ e("span", { children: ne ? "处理中..." : m === "password" ? "完成注册" : "下一步" }),
-              ne && /* @__PURE__ */ r(
+              /* @__PURE__ */ e("span", { children: re ? "处理中..." : c === "password" ? "完成注册" : "下一步" }),
+              re && /* @__PURE__ */ r(
                 "svg",
                 {
                   className: "h-5 w-5 animate-spin text-white",
@@ -3212,10 +3213,10 @@ function ls({
           }
         )
       ] }),
-      m === "success" && /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center space-y-6", children: [
+      c === "success" && /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center space-y-6", children: [
         /* @__PURE__ */ r("div", { className: "relative", children: [
           /* @__PURE__ */ e("div", { className: "absolute inset-0 animate-pulse rounded-full bg-authSuccessPulse" }),
-          /* @__PURE__ */ e("div", { className: "relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft", children: /* @__PURE__ */ e(at, { size: 40, className: "text-primary" }) })
+          /* @__PURE__ */ e("div", { className: "relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft", children: /* @__PURE__ */ e(nt, { size: 40, className: "text-primary" }) })
         ] }),
         /* @__PURE__ */ r("div", { className: "text-center", children: [
           /* @__PURE__ */ e("h3", { className: "text-2xl font-bold text-primaryText", children: "注册成功" }),
@@ -3226,20 +3227,20 @@ function ls({
           {
             type: "button",
             onClick: () => {
-              d.current = window.setTimeout(a, 1e3);
+              u.current = window.setTimeout(a, 1e3);
             },
             className: "mt-4 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-white shadow-md transition-all hover:bg-primary-hover hover:shadow-lg",
             children: "进入工作台"
           }
         )
       ] }),
-      m !== "success" && /* @__PURE__ */ r("p", { className: "mt-6 text-center text-sm text-tertiaryText", children: [
+      c !== "success" && /* @__PURE__ */ r("p", { className: "mt-6 text-center text-sm text-tertiaryText", children: [
         "已有账号？",
         /* @__PURE__ */ e(
           "button",
           {
             type: "button",
-            onClick: () => u("/login"),
+            onClick: () => d("/login"),
             className: "ml-1 font-medium text-authLink transition-colors hover:text-primary",
             children: "返回登录"
           }
@@ -3253,51 +3254,51 @@ const xa = (t, n) => {
   return { x: s, y: l, baseX: s, baseY: l, size: Math.random() * 1.5 + 0.5, density: Math.random() * 30 + 1, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4 };
 };
 function is({ onSendCode: t, onResetPassword: n, onBackToLogin: s }) {
-  const l = me(null), a = me(null), u = me(null), [f, k] = v("phone"), [d, m] = v(""), [p, h] = v(""), [N, E] = v(""), [j, z] = v(""), [_, D] = v(!1), [V, B] = v(0), [$, K] = v(""), [W, P] = v(null);
+  const l = he(null), a = he(null), d = he(null), [h, N] = v("phone"), [u, c] = v(""), [b, p] = v(""), [f, E] = v(""), [_, $] = v(""), [I, D] = v(!1), [K, B] = v(0), [z, X] = v(""), [U, P] = v(null);
   ye(() => {
-    if (V <= 0) return;
-    const w = window.setTimeout(() => B((g) => g - 1), 1e3);
-    return () => window.clearTimeout(w);
-  }, [V]), ye(() => {
-    const w = l.current, g = a.current;
-    if (!w || !g) return;
-    const X = w.getContext("2d");
-    if (!X) return;
-    const y = window.getComputedStyle(document.documentElement), S = y.getPropertyValue("--chatui-color-auth-particle-active").trim(), U = y.getPropertyValue("--chatui-color-auth-particle-idle").trim(), ae = y.getPropertyValue("--chatui-color-auth-particle-line").trim();
-    let ve = 0, Q = 0, T = 0, L = [];
-    const F = { x: -1e3, y: -1e3, radius: 120 }, Ce = 150, ke = () => {
-      const G = g.getBoundingClientRect(), A = window.devicePixelRatio || 1;
-      Q = G.width, T = G.height, w.width = Q * A, w.height = T * A, w.style.width = `${Q}px`, w.style.height = `${T}px`, X.setTransform(A, 0, 0, A, 0, 0), L = Array.from({ length: Q < 768 ? 40 : 90 }, () => xa(Q, T));
-    }, Ae = () => {
-      X.clearRect(0, 0, Q, T);
-      for (let G = 0; G < L.length; G += 1) {
-        const A = L[G];
-        A.x += A.vx, A.y += A.vy, (A.x < 0 || A.x > Q) && (A.vx = -A.vx), (A.y < 0 || A.y > T) && (A.vy = -A.vy);
-        const i = F.x - A.x, b = F.y - A.y, re = Math.sqrt(i * i + b * b) || 1, fe = (F.radius - re) / F.radius;
-        re < F.radius ? (A.x -= i / re * fe * A.density * 0.5, A.y -= b / re * fe * A.density * 0.5, X.fillStyle = S, A.size = Math.min(A.size + 0.1, 2.5)) : (A.x -= (A.x - A.baseX) / 50, A.y -= (A.y - A.baseY) / 50, X.fillStyle = U, A.size = Math.max(A.size - 0.05, 1)), X.beginPath(), X.arc(A.x, A.y, A.size, 0, Math.PI * 2), X.fill();
-        for (let se = G; se < L.length; se += 1) {
-          const de = L[se], pe = A.x - de.x, ue = A.y - de.y, xe = Math.sqrt(pe * pe + ue * ue);
-          xe >= Ce || (X.beginPath(), X.globalAlpha = (1 - xe / Ce) * 0.4, X.strokeStyle = ae, X.lineWidth = 1, X.moveTo(A.x, A.y), X.lineTo(de.x, de.y), X.stroke(), X.globalAlpha = 1);
+    if (K <= 0) return;
+    const S = window.setTimeout(() => B((g) => g - 1), 1e3);
+    return () => window.clearTimeout(S);
+  }, [K]), ye(() => {
+    const S = l.current, g = a.current;
+    if (!S || !g) return;
+    const q = S.getContext("2d");
+    if (!q) return;
+    const m = window.getComputedStyle(document.documentElement), T = m.getPropertyValue("--chatui-color-auth-particle-active").trim(), V = m.getPropertyValue("--chatui-color-auth-particle-idle").trim(), ue = m.getPropertyValue("--chatui-color-auth-particle-line").trim();
+    let ve = 0, Y = 0, C = 0, R = [];
+    const j = { x: -1e3, y: -1e3, radius: 120 }, we = 150, Se = () => {
+      const Q = g.getBoundingClientRect(), L = window.devicePixelRatio || 1;
+      Y = Q.width, C = Q.height, S.width = Y * L, S.height = C * L, S.style.width = `${Y}px`, S.style.height = `${C}px`, q.setTransform(L, 0, 0, L, 0, 0), R = Array.from({ length: Y < 768 ? 40 : 90 }, () => xa(Y, C));
+    }, Ce = () => {
+      q.clearRect(0, 0, Y, C);
+      for (let Q = 0; Q < R.length; Q += 1) {
+        const L = R[Q];
+        L.x += L.vx, L.y += L.vy, (L.x < 0 || L.x > Y) && (L.vx = -L.vx), (L.y < 0 || L.y > C) && (L.vy = -L.vy);
+        const i = j.x - L.x, y = j.y - L.y, se = Math.sqrt(i * i + y * y) || 1, ce = (j.radius - se) / j.radius;
+        se < j.radius ? (L.x -= i / se * ce * L.density * 0.5, L.y -= y / se * ce * L.density * 0.5, q.fillStyle = T, L.size = Math.min(L.size + 0.1, 2.5)) : (L.x -= (L.x - L.baseX) / 50, L.y -= (L.y - L.baseY) / 50, q.fillStyle = V, L.size = Math.max(L.size - 0.05, 1)), q.beginPath(), q.arc(L.x, L.y, L.size, 0, Math.PI * 2), q.fill();
+        for (let ie = Q; ie < R.length; ie += 1) {
+          const me = R[ie], fe = L.x - me.x, pe = L.y - me.y, xe = Math.sqrt(fe * fe + pe * pe);
+          xe >= we || (q.beginPath(), q.globalAlpha = (1 - xe / we) * 0.4, q.strokeStyle = ue, q.lineWidth = 1, q.moveTo(L.x, L.y), q.lineTo(me.x, me.y), q.stroke(), q.globalAlpha = 1);
         }
       }
-      ve = window.requestAnimationFrame(Ae);
-    }, $e = (G) => {
-      const A = g.getBoundingClientRect();
-      F.x = G.clientX - A.left, F.y = G.clientY - A.top;
-    }, Z = (G) => {
-      if (!G.touches.length) return;
-      const A = g.getBoundingClientRect();
-      F.x = G.touches[0].clientX - A.left, F.y = G.touches[0].clientY - A.top;
-    }, te = () => {
-      F.x = -1e3, F.y = -1e3;
+      ve = window.requestAnimationFrame(Ce);
+    }, Me = (Q) => {
+      const L = g.getBoundingClientRect();
+      j.x = Q.clientX - L.left, j.y = Q.clientY - L.top;
+    }, J = (Q) => {
+      if (!Q.touches.length) return;
+      const L = g.getBoundingClientRect();
+      j.x = Q.touches[0].clientX - L.left, j.y = Q.touches[0].clientY - L.top;
+    }, ae = () => {
+      j.x = -1e3, j.y = -1e3;
     };
-    return ke(), Ae(), window.addEventListener("resize", ke), g.addEventListener("mousemove", $e), g.addEventListener("mouseleave", te), g.addEventListener("touchmove", Z, { passive: !0 }), g.addEventListener("touchend", te), () => {
-      window.cancelAnimationFrame(ve), window.removeEventListener("resize", ke), g.removeEventListener("mousemove", $e), g.removeEventListener("mouseleave", te), g.removeEventListener("touchmove", Z), g.removeEventListener("touchend", te);
+    return Se(), Ce(), window.addEventListener("resize", Se), g.addEventListener("mousemove", Me), g.addEventListener("mouseleave", ae), g.addEventListener("touchmove", J, { passive: !0 }), g.addEventListener("touchend", ae), () => {
+      window.cancelAnimationFrame(ve), window.removeEventListener("resize", Se), g.removeEventListener("mousemove", Me), g.removeEventListener("mouseleave", ae), g.removeEventListener("touchmove", J), g.removeEventListener("touchend", ae);
     };
   }, []), ye(() => () => {
-    u.current !== null && window.clearTimeout(u.current);
+    d.current !== null && window.clearTimeout(d.current);
   }, []);
-  const M = ge(() => /^1[3-9]\d{9}$/.test(d) && p.length === 6 && N.length >= 6 && N === j, [j, N, d, p]), O = "peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus", x = "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary";
+  const M = ge(() => /^1[3-9]\d{9}$/.test(u) && b.length === 6 && f.length >= 6 && f === _, [_, f, u, b]), G = "peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus", x = "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary";
   return /* @__PURE__ */ r("div", { ref: a, className: "relative h-screen w-full overflow-hidden bg-bgLight text-primaryText", children: [
     /* @__PURE__ */ e("div", { className: "absolute inset-0 z-0", children: /* @__PURE__ */ e("canvas", { ref: l, className: "h-full w-full" }) }),
     /* @__PURE__ */ e("div", { className: "pointer-events-none absolute left-1/2 top-1/2 z-[1] h-[80vh] w-[80vw] -translate-x-1/2 -translate-y-1/2 bg-authBackdropCenter" }),
@@ -3307,18 +3308,18 @@ function is({ onSendCode: t, onResetPassword: n, onBackToLogin: s }) {
         /* @__PURE__ */ e("h1", { className: "bg-authTitle bg-clip-text text-4xl font-semibold tracking-[-0.02em] text-transparent", children: "Helia" }),
         /* @__PURE__ */ e("p", { className: "mt-2 text-sm text-authTextMuted", children: "重置您的登录密码。" })
       ] }),
-      f === "phone" ? /* @__PURE__ */ r(Ue, { children: [
+      h === "phone" ? /* @__PURE__ */ r(Ve, { children: [
         /* @__PURE__ */ e("div", { className: "mb-6", children: /* @__PURE__ */ e("h2", { className: "text-lg font-semibold text-primaryText", children: "重置您的密码" }) }),
-        /* @__PURE__ */ r("form", { onSubmit: async (w) => {
-          if (w.preventDefault(), !(!M || _)) {
+        /* @__PURE__ */ r("form", { onSubmit: async (S) => {
+          if (S.preventDefault(), !(!M || I)) {
             D(!0), P(null);
             try {
-              const g = await n({ phoneNumber: d, phoneVerificationCode: p, newPassword: N });
+              const g = await n({ phoneNumber: u, phoneVerificationCode: b, newPassword: f });
               if (!g.ok) {
                 P(g.message);
                 return;
               }
-              k("success");
+              N("success");
             } catch {
               P("密码重置失败，请稍后重试。");
             } finally {
@@ -3328,53 +3329,53 @@ function is({ onSendCode: t, onResetPassword: n, onBackToLogin: s }) {
         }, className: "space-y-5", children: [
           /* @__PURE__ */ r("div", { className: "flex gap-3", children: [
             /* @__PURE__ */ r("label", { className: "relative block flex-1", children: [
-              /* @__PURE__ */ e("input", { type: "tel", inputMode: "numeric", value: d, onChange: (w) => {
-                m(w.target.value.replace(/\D/g, "").slice(0, 11)), K(""), P(null);
-              }, required: !0, placeholder: " ", autoComplete: "tel", maxLength: 11, className: O }),
+              /* @__PURE__ */ e("input", { type: "tel", inputMode: "numeric", value: u, onChange: (S) => {
+                c(S.target.value.replace(/\D/g, "").slice(0, 11)), X(""), P(null);
+              }, required: !0, placeholder: " ", autoComplete: "tel", maxLength: 11, className: G }),
               /* @__PURE__ */ e("span", { className: x, children: "手机号" })
             ] }),
             /* @__PURE__ */ e("button", { type: "button", onClick: async () => {
-              if (!(!/^1[3-9]\d{9}$/.test(d) || V > 0 || _)) {
+              if (!(!/^1[3-9]\d{9}$/.test(u) || K > 0 || I)) {
                 D(!0), P(null);
                 try {
-                  const w = await t(d);
-                  if (!w.ok) {
-                    P(w.message);
+                  const S = await t(u);
+                  if (!S.ok) {
+                    P(S.message);
                     return;
                   }
-                  B(w.resendAfterSeconds ?? 60), K(w.message ?? "短信验证码已发送");
+                  B(S.resendAfterSeconds ?? 60), X(S.message ?? "短信验证码已发送");
                 } catch {
                   P("验证码发送失败，请稍后重试。");
                 } finally {
                   D(!1);
                 }
               }
-            }, disabled: V > 0 || _ || !/^1[3-9]\d{9}$/.test(d), className: `h-14 whitespace-nowrap rounded-xl border border-controlBorderDefault bg-surface px-4 py-2 text-sm font-medium transition-all ${V > 0 ? "cursor-not-allowed text-authTextFaint" : "text-authTextDefault"}`, children: V > 0 ? `${V}s后获取` : "获取验证码" })
+            }, disabled: K > 0 || I || !/^1[3-9]\d{9}$/.test(u), className: `h-14 whitespace-nowrap rounded-xl border border-controlBorderDefault bg-surface px-4 py-2 text-sm font-medium transition-all ${K > 0 ? "cursor-not-allowed text-authTextFaint" : "text-authTextDefault"}`, children: K > 0 ? `${K}s后获取` : "获取验证码" })
           ] }),
           /* @__PURE__ */ r("label", { className: "relative block", children: [
-            /* @__PURE__ */ e("input", { type: "text", inputMode: "numeric", value: p, onChange: (w) => {
-              h(w.target.value.replace(/\D/g, "").slice(0, 6)), P(null);
-            }, required: !0, placeholder: " ", autoComplete: "one-time-code", maxLength: 6, className: O }),
+            /* @__PURE__ */ e("input", { type: "text", inputMode: "numeric", value: b, onChange: (S) => {
+              p(S.target.value.replace(/\D/g, "").slice(0, 6)), P(null);
+            }, required: !0, placeholder: " ", autoComplete: "one-time-code", maxLength: 6, className: G }),
             /* @__PURE__ */ e("span", { className: x, children: "短信验证码" })
           ] }),
-          $ && /* @__PURE__ */ e("p", { className: "text-xs text-primary", children: $ }),
+          z && /* @__PURE__ */ e("p", { className: "text-xs text-primary", children: z }),
           /* @__PURE__ */ r("label", { className: "relative block", children: [
-            /* @__PURE__ */ e("input", { type: "password", value: N, onChange: (w) => {
-              E(w.target.value), P(null);
-            }, required: !0, placeholder: " ", className: O }),
+            /* @__PURE__ */ e("input", { type: "password", value: f, onChange: (S) => {
+              E(S.target.value), P(null);
+            }, required: !0, placeholder: " ", className: G }),
             /* @__PURE__ */ e("span", { className: x, children: "新密码" })
           ] }),
           /* @__PURE__ */ r("label", { className: "relative block", children: [
-            /* @__PURE__ */ e("input", { type: "password", value: j, onChange: (w) => {
-              z(w.target.value), P(null);
-            }, required: !0, placeholder: " ", className: `${O} ${j.length > 0 && N !== j ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}` }),
+            /* @__PURE__ */ e("input", { type: "password", value: _, onChange: (S) => {
+              $(S.target.value), P(null);
+            }, required: !0, placeholder: " ", className: `${G} ${_.length > 0 && f !== _ ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}` }),
             /* @__PURE__ */ e("span", { className: x, children: "确认新密码" }),
-            j.length > 0 && N !== j && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-authErrorText", children: "两次输入的密码不一致" })
+            _.length > 0 && f !== _ && /* @__PURE__ */ e("span", { className: "mt-1 block text-xs text-authErrorText", children: "两次输入的密码不一致" })
           ] }),
-          W && /* @__PURE__ */ e("p", { role: "alert", className: "text-sm text-authErrorText", children: W }),
-          /* @__PURE__ */ r("button", { type: "submit", disabled: !M || _, className: "inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary pt-2 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0", children: [
-            /* @__PURE__ */ e("span", { children: _ ? "处理中..." : "重置密码" }),
-            _ && /* @__PURE__ */ r("svg", { className: "h-5 w-5 animate-spin text-white", xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", children: [
+          U && /* @__PURE__ */ e("p", { role: "alert", className: "text-sm text-authErrorText", children: U }),
+          /* @__PURE__ */ r("button", { type: "submit", disabled: !M || I, className: "inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary pt-2 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0", children: [
+            /* @__PURE__ */ e("span", { children: I ? "处理中..." : "重置密码" }),
+            I && /* @__PURE__ */ r("svg", { className: "h-5 w-5 animate-spin text-white", xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", children: [
               /* @__PURE__ */ e("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }),
               /* @__PURE__ */ e("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4Zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647Z" })
             ] })
@@ -3387,14 +3388,14 @@ function is({ onSendCode: t, onResetPassword: n, onBackToLogin: s }) {
       ] }) : /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center space-y-6", children: [
         /* @__PURE__ */ r("div", { className: "relative", children: [
           /* @__PURE__ */ e("div", { className: "absolute inset-0 animate-pulse rounded-full bg-primary-soft opacity-70" }),
-          /* @__PURE__ */ e("div", { className: "relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft", children: /* @__PURE__ */ e(at, { size: 40, className: "text-primary" }) })
+          /* @__PURE__ */ e("div", { className: "relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft", children: /* @__PURE__ */ e(nt, { size: 40, className: "text-primary" }) })
         ] }),
         /* @__PURE__ */ r("div", { className: "text-center", children: [
           /* @__PURE__ */ e("h3", { className: "text-2xl font-bold text-primaryText", children: "密码重置成功" }),
           /* @__PURE__ */ e("p", { className: "mt-2 text-sm text-authTextMuted", children: "请用新密码登录" })
         ] }),
         /* @__PURE__ */ e("button", { type: "button", onClick: () => {
-          u.current = window.setTimeout(() => s({ replace: !0 }), 1e3);
+          d.current = window.setTimeout(() => s({ replace: !0 }), 1e3);
         }, className: "mt-4 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg", children: "返回登录" })
       ] })
     ] }) })
@@ -3407,78 +3408,78 @@ function os({
   initialChats: s,
   logoUrl: l,
   user: a,
-  children: u,
-  initialAiUsageWarningActive: f = !1,
-  aiUsageWarningActive: k,
-  canViewAiUsage: d = !0,
-  canManageMembers: m = !0,
-  chatActions: p = { rename: !0, share: !0, pin: !0, delete: !0 },
-  onNavigate: h,
-  onLogout: N,
+  children: d,
+  initialAiUsageWarningActive: h = !1,
+  aiUsageWarningActive: N,
+  canViewAiUsage: u = !0,
+  canManageMembers: c = !0,
+  chatActions: b = { rename: !0, share: !0, pin: !0, delete: !0 },
+  onNavigate: p,
+  onLogout: f,
   onChatsChange: E,
-  onRenameChat: j,
-  onTogglePinChat: z,
-  onShareChat: _,
+  onRenameChat: _,
+  onTogglePinChat: $,
+  onShareChat: I,
   onDeleteChat: D
 }) {
-  const [V, B] = v(!0), [$, K] = v(240), [W, P] = v(!1), M = me(0), O = me(240), [x, q] = v(() => {
-    const c = { unassigned: !0 };
+  const [K, B] = v(!0), [z, X] = v(240), [U, P] = v(!1), M = he(0), G = he(240), [x, F] = v(() => {
+    const o = { unassigned: !0 };
     return n.forEach((H) => {
-      c[H.id] = !0;
-    }), c;
-  }), [ne, I] = v(!1), [w, g] = v(() => [...s]), [X, y] = v(null), [S, U] = v("time"), [ae, ve] = v(!1), [Q, T] = v(null), [L, F] = v(""), [Ce, ke] = v(!1), [Ae, $e] = v(""), [Z, te] = v(!1), [G, A] = v(f), [i, b] = v(!1), re = k ?? G, fe = me(null), se = me(null), de = me(null), pe = !!(p.rename || p.share || p.pin || p.delete), ue = () => {
-    I(!1), N();
-  }, xe = (c) => {
-    q((H) => ({ ...H, [c]: !H[c] }));
-  }, be = (c) => {
-    var ce;
-    g((ee) => ee.filter((He) => He.id !== c)), y(null), Q === c && (T(null), F("")), D == null || D(c), ((ce = t.match(/^\/chat\/([^/]+)$/)) == null ? void 0 : ce[1]) === c && h("/chat/new", { replace: !0 });
-  }, o = (c) => {
-    const H = w.find((ee) => ee.id === c);
+      o[H.id] = !0;
+    }), o;
+  }), [re, ne] = v(!1), [S, g] = v(() => [...s]), [q, m] = v(null), [T, V] = v("time"), [ue, ve] = v(!1), [Y, C] = v(null), [R, j] = v(""), [we, Se] = v(!1), [Ce, Me] = v(""), [J, ae] = v(!1), [Q, L] = v(h), [i, y] = v(!1), se = N ?? Q, ce = he(null), ie = he(null), me = he(null), fe = !!(b.rename || b.share || b.pin || b.delete), pe = () => {
+    ne(!1), f();
+  }, xe = (o) => {
+    F((H) => ({ ...H, [o]: !H[o] }));
+  }, be = (o) => {
+    var oe;
+    g((te) => te.filter((De) => De.id !== o)), m(null), Y === o && (C(null), j("")), D == null || D(o), ((oe = t.match(/^\/chat\/([^/]+)$/)) == null ? void 0 : oe[1]) === o && p("/chat/new", { replace: !0 });
+  }, W = (o) => {
+    const H = S.find((te) => te.id === o);
     if (!H) return;
-    const ce = !H.isPinned;
-    g((ee) => ee.map(
-      (Ye) => Ye.id === c ? { ...Ye, isPinned: ce } : Ye
-    )), z == null || z(c, ce), y(null);
-  }, C = (c) => {
-    T(c.id), F(c.title), y(null);
-  }, J = () => {
-    T(null), F("");
-  }, Y = (c) => {
-    const H = L.trim();
-    H && (g((ce) => ce.map((ee) => ee.id === c ? { ...ee, title: H } : ee)), j == null || j(c, H)), J();
-  }, he = (c, H) => {
-    if (c.stopPropagation(), c.key === "Enter") {
-      c.preventDefault(), Y(H);
+    const oe = !H.isPinned;
+    g((te) => te.map(
+      (We) => We.id === o ? { ...We, isPinned: oe } : We
+    )), $ == null || $(o, oe), m(null);
+  }, Ke = (o) => {
+    C(o.id), j(o.title), m(null);
+  }, k = () => {
+    C(null), j("");
+  }, w = (o) => {
+    const H = R.trim();
+    H && (g((oe) => oe.map((te) => te.id === o ? { ...te, title: H } : te)), _ == null || _(o, H)), k();
+  }, ee = (o, H) => {
+    if (o.stopPropagation(), o.key === "Enter") {
+      o.preventDefault(), w(H);
       return;
     }
-    c.key === "Escape" && (c.preventDefault(), J());
-  }, Ne = (c) => {
+    o.key === "Escape" && (o.preventDefault(), k());
+  }, Z = (o) => {
     var H;
-    if (Q === c) {
-      (H = fe.current) == null || H.focus();
+    if (Y === o) {
+      (H = ce.current) == null || H.focus();
       return;
     }
-    h(`/chat/${c}`);
-  }, ie = (c, H = !1) => Q === c.id ? /* @__PURE__ */ r(
+    p(`/chat/${o}`);
+  }, O = (o, H = !1) => Y === o.id ? /* @__PURE__ */ r(
     "div",
     {
       className: "flex min-w-0 items-center gap-2 flex-1",
-      onClick: (ee) => {
-        var He;
-        ee.stopPropagation(), (He = fe.current) == null || He.focus();
+      onClick: (te) => {
+        var De;
+        te.stopPropagation(), (De = ce.current) == null || De.focus();
       },
       children: [
-        H && /* @__PURE__ */ e(gt, { size: 14, className: "shrink-0" }),
+        H && /* @__PURE__ */ e(yt, { size: 14, className: "shrink-0" }),
         /* @__PURE__ */ e(
           "input",
           {
-            ref: fe,
-            value: L,
-            onChange: (ee) => F(ee.target.value),
-            onKeyDown: (ee) => he(ee, c.id),
-            onBlur: () => Y(c.id),
-            onClick: (ee) => ee.stopPropagation(),
+            ref: ce,
+            value: R,
+            onChange: (te) => j(te.target.value),
+            onKeyDown: (te) => ee(te, o.id),
+            onBlur: () => w(o.id),
+            onClick: (te) => te.stopPropagation(),
             className: "w-full bg-transparent px-0 text-sm text-primaryText outline-none",
             maxLength: 80,
             "aria-label": "重命名对话"
@@ -3487,64 +3488,64 @@ function os({
       ]
     }
   ) : /* @__PURE__ */ r("div", { className: "flex min-w-0 items-center gap-2 flex-1", children: [
-    H && /* @__PURE__ */ e(gt, { size: 14, className: "shrink-0" }),
-    /* @__PURE__ */ e("span", { className: "truncate", children: c.title })
-  ] }), R = (c) => {
-    M.current = c.clientX, O.current = $, P(!0);
+    H && /* @__PURE__ */ e(yt, { size: 14, className: "shrink-0" }),
+    /* @__PURE__ */ e("span", { className: "truncate", children: o.title })
+  ] }), A = (o) => {
+    M.current = o.clientX, G.current = z, P(!0);
   };
   ye(() => {
-    if (!W) return;
-    const c = 200, H = 440, ce = (He) => {
-      const Ye = He.clientX - M.current, mr = Math.min(H, Math.max(c, O.current + Ye));
-      K(mr);
-    }, ee = () => {
+    if (!U) return;
+    const o = 200, H = 440, oe = (De) => {
+      const We = De.clientX - M.current, mr = Math.min(H, Math.max(o, G.current + We));
+      X(mr);
+    }, te = () => {
       P(!1);
     };
-    return document.body.style.cursor = "col-resize", document.body.style.userSelect = "none", window.addEventListener("mousemove", ce), window.addEventListener("mouseup", ee), () => {
-      document.body.style.cursor = "", document.body.style.userSelect = "", window.removeEventListener("mousemove", ce), window.removeEventListener("mouseup", ee);
+    return document.body.style.cursor = "col-resize", document.body.style.userSelect = "none", window.addEventListener("mousemove", oe), window.addEventListener("mouseup", te), () => {
+      document.body.style.cursor = "", document.body.style.userSelect = "", window.removeEventListener("mousemove", oe), window.removeEventListener("mouseup", te);
     };
-  }, [W, $]), ye(() => {
-    V || K(240);
-  }, [V]), ye(() => {
-    E == null || E(w);
-  }, [w, E]), ye(() => {
+  }, [U, z]), ye(() => {
+    K || X(240);
+  }, [K]), ye(() => {
+    E == null || E(S);
+  }, [S, E]), ye(() => {
     g([...s]);
   }, [s]), ye(() => {
-    if (!Q) return;
-    const c = window.requestAnimationFrame(() => {
+    if (!Y) return;
+    const o = window.requestAnimationFrame(() => {
       var H;
-      (H = fe.current) == null || H.focus();
+      (H = ce.current) == null || H.focus();
     });
     return () => {
-      window.cancelAnimationFrame(c);
+      window.cancelAnimationFrame(o);
     };
-  }, [Q]), ye(() => () => {
-    se.current !== null && window.clearTimeout(se.current), de.current !== null && window.clearTimeout(de.current);
+  }, [Y]), ye(() => () => {
+    ie.current !== null && window.clearTimeout(ie.current), me.current !== null && window.clearTimeout(me.current);
   }, []);
-  const _e = () => {
-    ve(!0), se.current !== null && window.clearTimeout(se.current), se.current = window.setTimeout(() => {
+  const Be = () => {
+    ve(!0), ie.current !== null && window.clearTimeout(ie.current), ie.current = window.setTimeout(() => {
       ve(!1);
     }, 600);
-  }, Be = () => {
-    te(!0), de.current !== null && window.clearTimeout(de.current), de.current = window.setTimeout(() => {
-      te(!1);
+  }, Ne = () => {
+    ae(!0), me.current !== null && window.clearTimeout(me.current), me.current = window.setTimeout(() => {
+      ae(!1);
     }, 600);
   };
   ye(() => {
-    re || b(!1);
-  }, [re]);
-  const we = () => {
-    b(!0), h("/ai-usage");
-  }, le = ge(() => [
+    se || y(!1);
+  }, [se]);
+  const Le = () => {
+    y(!0), p("/ai-usage");
+  }, He = ge(() => [
     {
       key: "skills",
       label: "Skill"
     },
-    ...d ? [{
+    ...u ? [{
       key: "ai-usage",
       label: "AI用量"
     }] : [],
-    ...m ? [{
+    ...c ? [{
       key: "members",
       label: "成员管理"
     }] : [],
@@ -3557,66 +3558,66 @@ function os({
       label: "退出登录",
       danger: !0
     }
-  ], [m, d]), oe = (c) => {
-    if (I(!1), c.key === "skills") {
-      h("/skills");
+  ], [c, u]), Te = (o) => {
+    if (ne(!1), o.key === "skills") {
+      p("/skills");
       return;
     }
-    if (c.key === "ai-usage") {
-      h("/ai-usage");
+    if (o.key === "ai-usage") {
+      p("/ai-usage");
       return;
     }
-    if (c.key === "members") {
-      h("/members");
+    if (o.key === "members") {
+      p("/members");
       return;
     }
-    if (c.key === "system-settings") {
-      h("/system-settings");
+    if (o.key === "system-settings") {
+      p("/system-settings");
       return;
     }
-    c.key === "logout" && ue();
-  }, Re = ge(() => p.delete ? [{ key: "delete", label: "删除", icon: /* @__PURE__ */ e(er, { size: 14 }), danger: !0 }] : [], [p.delete]), Se = (c) => {
+    o.key === "logout" && pe();
+  }, le = ge(() => b.delete ? [{ key: "delete", label: "删除", icon: /* @__PURE__ */ e(er, { size: 14 }), danger: !0 }] : [], [b.delete]), de = (o) => {
     const H = [];
-    return p.rename && H.push({ key: "rename", label: "重命名", icon: /* @__PURE__ */ e(Ir, { size: 14 }) }), p.share && H.push({ key: "share", label: "分享对话", icon: /* @__PURE__ */ e(Rr, { size: 14 }) }), p.pin && H.push({
+    return b.rename && H.push({ key: "rename", label: "重命名", icon: /* @__PURE__ */ e(Ir, { size: 14 }) }), b.share && H.push({ key: "share", label: "分享对话", icon: /* @__PURE__ */ e(Rr, { size: 14 }) }), b.pin && H.push({
       key: "pin",
-      label: c.isPinned ? "取消置顶" : "置顶对话",
-      icon: /* @__PURE__ */ e(gt, { size: 14 })
+      label: o.isPinned ? "取消置顶" : "置顶对话",
+      icon: /* @__PURE__ */ e(yt, { size: 14 })
     }), H;
-  }, Te = (c, H) => {
-    const ce = Ht(c);
-    return !pe && !ce ? null : /* @__PURE__ */ r("div", { className: `relative shrink-0 flex h-5 w-5 items-center justify-center ${ce ? "ml-6" : "ml-2"}`, children: [
-      ce && !H && /* @__PURE__ */ e("span", { className: "pointer-events-none absolute right-0 shrink-0 whitespace-nowrap rounded-full bg-shellChatBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellChatBadgeText transition-opacity group-hover:opacity-0", children: "任务" }),
-      pe && /* @__PURE__ */ e(
-        ut,
+  }, Re = (o, H) => {
+    const oe = Ht(o);
+    return !fe && !oe ? null : /* @__PURE__ */ r("div", { className: `relative shrink-0 flex h-5 w-5 items-center justify-center ${oe ? "ml-6" : "ml-2"}`, children: [
+      oe && !H && /* @__PURE__ */ e("span", { className: "pointer-events-none absolute right-0 shrink-0 whitespace-nowrap rounded-full bg-shellChatBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellChatBadgeText transition-opacity group-hover:opacity-0", children: "任务" }),
+      fe && /* @__PURE__ */ e(
+        pt,
         {
           open: H,
-          onOpenChange: (ee) => y(ee ? c.id : null),
+          onOpenChange: (te) => m(te ? o.id : null),
           placement: "bottom-end",
-          width: Math.max(140, Math.min(176, $ - 56)),
+          width: Math.max(140, Math.min(176, z - 56)),
           trigger: /* @__PURE__ */ e(Br, { size: 14 }),
-          onTriggerClick: (ee) => {
-            ee.stopPropagation();
+          onTriggerClick: (te) => {
+            te.stopPropagation();
           },
-          items: Se(c),
-          footerItems: Re,
-          onItemClick: (ee, He) => {
-            if (He.stopPropagation(), ee.key === "rename") {
-              C(c);
+          items: de(o),
+          footerItems: le,
+          onItemClick: (te, De) => {
+            if (De.stopPropagation(), te.key === "rename") {
+              Ke(o);
               return;
             }
-            if (ee.key === "share") {
-              _ ? _(c.id) : h(`/chat/${c.id}?share=1`), y(null);
+            if (te.key === "share") {
+              I ? I(o.id) : p(`/chat/${o.id}?share=1`), m(null);
               return;
             }
-            if (ee.key === "pin") {
-              o(c.id);
+            if (te.key === "pin") {
+              W(o.id);
               return;
             }
-            if (ee.key === "delete") {
-              be(c.id);
+            if (te.key === "delete") {
+              be(o.id);
               return;
             }
-            y(null);
+            m(null);
           },
           triggerClassName: `h-5 w-5 items-center justify-center ${H ? "inline-flex" : "hidden group-hover:inline-flex"}`,
           className: "relative z-40",
@@ -3624,69 +3625,69 @@ function os({
         }
       )
     ] });
-  }, ze = [
+  }, $e = [
     {
       label: "项目",
-      icon: /* @__PURE__ */ e(bt, { size: 14 }),
+      icon: /* @__PURE__ */ e(gt, { size: 14 }),
       path: "/projects",
       isActive: t === "/projects" || t.startsWith("/projects/")
     },
     {
       label: "任务",
-      icon: /* @__PURE__ */ e(ft, { size: 14 }),
+      icon: /* @__PURE__ */ e(bt, { size: 14 }),
       path: "/tools",
       isActive: t === "/tools" || t.startsWith("/tool/")
     }
-  ], Me = ge(() => {
-    const c = t.match(/^\/chat\/([^/]+)$/);
-    return c ? w.find((H) => H.id === c[1]) ?? null : null;
-  }, [w, t]), Ee = ge(
-    () => w.filter((c) => c.isPinned),
-    [w]
-  ), Ve = ge(
-    () => w.filter((c) => !c.isPinned),
-    [w]
-  ), Ie = ge(
-    () => S === "time" ? Ee.slice(0, Ft) : Ee,
-    [Ee, S]
-  ), qe = ge(() => {
-    if (S !== "time") return [];
-    const c = Math.max(Ft - Ie.length, 0);
-    return Ve.slice(0, c);
-  }, [S, Ve, Ie.length]), xt = ge(
-    () => Ie.length + qe.length,
-    [Ie.length, qe.length]
-  ), zt = S === "time" && w.length > xt, tt = ge(() => new Map(n.map((c) => [c.id, c.name])), [n]), Ge = Ae.trim().toLowerCase(), rt = ge(() => Ge ? w.filter((c) => {
-    const H = c.projectId ? tt.get(c.projectId) ?? "未分组" : "未分组";
-    return `${c.title} ${H} ${c.date}`.toLowerCase().includes(Ge);
-  }) : w, [w, Ge, tt]);
+  ], ke = ge(() => {
+    const o = t.match(/^\/chat\/([^/]+)$/);
+    return o ? S.find((H) => H.id === o[1]) ?? null : null;
+  }, [S, t]), ze = ge(
+    () => S.filter((o) => o.isPinned),
+    [S]
+  ), _e = ge(
+    () => S.filter((o) => !o.isPinned),
+    [S]
+  ), Ae = ge(
+    () => T === "time" ? ze.slice(0, Ft) : ze,
+    [ze, T]
+  ), Oe = ge(() => {
+    if (T !== "time") return [];
+    const o = Math.max(Ft - Ae.length, 0);
+    return _e.slice(0, o);
+  }, [T, _e, Ae.length]), qe = ge(
+    () => Ae.length + Oe.length,
+    [Ae.length, Oe.length]
+  ), Ye = T === "time" && S.length > qe, et = ge(() => new Map(n.map((o) => [o.id, o.name])), [n]), at = Ce.trim().toLowerCase(), st = ge(() => at ? S.filter((o) => {
+    const H = o.projectId ? et.get(o.projectId) ?? "未分组" : "未分组";
+    return `${o.title} ${H} ${o.date}`.toLowerCase().includes(at);
+  }) : S, [S, at, et]);
   ye(() => {
-    if (!Me) return;
-    const c = Me.projectId ?? "unassigned";
-    q((H) => H[c] !== !1 ? H : { ...H, [c]: !0 });
-  }, [Me]);
-  const We = () => {
-    $e(""), ke(!0);
-  }, Ke = () => {
-    ke(!1), te(!1), de.current !== null && (window.clearTimeout(de.current), de.current = null);
-  }, Je = (c) => {
-    ke(!1), h(`/chat/${c}`);
+    if (!ke) return;
+    const o = ke.projectId ?? "unassigned";
+    F((H) => H[o] !== !1 ? H : { ...H, [o]: !0 });
+  }, [ke]);
+  const tt = () => {
+    Me(""), Se(!0);
+  }, lt = () => {
+    Se(!1), ae(!1), me.current !== null && (window.clearTimeout(me.current), me.current = null);
+  }, Ue = (o) => {
+    Se(!1), p(`/chat/${o}`);
   };
   return /* @__PURE__ */ r("div", { className: "flex h-screen w-full bg-bgLight font-sans antialiased text-primaryText overflow-hidden relative", children: [
     /* @__PURE__ */ r(
       "aside",
       {
-        style: { width: V ? $ : 0 },
-        className: `relative z-20 flex h-full min-w-0 flex-shrink-0 flex-col overflow-hidden bg-bgLight transition-[width,opacity] duration-300 ease-in-out ${V ? "opacity-100" : "opacity-0 pointer-events-none"}`,
+        style: { width: K ? z : 0 },
+        className: `relative z-20 flex h-full min-w-0 flex-shrink-0 flex-col overflow-hidden bg-bgLight transition-[width,opacity] duration-300 ease-in-out ${K ? "opacity-100" : "opacity-0 pointer-events-none"}`,
         children: [
           /* @__PURE__ */ r(
             "div",
             {
-              style: { width: $, minWidth: $ },
+              style: { width: z, minWidth: z },
               className: "flex h-full flex-col",
               children: [
                 /* @__PURE__ */ r("div", { className: "mt-2 md:mt-3 flex h-16 items-center justify-between pl-5 pr-[10px]", children: [
-                  /* @__PURE__ */ r("div", { className: "-ml-[3px] flex items-center gap-2 cursor-pointer min-w-0 flex-1", onClick: () => h("/chat/new"), children: [
+                  /* @__PURE__ */ r("div", { className: "-ml-[3px] flex items-center gap-2 cursor-pointer min-w-0 flex-1", onClick: () => p("/chat/new"), children: [
                     /* @__PURE__ */ e("img", { src: l, alt: "Helia Logo", className: "h-[20px] w-[20px] shrink-0 flex-shrink-0", style: { display: "flex", alignItems: "center" } }),
                     /* @__PURE__ */ e("span", { className: "text-[18px] font-bold text-primaryText tracking-tight truncate leading-none", children: "Helia" })
                   ] }),
@@ -3703,7 +3704,7 @@ function os({
                 /* @__PURE__ */ e("div", { className: "px-0 mb-0.5 mt-0.5", children: /* @__PURE__ */ r(
                   "button",
                   {
-                    onClick: () => h("/chat/new"),
+                    onClick: () => p("/chat/new"),
                     className: `nav-item ${t === "/chat/new" ? "bg-shellNavActive text-primaryText" : "text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                     children: [
                       /* @__PURE__ */ e(Pr, { size: 14 }),
@@ -3711,81 +3712,81 @@ function os({
                     ]
                   }
                 ) }),
-                /* @__PURE__ */ e("div", { className: "px-0 flex flex-col gap-0.5 mb-4", children: ze.map((c) => {
-                  const H = c.isActive;
+                /* @__PURE__ */ e("div", { className: "px-0 flex flex-col gap-0.5 mb-4", children: $e.map((o) => {
+                  const H = o.isActive;
                   return /* @__PURE__ */ r(
                     "button",
                     {
-                      onClick: () => h(c.path),
+                      onClick: () => p(o.path),
                       className: `nav-item ${H ? "bg-shellNavActive text-primaryText" : "text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                       children: [
-                        c.icon,
-                        /* @__PURE__ */ e("span", { children: c.label })
+                        o.icon,
+                        /* @__PURE__ */ e("span", { children: o.label })
                       ]
                     },
-                    c.path
+                    o.path
                   );
                 }) }),
                 /* @__PURE__ */ r(
                   "div",
                   {
-                    onScroll: _e,
-                    className: `flex-1 overflow-y-auto px-0 relative auto-hide-scrollbar ${ae ? "is-scrolling is-scrolling-thin" : ""}`,
+                    onScroll: Be,
+                    className: `flex-1 overflow-y-auto px-0 relative auto-hide-scrollbar ${ue ? "is-scrolling is-scrolling-thin" : ""}`,
                     children: [
                       /* @__PURE__ */ e("div", { className: "sticky top-0 z-20 bg-bgLight px-[10px] pb-4 pt-0.5", children: /* @__PURE__ */ e("div", { className: "flex items-center pl-[8px] pr-4 text-sm font-normal text-secondaryText", children: /* @__PURE__ */ e("span", { className: "opacity-60", children: "近期对话" }) }) }),
-                      Ie.length > 0 && /* @__PURE__ */ r("div", { className: "mb-1", children: [
-                        /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: Ie.map((c) => {
-                          const H = t === `/chat/${c.id}`, ce = X === c.id;
+                      Ae.length > 0 && /* @__PURE__ */ r("div", { className: "mb-1", children: [
+                        /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: Ae.map((o) => {
+                          const H = t === `/chat/${o.id}`, oe = q === o.id;
                           return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
                             "div",
                             {
-                              onClick: () => Ne(c.id),
-                              className: `mx-[10px] text-sm pl-[10px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Q === c.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : H ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
+                              onClick: () => Z(o.id),
+                              className: `mx-[10px] text-sm pl-[10px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Y === o.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : H ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                               children: [
-                                ie(c, S !== "time"),
-                                Q !== c.id && Te(c, ce)
+                                O(o, T !== "time"),
+                                Y !== o.id && Re(o, oe)
                               ]
                             }
-                          ) }, c.id);
+                          ) }, o.id);
                         }) }),
                         /* @__PURE__ */ e("div", { className: "mx-[10px] my-2 border-t border-shellDivider" })
                       ] }),
-                      S === "project" && n.map((c) => {
-                        const H = w.filter((ee) => ee.projectId === c.id && !ee.isPinned), ce = x[c.id] !== !1;
+                      T === "project" && n.map((o) => {
+                        const H = S.filter((te) => te.projectId === o.id && !te.isPinned), oe = x[o.id] !== !1;
                         return /* @__PURE__ */ r("div", { className: "mb-0.5", children: [
                           /* @__PURE__ */ r(
                             "div",
                             {
                               className: "group mx-[10px] flex items-center gap-2 pl-[8px] pr-4 py-2 text-sm font-normal text-secondaryText cursor-pointer hover:text-primaryText rounded-md hover:bg-bgLight transition-colors",
-                              onClick: () => xe(c.id),
+                              onClick: () => xe(o.id),
                               children: [
                                 /* @__PURE__ */ r("div", { className: "relative h-[14px] w-[14px] shrink-0", children: [
-                                  /* @__PURE__ */ e(bt, { size: 14, className: "text-secondaryText transition-opacity group-hover:opacity-0" }),
-                                  /* @__PURE__ */ e("span", { className: "absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100", children: ce ? /* @__PURE__ */ e(dt, { size: 14, className: "text-secondaryText" }) : /* @__PURE__ */ e(ot, { size: 14, className: "text-secondaryText" }) })
+                                  /* @__PURE__ */ e(gt, { size: 14, className: "text-secondaryText transition-opacity group-hover:opacity-0" }),
+                                  /* @__PURE__ */ e("span", { className: "absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100", children: oe ? /* @__PURE__ */ e(mt, { size: 14, className: "text-secondaryText" }) : /* @__PURE__ */ e(dt, { size: 14, className: "text-secondaryText" }) })
                                 ] }),
-                                /* @__PURE__ */ e("span", { className: "truncate", children: c.name })
+                                /* @__PURE__ */ e("span", { className: "truncate", children: o.name })
                               ]
                             }
                           ),
-                          ce && /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: H.length === 0 ? /* @__PURE__ */ e("div", { className: "mx-[10px] py-1.5 pl-[30px] pr-4 text-sm text-shellTextFaint", children: "暂无对话" }) : H.map((ee) => {
-                            const He = t === `/chat/${ee.id}`, Ye = X === ee.id;
+                          oe && /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: H.length === 0 ? /* @__PURE__ */ e("div", { className: "mx-[10px] py-1.5 pl-[30px] pr-4 text-sm text-shellTextFaint", children: "暂无对话" }) : H.map((te) => {
+                            const De = t === `/chat/${te.id}`, We = q === te.id;
                             return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
                               "div",
                               {
-                                onClick: () => Ne(ee.id),
-                                className: `mx-[10px] text-sm pl-[30px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Q === ee.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : He ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
+                                onClick: () => Z(te.id),
+                                className: `mx-[10px] text-sm pl-[30px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Y === te.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : De ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                                 children: [
-                                  ie(ee),
-                                  Q !== ee.id && Te(ee, Ye)
+                                  O(te),
+                                  Y !== te.id && Re(te, We)
                                 ]
                               }
-                            ) }, ee.id);
+                            ) }, te.id);
                           }) })
-                        ] }, c.id);
+                        ] }, o.id);
                       }),
-                      S === "project" && (() => {
-                        const c = w.filter((ce) => !ce.projectId && !ce.isPinned);
-                        if (c.length === 0) return null;
+                      T === "project" && (() => {
+                        const o = S.filter((oe) => !oe.projectId && !oe.isPinned);
+                        if (o.length === 0) return null;
                         const H = x.unassigned !== !1;
                         return /* @__PURE__ */ r("div", { className: "mb-0.5 mt-1", children: [
                           /* @__PURE__ */ r(
@@ -3795,53 +3796,53 @@ function os({
                               onClick: () => xe("unassigned"),
                               children: [
                                 /* @__PURE__ */ r("div", { className: "relative h-[14px] w-[14px] shrink-0", children: [
-                                  /* @__PURE__ */ e(bt, { size: 14, className: "text-secondaryText transition-opacity group-hover:opacity-0" }),
-                                  /* @__PURE__ */ e("span", { className: "absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100", children: H ? /* @__PURE__ */ e(dt, { size: 14, className: "text-secondaryText" }) : /* @__PURE__ */ e(ot, { size: 14, className: "text-secondaryText" }) })
+                                  /* @__PURE__ */ e(gt, { size: 14, className: "text-secondaryText transition-opacity group-hover:opacity-0" }),
+                                  /* @__PURE__ */ e("span", { className: "absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100", children: H ? /* @__PURE__ */ e(mt, { size: 14, className: "text-secondaryText" }) : /* @__PURE__ */ e(dt, { size: 14, className: "text-secondaryText" }) })
                                 ] }),
                                 /* @__PURE__ */ e("span", { className: "truncate", children: "未分组对话" })
                               ]
                             }
                           ),
-                          H && /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: c.length === 0 ? /* @__PURE__ */ e("div", { className: "mx-[10px] py-1.5 pl-[30px] pr-4 text-sm text-shellTextFaint", children: "暂无对话" }) : c.map((ce) => {
-                            const ee = t === `/chat/${ce.id}`, He = X === ce.id;
+                          H && /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: o.length === 0 ? /* @__PURE__ */ e("div", { className: "mx-[10px] py-1.5 pl-[30px] pr-4 text-sm text-shellTextFaint", children: "暂无对话" }) : o.map((oe) => {
+                            const te = t === `/chat/${oe.id}`, De = q === oe.id;
                             return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
                               "div",
                               {
-                                onClick: () => Ne(ce.id),
-                                className: `mx-[10px] text-sm pl-[30px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Q === ce.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : ee ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
+                                onClick: () => Z(oe.id),
+                                className: `mx-[10px] text-sm pl-[30px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Y === oe.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : te ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                                 children: [
-                                  ie(ce),
-                                  Q !== ce.id && Te(ce, He)
+                                  O(oe),
+                                  Y !== oe.id && Re(oe, De)
                                 ]
                               }
-                            ) }, ce.id);
+                            ) }, oe.id);
                           }) })
                         ] });
                       })(),
-                      S === "time" && /* @__PURE__ */ r("div", { className: "flex flex-col gap-0.5", children: [
-                        qe.map((c) => {
-                          const H = t === `/chat/${c.id}`, ce = X === c.id;
+                      T === "time" && /* @__PURE__ */ r("div", { className: "flex flex-col gap-0.5", children: [
+                        Oe.map((o) => {
+                          const H = t === `/chat/${o.id}`, oe = q === o.id;
                           return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
                             "div",
                             {
-                              onClick: () => Ne(c.id),
-                              className: `mx-[10px] text-sm pl-[10px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Q === c.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : H ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
+                              onClick: () => Z(o.id),
+                              className: `mx-[10px] text-sm pl-[10px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${Y === o.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : H ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                               children: [
-                                ie(c),
-                                Q !== c.id && Te(c, ce)
+                                O(o),
+                                Y !== o.id && Re(o, oe)
                               ]
                             }
-                          ) }, c.id);
+                          ) }, o.id);
                         }),
-                        zt && /* @__PURE__ */ r(
+                        Ye && /* @__PURE__ */ r(
                           "button",
                           {
                             type: "button",
-                            onClick: We,
+                            onClick: tt,
                             className: "mx-[10px] mt-1 inline-flex items-center gap-1 rounded-md px-[10px] py-1.5 text-left text-sm text-secondaryText transition-colors hover:bg-shellNavActive hover:text-primaryText",
                             children: [
                               /* @__PURE__ */ e("span", { children: "查看全部对话" }),
-                              /* @__PURE__ */ e(ot, { size: 14 })
+                              /* @__PURE__ */ e(dt, { size: 14 })
                             ]
                           }
                         )
@@ -3849,26 +3850,26 @@ function os({
                     ]
                   }
                 ),
-                re && !i && /* @__PURE__ */ e("div", { className: "mx-3 mb-2 rounded-[12px] bg-white p-2 shadow-shellWarning", children: /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
+                se && !i && /* @__PURE__ */ e("div", { className: "mx-3 mb-2 rounded-[12px] bg-white p-2 shadow-shellWarning", children: /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
                   /* @__PURE__ */ e("span", { className: "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-warning-soft text-warning", children: /* @__PURE__ */ e(Er, { size: 15, style: { fill: "var(--chatui-color-status-warning)", stroke: "var(--chatui-color-static-white)" } }) }),
                   /* @__PURE__ */ e("span", { className: "min-w-0 flex-1 truncate text-sm font-medium text-primaryText", children: "用量即将耗尽" }),
                   /* @__PURE__ */ e(
                     "button",
                     {
                       type: "button",
-                      onClick: we,
+                      onClick: Le,
                       className: "ml-auto shrink-0 whitespace-nowrap rounded-[8px] bg-warning px-3 py-1 text-xs font-medium text-white transition-colors hover:opacity-90",
                       children: "去查看"
                     }
                   )
                 ] }) }),
                 /* @__PURE__ */ e("div", { className: "p-3 mt-auto", children: /* @__PURE__ */ e(
-                  ut,
+                  pt,
                   {
-                    open: ne,
-                    onOpenChange: I,
+                    open: re,
+                    onOpenChange: ne,
                     placement: "top-start",
-                    width: $ - 24,
+                    width: z - 24,
                     portal: !0,
                     trigger: /* @__PURE__ */ r("span", { className: "flex w-full items-center justify-between p-2 rounded-full hover:bg-bgLight transition-colors cursor-pointer text-secondaryText", children: [
                       /* @__PURE__ */ r("span", { className: "flex items-center gap-3", children: [
@@ -3877,8 +3878,8 @@ function os({
                       ] }),
                       /* @__PURE__ */ e("span", { className: "p-1 rounded-full", children: /* @__PURE__ */ e(_r, { size: 18 }) })
                     ] }),
-                    items: le,
-                    onItemClick: oe,
+                    items: He,
+                    onItemClick: Te,
                     triggerClassName: "w-full justify-start",
                     className: "w-full",
                     menuClassName: "!min-w-0"
@@ -3887,28 +3888,28 @@ function os({
               ]
             }
           ),
-          V && /* @__PURE__ */ e(
+          K && /* @__PURE__ */ e(
             "div",
             {
               role: "separator",
               "aria-orientation": "vertical",
               "aria-label": "调整侧边栏宽度",
-              onMouseDown: R,
+              onMouseDown: A,
               className: "absolute top-0 right-0 h-full w-1.5 cursor-col-resize bg-transparent"
             }
           )
         ]
       }
     ),
-    /* @__PURE__ */ e("main", { className: `flex-1 h-full overflow-hidden relative p-2 md:p-3 transition-all duration-300 ${V ? "pl-0 md:pl-0" : "pl-2 md:pl-3"}`, children: /* @__PURE__ */ e("div", { className: "relative h-full w-full overflow-hidden rounded-xl border border-shellFrameBorder bg-white shadow-sm md:rounded-2xl", children: /* @__PURE__ */ e("div", { className: "flex h-full w-full", children: typeof u == "function" ? u({ isSidebarOpen: V, setIsSidebarOpen: B, chats: w, setChats: g, setAiUsageWarningActive: A }) : u }) }) }),
+    /* @__PURE__ */ e("main", { className: `flex-1 h-full overflow-hidden relative p-2 md:p-3 transition-all duration-300 ${K ? "pl-0 md:pl-0" : "pl-2 md:pl-3"}`, children: /* @__PURE__ */ e("div", { className: "relative h-full w-full overflow-hidden rounded-xl border border-shellFrameBorder bg-white shadow-sm md:rounded-2xl", children: /* @__PURE__ */ e("div", { className: "flex h-full w-full", children: typeof d == "function" ? d({ isSidebarOpen: K, setIsSidebarOpen: B, chats: S, setChats: g, setAiUsageWarningActive: L }) : d }) }) }),
     /* @__PURE__ */ e(
-      Mt,
+      $t,
       {
-        visible: Ce,
+        visible: we,
         title: "全部历史对话",
         width: 640,
         footer: null,
-        onCancel: Ke,
+        onCancel: lt,
         className: "!overflow-y-hidden",
         bodyClassName: "!overflow-hidden !px-6 !py-5",
         children: /* @__PURE__ */ r("div", { className: "space-y-4", children: [
@@ -3924,43 +3925,43 @@ function os({
               "input",
               {
                 type: "text",
-                value: Ae,
-                onChange: (c) => $e(c.target.value),
+                value: Ce,
+                onChange: (o) => Me(o.target.value),
                 placeholder: "搜索对话或项目",
                 className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none"
               }
             )
           ] }),
-          rt.length > 0 ? /* @__PURE__ */ e(
+          st.length > 0 ? /* @__PURE__ */ e(
             "div",
             {
-              onScroll: Be,
-              className: `max-h-[440px] overflow-y-auto auto-hide-scrollbar ${Z ? "is-scrolling is-scrolling-thin" : ""}`,
-              children: rt.map((c) => {
-                const H = c.projectId ? tt.get(c.projectId) ?? "未分组" : "未分组", ce = Ht(c);
+              onScroll: Ne,
+              className: `max-h-[440px] overflow-y-auto auto-hide-scrollbar ${J ? "is-scrolling is-scrolling-thin" : ""}`,
+              children: st.map((o) => {
+                const H = o.projectId ? et.get(o.projectId) ?? "未分组" : "未分组", oe = Ht(o);
                 return /* @__PURE__ */ r(
                   "button",
                   {
                     type: "button",
-                    onClick: () => Je(c.id),
+                    onClick: () => Ue(o.id),
                     className: "w-full rounded-lg px-4 py-3 text-left transition-colors hover:bg-shellHistoryHover",
                     children: [
                       /* @__PURE__ */ r("div", { className: "flex min-w-0 items-center gap-2", children: [
-                        /* @__PURE__ */ e("span", { className: "truncate text-sm font-medium text-primaryText", children: c.title }),
-                        ce && /* @__PURE__ */ e("span", { className: "shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText", children: "任务" })
+                        /* @__PURE__ */ e("span", { className: "truncate text-sm font-medium text-primaryText", children: o.title }),
+                        oe && /* @__PURE__ */ e("span", { className: "shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText", children: "任务" })
                       ] }),
                       /* @__PURE__ */ r("div", { className: "mt-1 flex items-center gap-1 text-xs text-tertiaryText", children: [
                         /* @__PURE__ */ e("span", { className: "truncate", children: H }),
                         /* @__PURE__ */ e("span", { children: "·" }),
-                        /* @__PURE__ */ e("span", { children: c.date })
+                        /* @__PURE__ */ e("span", { children: o.date })
                       ] })
                     ]
                   },
-                  c.id
+                  o.id
                 );
               })
             }
-          ) : /* @__PURE__ */ e("div", { className: "rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e($t, { description: "暂无匹配的历史对话" }) })
+          ) : /* @__PURE__ */ e("div", { className: "rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(zt, { description: "暂无匹配的历史对话" }) })
         ] })
       }
     )
@@ -3972,22 +3973,22 @@ function cs({
   disabled: s = !1,
   embedded: l = !1,
   isSidebarOpen: a = !0,
-  skillOptions: u,
-  fileOptions: f,
-  quickPrompts: k,
-  uploadAccept: d,
-  validateUploadFile: m,
-  onUploadValidationError: p,
-  onSelectProject: h,
-  onCreateProject: N,
+  skillOptions: d,
+  fileOptions: h,
+  quickPrompts: N,
+  uploadAccept: u,
+  validateUploadFile: c,
+  onUploadValidationError: b,
+  onSelectProject: p,
+  onCreateProject: f,
   onOpenSidebar: E,
-  onSelectQuickPrompt: j,
-  onSend: z
+  onSelectQuickPrompt: _,
+  onSend: $
 }) {
-  const [_, D] = v(!1), [V, B] = v(!1), [$, K] = v(""), W = me(null), P = me(null), M = ge(
+  const [I, D] = v(!1), [K, B] = v(!1), [z, X] = v(""), U = he(null), P = he(null), M = ge(
     () => t.find((g) => g.id === n) ?? null,
     [t, n]
-  ), O = ge(() => [
+  ), G = ge(() => [
     {
       key: "none",
       label: "不选择项目",
@@ -3998,33 +3999,33 @@ function cs({
       label: /* @__PURE__ */ e("span", { className: "truncate", children: g.name }),
       active: (M == null ? void 0 : M.id) === g.id
     }))
-  ], [t, M]), x = ge(() => N ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(tr, { size: 16 }) }] : [], [N]), q = () => {
-    B(!1), K("");
-  }, ne = (g) => {
+  ], [t, M]), x = ge(() => f ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(tr, { size: 16 }) }] : [], [f]), F = () => {
+    B(!1), X("");
+  }, re = (g) => {
     if (g.key === "create") {
-      B(!0), K("");
+      B(!0), X("");
       return;
     }
-    const X = g.key === "none" ? null : String(g.key);
-    h(X), D(!1);
-  }, I = () => {
-    const g = $.trim();
+    const q = g.key === "none" ? null : String(g.key);
+    p(q), D(!1);
+  }, ne = () => {
+    const g = z.trim();
     if (!g) return;
-    const X = t.find(
-      (y) => y.name.trim().toLowerCase() === g.toLowerCase()
+    const q = t.find(
+      (m) => m.name.trim().toLowerCase() === g.toLowerCase()
     );
-    X ? h(X.id) : N == null || N(g), q(), D(!1);
+    q ? p(q.id) : f == null || f(g), F(), D(!1);
   };
   ye(() => {
-    if (!V) return;
-    const g = (X) => {
-      var S, U;
-      const y = X.target;
-      (S = P.current) != null && S.contains(y) || (U = W.current) != null && U.contains(y) || (q(), D(!1));
+    if (!K) return;
+    const g = (q) => {
+      var T, V;
+      const m = q.target;
+      (T = P.current) != null && T.contains(m) || (V = U.current) != null && V.contains(m) || (F(), D(!1));
     };
     return document.addEventListener("mousedown", g), () => document.removeEventListener("mousedown", g);
-  }, [V]);
-  const w = /* @__PURE__ */ r("div", { className: "mx-auto flex w-full flex-1 flex-col items-center justify-center overflow-y-auto px-6", children: [
+  }, [K]);
+  const S = /* @__PURE__ */ r("div", { className: "mx-auto flex w-full flex-1 flex-col items-center justify-center overflow-y-auto px-6", children: [
     /* @__PURE__ */ e(
       "h1",
       {
@@ -4034,7 +4035,7 @@ function cs({
       }
     ),
     /* @__PURE__ */ r("div", { className: "mx-auto mb-6 w-full max-w-[840px]", children: [
-      /* @__PURE__ */ e("div", { ref: W, className: "relative", children: V && /* @__PURE__ */ e(
+      /* @__PURE__ */ e("div", { ref: U, className: "relative", children: K && /* @__PURE__ */ e(
         "div",
         {
           ref: P,
@@ -4045,8 +4046,8 @@ function cs({
               /* @__PURE__ */ e(
                 ar,
                 {
-                  value: $,
-                  onChange: (g) => K(g.target.value),
+                  value: z,
+                  onChange: (g) => X(g.target.value),
                   placeholder: "请输入项目名称",
                   size: "medium",
                   containerClassName: "!px-3"
@@ -4054,14 +4055,14 @@ function cs({
               )
             ] }),
             /* @__PURE__ */ r("div", { className: "flex items-center justify-end gap-2", children: [
-              /* @__PURE__ */ e(Fe, { type: "secondary", size: "small", onClick: q, children: "取消" }),
+              /* @__PURE__ */ e(Fe, { type: "secondary", size: "small", onClick: F, children: "取消" }),
               /* @__PURE__ */ e(
                 Fe,
                 {
                   type: "primary",
                   size: "small",
-                  onClick: I,
-                  disabled: !$.trim(),
+                  onClick: ne,
+                  disabled: !z.trim(),
                   children: "确认"
                 }
               )
@@ -4072,29 +4073,29 @@ function cs({
       /* @__PURE__ */ e(
         dr,
         {
-          onSend: z,
+          onSend: $,
           disabled: s,
-          skillOptions: u,
-          fileOptions: f,
-          uploadAccept: d,
-          validateUploadFile: m,
-          onUploadValidationError: p,
+          skillOptions: d,
+          fileOptions: h,
+          uploadAccept: u,
+          validateUploadFile: c,
+          onUploadValidationError: b,
           leadingControls: /* @__PURE__ */ e(
-            ut,
+            pt,
             {
-              open: _,
+              open: I,
               onOpenChange: (g) => {
-                !g && V || (D(g), g ? B(!1) : q());
+                !g && K || (D(g), g ? B(!1) : F());
               },
               placement: "top-start",
               width: 260,
               trigger: /* @__PURE__ */ r("span", { className: "flex items-center gap-1.5 rounded-full border border-borderGray bg-white px-4 py-1.5 text-[14px] text-tertiaryText transition-colors hover:bg-bgLight", children: [
                 /* @__PURE__ */ e("span", { className: "max-w-[120px] truncate", children: M ? M.name : "工作项目" }),
-                /* @__PURE__ */ e(dt, { size: 14 })
+                /* @__PURE__ */ e(mt, { size: 14 })
               ] }),
-              items: O,
+              items: G,
               footerItems: x,
-              onItemClick: ne,
+              onItemClick: re,
               className: "!inline-flex",
               listClassName: "max-h-[220px] overflow-y-auto"
             }
@@ -4105,13 +4106,13 @@ function cs({
     /* @__PURE__ */ e(
       ur,
       {
-        onSelect: j ?? z,
-        prompts: k,
+        onSelect: _ ?? $,
+        prompts: N,
         disabled: s
       }
     )
   ] });
-  return l ? w : /* @__PURE__ */ r("div", { className: "flex h-full w-full flex-col bg-white", children: [
+  return l ? S : /* @__PURE__ */ r("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ e(
       Zn,
       {
@@ -4120,10 +4121,10 @@ function cs({
         })
       }
     ),
-    /* @__PURE__ */ e("div", { className: "flex min-h-0 w-full flex-1 overflow-hidden", children: w })
+    /* @__PURE__ */ e("div", { className: "flex min-h-0 w-full flex-1 overflow-hidden", children: S })
   ] });
 }
-const ba = "_shell_63t8u_1", ga = "_header_63t8u_5", ya = "_headerActions_63t8u_9", va = "_saveError_63t8u_13", wa = "_viewport_63t8u_17", Na = "_editorCanvas_63t8u_21", ka = "_titleInput_63t8u_25", Ta = "_milkdownHost_63t8u_29", Oe = {
+const ba = "_shell_63t8u_1", ga = "_header_63t8u_5", ya = "_headerActions_63t8u_9", va = "_saveError_63t8u_13", wa = "_viewport_63t8u_17", Na = "_editorCanvas_63t8u_21", ka = "_titleInput_63t8u_25", Ta = "_milkdownHost_63t8u_29", Xe = {
   shell: ba,
   header: ga,
   headerActions: ya,
@@ -4155,7 +4156,7 @@ const ba = "_shell_63t8u_1", ga = "_header_63t8u_5", ya = "_headerActions_63t8u_
   "--crepe-font-code": "inherit",
   "--crepe-shadow-1": "var(--chatui-shadow-sm)",
   "--crepe-shadow-2": "var(--chatui-shadow-md)"
-}, qt = (t, n) => t.replace("<svg", `<svg class="${n}"`), kt = (t) => `
+}, qt = (t, n) => t.replace("<svg", `<svg class="${n}"`), Tt = (t) => `
   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
     <text x="3" y="23" fill="currentColor" font-family="inherit" font-size="23" font-weight="500">
       H<tspan font-size="13">${t}</tspan>
@@ -4174,40 +4175,41 @@ const ba = "_shell_63t8u_1", ga = "_header_63t8u_5", ya = "_headerActions_63t8u_
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M4 7H20M9 7V4H15V7M18 7L17 20H7L6 7M10 11V16M14 11V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
-`, Tt = (t) => `chatui-document-menu-type-${t}`;
+`, Ct = (t) => `chatui-document-menu-type-${t}`;
 function ds({
   title: t,
   initialMarkdown: n = "",
   createdByName: s,
   updatedByName: l,
   updatedAt: a,
-  index: u,
-  attachments: f = [],
-  attachmentAccept: k,
-  attachmentUnavailableHint: d,
-  saving: m = !1,
-  saveError: p,
-  onTitleChange: h,
-  onMarkdownChange: N,
-  onUploadAttachments: E,
-  onDeleteAttachment: j,
-  onSave: z,
-  onClose: _
+  index: d,
+  attachments: h = [],
+  attachmentAccept: N,
+  attachmentUnavailableHint: u,
+  saving: c = !1,
+  saveError: b,
+  layout: p = "page",
+  onTitleChange: f,
+  onMarkdownChange: E,
+  onUploadAttachments: _,
+  onDeleteAttachment: $,
+  onSave: I,
+  onClose: D
 }) {
-  const D = me(null), V = me(null), B = me(n), $ = me(N), [K, W] = v(!1), [P, M] = v(null), [O, x] = v("");
+  const K = he(null), B = he(null), z = he(n), X = he(E), [U, P] = v(!1), [M, G] = v(null), [x, F] = v(""), re = p === "page" ? "px-[120px]" : "px-6 md:px-8";
   ye(() => {
-    $.current = N;
-  }, [N]), ye(() => {
-    const I = D.current;
-    if (!I) return;
-    const w = new yt({
-      root: I,
-      defaultValue: B.current,
+    X.current = E;
+  }, [E]), ye(() => {
+    const g = K.current;
+    if (!g) return;
+    const q = new vt({
+      root: g,
+      defaultValue: z.current,
       features: {
-        [yt.Feature.Placeholder]: !1
+        [vt.Feature.Placeholder]: !1
       },
       featureConfigs: {
-        [yt.Feature.BlockEdit]: {
+        [vt.Feature.BlockEdit]: {
           addOnCurrentBlock: !0,
           preserveCurrentBlockContent: !0,
           textGroup: {
@@ -4235,10 +4237,10 @@ function ds({
             table: null,
             math: { label: "公式" }
           },
-          buildMenu: (o) => {
-            const C = new Map(
-              o.build().flatMap((we) => we.items).map((we) => [we.key, we])
-            ), J = /* @__PURE__ */ new Set([
+          buildMenu: (k) => {
+            const w = new Map(
+              k.build().flatMap((Te) => Te.items).map((Te) => [Te.key, Te])
+            ), ee = /* @__PURE__ */ new Set([
               "h1",
               "h2",
               "h3",
@@ -4247,17 +4249,17 @@ function ds({
               "task-list",
               "code",
               "quote"
-            ]), Y = (we) => {
-              const le = we.get(vt), oe = ae, Se = (oe != null && oe.matches(
+            ]), Z = (Te) => {
+              const le = Te.get(wt), de = Y, $e = (de != null && de.matches(
                 "p, h1, h2, h3, h4, h5, h6, blockquote, pre"
-              ) ? oe : oe == null ? void 0 : oe.querySelector(
+              ) ? de : de == null ? void 0 : de.querySelector(
                 '[data-content-dom="true"] p, [data-content-dom="true"] h1, [data-content-dom="true"] h2, [data-content-dom="true"] h3, [data-content-dom="true"] pre'
-              )) ?? (oe instanceof HTMLElement ? oe : null);
-              if (!Se) return le;
+              )) ?? (de instanceof HTMLElement ? de : null);
+              if (!$e) return le;
               try {
-                const Te = le.posAtDOM(Se, 0), ze = le.state.doc.resolve(
+                const ke = le.posAtDOM($e, 0), ze = le.state.doc.resolve(
                   Math.min(
-                    Math.max(Te, 0),
+                    Math.max(ke, 0),
                     le.state.doc.content.size
                   )
                 );
@@ -4269,135 +4271,135 @@ function ds({
               } catch {
               }
               return le;
-            }, he = (we) => {
-              const le = Y(we), oe = wt.type(we), Re = (ze) => {
-                const { $from: Me } = le.state.selection;
-                for (let Ee = Me.depth; Ee > 0; Ee -= 1)
-                  if (Me.node(Ee).type.name === ze) return !0;
+            }, O = (Te) => {
+              const le = Z(Te), de = Nt.type(Te), Re = (ze) => {
+                const { $from: _e } = le.state.selection;
+                for (let Ae = _e.depth; Ae > 0; Ae -= 1)
+                  if (_e.node(Ae).type.name === ze) return !0;
                 return !1;
               };
-              for (let ze = 0; ze < 10 && !(!Re(oe.name) || !Wr(oe)(
+              for (let ze = 0; ze < 10 && !(!Re(de.name) || !Wr(de)(
                 le.state,
                 le.dispatch
               )); ze += 1)
                 ;
               for (let ze = 0; ze < 10 && !(!Re("blockquote") || !Hr(le.state, le.dispatch)); ze += 1)
                 ;
-              const Se = Kr.type(we), Te = le.state.selection.$from.parent;
-              Te.isTextblock && Te.type !== Se && we.get(Fr).call(Or.key, {
-                nodeType: Se
+              const $e = Kr.type(Te), ke = le.state.selection.$from.parent;
+              ke.isTextblock && ke.type !== $e && Te.get(Fr).call(Or.key, {
+                nodeType: $e
               });
-            }, Ne = (we) => {
-              const le = Y(we), { selection: oe } = le.state, Re = wt.type(we), { $from: Se } = oe;
-              let Te = -1;
-              for (let Me = Se.depth; Me > 0; Me -= 1)
-                if (Se.node(Me).type.name === Re.name) {
-                  Te = Me;
+            }, A = (Te) => {
+              const le = Z(Te), { selection: de } = le.state, Re = Nt.type(Te), { $from: $e } = de;
+              let ke = -1;
+              for (let _e = $e.depth; _e > 0; _e -= 1)
+                if ($e.node(_e).type.name === Re.name) {
+                  ke = _e;
                   break;
                 }
-              if (Te > 0) {
-                const Me = Te - 1, Ee = Me > 0 && Se.node(Me).childCount === 1 ? Me : Te;
+              if (ke > 0) {
+                const _e = ke - 1, Ae = _e > 0 && $e.node(_e).childCount === 1 ? _e : ke;
                 le.dispatch(
                   le.state.tr.delete(
-                    Se.before(Ee),
-                    Se.after(Ee)
+                    $e.before(Ae),
+                    $e.after(Ae)
                   )
                 );
                 return;
               }
-              if (!oe.empty) {
+              if (!de.empty) {
                 le.dispatch(
-                  le.state.tr.delete(oe.from, oe.to)
+                  le.state.tr.delete(de.from, de.to)
                 );
                 return;
               }
-              const ze = Math.min(1, Se.depth);
+              const ze = Math.min(1, $e.depth);
               ze < 1 || le.dispatch(
                 le.state.tr.delete(
-                  Se.before(ze),
-                  Se.after(ze)
+                  $e.before(ze),
+                  $e.after(ze)
                 )
               );
-            }, ie = (we, le, oe) => {
-              const Re = C.get(le);
+            }, Be = (Te, le, de) => {
+              const Re = w.get(le);
               if (!Re) return;
-              const { key: Se, ...Te } = Re, ze = (oe == null ? void 0 : oe.icon) ?? Te.icon, Me = [
-                Tt(le),
-                oe == null ? void 0 : oe.iconClass
-              ].filter(Boolean).join(" "), Ee = [
+              const { key: $e, ...ke } = Re, ze = (de == null ? void 0 : de.icon) ?? ke.icon, _e = [
+                Ct(le),
+                de == null ? void 0 : de.iconClass
+              ].filter(Boolean).join(" "), Ae = [
                 "ordered-list",
                 "bullet-list",
                 "task-list"
-              ].includes(le), Ve = J.has(le) ? (Ie) => {
-                var rt;
-                if (he(Ie), !Ee) {
+              ].includes(le), Oe = ee.has(le) ? (qe) => {
+                var lt;
+                if (O(qe), !Ae) {
                   if (le === "quote") {
-                    const We = Ie.get(vt), { $from: Ke } = We.state.selection, Je = Ke.parent, c = Ke.before(Ke.depth), H = We.state.schema.nodes.blockquote;
-                    if (!H) return;
-                    const ce = H.create(null, Je), ee = We.state.tr.replaceWith(
-                      c,
-                      c + Je.nodeSize,
-                      ce
+                    const Ue = qe.get(wt), { $from: o } = Ue.state.selection, H = o.parent, oe = o.before(o.depth), te = Ue.state.schema.nodes.blockquote;
+                    if (!te) return;
+                    const De = te.create(null, H), We = Ue.state.tr.replaceWith(
+                      oe,
+                      oe + H.nodeSize,
+                      De
                     );
-                    ee.setSelection(
+                    We.setSelection(
                       Pt.near(
-                        ee.doc.resolve(
+                        We.doc.resolve(
                           Math.min(
-                            c + 2,
-                            ee.doc.content.size
+                            oe + 2,
+                            We.doc.content.size
                           )
                         )
                       )
-                    ), We.dispatch(ee);
+                    ), Ue.dispatch(We);
                     return;
                   }
-                  (rt = Te.onRun) == null || rt.call(Te, Ie);
+                  (lt = ke.onRun) == null || lt.call(ke, qe);
                   return;
                 }
-                const qe = Ie.get(vt), xt = le === "ordered-list" ? Ur.type(Ie) : Vr.type(Ie);
-                if (!qr(xt)(
-                  qe.state,
-                  qe.dispatch
+                const Ye = qe.get(wt), et = le === "ordered-list" ? Ur.type(qe) : Vr.type(qe);
+                if (!qr(et)(
+                  Ye.state,
+                  Ye.dispatch
                 ) || le !== "task-list") return;
-                const tt = wt.type(Ie), { $from: Ge } = qe.state.selection;
-                for (let We = Ge.depth; We > 0; We -= 1) {
-                  const Ke = Ge.node(We);
-                  if (Ke.type !== tt) continue;
-                  const Je = Ge.before(We);
-                  qe.dispatch(
-                    qe.state.tr.setNodeMarkup(Je, void 0, {
-                      ...Ke.attrs,
+                const st = Nt.type(qe), { $from: tt } = Ye.state.selection;
+                for (let Ue = tt.depth; Ue > 0; Ue -= 1) {
+                  const o = tt.node(Ue);
+                  if (o.type !== st) continue;
+                  const H = tt.before(Ue);
+                  Ye.dispatch(
+                    Ye.state.tr.setNodeMarkup(H, void 0, {
+                      ...o.attrs,
                       checked: !1
                     })
                   );
                   break;
                 }
-              } : Te.onRun;
-              we.addItem(le, {
-                ...Te,
-                label: (oe == null ? void 0 : oe.label) ?? Te.label,
-                icon: qt(ze, Me),
-                onRun: Ve
+              } : ke.onRun;
+              Te.addItem(le, {
+                ...ke,
+                label: (de == null ? void 0 : de.label) ?? ke.label,
+                icon: qt(ze, _e),
+                onRun: Oe
               });
             };
-            o.clear();
-            const R = o.addGroup("basic", "基础");
+            k.clear();
+            const Ne = k.addGroup("basic", "基础");
             [
               {
                 key: "h1",
-                icon: kt(1),
+                icon: Tt(1),
                 label: `一级标题 (Ctrl + Alt + 1)
 Markdown: # 空格`
               },
               {
                 key: "h2",
-                icon: kt(2),
+                icon: Tt(2),
                 label: `二级标题 (Ctrl + Alt + 2)
 Markdown: ## 空格`
               },
               {
                 key: "h3",
-                icon: kt(3),
+                icon: Tt(3),
                 label: `三级标题 (Ctrl + Alt + 3)
 Markdown: ### 空格`
               },
@@ -4432,261 +4434,261 @@ Markdown: > 空格`
                 label: `分割线
 Markdown: --- 空格`
               }
-            ].forEach(({ key: we, icon: le, label: oe }) => {
-              ie(R, we, { icon: le, label: oe });
+            ].forEach(({ key: Te, icon: le, label: de }) => {
+              Be(Ne, Te, { icon: le, label: de });
             });
-            const _e = o.addGroup("common", "常用");
-            ie(_e, "task-list", {
+            const Le = k.addGroup("common", "常用");
+            Be(Le, "task-list", {
               iconClass: "chatui-document-menu-icon-task"
-            }), ie(_e, "math", {
+            }), Be(Le, "math", {
               iconClass: "chatui-document-menu-icon-math"
-            }), o.addGroup("actions", "操作").addItem("delete", {
+            }), k.addGroup("actions", "操作").addItem("delete", {
               label: "删除",
               icon: qt(
                 $a,
                 "chatui-document-menu-action-delete"
               ),
-              onRun: Ne
+              onRun: A
             });
           }
         }
       }
     });
-    w.on((o) => {
-      o.markdownUpdated((C, J, Y) => {
-        J !== Y && $.current(J);
+    q.on((k) => {
+      k.markdownUpdated((w, ee, Z) => {
+        ee !== Z && X.current(ee);
       });
     });
-    const g = I.ownerDocument;
-    let X = "", y = null, S = null, U = !1, ae = null, ve = null, Q = null, T = null, L = null;
-    const F = (o) => {
-      const C = o == null ? void 0 : o.closest(
+    const m = g.ownerDocument;
+    let T = "", V = null, ue = null, ve = !1, Y = null, C = null, R = null, j = null, we = null;
+    const Se = (k) => {
+      const w = k == null ? void 0 : k.closest(
         "h1, h2, h3, blockquote, pre, .milkdown-code-block, .milkdown-list-item-block"
       );
-      return !C || !C.closest(".ProseMirror") ? null : C.matches("h1") ? "h1" : C.matches("h2") ? "h2" : C.matches("h3") ? "h3" : C.matches("blockquote") ? "quote" : C.matches("pre, .milkdown-code-block") || C.querySelector("pre, .milkdown-code-block") ? "code" : C.querySelector('input[type="checkbox"]') ? "task-list" : C.querySelector(".label.ordered") ? "ordered-list" : C.querySelector(".label.bullet") ? "bullet-list" : null;
-    }, Ce = () => I.querySelector(".ProseMirror"), ke = (o) => {
-      const C = Ce();
-      if (!o || !(C != null && C.contains(o))) return null;
-      const J = o.closest(".milkdown-list-item-block");
-      if (J && C.contains(J)) return J;
-      let Y = o;
-      for (; Y != null && Y.parentElement && Y.parentElement !== C; )
-        Y = Y.parentElement;
-      return !Y || Y.parentElement !== C || Y.classList.contains("prosemirror-virtual-cursor") ? null : Y;
-    }, Ae = () => {
-      const o = Ce();
-      return o ? Array.from(o.children).flatMap((C) => {
-        if (C.classList.contains("prosemirror-virtual-cursor")) return [];
-        const J = Array.from(
-          C.querySelectorAll(".milkdown-list-item-block")
+      return !w || !w.closest(".ProseMirror") ? null : w.matches("h1") ? "h1" : w.matches("h2") ? "h2" : w.matches("h3") ? "h3" : w.matches("blockquote") ? "quote" : w.matches("pre, .milkdown-code-block") || w.querySelector("pre, .milkdown-code-block") ? "code" : w.querySelector('input[type="checkbox"]') ? "task-list" : w.querySelector(".label.ordered") ? "ordered-list" : w.querySelector(".label.bullet") ? "bullet-list" : null;
+    }, Ce = () => g.querySelector(".ProseMirror"), Me = (k) => {
+      const w = Ce();
+      if (!k || !(w != null && w.contains(k))) return null;
+      const ee = k.closest(".milkdown-list-item-block");
+      if (ee && w.contains(ee)) return ee;
+      let Z = k;
+      for (; Z != null && Z.parentElement && Z.parentElement !== w; )
+        Z = Z.parentElement;
+      return !Z || Z.parentElement !== w || Z.classList.contains("prosemirror-virtual-cursor") ? null : Z;
+    }, J = () => {
+      const k = Ce();
+      return k ? Array.from(k.children).flatMap((w) => {
+        if (w.classList.contains("prosemirror-virtual-cursor")) return [];
+        const ee = Array.from(
+          w.querySelectorAll(".milkdown-list-item-block")
         );
-        return J.length ? J : [C];
+        return ee.length ? ee : [w];
       }) : [];
-    }, $e = (o) => {
-      var Y;
-      const C = Ae(), J = C.map((he) => ({ block: he, rect: he.getBoundingClientRect() })).filter(({ rect: he }) => o >= he.top && o <= he.bottom).sort((he, Ne) => he.rect.height - Ne.rect.height);
-      return J[0] ? J[0].block : ((Y = C.map((he) => {
-        const Ne = he.getBoundingClientRect(), ie = Math.min(
-          Math.abs(o - Ne.top),
-          Math.abs(o - Ne.bottom)
+    }, ae = (k) => {
+      var Z;
+      const w = J(), ee = w.map((O) => ({ block: O, rect: O.getBoundingClientRect() })).filter(({ rect: O }) => k >= O.top && k <= O.bottom).sort((O, A) => O.rect.height - A.rect.height);
+      return ee[0] ? ee[0].block : ((Z = w.map((O) => {
+        const A = O.getBoundingClientRect(), Be = Math.min(
+          Math.abs(k - A.top),
+          Math.abs(k - A.bottom)
         );
-        return { block: he, distance: ie };
-      }).sort((he, Ne) => he.distance - Ne.distance)[0]) == null ? void 0 : Y.block) ?? null;
-    }, Z = (o) => {
-      var Ne, ie;
-      const C = g.querySelector(
+        return { block: O, distance: Be };
+      }).sort((O, A) => O.distance - A.distance)[0]) == null ? void 0 : Z.block) ?? null;
+    }, Q = (k) => {
+      var A, Be;
+      const w = m.querySelector(
         ".milkdown-slash-menu"
       );
-      C == null || C.querySelectorAll('li[data-chatui-selected="true"]').forEach(
-        (R) => R.removeAttribute("data-chatui-selected")
-      ), o && ((ie = (Ne = C == null ? void 0 : C.querySelector(`svg.${Tt(o)}`)) == null ? void 0 : Ne.closest("li")) == null || ie.setAttribute("data-chatui-selected", "true"));
-      const J = g.querySelector(
+      w == null || w.querySelectorAll('li[data-chatui-selected="true"]').forEach(
+        (Ne) => Ne.removeAttribute("data-chatui-selected")
+      ), k && ((Be = (A = w == null ? void 0 : w.querySelector(`svg.${Ct(k)}`)) == null ? void 0 : A.closest("li")) == null || Be.setAttribute("data-chatui-selected", "true"));
+      const ee = m.querySelector(
         ".milkdown-block-handle .operation-item:first-child .milkdown-icon"
       );
-      if (!J) return;
-      X || (X = J.innerHTML);
-      const Y = o ? C == null ? void 0 : C.querySelector(
-        `svg.${Tt(o)}`
-      ) : null, he = o ?? "default";
-      J.dataset.chatuiBlockType !== he && (J.innerHTML = (Y == null ? void 0 : Y.outerHTML) ?? X, J.dataset.chatuiBlockType = he);
-    }, te = (o) => {
-      o !== S && (S = o, y = F(o)), Z(y);
-    }, G = () => {
-      var J;
-      const o = (J = g.getSelection()) == null ? void 0 : J.anchorNode, C = o instanceof Element ? o : o == null ? void 0 : o.parentElement;
-      te(ke(C ?? null));
-    }, A = () => {
-      const o = ve, C = g.querySelector(
-        ".milkdown-slash-menu"
-      );
-      if (!o || !C || C.dataset.show !== "true") return;
-      const J = C.getBoundingClientRect();
-      if (!J.width || !J.height) return;
-      const Y = o.getBoundingClientRect(), he = g.defaultView, Ne = (he == null ? void 0 : he.innerWidth) ?? g.documentElement.clientWidth, ie = (he == null ? void 0 : he.innerHeight) ?? g.documentElement.clientHeight, R = 12, _e = 8, Be = Math.max(
-        R,
-        Ne - J.width - R
-      ), we = Math.max(
-        R,
-        ie - J.height - R
-      ), le = (Ee) => Math.min(Math.max(Ee, R), Be), oe = (Ee) => Math.min(Math.max(Ee, R), we);
-      let Re = "left", Se = Y.left - J.width - _e, Te = oe(Y.top);
-      if (Se < R) {
-        const Ee = Y.top - _e - R, Ve = ie - Y.bottom - _e - R, Ie = Ve >= J.height || Ve >= Ee;
-        Re = Ie ? "bottom" : "top", Se = le(Y.left), Te = oe(Ie ? Y.bottom + _e : Y.top - J.height - _e);
-      }
-      const ze = `${Se}px`, Me = `${Te}px`;
-      C.style.getPropertyValue("--chatui-block-menu-left") !== ze && C.style.setProperty("--chatui-block-menu-left", ze), C.style.getPropertyValue("--chatui-block-menu-top") !== Me && C.style.setProperty("--chatui-block-menu-top", Me), C.dataset.chatuiPlacement = Re;
+      if (!ee) return;
+      T || (T = ee.innerHTML);
+      const Z = k ? w == null ? void 0 : w.querySelector(
+        `svg.${Ct(k)}`
+      ) : null, O = k ?? "default";
+      ee.dataset.chatuiBlockType !== O && (ee.innerHTML = (Z == null ? void 0 : Z.outerHTML) ?? T, ee.dataset.chatuiBlockType = O);
+    }, L = (k) => {
+      k !== ue && (ue = k, V = Se(k)), Q(V);
     }, i = () => {
-      const o = g.querySelector(
+      var ee;
+      const k = (ee = m.getSelection()) == null ? void 0 : ee.anchorNode, w = k instanceof Element ? k : k == null ? void 0 : k.parentElement;
+      L(Me(w ?? null));
+    }, y = () => {
+      const k = C, w = m.querySelector(
         ".milkdown-slash-menu"
       );
-      o && (o.style.removeProperty("--chatui-block-menu-left"), o.style.removeProperty("--chatui-block-menu-top"), delete o.dataset.chatuiPlacement);
-    }, b = (o) => {
-      o !== L && (L == null || L.removeAttribute(
+      if (!k || !w || w.dataset.show !== "true") return;
+      const ee = w.getBoundingClientRect();
+      if (!ee.width || !ee.height) return;
+      const Z = k.getBoundingClientRect(), O = m.defaultView, A = (O == null ? void 0 : O.innerWidth) ?? m.documentElement.clientWidth, Be = (O == null ? void 0 : O.innerHeight) ?? m.documentElement.clientHeight, Ne = 12, Le = 8, He = Math.max(
+        Ne,
+        A - ee.width - Ne
+      ), Te = Math.max(
+        Ne,
+        Be - ee.height - Ne
+      ), le = (Ae) => Math.min(Math.max(Ae, Ne), He), de = (Ae) => Math.min(Math.max(Ae, Ne), Te);
+      let Re = "left", $e = Z.left - ee.width - Le, ke = de(Z.top);
+      if ($e < Ne) {
+        const Ae = Z.top - Le - Ne, Oe = Be - Z.bottom - Le - Ne, qe = Oe >= ee.height || Oe >= Ae;
+        Re = qe ? "bottom" : "top", $e = le(Z.left), ke = de(qe ? Z.bottom + Le : Z.top - ee.height - Le);
+      }
+      const ze = `${$e}px`, _e = `${ke}px`;
+      w.style.getPropertyValue("--chatui-block-menu-left") !== ze && w.style.setProperty("--chatui-block-menu-left", ze), w.style.getPropertyValue("--chatui-block-menu-top") !== _e && w.style.setProperty("--chatui-block-menu-top", _e), w.dataset.chatuiPlacement = Re;
+    }, se = () => {
+      const k = m.querySelector(
+        ".milkdown-slash-menu"
+      );
+      k && (k.style.removeProperty("--chatui-block-menu-left"), k.style.removeProperty("--chatui-block-menu-top"), delete k.dataset.chatuiPlacement);
+    }, ce = (k) => {
+      k !== we && (we == null || we.removeAttribute(
         "data-chatui-pointer-highlighted"
-      ), L = o, L == null || L.setAttribute(
+      ), we = k, we == null || we.setAttribute(
         "data-chatui-pointer-highlighted",
         "true"
       ));
-    }, re = () => {
-      T !== null && window.cancelAnimationFrame(T), T = window.requestAnimationFrame(() => {
-        T = null, A();
+    }, ie = () => {
+      j !== null && window.cancelAnimationFrame(j), j = window.requestAnimationFrame(() => {
+        j = null, y();
       });
-    }, fe = () => {
-      ve = null, U = !1, ae = null, b(null), w.editor.action((o) => {
-        o.get("menuAPICtx").hide();
-      }), i();
-    }, se = (o) => {
-      const C = o.target instanceof Element ? o.target : null, J = g.querySelector(
+    }, me = () => {
+      C = null, ve = !1, Y = null, ce(null), q.editor.action((k) => {
+        k.get("menuAPICtx").hide();
+      }), se();
+    }, fe = (k) => {
+      const w = k.target instanceof Element ? k.target : null, ee = m.querySelector(
         ".milkdown-slash-menu"
       );
-      if (J) {
-        const Ne = J.getBoundingClientRect(), ie = Ne.width > 0 && Ne.height > 0, R = o.clientX >= Ne.left && o.clientX <= Ne.right && o.clientY >= Ne.top && o.clientY <= Ne.bottom;
-        if (ie) {
-          if (R) {
-            b(
-              (C == null ? void 0 : C.closest(
+      if (ee) {
+        const A = ee.getBoundingClientRect(), Be = A.width > 0 && A.height > 0, Ne = k.clientX >= A.left && k.clientX <= A.right && k.clientY >= A.top && k.clientY <= A.bottom;
+        if (Be) {
+          if (Ne) {
+            ce(
+              (w == null ? void 0 : w.closest(
                 ".milkdown-slash-menu .menu-groups li"
               )) ?? null
-            ), U = !0;
+            ), ve = !0;
             return;
           }
-          if (b(null), C != null && C.closest(".milkdown-block-handle")) return;
-          const _e = Ce(), Be = C && (_e != null && _e.contains(C)) ? ke(C) ?? $e(o.clientY) : null;
-          if (Be && ae && Be !== ae) {
-            fe();
+          if (ce(null), w != null && w.closest(".milkdown-block-handle")) return;
+          const Le = Ce(), He = w && (Le != null && Le.contains(w)) ? Me(w) ?? ae(k.clientY) : null;
+          if (He && Y && He !== Y) {
+            me();
             return;
           }
-          if (Be === ae) return;
-          U && fe();
+          if (He === Y) return;
+          ve && me();
           return;
         }
-        U = !1, b(null);
+        ve = !1, ce(null);
       }
-      if (C != null && C.closest(".milkdown-block-handle")) {
-        Z(y);
+      if (w != null && w.closest(".milkdown-block-handle")) {
+        Q(V);
         return;
       }
-      const Y = Ce();
-      if (!C || !(Y != null && Y.contains(C))) return;
-      const he = ke(C) ?? $e(o.clientY);
-      te(he);
-    }, de = (o) => {
-      const C = o.target instanceof Element ? o.target : null;
-      b(
-        (C == null ? void 0 : C.closest(
+      const Z = Ce();
+      if (!w || !(Z != null && Z.contains(w))) return;
+      const O = Me(w) ?? ae(k.clientY);
+      L(O);
+    }, pe = (k) => {
+      const w = k.target instanceof Element ? k.target : null;
+      ce(
+        (w == null ? void 0 : w.closest(
           ".milkdown-slash-menu .menu-groups li"
         )) ?? null
       );
-    }, pe = (o) => {
-      const C = o.target instanceof Element ? o.target : null, J = C == null ? void 0 : C.closest(
+    }, xe = (k) => {
+      const w = k.target instanceof Element ? k.target : null, ee = w == null ? void 0 : w.closest(
         ".milkdown-slash-menu .menu-groups li"
       );
-      if (!J) return;
-      const Y = o.relatedTarget instanceof Element ? o.relatedTarget : null;
-      if (Y && J.contains(Y)) return;
-      const he = Y == null ? void 0 : Y.closest(
+      if (!ee) return;
+      const Z = k.relatedTarget instanceof Element ? k.relatedTarget : null;
+      if (Z && ee.contains(Z)) return;
+      const O = Z == null ? void 0 : Z.closest(
         ".milkdown-slash-menu .menu-groups li"
       );
-      b(he ?? null);
-    }, ue = (o) => {
-      const C = o.target instanceof Element ? o.target : null, J = C == null ? void 0 : C.closest(
+      ce(O ?? null);
+    }, be = (k) => {
+      const w = k.target instanceof Element ? k.target : null, ee = w == null ? void 0 : w.closest(
         ".milkdown-block-handle .operation-item:first-child"
       );
-      if (J) {
-        const Y = y;
-        ve = J, ae = S, window.setTimeout(() => {
-          Z(Y), re();
+      if (ee) {
+        const Z = V;
+        C = ee, Y = ue, window.setTimeout(() => {
+          Q(Z), ie();
         }, 0);
       }
-    }, xe = (o) => {
-      o.key === "/" && window.setTimeout(G, 0);
+    }, W = (k) => {
+      k.key === "/" && window.setTimeout(i, 0);
     };
-    g.addEventListener("pointermove", se), g.addEventListener("pointerover", de), g.addEventListener("pointerout", pe), g.addEventListener("click", ue), I.addEventListener("keyup", xe);
-    const be = w.create();
-    return be.then(() => {
-      var C;
-      (C = I.querySelector(".ProseMirror")) == null || C.focus();
-      const o = g.querySelector(
+    m.addEventListener("pointermove", fe), m.addEventListener("pointerover", pe), m.addEventListener("pointerout", xe), m.addEventListener("click", be), g.addEventListener("keyup", W);
+    const Ke = q.create();
+    return Ke.then(() => {
+      var w;
+      (w = g.querySelector(".ProseMirror")) == null || w.focus();
+      const k = m.querySelector(
         ".milkdown-slash-menu"
       );
-      o && (Q = new MutationObserver(() => {
-        if (o.dataset.show === "true" && ve) {
-          re();
+      k && (R = new MutationObserver(() => {
+        if (k.dataset.show === "true" && C) {
+          ie();
           return;
         }
-        o.dataset.show !== "true" && (ve = null, ae = null, b(null), i());
-      }), Q.observe(o, {
+        k.dataset.show !== "true" && (C = null, Y = null, ce(null), se());
+      }), R.observe(k, {
         attributes: !0,
         attributeFilter: ["data-show", "style"]
-      })), G();
+      })), i();
     }), () => {
-      g.removeEventListener("pointermove", se), g.removeEventListener(
+      m.removeEventListener("pointermove", fe), m.removeEventListener(
         "pointerover",
-        de
-      ), g.removeEventListener("pointerout", pe), g.removeEventListener("click", ue), I.removeEventListener("keyup", xe), be.then(() => {
-        Q == null || Q.disconnect(), T !== null && window.cancelAnimationFrame(T), w.destroy();
+        pe
+      ), m.removeEventListener("pointerout", xe), m.removeEventListener("click", be), g.removeEventListener("keyup", W), Ke.then(() => {
+        R == null || R.disconnect(), j !== null && window.cancelAnimationFrame(j), q.destroy();
       });
     };
   }, []);
-  const q = async (I) => {
-    const w = Array.from(I.target.files ?? []);
-    if (I.target.value = "", !(!w.length || !E)) {
-      W(!0), x("");
+  const ne = async (g) => {
+    const q = Array.from(g.target.files ?? []);
+    if (g.target.value = "", !(!q.length || !_)) {
+      P(!0), F("");
       try {
-        await E(w);
-      } catch (g) {
-        x(
-          g instanceof Error ? g.message : "附件上传失败"
+        await _(q);
+      } catch (m) {
+        F(
+          m instanceof Error ? m.message : "附件上传失败"
         );
       } finally {
-        W(!1);
+        P(!1);
       }
     }
-  }, ne = async (I) => {
-    if (j) {
-      M(I), x("");
+  }, S = async (g) => {
+    if ($) {
+      G(g), F("");
       try {
-        await j(I);
-      } catch (w) {
-        x(
-          w instanceof Error ? w.message : "附件删除失败"
+        await $(g);
+      } catch (q) {
+        F(
+          q instanceof Error ? q.message : "附件删除失败"
         );
       } finally {
-        M(null);
+        G(null);
       }
     }
   };
-  return /* @__PURE__ */ r("section", { className: Oe.shell, "aria-label": "项目文档编辑器", children: [
-    /* @__PURE__ */ e("header", { className: Oe.header, children: /* @__PURE__ */ r("div", { className: Oe.headerActions, children: [
+  return /* @__PURE__ */ r("section", { className: Xe.shell, "aria-label": "项目文档编辑器", children: [
+    /* @__PURE__ */ e("header", { className: Xe.header, children: /* @__PURE__ */ r("div", { className: Xe.headerActions, children: [
       /* @__PURE__ */ e(
         Fe,
         {
           type: "secondary",
           size: "small",
           rounded: "large",
-          disabled: m,
-          onClick: _,
+          disabled: c,
+          onClick: D,
           children: "取消"
         }
       ),
@@ -4696,27 +4698,27 @@ Markdown: --- 空格`
           type: "primary",
           size: "small",
           rounded: "large",
-          disabled: m,
-          onClick: z,
-          children: m ? "保存中…" : "保存"
+          disabled: c,
+          onClick: I,
+          children: c ? "保存中…" : "保存"
         }
       )
     ] }) }),
     /* @__PURE__ */ r(
       "div",
       {
-        className: `${Oe.viewport} min-h-0 px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10`,
+        className: `${Xe.viewport} min-h-0 px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10`,
         children: [
-          p && /* @__PURE__ */ e("div", { className: Oe.saveError, children: p }),
-          /* @__PURE__ */ r("div", { className: Oe.editorCanvas, children: [
-            /* @__PURE__ */ r("section", { className: "mb-4 shrink-0 px-[120px]", children: [
+          b && /* @__PURE__ */ e("div", { className: Xe.saveError, children: b }),
+          /* @__PURE__ */ r("div", { className: Xe.editorCanvas, children: [
+            /* @__PURE__ */ r("section", { className: `mb-4 shrink-0 ${re}`, children: [
               /* @__PURE__ */ e(
                 "input",
                 {
                   value: t,
-                  onChange: (I) => h(I.target.value),
+                  onChange: (g) => f(g.target.value),
                   placeholder: "请输入标题",
-                  className: Oe.titleInput,
+                  className: Xe.titleInput,
                   "aria-label": "文档标题"
                 }
               ),
@@ -4726,7 +4728,7 @@ Markdown: --- 空格`
                   createdByName: s,
                   updatedByName: l,
                   updatedAt: a,
-                  index: u
+                  index: d
                 }
               ),
               /* @__PURE__ */ e("div", { className: "mt-4 h-px bg-lineSubtle" })
@@ -4735,38 +4737,39 @@ Markdown: --- 空格`
               /* @__PURE__ */ e(
                 "div",
                 {
-                  ref: D,
-                  className: `${Oe.milkdownHost} ${cr.editor} chatui-project-document-editor`,
+                  ref: K,
+                  className: `${Xe.milkdownHost} ${cr.editor} ${re} chatui-project-document-editor`,
                   style: Ca
                 }
               ),
-              E && /* @__PURE__ */ e(
+              _ && /* @__PURE__ */ e(
                 "input",
                 {
-                  ref: V,
+                  ref: B,
                   type: "file",
                   multiple: !0,
-                  accept: k,
+                  accept: N,
                   className: "hidden",
-                  onChange: (I) => {
-                    q(I);
+                  onChange: (g) => {
+                    ne(g);
                   }
                 }
               ),
               /* @__PURE__ */ e(
                 ir,
                 {
-                  attachments: f,
-                  uploading: K,
-                  deletingAttachmentId: P,
-                  unavailableHint: d,
-                  error: O,
-                  onRequestUpload: E ? () => {
-                    var I;
-                    return (I = V.current) == null ? void 0 : I.click();
+                  attachments: h,
+                  className: `${p === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} mb-6 mt-8 border-t border-lineSubtle pt-6`,
+                  uploading: U,
+                  deletingAttachmentId: M,
+                  unavailableHint: u,
+                  error: x,
+                  onRequestUpload: _ ? () => {
+                    var g;
+                    return (g = B.current) == null ? void 0 : g.click();
                   } : void 0,
-                  onDeleteAttachment: j ? (I) => {
-                    ne(I);
+                  onDeleteAttachment: $ ? (g) => {
+                    S(g);
                   } : void 0
                 }
               )
@@ -4788,24 +4791,24 @@ function us({
   loading: s = !1,
   error: l,
   pendingSkillIds: a = [],
-  onOpenSidebar: u,
-  onInstall: f,
-  onUninstall: k,
-  onRetry: d
+  onOpenSidebar: d,
+  onInstall: h,
+  onUninstall: N,
+  onRetry: u
 }) {
-  const [m, p] = v("installed"), [h, N] = v(""), [E, j] = v(!1), [z, _] = v([]), [D, V] = v(null), B = ge(() => new Set(a), [a]), $ = ge(() => {
-    const x = h.trim().toLowerCase();
-    return n.filter((q) => m === "installed" !== q.installed ? !1 : x ? [q.name, q.source, q.description, ...q.tags].join(" ").toLowerCase().includes(x) : !0);
-  }, [m, h, n]), K = (x) => {
-    p(x), j(!1), _([]);
-  }, W = () => {
-    j((x) => !x), _([]);
-  }, P = (x) => _((q) => q.includes(x) ? q.filter((ne) => ne !== x) : [...q, x]), M = (x) => x.installed ? k([x.id]) : f([x.id]), O = () => {
-    z.length && (m === "installed" ? k(z) : f(z), _([]), j(!1));
+  const [c, b] = v("installed"), [p, f] = v(""), [E, _] = v(!1), [$, I] = v([]), [D, K] = v(null), B = ge(() => new Set(a), [a]), z = ge(() => {
+    const x = p.trim().toLowerCase();
+    return n.filter((F) => c === "installed" !== F.installed ? !1 : x ? [F.name, F.source, F.description, ...F.tags].join(" ").toLowerCase().includes(x) : !0);
+  }, [c, p, n]), X = (x) => {
+    b(x), _(!1), I([]);
+  }, U = () => {
+    _((x) => !x), I([]);
+  }, P = (x) => I((F) => F.includes(x) ? F.filter((re) => re !== x) : [...F, x]), M = (x) => x.installed ? N([x.id]) : h([x.id]), G = () => {
+    $.length && (c === "installed" ? N($) : h($), I([]), _(!1));
   };
   return /* @__PURE__ */ r("div", { className: "relative flex h-full w-full flex-col bg-surface", children: [
     /* @__PURE__ */ e("header", { className: "z-10 flex h-16 shrink-0 items-center bg-homeHeaderSurface px-4 backdrop-blur-sm", children: /* @__PURE__ */ r("div", { className: "flex min-w-0 items-center gap-3", children: [
-      !t && /* @__PURE__ */ e("button", { type: "button", onClick: u, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(Jt, { size: 20 }) }),
+      !t && /* @__PURE__ */ e("button", { type: "button", onClick: d, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(Jt, { size: 20 }) }),
       /* @__PURE__ */ r("div", { className: "flex items-center gap-2 text-sm", children: [
         /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "系统设置" }),
         /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
@@ -4818,19 +4821,19 @@ function us({
         /* @__PURE__ */ e("p", { className: "mt-2 text-center text-sm text-tertiaryText", children: "模块化、可复用的能力单元，用于扩展 Agent 功能，使其具备跨领域能力与多维指令执行专家。" }),
         /* @__PURE__ */ e("div", { className: "mx-auto mt-4 w-full max-w-[600px]", children: /* @__PURE__ */ r("div", { className: "flex items-center gap-2 rounded-full border border-lineSubtle bg-surface px-4 py-2.5", children: [
           /* @__PURE__ */ e(Ze, { size: 16, className: "text-tertiaryText" }),
-          /* @__PURE__ */ e("input", { value: h, onChange: (x) => N(x.target.value), placeholder: "输入关键词，查找你需要的 Skills", className: "w-full bg-transparent text-sm text-primaryText outline-none placeholder:text-tertiaryText" })
+          /* @__PURE__ */ e("input", { value: p, onChange: (x) => f(x.target.value), placeholder: "输入关键词，查找你需要的 Skills", className: "w-full bg-transparent text-sm text-primaryText outline-none placeholder:text-tertiaryText" })
         ] }) })
       ] }),
       /* @__PURE__ */ r("section", { className: "mt-5", children: [
         /* @__PURE__ */ r("div", { className: "flex items-end justify-between border-b border-lineSubtle", children: [
           /* @__PURE__ */ r("div", { className: "flex items-end gap-8", children: [
-            /* @__PURE__ */ e("button", { type: "button", onClick: () => K("installed"), className: `border-b-2 pb-2 text-sm font-medium transition-colors ${m === "installed" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "已安装" }),
-            /* @__PURE__ */ e("button", { type: "button", onClick: () => K("uninstalled"), className: `border-b-2 pb-2 text-sm font-medium transition-colors ${m === "uninstalled" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "未安装" })
+            /* @__PURE__ */ e("button", { type: "button", onClick: () => X("installed"), className: `border-b-2 pb-2 text-sm font-medium transition-colors ${c === "installed" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "已安装" }),
+            /* @__PURE__ */ e("button", { type: "button", onClick: () => X("uninstalled"), className: `border-b-2 pb-2 text-sm font-medium transition-colors ${c === "uninstalled" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "未安装" })
           ] }),
           /* @__PURE__ */ r("label", { className: "mb-2 inline-flex items-center gap-2 text-sm text-tertiaryText", children: [
             /* @__PURE__ */ r("span", { className: "relative inline-flex h-4 w-4 items-center justify-center rounded-sm", children: [
               /* @__PURE__ */ e("input", { type: "checkbox", checked: E, onChange: (x) => {
-                j(x.target.checked), _([]);
+                _(x.target.checked), I([]);
               }, className: "peer absolute inset-0 cursor-pointer opacity-0" }),
               /* @__PURE__ */ e("span", { className: "pointer-events-none inline-flex h-full w-full items-center justify-center rounded-sm border border-skillCheckbox bg-surface text-transparent transition-colors peer-checked:border-transparent peer-checked:bg-primary peer-checked:text-white", children: /* @__PURE__ */ e("svg", { className: "h-2.5 w-2.5", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ e("path", { d: "M3.5 8.2L6.5 11.1L12.5 5.1", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) }) })
             ] }),
@@ -4839,12 +4842,12 @@ function us({
         ] }),
         l && /* @__PURE__ */ r("div", { role: "alert", className: "mt-4 flex min-h-24 items-center justify-center gap-2 rounded-lg border border-danger bg-danger-soft px-4 text-sm text-danger", children: [
           /* @__PURE__ */ e("span", { children: l }),
-          d && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: d, children: "重新加载" })
+          u && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: u, children: "重新加载" })
         ] }),
-        !l && s && /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-label": "正在加载 Skills", "aria-busy": "true", children: Array.from({ length: 6 }, (x, q) => /* @__PURE__ */ e("div", { className: "h-[168px] animate-pulse rounded-lg border border-lineSubtle bg-skillTagSurface" }, q)) }),
-        !l && !s && $.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-busy": a.length > 0, children: $.map((x) => {
-          const q = z.includes(x.id), ne = B.has(x.id), I = q ? "border-skillSelectedBorder bg-skillSelectedSurface" : D === x.id ? "border-lineSubtle bg-skillCardHover" : "border-lineSubtle bg-surface";
-          return /* @__PURE__ */ r("article", { className: `rounded-lg border p-4 transition-shadow hover:shadow-sm ${I}`, onMouseEnter: () => V(x.id), onMouseLeave: () => V((w) => w === x.id ? null : w), children: [
+        !l && s && /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-label": "正在加载 Skills", "aria-busy": "true", children: Array.from({ length: 6 }, (x, F) => /* @__PURE__ */ e("div", { className: "h-[168px] animate-pulse rounded-lg border border-lineSubtle bg-skillTagSurface" }, F)) }),
+        !l && !s && z.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-busy": a.length > 0, children: z.map((x) => {
+          const F = $.includes(x.id), re = B.has(x.id), ne = F ? "border-skillSelectedBorder bg-skillSelectedSurface" : D === x.id ? "border-lineSubtle bg-skillCardHover" : "border-lineSubtle bg-surface";
+          return /* @__PURE__ */ r("article", { className: `rounded-lg border p-4 transition-shadow hover:shadow-sm ${ne}`, onMouseEnter: () => K(x.id), onMouseLeave: () => K((S) => S === x.id ? null : S), children: [
             /* @__PURE__ */ r("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ r("div", { className: "min-w-0", children: [
                 /* @__PURE__ */ e("div", { className: "truncate text-base font-medium text-primaryText", children: x.name }),
@@ -4852,13 +4855,13 @@ function us({
               ] }),
               /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ e("span", { className: `rounded px-2 py-1 text-xs font-medium ${La[x.riskLevel]}`, children: za[x.riskLevel] }),
-                E && /* @__PURE__ */ e("button", { type: "button", onClick: () => P(x.id), className: "relative inline-flex h-4 w-4 items-center justify-center rounded-sm", "aria-label": q ? `取消选择 ${x.name}` : `选择 ${x.name}`, children: /* @__PURE__ */ e("span", { className: `pointer-events-none inline-flex h-full w-full items-center justify-center rounded-sm border transition-colors ${q ? "border-transparent bg-primary text-white" : "border-skillCheckbox bg-surface text-transparent"}`, children: /* @__PURE__ */ e("svg", { className: "h-2.5 w-2.5", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ e("path", { d: "M3.5 8.2L6.5 11.1L12.5 5.1", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) }) }) })
+                E && /* @__PURE__ */ e("button", { type: "button", onClick: () => P(x.id), className: "relative inline-flex h-4 w-4 items-center justify-center rounded-sm", "aria-label": F ? `取消选择 ${x.name}` : `选择 ${x.name}`, children: /* @__PURE__ */ e("span", { className: `pointer-events-none inline-flex h-full w-full items-center justify-center rounded-sm border transition-colors ${F ? "border-transparent bg-primary text-white" : "border-skillCheckbox bg-surface text-transparent"}`, children: /* @__PURE__ */ e("svg", { className: "h-2.5 w-2.5", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ e("path", { d: "M3.5 8.2L6.5 11.1L12.5 5.1", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) }) }) })
               ] })
             ] }),
             /* @__PURE__ */ e("p", { className: "mt-3 line-clamp-2 text-sm leading-6 text-secondaryText", children: x.description }),
             /* @__PURE__ */ r("div", { className: "mt-4 flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ e("div", { className: "flex flex-wrap gap-2", children: x.tags.map((w) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-full bg-skillTagSurface px-3 py-1.5 text-xs text-tertiaryText", children: w }, `${x.id}-${w}`)) }),
-              !E && /* @__PURE__ */ e("button", { type: "button", disabled: ne, onClick: () => M(x), className: `shrink-0 items-center rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-wait disabled:opacity-60 ${D === x.id || ne ? "inline-flex" : "hidden"} ${x.installed ? "bg-skillTagSurface text-primaryText" : "bg-primary text-white"}`, children: ne ? "处理中..." : x.installed ? "卸载" : "安装" })
+              /* @__PURE__ */ e("div", { className: "flex flex-wrap gap-2", children: x.tags.map((S) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-full bg-skillTagSurface px-3 py-1.5 text-xs text-tertiaryText", children: S }, `${x.id}-${S}`)) }),
+              !E && /* @__PURE__ */ e("button", { type: "button", disabled: re, onClick: () => M(x), className: `shrink-0 items-center rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-wait disabled:opacity-60 ${D === x.id || re ? "inline-flex" : "hidden"} ${x.installed ? "bg-skillTagSurface text-primaryText" : "bg-primary text-white"}`, children: re ? "处理中..." : x.installed ? "卸载" : "安装" })
             ] })
           ] }, x.id);
         }) }) : !l && !s ? /* @__PURE__ */ e("div", { className: "mt-4 flex h-36 items-center justify-center rounded-lg border border-lineSubtle text-sm text-tertiaryText", children: "暂无匹配的 Skills" }) : null
@@ -4867,12 +4870,12 @@ function us({
     E && /* @__PURE__ */ e("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 z-30 border-t border-lineSubtle bg-surface", children: /* @__PURE__ */ r("div", { className: "pointer-events-auto mx-auto flex max-w-[1240px] items-center justify-between px-4 py-3 md:px-8 lg:px-10", children: [
       /* @__PURE__ */ r("span", { className: "text-sm text-secondaryText", children: [
         "已选择 ",
-        z.length,
+        $.length,
         " 条 Skill"
       ] }),
       /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ e("button", { type: "button", onClick: W, disabled: a.length > 0, className: "rounded-md border border-lineSubtle bg-surface px-3 py-1 text-sm text-secondaryText transition-colors hover:bg-skillCancelHover disabled:cursor-wait disabled:opacity-60", children: "取消" }),
-        /* @__PURE__ */ e("button", { type: "button", onClick: O, disabled: !z.length || a.length > 0, className: "rounded-md bg-primary px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-skillActionDisabled", children: a.length > 0 ? "处理中..." : m === "installed" ? "批量卸载" : "批量安装" })
+        /* @__PURE__ */ e("button", { type: "button", onClick: U, disabled: a.length > 0, className: "rounded-md border border-lineSubtle bg-surface px-3 py-1 text-sm text-secondaryText transition-colors hover:bg-skillCancelHover disabled:cursor-wait disabled:opacity-60", children: "取消" }),
+        /* @__PURE__ */ e("button", { type: "button", onClick: G, disabled: !$.length || a.length > 0, className: "rounded-md bg-primary px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-skillActionDisabled", children: a.length > 0 ? "处理中..." : c === "installed" ? "批量卸载" : "批量安装" })
       ] })
     ] }) })
   ] });
@@ -4897,16 +4900,16 @@ export {
   ur as Q,
   ls as R,
   us as S,
-  Ct as T,
+  St as T,
   da as U,
   ca as V,
-  ut as a,
+  pt as a,
   Fe as b,
   Oa as c,
   En as d,
-  Mt as e,
+  $t as e,
   ar as f,
-  $t as g,
+  zt as g,
   _n as h,
   An as i,
   Ka as j,
