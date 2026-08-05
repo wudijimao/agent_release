@@ -53,6 +53,10 @@ import {
   updateProjectMember,
 } from "@/adapters/projects";
 import { useChatShell } from "@/app/(workspace)/WorkspaceShell";
+import {
+  PRODUCT_ANALYTICS_EVENTS,
+  trackProductEvent,
+} from "@/lib/product-analytics";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
@@ -219,6 +223,10 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             templateId: documentDraft.templateId,
             knowledgeType: documentDraft.knowledgeType,
             section: documentDraft.section,
+          });
+          trackProductEvent(PRODUCT_ANALYTICS_EVENTS.createDocument, {
+            source: "project_detail",
+            document_type: documentDraft.knowledgeType,
           });
           const preview = await loadProjectDocumentDetail(api, created.id);
           setDetail(await loadProjectDetail(api, projectId));
@@ -433,6 +441,9 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         onBackToProjects={() => navigation.push("/projects")}
         onBackToProject={() => setDocumentPreview(null)}
         onEdit={() => {
+          trackProductEvent(PRODUCT_ANALYTICS_EVENTS.editDocument, {
+            source: "project_detail",
+          });
           setDocumentSaveError("");
           setDocumentEditDraft({
             title: documentPreview.title,
@@ -480,6 +491,10 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           try {
             const preview = await loadProjectDocumentDetail(api, kbNodeId);
             setDocumentPreview(preview);
+            trackProductEvent(
+              PRODUCT_ANALYTICS_EVENTS.previewProjectDocument,
+              { source: "project_detail" },
+            );
             setNotice("");
           } catch (loadError) {
             setNotice(

@@ -67,6 +67,10 @@ import {
   updateProjectDocument,
 } from "@/adapters/project-document-detail";
 import { streamChat } from "@/lib/api";
+import {
+  PRODUCT_ANALYTICS_EVENTS,
+  trackProductEvent,
+} from "@/lib/product-analytics";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
@@ -577,6 +581,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           resourceCatalog,
           uploaded.contextRefs,
         );
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.sendChatMessage, {
+          source: "chat_session",
+          attachment_count: uploaded.attachments.length,
+          reference_count: payload.references.length,
+        });
         for await (const event of streamChat(
           {
             message: payload.content.trim(),
@@ -779,6 +788,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           delete next[actionKey];
           return next;
         });
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.saveDraft, {
+          source: previewItemKey ? "chat_preview" : "chat_message",
+          target_changed: selectedTargetProjectId ? 1 : 0,
+        });
         await Promise.all([loadProjectWorkspace(), refreshProjects()]);
         return true;
       } catch (error) {
@@ -866,6 +879,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           loading: false,
           error: undefined,
         });
+        trackProductEvent(
+          PRODUCT_ANALYTICS_EVENTS.previewChatProjectDocument,
+          {
+            source: "chat_project_panel",
+            document_type: item.type,
+          },
+        );
       } catch (loadError) {
         openPreviewItem({
           ...item,
@@ -1009,6 +1029,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           delete next[actionKey];
           return next;
         });
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.cancelDraft, {
+          source: "chat_message",
+        });
         closePreviewTab(`draft:${actionKey}`);
       } catch (error) {
         setStreamNotice(error instanceof Error ? error.message : "草稿取消失败，请重试。");
@@ -1139,6 +1162,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       if (!item) return;
       if (actionId === "edit") {
         if (!item.document?.canEdit) return;
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.editDocument, {
+          source: "chat_preview",
+        });
         setDocumentPreviewEdits((current) => ({
           ...current,
           [itemKey]: {
@@ -1357,7 +1383,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               active={showProjectPanel}
               icon={<Folder size={14} className="text-secondaryText" />}
               label="项目"
-              onClick={() => setShowProjectPanel((current) => !current)}
+              onClick={() => {
+                if (!showProjectPanel) {
+                  trackProductEvent(
+                    PRODUCT_ANALYTICS_EVENTS.openChatProjectPanel,
+                    { source: "chat_session" },
+                  );
+                }
+                setShowProjectPanel((current) => !current);
+              }}
             />
           }
         />

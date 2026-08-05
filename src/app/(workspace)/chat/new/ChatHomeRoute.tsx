@@ -35,6 +35,10 @@ import { resolveChatSendScope } from "@/adapters/chat-resources";
 import { createAgentSession } from "@/adapters/chat-sessions";
 import { createProject } from "@/adapters/projects";
 import { streamChat } from "@/lib/api";
+import {
+  PRODUCT_ANALYTICS_EVENTS,
+  trackProductEvent,
+} from "@/lib/product-analytics";
 import { useApiClient } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
@@ -142,6 +146,12 @@ export function ChatHomeRoute() {
           resourceCatalog,
           uploaded.contextRefs,
         );
+
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.sendChatMessage, {
+          source: "chat_home",
+          attachment_count: uploaded.attachments.length,
+          reference_count: payload.references.length,
+        });
 
         for await (const event of streamChat(
           {
@@ -306,6 +316,10 @@ export function ChatHomeRoute() {
         const created = await createProject(api, {
           type: "personal",
           name,
+        });
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.createProject, {
+          source: "chat_home",
+          project_type: "personal",
         });
         await refreshProjects();
         setSelectedProjectId(created.id);

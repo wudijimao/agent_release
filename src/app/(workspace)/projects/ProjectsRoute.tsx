@@ -10,6 +10,10 @@ import {
   mapProjectsToList,
 } from "@/adapters/projects";
 import { useChatShell } from "@/app/(workspace)/WorkspaceShell";
+import {
+  PRODUCT_ANALYTICS_EVENTS,
+  trackProductEvent,
+} from "@/lib/product-analytics";
 import { useApiClient } from "@/providers/AuthProvider";
 
 export function ProjectsRoute() {
@@ -79,6 +83,10 @@ export function ProjectsRoute() {
           type: "team",
           name,
           description,
+        });
+        trackProductEvent(PRODUCT_ANALYTICS_EVENTS.createProject, {
+          source: "project_list",
+          project_type: "team",
         });
         setProjects((current) => [created, ...current]);
         await refreshShellProjects();
