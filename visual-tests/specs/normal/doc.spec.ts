@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
 import {
   mockAiUsageReminder,
@@ -110,26 +110,252 @@ test.describe("正常状态 / 项目文档", () => {
 
   test("DOC-05 编辑默认态标题与正文分离", async ({ page }) => {
     await openDocumentPreview(page);
+    const previewBodyLeft = await page
+      .locator(".auto-hide-scrollbar h1")
+      .first()
+      .evaluate((element) => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        return range.getBoundingClientRect().left;
+      });
     await page.getByRole("button", { name: "编辑" }).click();
     const editor = page.locator('section[aria-label="项目文档编辑器"]');
     await expect(editor).toBeVisible();
     await expect(page.getByLabel("文档标题")).toHaveValue("CRISPR 综述");
-    await expect(page.locator(".ProseMirror").first()).toBeVisible();
+    const editorBody = page.locator(".ProseMirror").first();
+    await expect(editorBody).toBeVisible();
+    const editorBodyLeft = await editorBody
+      .locator(":scope > h1")
+      .first()
+      .evaluate((element) => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        return range.getBoundingClientRect().left;
+      });
+    expect(editorBodyLeft).toBe(previewBodyLeft);
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-05-editor.png", { fullPage: true });
   });
 
-  test("DOC-06 块菜单当前行弹出", async ({ page }) => {
+  test("DOC-05A 上传按钮不改变附件内容高度", async ({ page }) => {
+    await openDocumentPreview(page, {
+      documentAttachments: [
+        {
+          id: "att-layout",
+          labId: "lab-visual-test",
+          nodeId: "kb-doc-1",
+          originalName: "实验数据.csv",
+          mimeType: "text/csv",
+          fileSize: 2048,
+          convertStatus: "done",
+          createdAt: "2025-06-01T00:00:00.000Z",
+        },
+      ],
+    });
+    const previewAttachmentTitleTop = await page
+      .getByText("附件", { exact: true })
+      .evaluate((element) => element.getBoundingClientRect().top);
+    const previewAttachmentContentTop = await page
+      .getByText("实验数据.csv", { exact: true })
+      .evaluate((element) => element.getBoundingClientRect().top);
+
+    await page.getByRole("button", { name: "编辑" }).click();
+    const attachment = page.getByText("实验数据.csv", { exact: true });
+    const editorAttachmentContentTop = await attachment.evaluate(
+      (element) => element.getBoundingClientRect().top,
+    );
+
+    const attachmentTitleRect = await page
+      .getByText("附件", { exact: true })
+      .evaluate((element) => {
+        const { top, left, right } = element.getBoundingClientRect();
+        return { top, left, right };
+      });
+    expect(editorAttachmentContentTop - attachmentTitleRect.top).toBe(
+      previewAttachmentContentTop - previewAttachmentTitleTop,
+    );
+    const uploadButtonRect = await page
+      .getByRole("button", { name: "上传附件" })
+      .evaluate((element) => {
+        const { top, left, right } = element.getBoundingClientRect();
+        return { top, left, right };
+      });
+    expect(uploadButtonRect.top).toBe(attachmentTitleRect.top);
+    expect(uploadButtonRect.left).toBeGreaterThan(attachmentTitleRect.right);
+  });
+
+  test("DOC-06 悬浮加号弹出当前块菜单", async ({ page }) => {
     await openDocumentPreview(page);
     await page.getByRole("button", { name: "编辑" }).click();
     const editor = page.locator(".ProseMirror").first();
-    await editor.click();
-    await page.keyboard.type("新段落");
-    await page.keyboard.press("Enter");
-    await page.keyboard.type("/");
-    await expect(page.getByText("H1", { exact: true }).first()).toBeVisible({ timeout: 5000 });
+    const firstHeading = editor.locator(":scope > h1").first();
+    const firstHeadingText = (await firstHeading.textContent()) ?? "";
+    await firstHeading.hover();
+    const addButton = page
+      .locator(".milkdown-block-handle .operation-item:first-child")
+      .first();
+    await expect(addButton).toBeVisible();
+    await addButton.hover();
+    const blockMenu = page.locator('.milkdown-slash-menu[data-show="true"]');
+    await expect(blockMenu.getByText("H1", { exact: true })).toBeVisible({ timeout: 5000 });
+    const paragraphOption = blockMenu
+      .locator("svg.chatui-document-menu-type-paragraph")
+      .locator("xpath=ancestor::li");
+    await expect(paragraphOption).toBeVisible();
+    const blockHandle = page.locator('.milkdown-block-handle[data-chatui-menu-open="true"]');
+    await expect(blockHandle).toBeVisible();
+    await expect(blockMenu).toHaveAttribute(
+      "data-chatui-placement",
+      /^(left|top|bottom)$/,
+    );
+
+    const paragraphCountAfterHover = await editor.locator(":scope > p").count();
+    await addButton.click();
+    await expect(blockMenu).toBeVisible();
+    await expect(blockHandle).toBeVisible();
+    await expect(editor.locator(":scope > p")).toHaveCount(paragraphCountAfterHover);
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-06-block-menu.png", { fullPage: true });
+
+    const headingCount = await editor.locator(":scope > h1").count();
+    await paragraphOption.click();
+    await expect(editor.locator(":scope > h1")).toHaveCount(headingCount - 1);
+    const convertedParagraph = editor
+      .locator(":scope > p")
+      .filter({ hasText: firstHeadingText })
+      .first();
+    await convertedParagraph.hover();
+    await addButton.hover();
+    await expect(blockMenu).toBeVisible();
+    await expect(paragraphOption).toBeHidden();
+  });
+
+  test("DOC-06A 选中文本菜单使用正文颜色", async ({ page }) => {
+    await openDocumentPreview(page);
+    await page.getByRole("button", { name: "编辑" }).click();
+    const paragraph = page.locator(".ProseMirror > p").first();
+    await paragraph.click();
+    await page.keyboard.press("Home");
+    await page.keyboard.press("Shift+End");
+
+    const toolbar = page.locator('.milkdown-toolbar[data-show="true"]');
+    await expect(toolbar).toBeVisible();
+    const iconColor = await toolbar
+      .locator(".toolbar-item svg")
+      .first()
+      .evaluate((element) => getComputedStyle(element).color);
+    expect(iconColor).toBe("rgb(31, 31, 31)");
+  });
+
+  test("DOC-06B 选中文本菜单可切换当前块类型", async ({ page }) => {
+    await openDocumentPreview(page);
+    await page.getByRole("button", { name: "编辑" }).click();
+    const paragraph = page.locator(".ProseMirror > p").first();
+    const paragraphText = await paragraph.innerText();
+    await paragraph.click();
+    await page.keyboard.press("Home");
+    await page.keyboard.press("Shift+End");
+
+    const toolbar = page.locator('.milkdown-toolbar[data-show="true"]');
+    await expect(toolbar).toBeVisible();
+    const blockTypeTrigger = toolbar.locator(
+      ".chatui-selection-block-type-trigger",
+    );
+    await expect(blockTypeTrigger).toBeVisible();
+    await expect(toolbar.locator(".toolbar-item").first()).toHaveClass(
+      /chatui-selection-block-type-trigger/,
+    );
+    await expect(blockTypeTrigger.getByText("T", { exact: true })).toBeVisible();
+    await expect(
+      toolbar.locator(".chatui-selection-block-type-trigger"),
+    ).toHaveCount(1);
+
+    await blockTypeTrigger.hover();
+    const blockTypeMenu = page.locator(
+      '.chatui-selection-block-type-menu[data-show="true"]',
+    );
+    await expect(blockTypeMenu).toBeVisible();
+    await expect(blockTypeMenu).toHaveAttribute(
+      "data-placement",
+      /^(top|bottom)$/,
+    );
+    for (const label of [
+      "正文",
+      "一级标题",
+      "二级标题",
+      "三级标题",
+      "无序列表",
+      "有序列表",
+      "任务列表",
+      "引用",
+      "代码块",
+    ]) {
+      await expect(blockTypeMenu.getByRole("menuitem", { name: label })).toBeVisible();
+    }
+
+    const activeParagraphButton = blockTypeMenu.locator(
+      '[data-block-type="paragraph"]',
+    );
+    await expect(activeParagraphButton).toHaveAttribute("data-active", "true");
+    const activeColors = await activeParagraphButton.evaluate((element) => {
+      return {
+        background: getComputedStyle(element).backgroundColor,
+        color: getComputedStyle(element).color,
+      };
+    });
+    expect(activeColors).toEqual({
+      background: "rgb(232, 247, 242)",
+      color: "rgb(20, 184, 134)",
+    });
+    await waitForVisualReady(page);
+    await expect(page).toHaveScreenshot("doc-06b-selection-type-menu.png", {
+      fullPage: true,
+    });
+    await blockTypeMenu.locator('[data-block-type="h2"]').click();
+
+    await expect(page.locator(".ProseMirror > h2").filter({ hasText: paragraphText })).toBeVisible();
+  });
+
+  test("DOC-06C 块类型菜单可切换列表引用和代码块", async ({ page }) => {
+    await openDocumentPreview(page);
+    await page.getByRole("button", { name: "编辑" }).click();
+    const editor = page.locator(".ProseMirror").first();
+    const originalText = await editor.locator(":scope > p").first().innerText();
+
+    const switchType = async (block: Locator, key: string) => {
+      await block.click();
+      await page.keyboard.press("Home");
+      await page.keyboard.press("Shift+End");
+      const toolbar = page.locator('.milkdown-toolbar[data-show="true"]');
+      await expect(toolbar).toBeVisible();
+      await toolbar.locator(".chatui-selection-block-type-trigger").hover();
+      const menu = page.locator(
+        '.chatui-selection-block-type-menu[data-show="true"]',
+      );
+      await expect(menu).toBeVisible();
+      await menu.locator(`[data-block-type="${key}"]`).click();
+    };
+
+    await switchType(editor.locator(":scope > p").first(), "bullet-list");
+    await expect(editor.locator("ul").filter({ hasText: originalText })).toBeVisible();
+    await switchType(editor.locator("ul p").filter({ hasText: originalText }), "paragraph");
+
+    await switchType(editor.locator(":scope > p").filter({ hasText: originalText }), "ordered-list");
+    await expect(editor.locator("ol").filter({ hasText: originalText })).toBeVisible();
+    await switchType(editor.locator("ol p").filter({ hasText: originalText }), "paragraph");
+
+    await switchType(editor.locator(":scope > p").filter({ hasText: originalText }), "task-list");
+    await expect(editor.locator(".label.unchecked")).toBeVisible();
+    await switchType(editor.locator("ul p").filter({ hasText: originalText }), "paragraph");
+
+    await switchType(editor.locator(":scope > p").filter({ hasText: originalText }), "quote");
+    await expect(editor.locator("blockquote").filter({ hasText: originalText })).toBeVisible();
+    await switchType(editor.locator("blockquote p").filter({ hasText: originalText }), "paragraph");
+
+    await switchType(editor.locator(":scope > p").filter({ hasText: originalText }), "code");
+    await expect(
+      editor.locator(".milkdown-code-block").filter({ hasText: originalText }),
+    ).toBeVisible();
   });
 
   test("DOC-07 停止输入后自动保存", async ({ page }) => {

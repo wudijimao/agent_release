@@ -380,7 +380,7 @@ export function ChatHomeRoute() {
               <InputArea
                 onSend={handleSend}
                 onCancel={handleCancel}
-                disabled={isStreaming}
+                disabled={false}
                 isStreaming={isStreaming}
                 skillOptions={resourceCatalog.skills}
                 fileOptions={resourceCatalog.files}

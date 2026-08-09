@@ -36,6 +36,7 @@ import {
   beginChatStream,
   getChatStreamErrorMessage,
   interruptChatStream,
+  isChatSessionNotFoundError,
   loadChatSession,
   mapChatAttachmentRef,
   reconcileChatStream,
@@ -356,6 +357,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       } catch (loadError) {
         if (signal?.aborted) return;
         setIsRemoteReplying(false);
+        if (isChatSessionNotFoundError(loadError)) {
+          await refreshChats();
+          return;
+        }
         setPageError(
           loadError instanceof Error ? loadError.message : "对话加载失败",
         );
@@ -363,7 +368,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (!signal?.aborted) setPageStatus("ready");
       }
     },
-    [api, currentProject, sessionId],
+    [api, currentProject, refreshChats, sessionId],
   );
 
   const loadProjectWorkspace = useCallback(
@@ -402,7 +407,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, [navigation, sessionId, status]);
 
   useEffect(() => {
-    if (status !== "authenticated") return;
+    if (status !== "authenticated" || currentChat) return;
+    const latestSessionId = chats[0]?.id;
+    navigation.replace(
+      latestSessionId ? `/chat/${latestSessionId}` : "/chat/new",
+    );
+  }, [chats, currentChat, navigation, status]);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !currentChat) return;
     const controller = new AbortController();
     queueMicrotask(() => {
       if (!controller.signal.aborted) {
@@ -410,7 +423,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       }
     });
     return () => controller.abort();
-  }, [loadPage, status]);
+  }, [currentChat, loadPage, status]);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -461,8 +474,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           await refreshChats();
           return;
         }
-      } catch {
+      } catch (loadError) {
         if (controller.signal.aborted) return;
+        if (isChatSessionNotFoundError(loadError)) {
+          await refreshChats();
+          return;
+        }
       }
 
       pollTimer = window.setTimeout(pollReplyState, 1_500);
@@ -665,6 +682,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             if (controller.signal.aborted) return;
             reportedError = recoveryError;
           }
+        }
+        if (isChatSessionNotFoundError(reportedError)) {
+          await refreshChats();
+          return;
         }
         const errorMessage = getChatStreamErrorMessage(reportedError);
         setStreamState((current) => {
@@ -1516,8 +1537,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         <InputArea
           onSend={(payload) => void runStream(payload)}
           onCancel={handleCancel}
-          disabled={isStreaming || isRemoteReplying}
-          isStreaming={isStreaming}
+          disabled={false}
+          isStreaming={isStreaming || isRemoteReplying}
           skillOptions={resourceCatalog.skills}
           fileOptions={resourceCatalog.files}
           uploadAccept={CHAT_ATTACHMENT_ACCEPT}

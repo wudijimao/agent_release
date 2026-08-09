@@ -12,6 +12,7 @@ import {
   getChatStreamErrorMessage,
   formatChatActionExpiry,
   interruptChatStream,
+  isChatSessionNotFoundError,
   loadChatSession,
   mapChatAttachmentRef,
   mapChatContextRef,
@@ -22,6 +23,27 @@ import {
   shouldReconcileChatStreamFailure,
   updateLatestUserMessageAttachments,
 } from "./chat-session";
+
+test("identifies missing chat sessions that require a history refresh", () => {
+  assert.equal(
+    isChatSessionNotFoundError(
+      new ApiError("NOT_FOUND", "Session not found", 404),
+    ),
+    true,
+  );
+  assert.equal(
+    isChatSessionNotFoundError(
+      new ApiError("NOT_FOUND", "Project not found", 404),
+    ),
+    false,
+  );
+  assert.equal(
+    isChatSessionNotFoundError(
+      new ApiError("NOT_FOUND", "Session not found", 500),
+    ),
+    false,
+  );
+});
 
 test("formats action expiry as readable Beijing time", () => {
   assert.equal(

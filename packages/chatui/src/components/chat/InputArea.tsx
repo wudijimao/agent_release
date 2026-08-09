@@ -157,7 +157,8 @@ export const InputArea = ({
   const filePickerRef = useRef<HTMLInputElement | null>(null);
   const filePickerId = useId();
   const uploadedFilesRef = useRef<UploadedInputFile[]>([]);
-  const canCancel = isStreaming && Boolean(onCancel);
+  const showStop = isStreaming;
+  const canCancel = showStop && Boolean(onCancel);
 
   useEffect(() => {
     uploadedFilesRef.current = uploadedFiles;
@@ -391,7 +392,7 @@ export const InputArea = ({
   }, []);
 
   const handleSend = useCallback(() => {
-    if (!val.trim() || disabled) return;
+    if (!val.trim() || disabled || isStreaming) return;
 
     onSend({
       content: val,
@@ -417,7 +418,7 @@ export const InputArea = ({
     setShowFileMenu(false);
     setFileQuery('');
     setActiveFileIndex(-1);
-  }, [val, disabled, onSend, uploadedFiles, referencedDocs, referencedSkills]);
+  }, [val, disabled, isStreaming, onSend, uploadedFiles, referencedDocs, referencedSkills]);
 
   return (
     <div className="w-full max-w-[840px] mx-auto">
@@ -748,13 +749,13 @@ export const InputArea = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={canCancel ? onCancel : handleSend}
-              disabled={canCancel ? false : disabled || !val.trim()}
-              aria-label={canCancel ? '停止生成' : '发送消息'}
-              title={canCancel ? '停止生成' : '发送消息'}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${canCancel || (val.trim() && !disabled) ? 'bg-primary text-white shadow-md hover:bg-primary-hover' : 'bg-tertiaryText text-white'}`}
+              onClick={showStop ? onCancel : handleSend}
+              disabled={showStop ? !canCancel : disabled || !val.trim()}
+              aria-label={showStop ? '停止生成' : '发送消息'}
+              title={showStop ? '停止生成' : '发送消息'}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${canCancel || (!showStop && val.trim() && !disabled) ? 'bg-primary text-white shadow-md hover:bg-primary-hover' : 'bg-tertiaryText text-white'}`}
             >
-              {canCancel ? <Square size={12} fill="currentColor" /> : <Send size={16} />}
+              {showStop ? <Square size={12} fill="currentColor" /> : <Send size={16} />}
             </button>
           </div>
         </div>

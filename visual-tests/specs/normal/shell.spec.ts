@@ -9,6 +9,7 @@ import {
   respondWithApiError,
   waitForVisualReady,
 } from "../../fixtures/network";
+import { mockChatSessionPage } from "../../fixtures/chat";
 
 
   function chatMenuButton(page: import("@playwright/test").Page, title: string) {
@@ -294,5 +295,71 @@ test.describe("正常状态 / 应用骨架", () => {
     }));
     expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth);
     expect(metrics.asideWidth).toBeGreaterThan(0);
+  });
+
+  test("SHELL-10 会话不存在时切换到最新会话", async ({ page }) => {
+    await mockChatSessionPage(page, {
+      sessionId: "chat-latest",
+      title: "最新对话",
+      messages: [{ role: "user", content: "最新问题" }],
+    });
+
+    await page.goto("/chat/missing-session");
+    await page.waitForURL("**/chat/chat-latest", { timeout: 10000 });
+    await expect(page.getByText("最新对话").first()).toBeVisible();
+  });
+
+  test("SHELL-11 Session not found 时刷新列表并切换到最新会话", async ({ page }) => {
+    await mockChatSessionPage(page, {
+      sessionId: "chat-latest",
+      title: "刷新后的最新对话",
+      messages: [{ role: "user", content: "刷新后的最新问题" }],
+    });
+
+    let listRequestCount = 0;
+    await page.route(/^.*\/api\/chat\/history(?:\?.*)?$/, async (route) => {
+      const url = new URL(route.request().url());
+      const requestedSessionId = url.searchParams.get("sessionId");
+      if (requestedSessionId === "missing-session") {
+        await respondWithApiError(route, {
+          status: 404,
+          code: "NOT_FOUND",
+          message: "Session not found",
+        });
+        return;
+      }
+      if (requestedSessionId) {
+        await route.fallback();
+        return;
+      }
+
+      listRequestCount += 1;
+      const now = "2025-07-15T12:00:00.000Z";
+      const latest = {
+        id: "chat-latest",
+        title: "刷新后的最新对话",
+        scene: "home",
+        projectId: null,
+        sessionKind: "normal",
+        isPinned: false,
+        updatedAt: now,
+        createdAt: now,
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json; charset=utf-8",
+        body: JSON.stringify({
+          items:
+            listRequestCount === 1
+              ? [{ ...latest, id: "missing-session", title: "已失效对话" }, latest]
+              : [latest],
+        }),
+      });
+    });
+
+    await page.goto("/chat/missing-session");
+    await page.waitForURL("**/chat/chat-latest", { timeout: 10000 });
+    await expect(page.getByText("刷新后的最新对话").first()).toBeVisible();
+    expect(listRequestCount).toBeGreaterThanOrEqual(2);
   });
 });

@@ -81,6 +81,14 @@ export class ChatStreamDisconnectedError extends Error {
   }
 }
 
+export function isChatSessionNotFoundError(error: unknown) {
+  return (
+    error instanceof ApiError &&
+    error.status === 404 &&
+    error.message.trim().toLowerCase() === "session not found"
+  );
+}
+
 const CHAT_RECONCILIATION_RETRY_DELAYS_MS = [0, 250, 500, 1_000] as const;
 
 function asRecord(value: unknown): Record<string, unknown> | null {

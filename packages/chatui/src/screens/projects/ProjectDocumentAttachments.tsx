@@ -34,30 +34,32 @@ export function ProjectDocumentAttachments({
   onDeleteAttachment,
 }: ProjectDocumentAttachmentsProps) {
   return (
-    <div className={className}>
-      <div className="flex items-start justify-between gap-3">
+    <div className={`relative ${className}`}>
+      <div className={onRequestUpload ? 'pr-28' : undefined}>
         <div className="text-sm font-medium text-primaryText">附件</div>
         {onRequestUpload && (
-          <BaseButton
-            type="secondary"
-            size="small"
-            disabled={uploading}
-            onClick={onRequestUpload}
-          >
-            <span className="inline-flex items-center gap-1.5">
-              {uploading ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Upload size={14} />
-              )}
-              {uploading ? '上传中' : '上传附件'}
-            </span>
-          </BaseButton>
+          <div className="absolute right-0 top-6">
+            <BaseButton
+              type="secondary"
+              size="small"
+              disabled={uploading}
+              onClick={onRequestUpload}
+            >
+              <span className="inline-flex items-center gap-1.5">
+                {uploading ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Upload size={14} />
+                )}
+                {uploading ? '上传中' : '上传附件'}
+              </span>
+            </BaseButton>
+          </div>
         )}
       </div>
 
       {attachments.length ? (
-        <div className="mt-3 flex flex-wrap gap-2.5">
+        <div className={`mt-3 flex flex-wrap gap-2.5 ${onRequestUpload ? 'pr-28' : ''}`}>
           {attachments.map((attachment) => {
             const deleting = deletingAttachmentId === attachment.id;
             return (

@@ -299,8 +299,10 @@ test.describe("正常状态 / 新对话主页", () => {
 
   test("CHAT-15 停止生成后输入状态恢复", async ({ page }) => {
     const gate = createRequestGate();
+    let chatRequestCount = 0;
     await mockChatSendMocks(page);
     await page.route("**/api/chat", async (route) => {
+      chatRequestCount += 1;
       try {
         await gate.waiting;
       } finally {
@@ -326,10 +328,16 @@ test.describe("正常状态 / 新对话主页", () => {
     await page.locator('[aria-label="发送消息"]').click();
 
     await expect(page.locator('[aria-label="停止生成"]')).toBeVisible({ timeout: 10000 });
+    await expect(textarea).toBeEnabled();
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("chat-15-streaming-cancel.png", {
       fullPage: true,
     });
+
+    await textarea.fill("下一条问题");
+    await textarea.press("Enter");
+    await expect(textarea).toHaveValue("下一条问题");
+    expect(chatRequestCount).toBe(1);
 
     await page.locator('[aria-label="停止生成"]').click();
     await expect(page.getByText("已停止生成，你可以重新发送或重试。")).toBeVisible({ timeout: 10000 });

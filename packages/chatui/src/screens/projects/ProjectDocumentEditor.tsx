@@ -10,6 +10,7 @@ import {
 import { TextSelection } from '@milkdown/kit/prose/state';
 import {
   bulletListSchema,
+  headingSchema,
   listItemSchema,
   orderedListSchema,
   paragraphSchema,
@@ -65,6 +66,19 @@ const headingMenuIcon = (level: 1 | 2 | 3) => `
   </svg>
 `;
 
+const paragraphMenuIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <text x="8" y="23" fill="currentColor" font-family="inherit" font-size="22" font-weight="500">T</text>
+  </svg>
+`;
+
+const selectionTypeTriggerIcon = `
+  <span class="chatui-selection-block-type-current">${paragraphMenuIcon}</span>
+  <svg class="chatui-selection-block-type-chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+`;
+
 const codeMenuIcon = `
   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
     <text x="2" y="23" fill="currentColor" font-family="inherit" font-size="24" font-weight="400">{ }</text>
@@ -93,6 +107,23 @@ type BlockMenuKey =
   | 'task-list'
   | 'code'
   | 'quote';
+
+type SelectionBlockTypeKey = 'paragraph' | BlockMenuKey;
+
+const selectionBlockTypeOptions: Array<{
+  key: SelectionBlockTypeKey;
+  label: string;
+}> = [
+  { key: 'paragraph', label: '正文' },
+  { key: 'h1', label: '一级标题' },
+  { key: 'h2', label: '二级标题' },
+  { key: 'h3', label: '三级标题' },
+  { key: 'bullet-list', label: '无序列表' },
+  { key: 'ordered-list', label: '有序列表' },
+  { key: 'task-list', label: '任务列表' },
+  { key: 'quote', label: '引用' },
+  { key: 'code', label: '代码块' },
+];
 
 const blockMenuIconClass = (key: string) =>
   `chatui-document-menu-type-${key}`;
@@ -157,6 +188,10 @@ export function ProjectDocumentEditor({
   useEffect(() => {
     const root = editorRootRef.current;
     if (!root) return;
+    const selectionBlockActions = new Map<
+      SelectionBlockTypeKey,
+      (ctx: Ctx) => void
+    >();
 
     const editor = new Crepe({
       root,
@@ -165,6 +200,19 @@ export function ProjectDocumentEditor({
         [Crepe.Feature.Placeholder]: false,
       },
       featureConfigs: {
+        [Crepe.Feature.Toolbar]: {
+          buildToolbar: (builder) => {
+            const blockTypeGroup = builder.addGroup(
+              'block-type',
+              '块类型',
+            );
+            blockTypeGroup.addItem('block-type-dropdown', {
+              icon: selectionTypeTriggerIcon,
+              active: () => false,
+              onRun: () => undefined,
+            });
+          },
+        },
         [Crepe.Feature.BlockEdit]: {
           addOnCurrentBlock: true,
           preserveCurrentBlockContent: true,
@@ -288,6 +336,10 @@ export function ProjectDocumentEditor({
                 });
               }
             };
+            selectionBlockActions.set(
+              'paragraph',
+              clearCurrentBlockFormat,
+            );
             const deleteOpenedMenuBlock = (ctx: Ctx) => {
               const view = focusOpenedMenuBlock(ctx);
               const { selection } = view.state;
@@ -416,6 +468,12 @@ export function ProjectDocumentEditor({
                     }
                   }
                 : definition.onRun;
+              if (replaceBlockActions.has(key) && onRun) {
+                selectionBlockActions.set(
+                  key as BlockMenuKey,
+                  onRun,
+                );
+              }
               group.addItem(key, {
                 ...definition,
                 label: options?.label ?? definition.label,
@@ -426,6 +484,14 @@ export function ProjectDocumentEditor({
 
             builder.clear();
             const basic = builder.addGroup('basic', '基础');
+            basic.addItem('paragraph', {
+              label: '正文',
+              icon: addIconClass(
+                paragraphMenuIcon,
+                blockMenuIconClass('paragraph'),
+              ),
+              onRun: clearCurrentBlockFormat,
+            });
             [
               {
                 key: 'h1',
@@ -506,12 +572,16 @@ export function ProjectDocumentEditor({
     let defaultAddIcon = '';
     let hoveredBlockKey: BlockMenuKey | null = null;
     let hoveredBlockElement: Element | null = null;
+    let hoveredBlockIsParagraph = true;
     let blockMenuPointerEntered = false;
     let openedMenuBlockElement: Element | null = null;
     let clickedMenuAnchor: HTMLElement | null = null;
     let menuPositionObserver: MutationObserver | null = null;
     let menuPositionFrame: number | null = null;
     let pointerHighlightedMenuItem: HTMLElement | null = null;
+    let selectionTypeMenu: HTMLElement | null = null;
+    let selectionTypeMenuHideTimer: number | null = null;
+    let selectionToolbarObserver: MutationObserver | null = null;
 
     const resolveBlockKeyFromElement = (
       target: Element | null,
@@ -595,18 +665,35 @@ export function ProjectDocumentEditor({
         .sort((left, right) => left.distance - right.distance)[0]?.block ?? null;
     };
 
-    const syncBlockControls = (key: BlockMenuKey | null) => {
+    const syncBlockControls = (
+      key: BlockMenuKey | null,
+      isParagraph = hoveredBlockIsParagraph,
+    ) => {
+      const boundBlock = openedMenuBlockElement;
+      const currentKey = boundBlock
+        ? resolveBlockKeyFromElement(boundBlock)
+        : key;
+      const currentIsParagraph = boundBlock
+        ? boundBlock.matches('p')
+        : isParagraph;
       const menu = ownerDocument.querySelector<HTMLElement>(
         '.milkdown-slash-menu',
       );
+      menu
+        ?.querySelector(`svg.${blockMenuIconClass('paragraph')}`)
+        ?.closest('li')
+        ?.toggleAttribute(
+          'hidden',
+          currentKey === null && currentIsParagraph,
+        );
       menu
         ?.querySelectorAll('li[data-chatui-selected="true"]')
         .forEach((item) =>
           item.removeAttribute('data-chatui-selected'),
         );
-      if (key) {
+      if (currentKey) {
         menu
-          ?.querySelector(`svg.${blockMenuIconClass(key)}`)
+          ?.querySelector(`svg.${blockMenuIconClass(currentKey)}`)
           ?.closest('li')
           ?.setAttribute('data-chatui-selected', 'true');
       }
@@ -617,12 +704,12 @@ export function ProjectDocumentEditor({
       if (!addIcon) return;
       if (!defaultAddIcon) defaultAddIcon = addIcon.innerHTML;
 
-      const selectedIcon = key
+      const selectedIcon = currentKey
         ? menu?.querySelector<SVGElement>(
-            `svg.${blockMenuIconClass(key)}`,
+            `svg.${blockMenuIconClass(currentKey)}`,
           )
         : null;
-      const nextType = key ?? 'default';
+      const nextType = currentKey ?? 'default';
       if (addIcon.dataset.chatuiBlockType === nextType) return;
       addIcon.innerHTML = selectedIcon?.outerHTML ?? defaultAddIcon;
       addIcon.dataset.chatuiBlockType = nextType;
@@ -632,8 +719,9 @@ export function ProjectDocumentEditor({
       if (block !== hoveredBlockElement) {
         hoveredBlockElement = block;
         hoveredBlockKey = resolveBlockKeyFromElement(block);
+        hoveredBlockIsParagraph = block?.matches('p') ?? false;
       }
-      syncBlockControls(hoveredBlockKey);
+      syncBlockControls(hoveredBlockKey, hoveredBlockIsParagraph);
     };
 
     const syncFromEditorSelection = () => {
@@ -641,6 +729,208 @@ export function ProjectDocumentEditor({
       const anchorElement =
         anchorNode instanceof Element ? anchorNode : anchorNode?.parentElement;
       bindBlockControls(findEditorBlockFromElement(anchorElement ?? null));
+    };
+
+    const resolveSelectionBlockType = (ctx: Ctx): SelectionBlockTypeKey => {
+      const { $from } = ctx.get(editorViewCtx).state.selection;
+      const listItemType = listItemSchema.type(ctx);
+      const orderedListType = orderedListSchema.type(ctx);
+      const bulletListType = bulletListSchema.type(ctx);
+
+      for (let depth = $from.depth; depth > 0; depth -= 1) {
+        const node = $from.node(depth);
+        if (
+          node.type === listItemType &&
+          typeof node.attrs.checked === 'boolean'
+        ) {
+          return 'task-list';
+        }
+      }
+      for (let depth = $from.depth; depth > 0; depth -= 1) {
+        const node = $from.node(depth);
+        if (node.type === orderedListType) return 'ordered-list';
+        if (node.type === bulletListType) return 'bullet-list';
+        if (node.type.name === 'blockquote') return 'quote';
+      }
+
+      const currentBlock = $from.parent;
+      if (currentBlock.type === headingSchema.type(ctx)) {
+        const level = Number(currentBlock.attrs.level);
+        if (level === 1 || level === 2 || level === 3) {
+          return `h${level}` as SelectionBlockTypeKey;
+        }
+      }
+      if (currentBlock.type.name === 'code_block') return 'code';
+      return 'paragraph';
+    };
+
+    const selectionBlockTypeIcon = (key: SelectionBlockTypeKey) => {
+      if (key === 'paragraph') {
+        return addIconClass(
+          paragraphMenuIcon,
+          'chatui-selection-block-type-paragraph',
+        );
+      }
+      if (key === 'h1') return headingMenuIcon(1);
+      if (key === 'h2') return headingMenuIcon(2);
+      if (key === 'h3') return headingMenuIcon(3);
+      if (key === 'code') return codeMenuIcon;
+
+      return (
+        ownerDocument.querySelector<SVGElement>(
+          `.milkdown-slash-menu svg.${blockMenuIconClass(key)}`,
+        )?.outerHTML ??
+        `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="4" y="17" fill="currentColor" font-size="14">${key === 'quote' ? '“' : '•'}</text></svg>`
+      );
+    };
+
+    const getSelectionTypeTrigger = () =>
+      ownerDocument
+        .querySelector<HTMLElement>(
+          '.milkdown-toolbar .chatui-selection-block-type-chevron',
+        )
+        ?.closest<HTMLButtonElement>('.toolbar-item') ?? null;
+
+    const updateSelectionTypeControl = () => {
+      const trigger = getSelectionTypeTrigger();
+      if (!trigger) return;
+      trigger.classList.add('chatui-selection-block-type-trigger');
+      trigger.setAttribute('aria-haspopup', 'menu');
+      trigger.setAttribute('aria-label', '切换当前块类型');
+      const toolbar = trigger.closest<HTMLElement>('.milkdown-toolbar');
+      const groupDivider =
+        trigger.previousElementSibling instanceof HTMLElement &&
+        trigger.previousElementSibling.classList.contains('divider')
+          ? trigger.previousElementSibling
+          : null;
+      if (toolbar && toolbar.firstElementChild !== trigger) {
+        toolbar.prepend(trigger);
+        if (groupDivider) trigger.after(groupDivider);
+      }
+
+      let currentKey: SelectionBlockTypeKey = 'paragraph';
+      editor.editor.action((ctx) => {
+        currentKey = resolveSelectionBlockType(ctx);
+      });
+      trigger.dataset.chatuiBlockType = currentKey;
+      const currentIcon = trigger.querySelector<HTMLElement>(
+        '.chatui-selection-block-type-current',
+      );
+      if (currentIcon) {
+        currentIcon.innerHTML = selectionBlockTypeIcon(currentKey);
+      }
+      selectionTypeMenu
+        ?.querySelectorAll<HTMLElement>('[data-block-type]')
+        .forEach((item) => {
+          item.dataset.active =
+            item.dataset.blockType === currentKey ? 'true' : 'false';
+        });
+    };
+
+    const hideSelectionTypeMenu = () => {
+      if (selectionTypeMenuHideTimer !== null) {
+        window.clearTimeout(selectionTypeMenuHideTimer);
+        selectionTypeMenuHideTimer = null;
+      }
+      if (selectionTypeMenu) selectionTypeMenu.dataset.show = 'false';
+      getSelectionTypeTrigger()?.setAttribute('aria-expanded', 'false');
+    };
+
+    const scheduleSelectionTypeMenuHide = () => {
+      if (selectionTypeMenuHideTimer !== null) {
+        window.clearTimeout(selectionTypeMenuHideTimer);
+      }
+      selectionTypeMenuHideTimer = window.setTimeout(
+        hideSelectionTypeMenu,
+        120,
+      );
+    };
+
+    const ensureSelectionTypeMenu = () => {
+      if (selectionTypeMenu) return selectionTypeMenu;
+      const menu = ownerDocument.createElement('div');
+      menu.className = 'chatui-selection-block-type-menu';
+      menu.dataset.show = 'false';
+      menu.setAttribute('role', 'menu');
+
+      selectionBlockTypeOptions.forEach(({ key, label }) => {
+        const item = ownerDocument.createElement('button');
+        item.type = 'button';
+        item.dataset.blockType = key;
+        item.setAttribute('role', 'menuitem');
+        item.innerHTML = `<span class="chatui-selection-block-type-option-icon">${selectionBlockTypeIcon(key)}</span><span>${label}</span>`;
+        item.addEventListener('pointerdown', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          editor.editor.action((ctx) => {
+            selectionBlockActions.get(key)?.(ctx);
+          });
+          hideSelectionTypeMenu();
+          window.requestAnimationFrame(updateSelectionTypeControl);
+        });
+        menu.append(item);
+      });
+      menu.addEventListener('pointerenter', () => {
+        if (selectionTypeMenuHideTimer !== null) {
+          window.clearTimeout(selectionTypeMenuHideTimer);
+          selectionTypeMenuHideTimer = null;
+        }
+      });
+      menu.addEventListener('pointerleave', scheduleSelectionTypeMenuHide);
+      ownerDocument.body.append(menu);
+      selectionTypeMenu = menu;
+      return menu;
+    };
+
+    const showSelectionTypeMenu = () => {
+      const trigger = getSelectionTypeTrigger();
+      if (!trigger) return;
+      if (selectionTypeMenuHideTimer !== null) {
+        window.clearTimeout(selectionTypeMenuHideTimer);
+        selectionTypeMenuHideTimer = null;
+      }
+      const menu = ensureSelectionTypeMenu();
+      updateSelectionTypeControl();
+      menu.dataset.show = 'true';
+      menu.style.visibility = 'hidden';
+
+      const triggerRect = trigger.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const gap = 6;
+      const padding = 8;
+      const placeAbove = triggerRect.top >= menuRect.height + gap + padding;
+      const left = Math.min(
+        Math.max(triggerRect.left, padding),
+        ownerDocument.documentElement.clientWidth - menuRect.width - padding,
+      );
+      const top = placeAbove
+        ? triggerRect.top - menuRect.height - gap
+        : triggerRect.bottom + gap;
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+      menu.style.visibility = 'visible';
+      menu.dataset.placement = placeAbove ? 'top' : 'bottom';
+      trigger.setAttribute('aria-expanded', 'true');
+    };
+
+    const handleSelectionTypePointerOver = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('.chatui-selection-block-type-trigger')) {
+        showSelectionTypeMenu();
+      }
+    };
+
+    const handleSelectionTypePointerOut = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target?.closest('.chatui-selection-block-type-trigger')) return;
+      const relatedTarget =
+        event.relatedTarget instanceof Element ? event.relatedTarget : null;
+      if (relatedTarget?.closest('.chatui-selection-block-type-menu')) return;
+      scheduleSelectionTypeMenuHide();
+    };
+
+    const handleEditorSelectionChange = () => {
+      window.requestAnimationFrame(updateSelectionTypeControl);
     };
 
     const positionClickedBlockMenu = () => {
@@ -743,6 +1033,18 @@ export function ProjectDocumentEditor({
       });
     };
 
+    const keepBlockHandleVisible = (addButton: HTMLElement | null) => {
+      ownerDocument
+        .querySelectorAll<HTMLElement>('.milkdown-block-handle')
+        .forEach((handle) => {
+          if (addButton && handle.contains(addButton)) {
+            handle.dataset.chatuiMenuOpen = 'true';
+          } else {
+            delete handle.dataset.chatuiMenuOpen;
+          }
+        });
+    };
+
     const hideBlockMenu = () => {
       clickedMenuAnchor = null;
       blockMenuPointerEntered = false;
@@ -754,6 +1056,7 @@ export function ProjectDocumentEditor({
           .hide();
       });
       clearClickedBlockMenuPosition();
+      keepBlockHandleVisible(null);
     };
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -817,8 +1120,59 @@ export function ProjectDocumentEditor({
       bindBlockControls(block);
     };
 
+    const openBlockMenuFromHandle = (addButton: HTMLElement) => {
+      const blockMenu = ownerDocument.querySelector<HTMLElement>(
+        '.milkdown-slash-menu',
+      );
+      if (
+        clickedMenuAnchor === addButton &&
+        blockMenu?.dataset.show === 'true'
+      ) {
+        keepBlockHandleVisible(addButton);
+        scheduleClickedBlockMenuPosition();
+        return;
+      }
+
+      const addButtonRect = addButton.getBoundingClientRect();
+      const blockAtHandle = findEditorBlockAtY(
+        addButtonRect.top + addButtonRect.height / 2,
+      );
+      if (blockAtHandle) bindBlockControls(blockAtHandle);
+      const blockKeyAtOpen = hoveredBlockKey;
+      const blockIsParagraphAtOpen = hoveredBlockIsParagraph;
+      clickedMenuAnchor = addButton;
+      openedMenuBlockElement = blockAtHandle ?? hoveredBlockElement;
+      keepBlockHandleVisible(addButton);
+
+      const PointerEventConstructor =
+        ownerDocument.defaultView?.PointerEvent ?? PointerEvent;
+      addButton.dispatchEvent(
+        new PointerEventConstructor('pointerdown', {
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+      addButton.dispatchEvent(
+        new PointerEventConstructor('pointerup', {
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+      window.setTimeout(() => {
+        syncBlockControls(blockKeyAtOpen, blockIsParagraphAtOpen);
+        scheduleClickedBlockMenuPosition();
+      }, 0);
+    };
+
     const handleMenuPointerOver = (event: PointerEvent) => {
       const target = event.target instanceof Element ? event.target : null;
+      const addButton = target?.closest<HTMLElement>(
+        '.milkdown-block-handle .operation-item:first-child',
+      );
+      if (addButton) {
+        openBlockMenuFromHandle(addButton);
+        return;
+      }
       setPointerHighlightedMenuItem(
         target?.closest<HTMLElement>(
           '.milkdown-slash-menu .menu-groups li',
@@ -850,14 +1204,25 @@ export function ProjectDocumentEditor({
       const addButton = target?.closest<HTMLElement>(
         '.milkdown-block-handle .operation-item:first-child',
       );
-      if (addButton) {
-        const clickedBlockKey = hoveredBlockKey;
-        clickedMenuAnchor = addButton;
-        openedMenuBlockElement = hoveredBlockElement;
-        window.setTimeout(() => {
-          syncBlockControls(clickedBlockKey);
-          scheduleClickedBlockMenuPosition();
-        }, 0);
+      if (addButton) openBlockMenuFromHandle(addButton);
+    };
+
+    const preventDuplicateHandleActivation = (event: PointerEvent) => {
+      if (!event.isTrusted) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const addButton = target?.closest<HTMLElement>(
+        '.milkdown-block-handle .operation-item:first-child',
+      );
+      const blockMenu = ownerDocument.querySelector<HTMLElement>(
+        '.milkdown-slash-menu',
+      );
+      if (
+        addButton &&
+        clickedMenuAnchor === addButton &&
+        blockMenu?.dataset.show === 'true'
+      ) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
       }
     };
 
@@ -868,6 +1233,28 @@ export function ProjectDocumentEditor({
     ownerDocument.addEventListener('pointermove', handlePointerMove);
     ownerDocument.addEventListener('pointerover', handleMenuPointerOver);
     ownerDocument.addEventListener('pointerout', handleMenuPointerOut);
+    ownerDocument.addEventListener(
+      'pointerover',
+      handleSelectionTypePointerOver,
+    );
+    ownerDocument.addEventListener(
+      'pointerout',
+      handleSelectionTypePointerOut,
+    );
+    ownerDocument.addEventListener(
+      'selectionchange',
+      handleEditorSelectionChange,
+    );
+    ownerDocument.addEventListener(
+      'pointerdown',
+      preventDuplicateHandleActivation,
+      true,
+    );
+    ownerDocument.addEventListener(
+      'pointerup',
+      preventDuplicateHandleActivation,
+      true,
+    );
     ownerDocument.addEventListener('click', handleAddButtonClick);
     root.addEventListener('keyup', handleKeyUp);
 
@@ -880,6 +1267,7 @@ export function ProjectDocumentEditor({
       if (blockMenu) {
         menuPositionObserver = new MutationObserver(() => {
           if (blockMenu.dataset.show === 'true' && clickedMenuAnchor) {
+            keepBlockHandleVisible(clickedMenuAnchor);
             scheduleClickedBlockMenuPosition();
             return;
           }
@@ -888,6 +1276,7 @@ export function ProjectDocumentEditor({
             openedMenuBlockElement = null;
             setPointerHighlightedMenuItem(null);
             clearClickedBlockMenuPosition();
+            keepBlockHandleVisible(null);
           }
         });
         menuPositionObserver.observe(blockMenu, {
@@ -895,7 +1284,24 @@ export function ProjectDocumentEditor({
           attributeFilter: ['data-show', 'style'],
         });
       }
+      const selectionToolbar = ownerDocument.querySelector<HTMLElement>(
+        '.milkdown-toolbar',
+      );
+      if (selectionToolbar) {
+        selectionToolbarObserver = new MutationObserver(() => {
+          if (selectionToolbar.dataset.show === 'true') {
+            updateSelectionTypeControl();
+          } else {
+            hideSelectionTypeMenu();
+          }
+        });
+        selectionToolbarObserver.observe(selectionToolbar, {
+          attributes: true,
+          attributeFilter: ['data-show'],
+        });
+      }
       syncFromEditorSelection();
+      updateSelectionTypeControl();
     });
 
     return () => {
@@ -905,10 +1311,36 @@ export function ProjectDocumentEditor({
         handleMenuPointerOver,
       );
       ownerDocument.removeEventListener('pointerout', handleMenuPointerOut);
+      ownerDocument.removeEventListener(
+        'pointerover',
+        handleSelectionTypePointerOver,
+      );
+      ownerDocument.removeEventListener(
+        'pointerout',
+        handleSelectionTypePointerOut,
+      );
+      ownerDocument.removeEventListener(
+        'selectionchange',
+        handleEditorSelectionChange,
+      );
+      ownerDocument.removeEventListener(
+        'pointerdown',
+        preventDuplicateHandleActivation,
+        true,
+      );
+      ownerDocument.removeEventListener(
+        'pointerup',
+        preventDuplicateHandleActivation,
+        true,
+      );
       ownerDocument.removeEventListener('click', handleAddButtonClick);
       root.removeEventListener('keyup', handleKeyUp);
+      hideSelectionTypeMenu();
+      selectionTypeMenu?.remove();
+      selectionTypeMenu = null;
       void creation.then(() => {
         menuPositionObserver?.disconnect();
+        selectionToolbarObserver?.disconnect();
         if (menuPositionFrame !== null) {
           window.cancelAnimationFrame(menuPositionFrame);
         }

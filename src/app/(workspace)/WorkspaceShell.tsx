@@ -31,6 +31,7 @@ import {
   shouldShowAiUsageReminder,
 } from "@/adapters/ai-usage";
 import {
+  isChatSessionNotFoundError,
   loadChatSession,
   type ChatSessionViewModel,
 } from "@/adapters/chat-session";
@@ -218,12 +219,16 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         if (options?.replace) navigation.replace(href);
         else navigation.push(href);
       } catch (loadError) {
+        if (isChatSessionNotFoundError(loadError)) {
+          await refreshChats();
+          return;
+        }
         setNotice(
           loadError instanceof Error ? loadError.message : "对话加载失败",
         );
       }
     },
-    [api, navigation],
+    [api, navigation, refreshChats],
   );
 
   const contextValue = useMemo<Omit<ChatShellContextValue, "isSidebarOpen" | "openSidebar" | "chats" | "touchChat">>(
