@@ -61,7 +61,15 @@ const HOME_AGENT_SCENARIO_LABELS = HOME_AGENT_SCENARIOS.map(
 import { useChatShell } from "../../WorkspaceShell";
 import { useChatResourceCatalog } from "../useChatResourceCatalog";
 
-export function ChatHomeRoute() {
+interface ChatHomeRouteProps {
+  initialProjectId?: string;
+  autoFocusInput?: boolean;
+}
+
+export function ChatHomeRoute({
+  initialProjectId,
+  autoFocusInput = false,
+}: ChatHomeRouteProps) {
   const navigation = useNavigation();
   const api = useApiClient();
   const { activeLab } = useLab();
@@ -82,7 +90,9 @@ export function ChatHomeRoute() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isCreatingScenario, setIsCreatingScenario] = useState(false);
   const [lastPayload, setLastPayload] = useState<InputSendPayload | null>(null);
-  const [selectedProjectId, setSelectedProjectId] = useState<string>();
+  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>(
+    initialProjectId,
+  );
   const selectableProjects = useMemo(
     () => projects.filter((project) => project.selectable !== false),
     [projects],
@@ -394,6 +404,7 @@ export function ChatHomeRoute() {
           <ChatHomePage
             projects={selectableProjects}
             selectedProjectId={selectedProjectId}
+            autoFocusInput={autoFocusInput}
             disabled={isStreaming || isCreatingScenario}
             isSidebarOpen={isSidebarOpen}
             onOpenSidebar={openSidebar}

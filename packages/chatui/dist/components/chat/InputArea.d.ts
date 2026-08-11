@@ -10,6 +10,7 @@ export interface InputSendPayload {
 export interface InputAreaProps {
     onSend: (payload: InputSendPayload) => void;
     disabled: boolean;
+    autoFocus?: boolean;
     isStreaming?: boolean;
     onCancel?: () => void;
     leadingControls?: React.ReactNode;
@@ -51,7 +52,7 @@ export declare const insertFileReference: (text: string, start: number, end: num
 };
 export declare const CHAT_FILE_OPTIONS: readonly ChatFileOption[];
 export declare const CHAT_RECENT_FILE_OPTIONS: readonly ChatFileOption[];
-export declare const InputArea: ({ onSend, disabled, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element;
-declare const _default: React.MemoExoticComponent<({ onSend, disabled, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element>;
+export declare const InputArea: ({ onSend, disabled, autoFocus, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element;
+declare const _default: React.MemoExoticComponent<({ onSend, disabled, autoFocus, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element>;
 export default _default;
 //# sourceMappingURL=InputArea.d.ts.map

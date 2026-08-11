@@ -14,6 +14,7 @@ export interface InputSendPayload {
 export interface InputAreaProps {
   onSend: (payload: InputSendPayload) => void;
   disabled: boolean;
+  autoFocus?: boolean;
   isStreaming?: boolean;
   onCancel?: () => void;
   leadingControls?: React.ReactNode;
@@ -129,6 +130,7 @@ export const CHAT_RECENT_FILE_OPTIONS: readonly ChatFileOption[] = [];
 export const InputArea = ({
   onSend,
   disabled,
+  autoFocus = false,
   isStreaming = false,
   onCancel,
   leadingControls,
@@ -506,6 +508,7 @@ export const InputArea = ({
 
         <textarea
           ref={textareaRef}
+          autoFocus={autoFocus}
           value={val}
           onChange={(event) => {
             const nextValue = event.target.value;

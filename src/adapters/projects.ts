@@ -1,5 +1,4 @@
 import type {
-  CreateAgentSessionResponse,
   ProjectCreateRequest,
   ProjectDetail,
   ProjectMemberCreateRequest,
@@ -25,7 +24,6 @@ import type {
 } from "@bioagent/chatui";
 
 import type { ApiClient } from "@/lib/api";
-import { createAgentSession } from "@/adapters/chat-sessions";
 
 export async function loadProjectsBootstrap(
   api: ApiClient,
@@ -72,16 +70,6 @@ export async function archiveProject(
   return api.post<{ ok: true }>(
     `/api/projects/${encodeURIComponent(projectId)}/archive`,
   );
-}
-
-export async function createProjectConversation(
-  api: ApiClient,
-  projectId: string,
-): Promise<CreateAgentSessionResponse> {
-  return createAgentSession(api, {
-    agentType: "general",
-    projectId,
-  });
 }
 
 export async function addProjectMember(

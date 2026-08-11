@@ -13,6 +13,7 @@ export interface ChatHomeProject {
 export interface ChatHomePageProps {
   projects: readonly ChatHomeProject[];
   selectedProjectId?: string;
+  autoFocusInput?: boolean;
   disabled?: boolean;
   embedded?: boolean;
   isSidebarOpen?: boolean;
@@ -32,6 +33,7 @@ export interface ChatHomePageProps {
 export default function ChatHomePage({
   projects,
   selectedProjectId,
+  autoFocusInput = false,
   disabled = false,
   embedded = false,
   isSidebarOpen = true,
@@ -129,10 +131,7 @@ export default function ChatHomePage({
 
   const content = (
     <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center overflow-y-auto px-6">
-          <h1
-            className="mb-10 text-5xl tracking-wider text-primaryText"
-            style={{ fontFamily: '"Songti SC", "STSong", "Noto Serif CJK SC", serif' }}
-          >
+          <h1 className="mb-10 text-5xl tracking-wider text-primaryText">
             研究，由此开始
           </h1>
 
@@ -175,6 +174,7 @@ export default function ChatHomePage({
             <InputArea
               onSend={onSend}
               disabled={disabled}
+              autoFocus={autoFocusInput}
               skillOptions={skillOptions}
               fileOptions={fileOptions}
               uploadAccept={uploadAccept}

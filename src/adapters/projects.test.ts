@@ -13,7 +13,6 @@ import {
   addProjectMember,
   archiveProject,
   createProject,
-  createProjectConversation,
   isUnassignedProject,
   loadProjectDetail,
   loadProjectsBootstrap,
@@ -121,9 +120,7 @@ test("project detail mutations use encoded project and member contracts", async 
   const api = createApiStub({
     post: async (...args: unknown[]) => {
       calls.push(["post", ...args]);
-      return args[0] === "/api/chat/agent-sessions"
-        ? { sessionId: "session-1", agentType: "general", projectId: "project/id" }
-        : [];
+      return [];
     },
     patch: async (...args: unknown[]) => {
       calls.push(["patch", ...args]);
@@ -137,7 +134,6 @@ test("project detail mutations use encoded project and member contracts", async 
 
   await updateProject(api, "project/id", { name: "新名称" });
   await archiveProject(api, "project/id");
-  await createProjectConversation(api, "project/id");
   await addProjectMember(api, "project/id", { userId: "user-2", role: "member" });
   await updateProjectMember(api, "project/id", "member/id", { role: "viewer" });
   await removeProjectMember(api, "project/id", "member/id");
@@ -145,7 +141,6 @@ test("project detail mutations use encoded project and member contracts", async 
   assert.deepEqual(calls, [
     ["patch", "/api/projects/project%2Fid", { name: "新名称" }],
     ["post", "/api/projects/project%2Fid/archive"],
-    ["post", "/api/chat/agent-sessions", { agentType: "general", projectId: "project/id" }],
     ["post", "/api/projects/project%2Fid/members", { userId: "user-2", role: "member" }],
     ["patch", "/api/projects/project%2Fid/members/member%2Fid", { role: "viewer" }],
     ["delete", "/api/projects/project%2Fid/members/member%2Fid"],

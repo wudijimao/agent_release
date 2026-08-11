@@ -20,6 +20,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { loadLabMembers } from "@/adapters/lab-members";
 import {
+  deleteChatSession,
+  renameChatSession,
+} from "@/adapters/chat-history";
+import {
   deleteProjectDocumentAttachment,
   deleteProjectDocument,
   loadProjectDocumentDetail,
@@ -42,7 +46,6 @@ import {
 import {
   addProjectMember,
   archiveProject,
-  createProjectConversation,
   loadProjectDetail,
   mapProjectDetail,
   mapProjectMemberDirectory,
@@ -503,18 +506,19 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           }
         }}
         onOpenConversation={(sessionId) => navigation.push(`/chat/${sessionId}`)}
+        onRenameConversation={detail.permissions.canAdmin ? async (sessionId, title) => {
+          await renameChatSession(api, sessionId, title);
+          await Promise.all([refreshDetail(), refreshChats()]);
+        } : undefined}
+        onDeleteConversation={detail.permissions.canAdmin ? async (sessionId) => {
+          await deleteChatSession(api, sessionId);
+          await Promise.all([refreshDetail(), refreshChats()]);
+        } : undefined}
         onCreateDocument={() => {
           openDocumentCreateModal();
         }}
-        onCreateConversation={async () => {
-          setNotice("");
-          try {
-            const created = await createProjectConversation(api, projectId);
-            await refreshChats();
-            navigation.push(`/chat/${created.sessionId}`);
-          } catch (mutationError) {
-            setNotice(mutationError instanceof Error ? mutationError.message : "项目对话创建失败");
-          }
+        onCreateConversation={() => {
+          navigation.push(`/chat/new?projectId=${encodeURIComponent(projectId)}&focus=1`);
         }}
         documentImportAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
         documentImportMaxSize={PROJECT_DOCUMENT_IMPORT_MAX_BYTES}

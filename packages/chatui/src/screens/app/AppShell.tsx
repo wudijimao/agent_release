@@ -105,6 +105,7 @@ export default function AppShell({
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [chats, setChats] = useState<AppShellChat[]>(() => [...initialChats]);
   const [chatMenuOpenId, setChatMenuOpenId] = useState<string | null>(null);
+  const [allChatsMenuOpenId, setAllChatsMenuOpenId] = useState<string | null>(null);
   const [sortMode, setSortMode] = useState<'time' | 'project'>('time');
   const [isSidebarScrolling, setIsSidebarScrolling] = useState(false);
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
@@ -119,10 +120,6 @@ export default function AppShell({
   const chatRenameInputRef = useRef<HTMLInputElement | null>(null);
   const sidebarScrollTimerRef = useRef<number | null>(null);
   const allChatsScrollTimerRef = useRef<number | null>(null);
-  const hasChatActions = Boolean(
-    chatActions.rename || chatActions.share || chatActions.pin || chatActions.delete,
-  );
-
   const handleLogout = () => {
     setSettingsMenuOpen(false);
     onLogout();
@@ -407,21 +404,24 @@ export default function AppShell({
     }
   };
 
-  const chatMenuFooterItems = useMemo<BaseActionMenuItem[]>(() => (
-    chatActions.delete
+  const buildChatMenuFooterItems = (actions: AppShellChatActions): BaseActionMenuItem[] => (
+    actions.delete
       ? [{ key: 'delete', label: '删除', icon: <Trash2 size={14} />, danger: true }]
       : []
-  ), [chatActions.delete]);
+  );
 
-  const buildChatMenuItems = (chat: AppShellChat): BaseActionMenuItem[] => {
+  const buildChatMenuItems = (
+    chat: AppShellChat,
+    actions: AppShellChatActions = chatActions,
+  ): BaseActionMenuItem[] => {
     const items: BaseActionMenuItem[] = [];
-    if (chatActions.rename) {
+    if (actions.rename) {
       items.push({ key: 'rename', label: '重命名', icon: <Pencil size={14} /> });
     }
-    if (chatActions.share) {
+    if (actions.share) {
       items.push({ key: 'share', label: '分享对话', icon: <Share2 size={14} /> });
     }
-    if (chatActions.pin) {
+    if (actions.pin) {
       items.push({
         key: 'pin',
         label: chat.isPinned ? '取消置顶' : '置顶对话',
@@ -431,10 +431,23 @@ export default function AppShell({
     return items;
   };
 
-  const renderChatActionControl = (chat: AppShellChat, isMenuOpen: boolean) => {
-    const isTaskChat = isTaskConversationChat(chat);
+  const renderChatActionControl = (
+    chat: AppShellChat,
+    isMenuOpen: boolean,
+    options: {
+      actions?: AppShellChatActions;
+      portal?: boolean;
+      showTaskBadge?: boolean;
+      width?: number;
+      onMenuOpenIdChange?(chatId: string | null): void;
+    } = {},
+  ) => {
+    const actions = options.actions ?? chatActions;
+    const setOpenMenuId = options.onMenuOpenIdChange ?? setChatMenuOpenId;
+    const actionsAvailable = Boolean(actions.rename || actions.share || actions.pin || actions.delete);
+    const isTaskChat = options.showTaskBadge !== false && isTaskConversationChat(chat);
 
-    if (!hasChatActions && !isTaskChat) return null;
+    if (!actionsAvailable && !isTaskChat) return null;
 
     return (
       <div className={`relative shrink-0 flex h-5 w-5 items-center justify-center ${isTaskChat ? 'ml-6' : 'ml-2'}`}>
@@ -443,38 +456,42 @@ export default function AppShell({
             任务
           </span>
         )}
-        {hasChatActions && <BaseActionMenu
+        {actionsAvailable && <BaseActionMenu
           open={isMenuOpen}
-          onOpenChange={(open) => setChatMenuOpenId(open ? chat.id : null)}
+          onOpenChange={(open) => setOpenMenuId(open ? chat.id : null)}
           placement="bottom-end"
-          width={Math.max(140, Math.min(176, sidebarWidth - 56))}
+          width={options.width ?? Math.max(140, Math.min(176, sidebarWidth - 56))}
+          portal={options.portal}
           trigger={<MoreHorizontal size={14} />}
           onTriggerClick={(event) => {
             event.stopPropagation();
           }}
-          items={buildChatMenuItems(chat)}
-          footerItems={chatMenuFooterItems}
+          items={buildChatMenuItems(chat, actions)}
+          footerItems={buildChatMenuFooterItems(actions)}
           onItemClick={(item, event) => {
             event.stopPropagation();
             if (item.key === 'rename') {
               startChatRename(chat);
+              setOpenMenuId(null);
               return;
             }
             if (item.key === 'share') {
               if (onShareChat) onShareChat(chat.id);
               else onNavigate(`/chat/${chat.id}?share=1`);
-              setChatMenuOpenId(null);
+              setOpenMenuId(null);
               return;
             }
             if (item.key === 'pin') {
               handleTogglePinChat(chat.id);
+              setOpenMenuId(null);
               return;
             }
             if (item.key === 'delete') {
               handleDeleteChat(chat.id);
+              setOpenMenuId(null);
               return;
             }
-            setChatMenuOpenId(null);
+            setOpenMenuId(null);
           }}
           triggerClassName={`h-5 w-5 items-center justify-center ${isMenuOpen ? 'inline-flex' : 'hidden group-hover:inline-flex'}`}
           className="relative z-40"
@@ -566,6 +583,8 @@ export default function AppShell({
 
   const handleCloseAllChatsModal = () => {
     setShowAllChatsModal(false);
+    setAllChatsMenuOpenId(null);
+    cancelChatRename();
     setIsAllChatsModalScrolling(false);
     if (allChatsScrollTimerRef.current !== null) {
       window.clearTimeout(allChatsScrollTimerRef.current);
@@ -575,6 +594,7 @@ export default function AppShell({
 
   const handleOpenChatFromModal = (chatId: string) => {
     setShowAllChatsModal(false);
+    setAllChatsMenuOpenId(null);
     onNavigate(`/chat/${chatId}`);
   };
 
@@ -941,28 +961,37 @@ export default function AppShell({
               {filteredAllChats.map((chat) => {
                 const projectName = chat.projectId ? (projectNameById.get(chat.projectId) ?? '未分组') : '未分组';
                 const isTaskChat = isTaskConversationChat(chat);
+                const isMenuOpen = allChatsMenuOpenId === chat.id;
 
                 return (
-                  <button
+                  <div
                     key={chat.id}
-                    type="button"
                     onClick={() => handleOpenChatFromModal(chat.id)}
-                    className="w-full rounded-lg px-4 py-3 text-left transition-colors hover:bg-shellHistoryHover"
+                    className="group flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors hover:bg-shellHistoryHover"
                   >
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="truncate text-sm font-medium text-primaryText">{chat.title}</span>
-                      {isTaskChat && (
-                        <span className="shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText">
-                          任务
-                        </span>
-                      )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-primaryText">
+                        {renderChatTitle(chat, chat.isPinned)}
+                        {isTaskChat && editingChatId !== chat.id && (
+                          <span className="shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText">
+                            任务
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex items-center gap-1 text-xs text-tertiaryText">
+                        <span className="truncate">{projectName}</span>
+                        <span>·</span>
+                        <span>{chat.date}</span>
+                      </div>
                     </div>
-                    <div className="mt-1 flex items-center gap-1 text-xs text-tertiaryText">
-                      <span className="truncate">{projectName}</span>
-                      <span>·</span>
-                      <span>{chat.date}</span>
-                    </div>
-                  </button>
+                    {editingChatId !== chat.id && renderChatActionControl(chat, isMenuOpen, {
+                      actions: { rename: true, pin: true, delete: true },
+                      portal: true,
+                      showTaskBadge: false,
+                      width: 160,
+                      onMenuOpenIdChange: setAllChatsMenuOpenId,
+                    })}
+                  </div>
                 );
               })}
             </div>

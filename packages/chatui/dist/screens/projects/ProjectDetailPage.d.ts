@@ -28,6 +28,8 @@ export interface ProjectDetailPageProps {
     onOpenMemberManagement(): void;
     onOpenDocument(documentId: string): void;
     onOpenConversation(conversationId: string): void;
+    onRenameConversation?(conversationId: string, title: string): void | Promise<void>;
+    onDeleteConversation?(conversationId: string): void | Promise<void>;
     onCreateDocument?(): void;
     onCreateConversation?(): void;
     onImportDocuments(files: File[]): void | Promise<void>;
@@ -39,5 +41,5 @@ export interface ProjectDetailPageProps {
     onDeleteProject?(): void | Promise<void>;
 }
 export declare function formatProjectConversationDate(rawDate: string, conversationId: string, now?: Date): string;
-export declare function ProjectDetailPage({ project, documents, conversations, memberCount, isSidebarOpen, onOpenSidebar, onBackToProjects, onOpenMemberManagement, onOpenDocument, onOpenConversation, onCreateDocument, onCreateConversation, onImportDocuments, onUpdateProjectName, onUpdateProjectDescription, documentImportAccept, documentImportMaxSize, documentImportDescription, showMemberManagement, onDeleteProject, }: ProjectDetailPageProps): React.JSX.Element;
+export declare function ProjectDetailPage({ project, documents, conversations, memberCount, isSidebarOpen, onOpenSidebar, onBackToProjects, onOpenMemberManagement, onOpenDocument, onOpenConversation, onCreateDocument, onCreateConversation, onRenameConversation, onDeleteConversation, onImportDocuments, onUpdateProjectName, onUpdateProjectDescription, documentImportAccept, documentImportMaxSize, documentImportDescription, showMemberManagement, onDeleteProject, }: ProjectDetailPageProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDetailPage.d.ts.map

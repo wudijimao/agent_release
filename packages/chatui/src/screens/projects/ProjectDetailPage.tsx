@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Menu, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
-import { BaseButton, BaseDocumentUpload, BaseEmpty, BaseModal } from '../../components/common';
+import { Menu, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
+import { BaseActionMenu, BaseButton, BaseDocumentUpload, BaseEmpty, BaseModal } from '../../components/common';
 
 type ProjectDetailTab = 'documents' | 'chats';
 
@@ -36,6 +36,8 @@ export interface ProjectDetailPageProps {
   onOpenMemberManagement(): void;
   onOpenDocument(documentId: string): void;
   onOpenConversation(conversationId: string): void;
+  onRenameConversation?(conversationId: string, title: string): void | Promise<void>;
+  onDeleteConversation?(conversationId: string): void | Promise<void>;
   onCreateDocument?(): void;
   onCreateConversation?(): void;
   onImportDocuments(files: File[]): void | Promise<void>;
@@ -92,6 +94,7 @@ export function formatProjectConversationDate(rawDate: string, conversationId: s
 export function ProjectDetailPage({
   project, documents, conversations, memberCount, isSidebarOpen, onOpenSidebar, onBackToProjects,
   onOpenMemberManagement, onOpenDocument, onOpenConversation, onCreateDocument, onCreateConversation,
+  onRenameConversation, onDeleteConversation,
   onImportDocuments, onUpdateProjectName, onUpdateProjectDescription,
   documentImportAccept, documentImportMaxSize, documentImportDescription,
   showMemberManagement = true,
@@ -114,7 +117,12 @@ export function ProjectDetailPage({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingProject, setDeletingProject] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [conversationMenuOpenId, setConversationMenuOpenId] = useState<string | null>(null);
+  const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
+  const [conversationTitleDraft, setConversationTitleDraft] = useState('');
+  const [conversationActionError, setConversationActionError] = useState('');
   const tagFilterRef = useRef<HTMLDivElement | null>(null);
+  const conversationTitleInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setNameDraft(project?.name ?? '');
@@ -123,6 +131,12 @@ export function ProjectDetailPage({
     setEditingDescription(false);
     setEditError('');
   }, [project]);
+
+  useEffect(() => {
+    if (!editingConversationId) return;
+    const frameId = window.requestAnimationFrame(() => conversationTitleInputRef.current?.focus());
+    return () => window.cancelAnimationFrame(frameId);
+  }, [editingConversationId]);
 
   const tagOptions = useMemo(() => ['all', ...Array.from(new Set(documents.flatMap((item) => item.tags)))], [documents]);
   const filteredDocuments = useMemo(() => {
@@ -196,6 +210,41 @@ export function ProjectDetailPage({
     }
   };
 
+  const startConversationRename = (conversation: ProjectConversationViewModel) => {
+    setConversationActionError('');
+    setEditingConversationId(conversation.id);
+    setConversationTitleDraft(conversation.title);
+    setConversationMenuOpenId(null);
+  };
+
+  const cancelConversationRename = () => {
+    setEditingConversationId(null);
+    setConversationTitleDraft('');
+  };
+
+  const commitConversationRename = async (conversation: ProjectConversationViewModel) => {
+    const title = conversationTitleDraft.trim();
+    cancelConversationRename();
+    if (!title || title === conversation.title || !onRenameConversation) return;
+    setConversationActionError('');
+    try {
+      await onRenameConversation(conversation.id, title);
+    } catch (error) {
+      setConversationActionError(error instanceof Error ? error.message : '对话重命名失败');
+    }
+  };
+
+  const deleteConversation = async (conversationId: string) => {
+    if (!onDeleteConversation) return;
+    setConversationMenuOpenId(null);
+    setConversationActionError('');
+    try {
+      await onDeleteConversation(conversationId);
+    } catch (error) {
+      setConversationActionError(error instanceof Error ? error.message : '对话删除失败');
+    }
+  };
+
   return (
     <div className="flex h-full w-full flex-col bg-white">
       <header className="z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm">
@@ -240,7 +289,53 @@ export function ProjectDetailPage({
 
             {activeTab === 'documents' ? filteredDocuments.length ? <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">{filteredDocuments.map((item) => <button key={item.id} type="button" onClick={() => onOpenDocument(item.kbNodeId)} className="rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm"><h3 className="truncate text-base font-medium text-primaryText">{item.title}</h3><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-secondaryText">{item.summary}</p>{item.tags.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={`${item.id}-${tag}`} className="inline-flex items-center rounded-lg bg-projectTagSurface px-3 py-1 text-xs text-secondaryText">{tag}</span>)}</div>}</button>)}</div>
               : <div className="mt-4 rounded-lg border border-dashed border-borderSoft"><BaseEmpty description="暂无匹配的文档" /></div>
-              : filteredConversations.length ? <div className="mt-4 space-y-2">{filteredConversations.map((item) => <button key={item.id} type="button" onClick={() => onOpenConversation(item.id)} className="-ml-2 w-[calc(100%+0.5rem)] rounded-lg px-2 py-3 text-left transition-colors hover:bg-projectConversationHover"><div className="truncate text-sm font-medium text-primaryText">{item.title}</div><div className="mt-1 text-xs text-tertiaryText">{formatProjectConversationDate(item.date, item.id)}</div></button>)}</div>
+              : filteredConversations.length ? <div className="mt-4 space-y-2">
+                {conversationActionError && <div role="alert" className="text-sm text-danger">{conversationActionError}</div>}
+                {filteredConversations.map((item) => {
+                  const isEditing = editingConversationId === item.id;
+                  const isMenuOpen = conversationMenuOpenId === item.id;
+                  const hasActions = Boolean(onRenameConversation || onDeleteConversation);
+                  return <div key={item.id} className="group -ml-2 flex w-[calc(100%+0.5rem)] items-center gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-projectConversationHover">
+                    {isEditing ? <div className="min-w-0 flex-1">
+                      <input
+                        ref={conversationTitleInputRef}
+                        value={conversationTitleDraft}
+                        onChange={(event) => setConversationTitleDraft(event.target.value)}
+                        onBlur={() => void commitConversationRename(item)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') { event.preventDefault(); void commitConversationRename(item); }
+                          if (event.key === 'Escape') { event.preventDefault(); cancelConversationRename(); }
+                        }}
+                        className="w-full rounded-md border border-shellChatEditBorder bg-white px-2 py-1 text-sm font-medium text-primaryText outline-none"
+                        maxLength={80}
+                        aria-label="重命名对话"
+                      />
+                      <div className="mt-1 text-xs text-tertiaryText">{formatProjectConversationDate(item.date, item.id)}</div>
+                    </div> : <button type="button" onClick={() => onOpenConversation(item.id)} className="min-w-0 flex-1 text-left">
+                      <div className="truncate text-sm font-medium text-primaryText">{item.title}</div>
+                      <div className="mt-1 text-xs text-tertiaryText">{formatProjectConversationDate(item.date, item.id)}</div>
+                    </button>}
+                    {!isEditing && hasActions && <BaseActionMenu
+                      open={isMenuOpen}
+                      onOpenChange={(open) => setConversationMenuOpenId(open ? item.id : null)}
+                      placement="bottom-end"
+                      portal
+                      width={160}
+                      trigger={<MoreHorizontal size={16} />}
+                      items={onRenameConversation ? [{ key: 'rename', label: '重命名', icon: <Pencil size={14} /> }] : []}
+                      footerItems={onDeleteConversation ? [{ key: 'delete', label: '删除', icon: <Trash2 size={14} />, danger: true }] : []}
+                      onItemClick={(action, event) => {
+                        event.stopPropagation();
+                        if (action.key === 'rename') startConversationRename(item);
+                        if (action.key === 'delete') void deleteConversation(item.id);
+                      }}
+                      triggerClassName={`h-6 w-6 rounded-md text-secondaryText hover:bg-bgLight hover:text-primaryText ${isMenuOpen ? 'inline-flex' : 'hidden group-hover:inline-flex'}`}
+                      className="relative z-40 shrink-0"
+                      menuClassName="!min-w-0"
+                    />}
+                  </div>;
+                })}
+              </div>
               : <div className="mt-4 rounded-lg border border-dashed border-borderSoft"><BaseEmpty description="暂无匹配的历史对话" /></div>}
           </section>}
         </div>

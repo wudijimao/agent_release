@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import classNames from 'classnames';
 
@@ -36,16 +36,17 @@ export const BaseActionMenu: React.FC<BaseActionMenuProps> = ({ trigger, items, 
   const isEnd = placement.endsWith('end');
   const isAbove = placement.startsWith('top');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open || !portal || !wrapperRef.current) return;
     const rect = wrapperRef.current.getBoundingClientRect();
-    setPortalStyle({ position: 'fixed', left: isEnd ? rect.right : rect.left, top: isAbove ? rect.top : rect.bottom, transform: isEnd ? 'translateX(-100%)' : undefined });
+    const panelHeight = isAbove ? (panelRef.current?.offsetHeight ?? 0) : 0;
+    setPortalStyle({
+      position: 'fixed',
+      left: isEnd ? rect.right : rect.left,
+      top: isAbove ? rect.top - panelHeight - 8 : rect.bottom,
+      transform: isEnd ? 'translateX(-100%)' : undefined,
+    });
   }, [isAbove, isEnd, open, portal, placement]);
-
-  useEffect(() => {
-    if (!open || !portal || !isAbove || !panelRef.current) return;
-    setPortalStyle((current) => ({ ...current, top: Number(current.top) - panelRef.current!.offsetHeight - 8 }));
-  }, [isAbove, open, portal]);
 
   useEffect(() => {
     if (!open || !onOpenChange) return;

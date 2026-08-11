@@ -6,6 +6,7 @@ export interface ChatHomeProject {
 export interface ChatHomePageProps {
     projects: readonly ChatHomeProject[];
     selectedProjectId?: string;
+    autoFocusInput?: boolean;
     disabled?: boolean;
     embedded?: boolean;
     isSidebarOpen?: boolean;
@@ -21,5 +22,5 @@ export interface ChatHomePageProps {
     onSelectQuickPrompt?(prompt: string): void;
     onSend(payload: string | InputSendPayload): void;
 }
-export default function ChatHomePage({ projects, selectedProjectId, disabled, embedded, isSidebarOpen, skillOptions, fileOptions, quickPrompts, uploadAccept, validateUploadFile, onUploadValidationError, onSelectProject, onCreateProject, onOpenSidebar, onSelectQuickPrompt, onSend, }: ChatHomePageProps): import("react").JSX.Element;
+export default function ChatHomePage({ projects, selectedProjectId, autoFocusInput, disabled, embedded, isSidebarOpen, skillOptions, fileOptions, quickPrompts, uploadAccept, validateUploadFile, onUploadValidationError, onSelectProject, onCreateProject, onOpenSidebar, onSelectQuickPrompt, onSend, }: ChatHomePageProps): import("react").JSX.Element;
 //# sourceMappingURL=ChatHomePage.d.ts.map
