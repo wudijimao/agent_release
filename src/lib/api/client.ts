@@ -7,6 +7,7 @@ import {
 
 import { ApiError } from "./api-error";
 import { getDefaultApiBaseUrl, normalizeApiBaseUrl } from "./environment";
+import { rewriteServiceResourceUrls } from "./same-origin-resources";
 import { createClientId } from "@/lib/client-id";
 
 const MAX_REQUEST_ID_LENGTH = 128;
@@ -174,7 +175,9 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
     });
     const payload = await parseResponseBody(response);
 
-    if (response.ok) return unwrapSuccess<T>(payload);
+    if (response.ok) {
+      return rewriteServiceResourceUrls(unwrapSuccess<T>(payload)) as T;
+    }
 
     const errorPayload = getErrorPayload(payload, response);
     const error = new ApiError(

@@ -129,3 +129,20 @@ test("request accepts the raw health response outside the API envelope", async (
     status: "ok",
   });
 });
+
+test("request rewrites server object URLs to the local resource proxy", async () => {
+  const client = createApiClient({
+    baseUrl: "https://api.example.test",
+    fetch: async () =>
+      Response.json({
+        data: {
+          avatarUrl:
+            "http://39.106.18.219/bioagent-docs/avatars/user-1/avatar.png",
+        },
+      }),
+  });
+
+  assert.deepEqual(await client.get("/api/auth/me"), {
+    avatarUrl: "/bioagent-docs/avatars/user-1/avatar.png",
+  });
+});

@@ -6,6 +6,7 @@ import {
 } from "@bioagent/shared";
 
 import { ApiError } from "./api-error";
+import { rewriteServiceResourceUrls } from "./same-origin-resources";
 import { createClientId } from "@/lib/client-id";
 
 export interface StreamChatOptions {
@@ -66,9 +67,9 @@ export function parseSseEventBlock(block: string): ChatStreamEnvelope | null {
 
   const dataText = dataLines.join("\n");
   try {
-    return { type, data: JSON.parse(dataText) as unknown };
+    return { type, data: rewriteServiceResourceUrls(JSON.parse(dataText)) };
   } catch {
-    return { type, data: dataText };
+    return { type, data: rewriteServiceResourceUrls(dataText) };
   }
 }
 
