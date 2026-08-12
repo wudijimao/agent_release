@@ -1,40 +1,4 @@
 import { jsxs as r, Fragment as Ge, jsx as e } from "react/jsx-runtime";
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-import je, { useMemo as be, useState as y, useRef as pe, useCallback as ze, useLayoutEffect as Ht, useEffect as Ne, forwardRef as cr, useId as _r } from "react";
-import Ae from "classnames";
-import { Check as ft, Copy as Pt, RefreshCcw as Ir, ThumbsUp as Rr, ThumbsDown as Dr, ArrowUpRight as jr, Info as Fr, Ban as Hr, TriangleAlert as Ot, CircleCheckBig as Lt, ShieldCheck as dr, CircleHelp as ur, FileText as Bt, LoaderCircle as mr, Puzzle as pr, AtSign as hr, AlertCircle as qr, Paperclip as fr, ArrowRight as xr, ChevronDown as zt, ChevronRight as $t, CircleX as br, Sparkles as gr, Loader2 as ot, Clock3 as _t, Search as ct, BookOpen as Gt, ListChecks as Wr, Globe as Or, Minus as Ur, Menu as yr, Upload as Vr, Trash2 as vr, CheckCircle2 as gt, SearchX as Kr, FlaskConical as Xr, X as bt, Plus as wr, Square as Gr, Send as Yr, UserPlus as Qr, Building2 as Zr, Folder as Dt, PanelLeftClose as Jr, SquarePen as en, AlertTriangle as tn, Settings as rn, Pin as jt, MoreHorizontal as nn, Pencil as an, Share2 as sn } from "lucide-react";
-import Nr from "react-markdown";
-import kr from "remark-gfm";
-import ln from "rehype-highlight";
-import "katex/contrib/mhchem";
-import { createPortal as on } from "react-dom";
-import { Crepe as wt } from "@milkdown/crepe";
-import { commandsCtx as cn, editorViewCtx as Nt } from "@milkdown/kit/core";
-import { lift as dn } from "@milkdown/kit/prose/commands";
-import { liftListItem as un, wrapInList as mn } from "@milkdown/kit/prose/schema-list";
-import { TextSelection as Yt } from "@milkdown/kit/prose/state";
-import { listItemSchema as kt, paragraphSchema as pn, setBlockTypeCommand as hn, orderedListSchema as Qt, bulletListSchema as Zt, headingSchema as fn } from "@milkdown/kit/preset/commonmark";
-const xn = "_button_3tg6r_1", bn = "_primary_3tg6r_5", gn = "_disabled_3tg6r_9", yn = "_secondary_3tg6r_17", vn = "_ghost_3tg6r_25", wn = "_danger_3tg6r_33", Nn = "_small_3tg6r_41", kn = "_medium_3tg6r_45", Tn = "_large_3tg6r_49", Cn = "_roundedSquare_3tg6r_53", Sn = "_roundedSmall_3tg6r_57", Mn = "_roundedMedium_3tg6r_61", $n = "_roundedLarge_3tg6r_62", Ln = "_roundedFull_3tg6r_66", zn = "_loadingSpinner_3tg6r_67", An = "_loading_3tg6r_67", En = "_fullWidth_3tg6r_90", Pn = "_icon_3tg6r_94", Ie = {
-  button: xn,
-  primary: bn,
-  disabled: gn,
-  secondary: yn,
-  ghost: vn,
-  danger: wn,
-  small: Nn,
-  medium: kn,
-  large: Tn,
-  roundedSquare: Cn,
-  roundedSmall: Sn,
-  roundedMedium: Mn,
-  roundedLarge: $n,
-  roundedFull: Ln,
-  loadingSpinner: zn,
-  loading: An,
-  fullWidth: En,
-  icon: Pn
-}, Bn = {
-========
 import je, { useMemo as be, useState as y, useRef as pe, useCallback as ze, useLayoutEffect as Ht, useEffect as Ne, forwardRef as dr, useId as Ir } from "react";
 import Ae from "classnames";
 import { Check as ft, Copy as Pt, RefreshCcw as Rr, ThumbsUp as Dr, ThumbsDown as jr, ArrowUpRight as Fr, Info as Hr, Ban as qr, TriangleAlert as Ot, CircleCheckBig as Lt, ShieldCheck as ur, CircleHelp as mr, FileText as Bt, LoaderCircle as pr, Puzzle as hr, AtSign as fr, AlertCircle as Wr, Paperclip as xr, ArrowRight as br, ChevronDown as zt, ChevronRight as $t, CircleX as gr, Sparkles as yr, Loader2 as it, Clock3 as _t, Search as ct, BookOpen as Gt, ListChecks as Or, Globe as Ur, Minus as Vr, Menu as vr, Upload as Kr, Trash2 as wr, CheckCircle2 as gt, SearchX as Xr, FlaskConical as Gr, X as bt, Plus as Nr, Square as Yr, Send as Qr, UserPlus as Zr, Building2 as Jr, Folder as Dt, PanelLeftClose as en, SquarePen as tn, AlertTriangle as rn, Settings as nn, Pin as jt, MoreHorizontal as an, Pencil as sn, Share2 as ln } from "lucide-react";
@@ -69,24 +33,15 @@ const bn = "_button_3tg6r_1", gn = "_primary_3tg6r_5", yn = "_disabled_3tg6r_9",
   fullWidth: Pn,
   icon: Bn
 }, _n = {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   primary: Ie.primary,
   secondary: Ie.secondary,
   ghost: Ie.ghost,
   danger: Ie.danger
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, _n = {
-  small: Ie.small,
-  medium: Ie.medium,
-  large: Ie.large
-}, In = {
-========
 }, In = {
   small: Ie.small,
   medium: Ie.medium,
   large: Ie.large
 }, Rn = {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   square: Ie.roundedSquare,
   small: Ie.roundedSmall,
   medium: Ie.roundedMedium,
@@ -96,11 +51,7 @@ const bn = "_button_3tg6r_1", gn = "_primary_3tg6r_5", yn = "_disabled_3tg6r_9",
   ({
     type: t = "primary",
     size: n = "medium",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    isLoading: o,
-========
     isLoading: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     loading: l,
     disabled: s = !1,
     children: m,
@@ -112,11 +63,7 @@ const bn = "_button_3tg6r_1", gn = "_primary_3tg6r_5", yn = "_disabled_3tg6r_9",
     onClick: u,
     ...N
   }, $) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const W = o ?? l ?? !1, D = s || W, _ = be(() => W ? /* @__PURE__ */ r(Ge, { children: [
-========
     const W = i ?? l ?? !1, D = s || W, _ = be(() => W ? /* @__PURE__ */ r(Ge, { children: [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       /* @__PURE__ */ e("span", { className: Ie.loadingSpinner }),
       /* @__PURE__ */ e("span", { children: m })
     ] }) : f ? /* @__PURE__ */ r(Ge, { children: [
@@ -130,15 +77,9 @@ const bn = "_button_3tg6r_1", gn = "_primary_3tg6r_5", yn = "_disabled_3tg6r_9",
         ref: $,
         className: Ae(
           Ie.button,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          Bn[t],
-          _n[n],
-          In[S],
-========
           _n[t],
           In[n],
           Rn[S],
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           {
             [Ie.fullWidth]: h,
             [Ie.loading]: W,
@@ -155,19 +96,11 @@ const bn = "_button_3tg6r_1", gn = "_primary_3tg6r_5", yn = "_disabled_3tg6r_9",
   }
 );
 qe.displayName = "BaseButton";
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Rn = { small: "h-8", medium: "h-9", large: "h-14" }, Tr = je.forwardRef(
-  ({
-    type: t = "text",
-    placeholder: n,
-    value: o,
-========
 const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, Cr = je.forwardRef(
   ({
     type: t = "text",
     placeholder: n,
     value: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     defaultValue: l,
     disabled: s = !1,
     readOnly: m = !1,
@@ -188,20 +121,6 @@ const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, Cr = je.forwardRef(
     helperText: A,
     ...ae
   }, V) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const [q, P] = y(!1), Q = pe(null), x = ze((oe) => {
-      Q.current = oe, typeof V == "function" ? V(oe) : V && (V.current = oe);
-    }, [V]), K = ze(() => {
-      var L, X;
-      const oe = Q.current;
-      oe && ((X = (L = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")) == null ? void 0 : L.set) == null || X.call(oe, ""), oe.dispatchEvent(new Event("input", { bubbles: !0 })), oe.focus(), D == null || D());
-    }, [D]), le = be(
-      () => {
-        var oe;
-        return Y && q && String(o ?? ((oe = Q.current) == null ? void 0 : oe.value) ?? "").length > 0;
-      },
-      [Y, q, o]
-========
     const [q, P] = y(!1), Q = pe(null), x = ze((ie) => {
       Q.current = ie, typeof V == "function" ? V(ie) : V && (V.current = ie);
     }, [V]), K = ze(() => {
@@ -214,7 +133,6 @@ const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, Cr = je.forwardRef(
         return Y && q && String(i ?? ((ie = Q.current) == null ? void 0 : ie.value) ?? "").length > 0;
       },
       [Y, q, i]
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     );
     return /* @__PURE__ */ r("div", { className: "flex flex-col gap-1", children: [
       O && /* @__PURE__ */ e("label", { className: "mb-2 block text-sm font-medium text-primaryText", children: O }),
@@ -223,11 +141,7 @@ const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, Cr = je.forwardRef(
         {
           className: Ae(
             "flex items-center rounded-lg border border-controlBorderDefault bg-surface px-5 shadow-sm transition-all duration-200",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            Rn[v],
-========
             Dn[v],
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             !s && !f && "hover:border-controlBorder",
             q && !s && !f && "border-primary ring-2 ring-brandFocus",
             f && "border-danger",
@@ -243,39 +157,23 @@ const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, Cr = je.forwardRef(
                 ref: x,
                 type: t,
                 placeholder: n,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                value: o,
-========
                 value: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 defaultValue: l,
                 disabled: s,
                 readOnly: m,
                 className: Ae("min-w-0 flex-1 border-0 bg-transparent p-0 text-sm leading-5 text-primaryText outline-none placeholder:text-tertiaryText disabled:cursor-not-allowed disabled:text-mutedText", _),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                onFocus: (oe) => {
-                  P(!0), $ == null || $(oe);
-                },
-                onBlur: (oe) => {
-                  P(!1), W == null || W(oe);
-========
                 onFocus: (ie) => {
                   P(!0), $ == null || $(ie);
                 },
                 onBlur: (ie) => {
                   P(!1), W == null || W(ie);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 },
                 onChange: N,
                 ...ae
               }
             ),
             /* @__PURE__ */ r("div", { className: "ml-2 flex shrink-0 items-center justify-center gap-2 text-mutedText", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              le && /* @__PURE__ */ e("button", { type: "button", className: "flex h-5 w-5 items-center justify-center border-0 bg-transparent p-0 text-mutedText transition-colors hover:text-primaryText", onMouseDown: (oe) => oe.preventDefault(), onClick: K, "aria-label": "清空", children: "✕" }),
-========
               le && /* @__PURE__ */ e("button", { type: "button", className: "flex h-5 w-5 items-center justify-center border-0 bg-transparent p-0 text-mutedText transition-colors hover:text-primaryText", onMouseDown: (ie) => ie.preventDefault(), onClick: K, "aria-label": "清空", children: "✕" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               h || u
             ] })
           ]
@@ -285,15 +183,9 @@ const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, Cr = je.forwardRef(
     ] });
   }
 );
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-Tr.displayName = "BaseInput";
-const Dn = { small: "h-8", medium: "h-9", large: "h-14" }, jn = je.forwardRef(
-  ({ options: t = [], value: n, defaultValue: o, placeholder: l, disabled: s = !1, error: m = !1, size: f = "medium", label: v, helperText: p, onChange: h, className: S, ...u }, N) => {
-========
 Cr.displayName = "BaseInput";
 const jn = { small: "h-8", medium: "h-9", large: "h-14" }, Fn = je.forwardRef(
   ({ options: t = [], value: n, defaultValue: i, placeholder: l, disabled: s = !1, error: m = !1, size: f = "medium", label: v, helperText: p, onChange: h, className: S, ...u }, N) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     const $ = ze((W) => {
       const D = W.target.value, _ = t.find((G) => String(G.value) === D);
       h == null || h(D === "" ? "" : (_ == null ? void 0 : _.value) ?? D);
@@ -308,17 +200,10 @@ const jn = { small: "h-8", medium: "h-9", large: "h-14" }, Fn = je.forwardRef(
             className: Ae(
               "w-full cursor-pointer appearance-none rounded-lg border border-controlBorderDefault bg-surface px-5 pr-11 text-sm leading-5 text-primaryText shadow-sm outline-none transition-all duration-200 hover:border-controlBorderHover focus:border-controlBorderHover disabled:cursor-not-allowed disabled:bg-surfaceMuted disabled:text-mutedText",
               m && "border-danger focus:border-danger focus:ring-2 focus:ring-dangerFocus",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              Dn[f],
-              S
-            ),
-            value: n ?? o ?? "",
-========
               jn[f],
               S
             ),
             value: n ?? i ?? "",
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             disabled: s,
             onChange: $,
             ...u,
@@ -334,26 +219,6 @@ const jn = { small: "h-8", medium: "h-9", large: "h-14" }, Fn = je.forwardRef(
     ] });
   }
 );
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-jn.displayName = "BaseSelect";
-const Fn = "_container_ykn59_1", Hn = "_item_ykn59_10", qn = "_itemActive_ykn59_27", Wn = "_itemDisabled_ykn59_27", On = "_sizeSmall_ykn59_43", Un = "_sizeMiddle_ykn59_49", Vn = "_sizeLarge_ykn59_55", it = {
-  container: Fn,
-  item: Hn,
-  itemActive: qn,
-  itemDisabled: Wn,
-  sizeSmall: On,
-  sizeMiddle: Un,
-  sizeLarge: Vn
-}, Kn = {
-  small: it.sizeSmall,
-  middle: it.sizeMiddle,
-  large: it.sizeLarge
-};
-function fs({
-  options: t,
-  value: n,
-  defaultValue: o,
-========
 Fn.displayName = "BaseSelect";
 const Hn = "_container_ykn59_1", qn = "_item_ykn59_10", Wn = "_itemActive_ykn59_27", On = "_itemDisabled_ykn59_27", Un = "_sizeSmall_ykn59_43", Vn = "_sizeMiddle_ykn59_49", Kn = "_sizeLarge_ykn59_55", ot = {
   container: Hn,
@@ -372,7 +237,6 @@ function xs({
   options: t,
   value: n,
   defaultValue: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   onChange: l,
   size: s = "middle",
   disabled: m = !1,
@@ -380,29 +244,17 @@ function xs({
 }) {
   var u;
   const [v, p] = y(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    o ?? ((u = t[0]) == null ? void 0 : u.value) ?? ""
-  ), h = n ?? v, S = (N) => {
-    m || (n === void 0 && p(N), l == null || l(N));
-  };
-  return /* @__PURE__ */ e("div", { className: Ae(it.container, Kn[s], f), children: t.map((N) => {
-========
     i ?? ((u = t[0]) == null ? void 0 : u.value) ?? ""
   ), h = n ?? v, S = (N) => {
     m || (n === void 0 && p(N), l == null || l(N));
   };
   return /* @__PURE__ */ e("div", { className: Ae(ot.container, Xn[s], f), children: t.map((N) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     const $ = h === N.value;
     return /* @__PURE__ */ e(
       "button",
       {
         type: "button",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        className: Ae(it.item, $ && it.itemActive, m && it.itemDisabled),
-========
         className: Ae(ot.item, $ && ot.itemActive, m && ot.itemDisabled),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         onClick: () => S(N.value),
         disabled: m,
         "aria-pressed": $,
@@ -412,13 +264,8 @@ function xs({
     );
   }) });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Xn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(0)} KB` : `${(t / (1024 * 1024)).toFixed(0)} MB`, Gn = je.forwardRef(
-  ({ accept: t, multiple: n = !1, disabled: o = !1, onChange: l, onError: s, maxSize: m, children: f, className: v, dragable: p = !0, placeholderTitle: h, placeholderDescription: S, placeholderIcon: u, maxCount: N }, $) => {
-========
 const Gn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(0)} KB` : `${(t / (1024 * 1024)).toFixed(0)} MB`, Yn = je.forwardRef(
   ({ accept: t, multiple: n = !1, disabled: i = !1, onChange: l, onError: s, maxSize: m, children: f, className: v, dragable: p = !0, placeholderTitle: h, placeholderDescription: S, placeholderIcon: u, maxCount: N }, $) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     const W = pe(null), [D, _] = y(!1), G = ze((O) => {
       if (N && O.length > N) {
         s == null || s(new Error(`单次最多上传 ${N} 个文件`));
@@ -427,22 +274,14 @@ const Gn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(
       if (m) {
         for (const A of Array.from(O))
           if (A.size > m) {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            s == null || s(new Error(`文件“${A.name}”超过大小限制（${Xn(m)}）`));
-========
             s == null || s(new Error(`文件“${A.name}”超过大小限制（${Gn(m)}）`));
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             return;
           }
       }
       l == null || l(O);
     }, [N, m, l, s]), Y = () => {
       var O;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      o || (O = W.current) == null || O.click();
-========
       i || (O = W.current) == null || O.click();
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     };
     return /* @__PURE__ */ r(
       "div",
@@ -451,31 +290,11 @@ const Gn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(
         className: Ae(
           "cursor-pointer rounded-md border border-dashed border-borderSoft bg-surface px-4 py-5 text-center transition-all duration-200 hover:border-primary hover:bg-primary-soft",
           D && "border-primary bg-primary-soft-strong ring-2 ring-brandFocus",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          o && "cursor-not-allowed opacity-60",
-========
           i && "cursor-not-allowed opacity-60",
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           v
         ),
         onClick: Y,
         onKeyDown: (O) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          !o && (O.key === "Enter" || O.key === " ") && (O.preventDefault(), Y());
-        },
-        onDragOver: (O) => {
-          p && !o && (O.preventDefault(), _(!0));
-        },
-        onDragLeave: () => _(!1),
-        onDrop: (O) => {
-          p && !o && (O.preventDefault(), _(!1), G(O.dataTransfer.files));
-        },
-        role: "button",
-        tabIndex: o ? -1 : 0,
-        "aria-disabled": o,
-        children: [
-          /* @__PURE__ */ e("input", { ref: W, type: "file", accept: t, multiple: n, disabled: o, onChange: (O) => O.target.files && G(O.target.files), className: "hidden" }),
-========
           !i && (O.key === "Enter" || O.key === " ") && (O.preventDefault(), Y());
         },
         onDragOver: (O) => {
@@ -490,7 +309,6 @@ const Gn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(
         "aria-disabled": i,
         children: [
           /* @__PURE__ */ e("input", { ref: W, type: "file", accept: t, multiple: n, disabled: i, onChange: (O) => O.target.files && G(O.target.files), className: "hidden" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           f || /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center gap-2", children: [
             /* @__PURE__ */ e("span", { className: "inline-flex h-12 w-12 items-center justify-center text-primary", "aria-hidden": !0, children: u ?? /* @__PURE__ */ e("svg", { width: "48", height: "48", viewBox: "0 0 48 48", fill: "none", stroke: "currentColor", strokeWidth: "3", children: /* @__PURE__ */ e("path", { d: "M24 8v21M16 16l8-8 8 8M10 27v8a4 4 0 0 0 4 4h20a4 4 0 0 0 4-4v-8", strokeLinecap: "round", strokeLinejoin: "round" }) }) }),
             /* @__PURE__ */ e("div", { className: "text-lg font-semibold leading-7 text-primaryText", children: h ?? "点击或拖拽文件到此处上传" }),
@@ -501,16 +319,6 @@ const Gn = (t) => t < 1024 ? `${t} B` : t < 1024 * 1024 ? `${(t / 1024).toFixed(
     );
   }
 );
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-Gn.displayName = "BaseUpload";
-const Yn = "_maskAnimation_1h49h_1", Qn = "_modalAnimation_1h49h_5", Jt = {
-  maskAnimation: Yn,
-  modalAnimation: Qn
-}, Ut = ({
-  visible: t,
-  open: n = t,
-  show: o = n,
-========
 Yn.displayName = "BaseUpload";
 const Qn = "_maskAnimation_1h49h_1", Zn = "_modalAnimation_1h49h_5", Jt = {
   maskAnimation: Qn,
@@ -519,7 +327,6 @@ const Qn = "_maskAnimation_1h49h_1", Zn = "_modalAnimation_1h49h_5", Jt = {
   visible: t,
   open: n = t,
   show: i = n,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   title: l,
   width: s = 520,
   centered: m = !0,
@@ -541,11 +348,7 @@ const Qn = "_maskAnimation_1h49h_1", Zn = "_modalAnimation_1h49h_5", Jt = {
   className: ae,
   bodyClassName: V
 }) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const q = o ?? !1, P = ze(async () => {
-========
   const q = i ?? !1, P = ze(async () => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     try {
       W ? await W() : G && await G();
     } catch (K) {
@@ -556,11 +359,7 @@ const Qn = "_maskAnimation_1h49h_1", Zn = "_modalAnimation_1h49h_5", Jt = {
   }, [D, _, Y]), x = be(() => {
     if (A === null) return null;
     if (A) return A;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const { type: K, ...le } = $ ?? {}, { type: oe, ...L } = N ?? {};
-========
     const { type: K, ...le } = $ ?? {}, { type: ie, ...L } = N ?? {};
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     return /* @__PURE__ */ r("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
       /* @__PURE__ */ e(qe, { type: "secondary", size: "medium", onClick: Q, ...le, children: S }),
       /* @__PURE__ */ e(qe, { type: "primary", size: "medium", isLoading: u, onClick: P, ...L, children: u ? "加载中..." : h })
@@ -594,11 +393,7 @@ const Qn = "_maskAnimation_1h49h_1", Zn = "_modalAnimation_1h49h_5", Jt = {
   ] });
 };
 Ut.displayName = "BaseModal";
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Zn = ({ title: t, extra: n, children: o, hoverable: l = !1, loading: s = !1, bordered: m = !0, className: f, bodyClassName: v, onClick: p }) => /* @__PURE__ */ r(
-========
 const Jn = ({ title: t, extra: n, children: i, hoverable: l = !1, loading: s = !1, bordered: m = !0, className: f, bodyClassName: v, onClick: p }) => /* @__PURE__ */ r(
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   "div",
   {
     className: Ae(
@@ -614,18 +409,6 @@ const Jn = ({ title: t, extra: n, children: i, hoverable: l = !1, loading: s = !
         t && /* @__PURE__ */ e("h3", { className: "m-0 text-base font-medium text-primaryText", children: t }),
         n && /* @__PURE__ */ e("div", { className: "flex items-center gap-2", children: n })
       ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      /* @__PURE__ */ e("div", { className: Ae("p-4 text-primaryText", (t || n) && "pt-1", v), children: o })
-    ]
-  }
-);
-Zn.displayName = "BaseCard";
-const Jn = ({ columns: t, dataSource: n = [], rowKey: o = "id", loading: l = !1, bordered: s = !0, striped: m = !0, className: f, onRow: v }, p) => /* @__PURE__ */ r("div", { ref: p, className: Ae("relative w-full overflow-x-auto bg-surface", f), children: [
-  /* @__PURE__ */ r("table", { className: "w-full border-collapse bg-surface text-sm leading-5", children: [
-    /* @__PURE__ */ e("thead", { children: /* @__PURE__ */ e("tr", { className: s ? "border-b border-lineSubtle" : void 0, children: t.map((h) => /* @__PURE__ */ e("th", { className: "whitespace-nowrap bg-transparent px-4 py-3 text-left font-normal text-headerText first:pl-0", style: { width: h.width, textAlign: h.align }, children: h.title }, h.key || String(h.dataIndex))) }) }),
-    /* @__PURE__ */ e("tbody", { children: n.length === 0 ? /* @__PURE__ */ e("tr", { children: /* @__PURE__ */ e("td", { colSpan: t.length, className: "px-4 py-12 text-center text-mutedText", children: "暂无数据" }) }) : n.map((h, S) => {
-      const u = String(typeof o == "string" ? h[o] ?? S : S);
-========
       /* @__PURE__ */ e("div", { className: Ae("p-4 text-primaryText", (t || n) && "pt-1", v), children: i })
     ]
   }
@@ -636,18 +419,12 @@ const ea = ({ columns: t, dataSource: n = [], rowKey: i = "id", loading: l = !1,
     /* @__PURE__ */ e("thead", { children: /* @__PURE__ */ e("tr", { className: s ? "border-b border-lineSubtle" : void 0, children: t.map((h) => /* @__PURE__ */ e("th", { className: "whitespace-nowrap bg-transparent px-4 py-3 text-left font-normal text-headerText first:pl-0", style: { width: h.width, textAlign: h.align }, children: h.title }, h.key || String(h.dataIndex))) }) }),
     /* @__PURE__ */ e("tbody", { children: n.length === 0 ? /* @__PURE__ */ e("tr", { children: /* @__PURE__ */ e("td", { colSpan: t.length, className: "px-4 py-12 text-center text-mutedText", children: "暂无数据" }) }) : n.map((h, S) => {
       const u = String(typeof i == "string" ? h[i] ?? S : S);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       return /* @__PURE__ */ e("tr", { className: Ae(s && "border-b border-lineSoft last:border-b-0", m && "odd:bg-surface"), ...(v == null ? void 0 : v(h, S)) || {}, children: t.map((N) => /* @__PURE__ */ e("td", { className: "px-4 py-[18px] text-primaryText first:pl-0", style: { textAlign: N.align }, children: N.render ? N.render(h[N.dataIndex], h, S) : String(h[N.dataIndex] ?? "") }, N.key || String(N.dataIndex))) }, u);
     }) })
   ] }),
   l && /* @__PURE__ */ e("div", { className: "absolute inset-0 z-10 flex items-center justify-center bg-overlaySurface text-mutedText", children: "加载中..." })
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-] }), xs = je.forwardRef(Jn), ea = ({ current: t = 1, pageSize: n = 10, total: o = 0, onChange: l, showSizeChanger: s = !1, pageSizeOptions: m = [10, 20, 50, 100], onShowSizeChange: f, disabled: v = !1, className: p }) => {
-  const h = be(() => Math.ceil(o / n) || 1, [n, o]), S = ze((N) => f == null ? void 0 : f(1, Number(N.target.value)), [f]), u = "rounded-md border border-borderSoft bg-surface px-3 py-1.5 text-sm text-primaryText transition-all hover:border-primary hover:text-primary disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
-========
 ] }), bs = je.forwardRef(ea), ta = ({ current: t = 1, pageSize: n = 10, total: i = 0, onChange: l, showSizeChanger: s = !1, pageSizeOptions: m = [10, 20, 50, 100], onShowSizeChange: f, disabled: v = !1, className: p }) => {
   const h = be(() => Math.ceil(i / n) || 1, [n, i]), S = ze((N) => f == null ? void 0 : f(1, Number(N.target.value)), [f]), u = "rounded-md border border-borderSoft bg-surface px-3 py-1.5 text-sm text-primaryText transition-all hover:border-primary hover:text-primary disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   return /* @__PURE__ */ r("div", { className: Ae("flex flex-wrap items-center justify-center gap-4 p-4", p), children: [
     /* @__PURE__ */ e("button", { type: "button", className: u, onClick: () => t > 1 && (l == null ? void 0 : l(t - 1)), disabled: v || t <= 1, children: "← 上一页" }),
     /* @__PURE__ */ r("span", { className: "whitespace-nowrap text-sm text-primaryText", children: [
@@ -656,11 +433,7 @@ const ea = ({ columns: t, dataSource: n = [], rowKey: i = "id", loading: l = !1,
       " / ",
       h,
       " 页，共 ",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      o,
-========
       i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       " 条"
     ] }),
     /* @__PURE__ */ e("button", { type: "button", className: u, onClick: () => t < h && (l == null ? void 0 : l(t + 1)), disabled: v || t >= h, children: "下一页 →" }),
@@ -670,16 +443,6 @@ const ea = ({ columns: t, dataSource: n = [], rowKey: i = "id", loading: l = !1,
     ] }, N)) })
   ] });
 };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-ea.displayName = "BasePagination";
-const Vt = ({ description: t = "暂无数据", image: n, children: o }) => /* @__PURE__ */ r("div", { className: "flex min-h-[300px] flex-col items-center justify-center px-4 py-12 text-center text-mutedText", children: [
-  n && /* @__PURE__ */ e("div", { className: "mb-6 text-5xl text-controlBorder", children: n }),
-  t && /* @__PURE__ */ e("p", { className: "m-0 text-sm text-mutedText", children: t }),
-  o
-] });
-Vt.displayName = "BaseEmpty";
-const At = ({ trigger: t, items: n, footerItems: o = [], open: l = !1, onOpenChange: s, onTriggerClick: m, onItemClick: f, placement: v = "bottom-start", width: p, portal: h = !1, className: S, triggerClassName: u, menuClassName: N, listClassName: $, footerClassName: W }) => {
-========
 ta.displayName = "BasePagination";
 const Vt = ({ description: t = "暂无数据", image: n, children: i }) => /* @__PURE__ */ r("div", { className: "flex min-h-[300px] flex-col items-center justify-center px-4 py-12 text-center text-mutedText", children: [
   n && /* @__PURE__ */ e("div", { className: "mb-6 text-5xl text-controlBorder", children: n }),
@@ -688,7 +451,6 @@ const Vt = ({ description: t = "暂无数据", image: n, children: i }) => /* @_
 ] });
 Vt.displayName = "BaseEmpty";
 const At = ({ trigger: t, items: n, footerItems: i = [], open: l = !1, onOpenChange: s, onTriggerClick: m, onItemClick: f, placement: v = "bottom-start", width: p, portal: h = !1, className: S, triggerClassName: u, menuClassName: N, listClassName: $, footerClassName: W }) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   const D = pe(null), _ = pe(null), [G, Y] = y({}), O = v.endsWith("end"), A = v.startsWith("top");
   Ht(() => {
     var x;
@@ -744,11 +506,7 @@ const At = ({ trigger: t, items: n, footerItems: i = [], open: l = !1, onOpenCha
       role: "menu",
       children: [
         /* @__PURE__ */ e("div", { className: Ae("flex min-h-0 flex-col gap-1", $), children: n.map(V) }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        o.length > 0 && /* @__PURE__ */ e("div", { className: Ae("flex flex-col gap-1 border-t border-lineSoft pt-2", W), children: o.map(V) })
-========
         i.length > 0 && /* @__PURE__ */ e("div", { className: Ae("flex flex-col gap-1 border-t border-lineSoft pt-2", W), children: i.map(V) })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       ]
     }
   ) : null;
@@ -756,16 +514,6 @@ const At = ({ trigger: t, items: n, footerItems: i = [], open: l = !1, onOpenCha
     /* @__PURE__ */ e("button", { type: "button", className: Ae("m-0 inline-flex cursor-pointer items-center justify-center border-0 bg-transparent p-0", u), onClick: (P) => {
       m == null || m(P), s == null || s(!l);
     }, "aria-haspopup": "menu", "aria-expanded": l, children: t }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    h ? q && on(q, document.body) : q
-  ] });
-};
-At.displayName = "BaseActionMenu";
-const ta = ({
-  markdownContent: t,
-  copyLabel: n = "复制 Markdown",
-  onRefresh: o,
-========
     h ? q && cn(q, document.body) : q
   ] });
 };
@@ -774,16 +522,11 @@ const ra = ({
   markdownContent: t,
   copyLabel: n = "复制 Markdown",
   onRefresh: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   feedback: l,
   onFeedback: s,
   disabled: m = !1
 }) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const [f, v] = y(!1), p = !!(o || s), h = ze(async () => {
-========
   const [f, v] = y(!1), p = !!(i || s), h = ze(async () => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     if (t.trim())
       try {
         await navigator.clipboard.writeText(t), v(!0), window.setTimeout(() => v(!1), 1200);
@@ -805,17 +548,6 @@ const ra = ({
             children: f ? /* @__PURE__ */ e(ft, { size: 15 }) : /* @__PURE__ */ e(Pt, { size: 15 })
           }
         ),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        o && /* @__PURE__ */ e(
-          "button",
-          {
-            type: "button",
-            onClick: o,
-            disabled: m,
-            className: "h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors hover:bg-bgLight disabled:cursor-not-allowed disabled:opacity-50",
-            title: "重新生成",
-            children: /* @__PURE__ */ e(Ir, { size: 15 })
-========
         i && /* @__PURE__ */ e(
           "button",
           {
@@ -825,7 +557,6 @@ const ra = ({
             className: "h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors hover:bg-bgLight disabled:cursor-not-allowed disabled:opacity-50",
             title: "重新生成",
             children: /* @__PURE__ */ e(Rr, { size: 15 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           }
         ),
         s && /* @__PURE__ */ r(Ge, { children: [
@@ -836,11 +567,7 @@ const ra = ({
               onClick: () => s("like"),
               className: `h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors ${l === "like" ? "bg-bgLight text-primaryText" : "hover:bg-bgLight"}`,
               title: "有帮助",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              children: /* @__PURE__ */ e(Rr, { size: 15 })
-========
               children: /* @__PURE__ */ e(Dr, { size: 15 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             }
           ),
           /* @__PURE__ */ e(
@@ -850,26 +577,16 @@ const ra = ({
               onClick: () => s("dislike"),
               className: `h-7 w-7 rounded-full inline-flex items-center justify-center transition-colors ${l === "dislike" ? "bg-bgLight text-primaryText" : "hover:bg-bgLight"}`,
               title: "需改进",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              children: /* @__PURE__ */ e(Dr, { size: 15 })
-========
               children: /* @__PURE__ */ e(jr, { size: 15 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             }
           )
         ] })
       ]
     }
   );
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, er = je.memo(ta), ra = {
-  clarification: {
-    icon: /* @__PURE__ */ e(ur, { size: 16 }),
-========
 }, er = je.memo(ra), na = {
   clarification: {
     icon: /* @__PURE__ */ e(mr, { size: 16 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     className: "border-warning bg-warning-soft",
     iconClassName: "text-warning"
   },
@@ -879,11 +596,7 @@ const ra = ({
     iconClassName: "text-primary"
   },
   approval: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(dr, { size: 16 }),
-========
     icon: /* @__PURE__ */ e(ur, { size: 16 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     className: "border-warning bg-warning-soft",
     iconClassName: "text-warning"
   },
@@ -898,31 +611,18 @@ const ra = ({
     iconClassName: "text-warning"
   },
   blocked: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(Hr, { size: 16 }),
-========
     icon: /* @__PURE__ */ e(qr, { size: 16 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     className: "border-danger bg-danger-soft",
     iconClassName: "text-danger"
   },
   info: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(Fr, { size: 16 }),
-========
     icon: /* @__PURE__ */ e(Hr, { size: 16 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     className: "border-lineSubtle bg-surfaceMuted",
     iconClassName: "text-secondaryText"
   }
 };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function na({ card: t, actionPending: n = !1, onAction: o }) {
-  const l = ra[t.kind];
-========
 function aa({ card: t, actionPending: n = !1, onAction: i }) {
   const l = na[t.kind];
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   return /* @__PURE__ */ e("section", { className: `w-full max-w-[680px] rounded-xl border p-4 ${l.className}`, children: /* @__PURE__ */ r("div", { className: "flex items-start gap-3", children: [
     /* @__PURE__ */ e("span", { className: `mt-0.5 shrink-0 ${l.iconClassName}`, "aria-hidden": "true", children: l.icon }),
     /* @__PURE__ */ r("div", { className: "min-w-0 flex-1", children: [
@@ -941,11 +641,7 @@ function aa({ card: t, actionPending: n = !1, onAction: i }) {
           className: "inline-flex max-w-full items-center gap-1 rounded-md border border-lineSubtle bg-surface px-2.5 py-1.5 text-xs text-primaryText no-underline transition-colors hover:border-primary hover:text-primary",
           children: [
             /* @__PURE__ */ e("span", { className: "truncate", children: s.label }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            /* @__PURE__ */ e(jr, { size: 12, className: "shrink-0" })
-========
             /* @__PURE__ */ e(Fr, { size: 12, className: "shrink-0" })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           ]
         },
         `${s.href}-${s.label}`
@@ -955,13 +651,8 @@ function aa({ card: t, actionPending: n = !1, onAction: i }) {
         {
           type: s.tone ?? "secondary",
           size: "small",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          disabled: n || !o,
-          onClick: () => o == null ? void 0 : o(t.actionKey, s.id),
-========
           disabled: n || !i,
           onClick: () => i == null ? void 0 : i(t.actionKey, s.id),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           children: s.label
         },
         s.id
@@ -969,13 +660,8 @@ function aa({ card: t, actionPending: n = !1, onAction: i }) {
     ] })
   ] }) });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function aa({ draft: t, onPreview: n, onConfirm: o, onCancel: l }) {
-  const s = t.status === "saving", m = t.status === "saved", f = t.actionable ?? !0, v = t.previewable ?? !0, p = s || m || !f || !o;
-========
 function sa({ draft: t, onPreview: n, onConfirm: i, onCancel: l }) {
   const s = t.status === "saving", m = t.status === "saved", f = t.actionable ?? !0, v = t.previewable ?? !0, p = s || m || !f || !i;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   return /* @__PURE__ */ r("article", { className: "not-prose w-full max-w-[460px] rounded-xl border border-borderGray bg-surface p-4 shadow-sm", children: [
     /* @__PURE__ */ r(
       "button",
@@ -1014,15 +700,9 @@ function sa({ draft: t, onPreview: n, onConfirm: i, onCancel: l }) {
             type: m ? "secondary" : "primary",
             size: "small",
             disabled: p,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            onClick: () => o == null ? void 0 : o(t.actionKey),
-            children: s ? /* @__PURE__ */ r(Ge, { children: [
-              /* @__PURE__ */ e(mr, { size: 14, className: "animate-spin", "aria-hidden": "true" }),
-========
             onClick: () => i == null ? void 0 : i(t.actionKey),
             children: s ? /* @__PURE__ */ r(Ge, { children: [
               /* @__PURE__ */ e(pr, { size: 14, className: "animate-spin", "aria-hidden": "true" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               "保存中"
             ] }) : m ? /* @__PURE__ */ r(Ge, { children: [
               /* @__PURE__ */ e(ft, { size: 14, "aria-hidden": "true" }),
@@ -1037,20 +717,12 @@ function sa({ draft: t, onPreview: n, onConfirm: i, onCancel: l }) {
 }
 const tr = "[[PAPER_LIST_JSON]]";
 let rr = !1, Tt = null, Ct = null, St = null;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const sa = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("rehype-katex")]).then(([t, n]) => ({
-========
 const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("rehype-katex")]).then(([t, n]) => ({
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   remark: t.default,
   rehype: n.default
 })).catch((t) => {
   throw Ct = null, t;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-})), Ct), la = async () => (St || (St = import("remark-emoji").then((t) => t.default).catch(() => (St = null, null))), St), oa = async () => {
-========
 })), Ct), ia = async () => (St || (St = import("remark-emoji").then((t) => t.default).catch(() => (St = null, null))), St), oa = async () => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   Tt || (Tt = import("mermaid").then((n) => n.default ?? n).catch((n) => {
     throw Tt = null, n;
   }));
@@ -1069,13 +741,8 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
 }, Et = (t) => typeof t == "string" || typeof t == "number" ? String(t) : Array.isArray(t) ? t.map((n) => Et(n)).join("") : je.isValidElement(t) ? Et(t.props.children) : "", nr = (t) => {
   const n = t.trim().toLowerCase();
   return /\.pdf($|[?#])/i.test(n);
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, ia = ({ href: t, label: n }) => {
-  const o = be(() => {
-========
 }, ca = ({ href: t, label: n }) => {
   const i = be(() => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     const l = n.trim();
     if (l) return l;
     try {
@@ -1088,11 +755,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
   return /* @__PURE__ */ r("div", { className: "group not-prose my-2 inline-flex w-[340px] max-w-full items-center gap-3 rounded-xl border border-borderGray bg-surface px-3 py-2 shadow-sm", children: [
     /* @__PURE__ */ e("div", { className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-warning text-xs font-semibold tracking-wide text-white", children: "PDF" }),
     /* @__PURE__ */ r("div", { className: "min-w-0 flex-1", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      /* @__PURE__ */ e("p", { className: "m-0 truncate text-base font-medium text-primaryText", children: o }),
-========
       /* @__PURE__ */ e("p", { className: "m-0 truncate text-base font-medium text-primaryText", children: i }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       /* @__PURE__ */ e("p", { className: "m-0 text-xs text-secondaryText", children: "PDF 文档" })
     ] }),
     /* @__PURE__ */ e(
@@ -1103,19 +766,11 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
         rel: "noreferrer",
         "aria-label": "新窗口打开 PDF",
         className: "shrink-0 rounded-md p-1 text-secondaryText opacity-0 transition-opacity group-hover:opacity-100 hover:bg-bgLight focus:opacity-100",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        children: /* @__PURE__ */ e(xr, { size: 14 })
-      }
-    )
-  ] });
-}, ca = ({ language: t, rawCode: n, className: o, children: l }) => {
-========
         children: /* @__PURE__ */ e(br, { size: 14 })
       }
     )
   ] });
 }, da = ({ language: t, rawCode: n, className: i, children: l }) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   const [s, m] = y(!1), f = ze(async () => {
     if (n.trim())
       try {
@@ -1140,15 +795,6 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
         }
       )
     ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    /* @__PURE__ */ e("pre", { className: "!m-0 !rounded-none !border-0 !bg-transparent px-4 py-3 whitespace-pre-wrap break-words", children: /* @__PURE__ */ e("code", { className: `code-block-content ${o ?? ""}`.trim(), children: l }) })
-  ] });
-}, da = ({ rawCode: t }) => {
-  const [n, o] = y(!1), l = ze(async () => {
-    if (t.trim())
-      try {
-        await navigator.clipboard.writeText(t), o(!0), window.setTimeout(() => o(!1), 1200);
-========
     /* @__PURE__ */ e("pre", { className: "!m-0 !rounded-none !border-0 !bg-transparent px-4 py-3 whitespace-pre-wrap break-words", children: /* @__PURE__ */ e("code", { className: `code-block-content ${i ?? ""}`.trim(), children: l }) })
   ] });
 }, ua = ({ rawCode: t }) => {
@@ -1156,7 +802,6 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
     if (t.trim())
       try {
         await navigator.clipboard.writeText(t), i(!0), window.setTimeout(() => i(!1), 1200);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       } catch {
       }
   }, [t]);
@@ -1179,75 +824,42 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
     ] }),
     /* @__PURE__ */ e("div", { className: "diagram-block-body overflow-x-auto px-4 py-3", children: /* @__PURE__ */ e("div", { className: "mermaid", children: t }) })
   ] });
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, Cr = (t) => {
-  const n = typeof t.title == "string" ? t.title.trim() : "", o = typeof t.pmid == "string" ? t.pmid.trim() : "", l = typeof t.doi == "string" ? t.doi.trim().replace(/[.,;；。]+$/g, "") : "";
-  return !n || !o || !l ? null : { title: n, pmid: o, doi: l };
-========
 }, Sr = (t) => {
   const n = typeof t.title == "string" ? t.title.trim() : "", i = typeof t.pmid == "string" ? t.pmid.trim() : "", l = typeof t.doi == "string" ? t.doi.trim().replace(/[.,;；。]+$/g, "") : "";
   return !n || !i || !l ? null : { title: n, pmid: i, doi: l };
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
 }, ar = (t) => {
   const n = t.replace(/\r/g, "").split(`
 `).map((l) => l.trim()).filter(Boolean);
   if (n.length === 0) return null;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const o = [];
-========
   const i = [];
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   return n.forEach((l, s) => {
     var u;
     const m = l.match(/PMID\s*[:：]\s*(\d{4,})/i), f = l.match(/DOI\s*[:：]\s*([^\s,，;；]+)/i);
     if (!m || !f) return;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const v = l.slice(0, m.index ?? 0).replace(/[，,;；:\-—]+\s*$/g, "").trim(), p = ((u = n[s - 1]) == null ? void 0 : u.replace(/^[-*•\d.\s)]+/, "").trim()) ?? "", S = Cr({
-========
     const v = l.slice(0, m.index ?? 0).replace(/[，,;；:\-—]+\s*$/g, "").trim(), p = ((u = n[s - 1]) == null ? void 0 : u.replace(/^[-*•\d.\s)]+/, "").trim()) ?? "", S = Sr({
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       title: v || p,
       pmid: m[1],
       doi: f[1]
     });
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    S && o.push(S);
-  }), o.length === 0 ? null : { items: o };
-}, ua = (t) => {
-========
     S && i.push(S);
   }), i.length === 0 ? null : { items: i };
 }, ma = (t) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   if (!t.startsWith(tr))
     return ar(t);
   const n = t.slice(tr.length).trim();
   if (!n) return null;
   try {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const o = JSON.parse(n);
-    if (!Array.isArray(o.items)) return null;
-    const l = o.items.map((s) => Cr(s)).filter((s) => s !== null);
-========
     const i = JSON.parse(n);
     if (!Array.isArray(i.items)) return null;
     const l = i.items.map((s) => Sr(s)).filter((s) => s !== null);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     return l.length === 0 ? null : { items: l };
   } catch {
     return ar(n);
   }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, Sr = ({
-  msg: t,
-  actionKey: n,
-  feedback: o,
-========
 }, Mr = ({
   msg: t,
   actionKey: n,
   feedback: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   onFeedback: l,
   onRefresh: s,
   onConfirmMiraDraft: m,
@@ -1260,21 +872,13 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
 }) => {
   var X, w;
   const N = t.role === "user", $ = u ?? S, W = pe(null), [D, _] = y(null), [G, Y] = y(null), [O, A] = y(null), [ae, V] = y(!1), q = be(() => /```\s*mermaid/i.test(t.content), [t.content]), P = be(() => /\$\$[\s\S]*?\$\$|(^|[^\\])\$[^\n$]+\$|\\\(|\\\[|\\begin\{|\\ce\{/.test(t.content), [t.content]), Q = be(() => /:[a-zA-Z0-9_+-]+:/.test(t.content), [t.content]), x = be(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    () => N ? null : ua(t.content),
-========
     () => N ? null : ma(t.content),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     [N, t.content]
   ), K = !!(x && x.items.length > 0);
   Ne(() => {
     if (!P || D || G) return;
     let b = !1;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    return sa().then((T) => {
-========
     return la().then((T) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       b || (_(() => T.remark), Y(() => T.rehype));
     }).catch(() => {
     }), () => {
@@ -1283,28 +887,17 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
   }, [P, D, G]), Ne(() => {
     if (!Q || ae) return;
     let b = !1;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    return la().then((T) => {
-========
     return ia().then((T) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       b || (T && A(() => T), V(!0));
     }), () => {
       b = !0;
     };
   }, [Q, ae]);
   const le = be(() => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const b = [kr];
-    return O && b.push(O), D && b.push(D), b;
-  }, [O, D]), oe = be(() => {
-    const b = [ln];
-========
     const b = [Tr];
     return O && b.push(O), D && b.push(D), b;
   }, [O, D]), ie = be(() => {
     const b = [on];
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     return G && b.push(G), b;
   }, [G]), L = be(
     () => ({
@@ -1342,11 +935,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
           const ke = re[0];
           if (typeof ke.props.href == "string" && nr(ke.props.href)) {
             const xe = Et(ke.props.children).trim();
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            return /* @__PURE__ */ e(ia, { href: ke.props.href, label: xe });
-========
             return /* @__PURE__ */ e(ca, { href: ke.props.href, label: xe });
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           }
         }
         return /* @__PURE__ */ e("p", { ...g, children: T });
@@ -1371,11 +960,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
         if (!g)
           return /* @__PURE__ */ e("pre", { ...T, children: b });
         const re = g.props.className ?? "", ke = re.match(/language-([\w-]+)/), xe = ke ? ke[1].toLowerCase() : "code", M = Et(g.props.children).replace(/\n$/, "");
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        return xe === "mermaid" ? /* @__PURE__ */ e(da, { rawCode: M }) : /* @__PURE__ */ e(ca, { language: xe, rawCode: M, className: re, children: g.props.children });
-========
         return xe === "mermaid" ? /* @__PURE__ */ e(ua, { rawCode: M }) : /* @__PURE__ */ e(da, { language: xe, rawCode: M, className: re, children: g.props.children });
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       },
       code({ children: b, className: T, ...g }) {
         return T ? /* @__PURE__ */ e("code", { className: T, ...g, children: b }) : /* @__PURE__ */ e(
@@ -1417,11 +1002,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
           {
             className: `inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5 text-sm shadow-sm ${b.type === "skill" ? "border border-chatSkillBorder bg-chatSkillSurface text-chatSkillText" : "border border-chatReferenceBorder bg-chatReferenceSurface text-chatReferenceText"}`,
             children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              b.type === "skill" ? /* @__PURE__ */ e(pr, { size: 12, className: "shrink-0 text-chatSkillText" }) : /* @__PURE__ */ e(hr, { size: 12, className: "shrink-0 text-chatReferenceText" }),
-========
               b.type === "skill" ? /* @__PURE__ */ e(hr, { size: 12, className: "shrink-0 text-chatSkillText" }) : /* @__PURE__ */ e(fr, { size: 12, className: "shrink-0 text-chatReferenceText" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate", title: b.label, children: b.label })
             ]
           },
@@ -1434,11 +1015,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
             role: b.status === "error" ? "alert" : void 0,
             title: b.errorMessage,
             children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              b.status === "uploading" ? /* @__PURE__ */ e(mr, { size: 13, className: "shrink-0 animate-spin text-primary", "aria-hidden": "true" }) : b.status === "error" ? /* @__PURE__ */ e(qr, { size: 13, className: "shrink-0 text-danger", "aria-hidden": "true" }) : b.previewUrl ? /* @__PURE__ */ e("span", { className: "inline-flex h-[14px] w-[14px] shrink-0 overflow-hidden rounded-[3px] bg-chatAttachmentIconSurface", children: /* @__PURE__ */ e("img", { src: b.previewUrl, alt: b.name, className: "h-full w-full object-cover" }) }) : /* @__PURE__ */ e(fr, { size: 13, className: "shrink-0 text-tertiaryText" }),
-========
               b.status === "uploading" ? /* @__PURE__ */ e(pr, { size: 13, className: "shrink-0 animate-spin text-primary", "aria-hidden": "true" }) : b.status === "error" ? /* @__PURE__ */ e(Wr, { size: 13, className: "shrink-0 text-danger", "aria-hidden": "true" }) : b.previewUrl ? /* @__PURE__ */ e("span", { className: "inline-flex h-[14px] w-[14px] shrink-0 overflow-hidden rounded-[3px] bg-chatAttachmentIconSurface", children: /* @__PURE__ */ e("img", { src: b.previewUrl, alt: b.name, className: "h-full w-full object-cover" }) }) : /* @__PURE__ */ e(xr, { size: 13, className: "shrink-0 text-tertiaryText" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate", title: b.name, children: b.name }),
               b.status === "uploading" && /* @__PURE__ */ e("span", { className: "shrink-0 text-xs text-tertiaryText", children: "上传中" }),
               b.status === "error" && /* @__PURE__ */ e("span", { className: "shrink-0 text-xs text-danger", children: "上传失败" })
@@ -1503,11 +1080,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
               rel: "noreferrer",
               "aria-label": "打开文献详情",
               className: "shrink-0 rounded-md p-1 text-secondaryText opacity-0 transition-opacity group-hover:opacity-100 hover:bg-bgLight focus:opacity-100",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              children: /* @__PURE__ */ e(xr, { size: 14 })
-========
               children: /* @__PURE__ */ e(br, { size: 14 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             }
           )
         ]
@@ -1519,17 +1092,10 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
         ref: W,
         className: "prose prose-slate max-w-none break-words text-primaryText prose-p:my-3 prose-p:text-[14px] prose-p:leading-[1.8] prose-li:text-[14px] prose-li:leading-[1.75] prose-headings:text-primaryText prose-headings:tracking-[-0.01em] prose-h1:mt-6 prose-h1:mb-3 prose-h1:text-[20px] md:prose-h1:text-[22px] prose-h1:leading-[1.3] prose-h1:font-semibold prose-h2:mt-7 prose-h2:mb-3 prose-h2:text-[16px] prose-h2:leading-[1.35] prose-h2:font-semibold prose-h3:mt-6 prose-h3:mb-2 prose-h3:text-[16px] prose-h3:leading-[1.45] prose-h3:font-semibold prose-strong:text-primaryText prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-hr:my-6 prose-li:my-1 prose-li:marker:text-secondaryText prose-ol:pl-6 prose-ul:pl-6 prose-a:text-primary prose-a:no-underline hover:prose-a:underline",
         children: /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          Nr,
-          {
-            remarkPlugins: le,
-            rehypePlugins: oe,
-========
           kr,
           {
             remarkPlugins: le,
             rehypePlugins: ie,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             components: L,
             children: t.content
           }
@@ -1537,11 +1103,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
       }
     ),
     t.miraDraft && /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      aa,
-========
       sa,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       {
         draft: t.miraDraft,
         onPreview: f,
@@ -1550,11 +1112,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
       }
     ),
     t.displayCard && /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      na,
-========
       aa,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       {
         card: t.displayCard,
         actionPending: p === t.displayCard.actionKey,
@@ -1566,21 +1124,13 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
       {
         markdownContent: t.content,
         onRefresh: s,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        feedback: o,
-========
         feedback: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         onFeedback: n && l ? (b) => l(n, b) : void 0,
         disabled: $
       }
     )
   ] }) }) });
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, ma = je.memo(Sr), pa = {
-========
 }, pa = je.memo(Mr), ha = {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   queued: "等待中…",
   thinking: "思考中…",
   analyzing: "分析中…",
@@ -1592,20 +1142,6 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
   awaiting_approval: "等待审批",
   warning: "处理时出现提醒",
   failed: "处理失败"
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, ha = {
-  queued: /* @__PURE__ */ e(_t, { size: 14, className: "text-tertiaryText" }),
-  thinking: /* @__PURE__ */ e(ot, { size: 14, className: "animate-spin text-primary" }),
-  analyzing: /* @__PURE__ */ e(ot, { size: 14, className: "animate-spin text-primary" }),
-  searching: /* @__PURE__ */ e(ot, { size: 14, className: "animate-spin text-primary" }),
-  executing: /* @__PURE__ */ e(ot, { size: 14, className: "animate-spin text-primary" }),
-  generating: /* @__PURE__ */ e(gr, { size: 14, className: "animate-pulse text-primary" }),
-  awaiting_clarification: /* @__PURE__ */ e(ur, { size: 14, className: "text-warning" }),
-  awaiting_confirmation: /* @__PURE__ */ e(Lt, { size: 14, className: "text-primary" }),
-  awaiting_approval: /* @__PURE__ */ e(dr, { size: 14, className: "text-warning" }),
-  warning: /* @__PURE__ */ e(Ot, { size: 14, className: "text-warning" }),
-  failed: /* @__PURE__ */ e(br, { size: 14, className: "text-danger" })
-========
 }, fa = {
   queued: /* @__PURE__ */ e(_t, { size: 14, className: "text-tertiaryText" }),
   thinking: /* @__PURE__ */ e(it, { size: 14, className: "animate-spin text-primary" }),
@@ -1618,18 +1154,13 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
   awaiting_approval: /* @__PURE__ */ e(ur, { size: 14, className: "text-warning" }),
   warning: /* @__PURE__ */ e(Ot, { size: 14, className: "text-warning" }),
   failed: /* @__PURE__ */ e(gr, { size: 14, className: "text-danger" })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
 }, sr = {
   knowledge: {
     icon: /* @__PURE__ */ e(Gt, { size: 13 }),
     colorClass: "text-primary"
   },
   web: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(Or, { size: 13 }),
-========
     icon: /* @__PURE__ */ e(Ur, { size: 13 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     colorClass: "text-chatWebStep"
   },
   tool: {
@@ -1637,11 +1168,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
     colorClass: "text-chatToolStep"
   },
   planning: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(Wr, { size: 13 }),
-========
     icon: /* @__PURE__ */ e(Or, { size: 13 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     colorClass: "text-chatToolStep"
   },
   context: {
@@ -1649,26 +1176,16 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
     colorClass: "text-primary"
   },
   generation: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(gr, { size: 13 }),
-========
     icon: /* @__PURE__ */ e(yr, { size: 13 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     colorClass: "text-primary"
   },
   action: {
     icon: /* @__PURE__ */ e(ct, { size: 13 }),
     colorClass: "text-chatToolStep"
   }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, fa = {
-  running: {
-    icon: /* @__PURE__ */ e(ot, { size: 13, className: "animate-spin" }),
-========
 }, xa = {
   running: {
     icon: /* @__PURE__ */ e(it, { size: 13, className: "animate-spin" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     colorClass: "text-primary"
   },
   completed: {
@@ -1676,19 +1193,11 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
     colorClass: "text-primary"
   },
   failed: {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    icon: /* @__PURE__ */ e(br, { size: 13 }),
-    colorClass: "text-danger"
-  },
-  skipped: {
-    icon: /* @__PURE__ */ e(Ur, { size: 13 }),
-========
     icon: /* @__PURE__ */ e(gr, { size: 13 }),
     colorClass: "text-danger"
   },
   skipped: {
     icon: /* @__PURE__ */ e(Vr, { size: 13 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     colorClass: "text-tertiaryText"
   },
   warning: {
@@ -1698,11 +1207,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
 }, qt = ({
   phase: t,
   searchSteps: n = [],
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  label: o,
-========
   label: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   defaultExpanded: l = !0
 }) => {
   const [s, m] = y(l), f = pe(null);
@@ -1712,13 +1217,8 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
   const v = n.length > 0;
   return /* @__PURE__ */ r("div", { className: "flex w-full flex-col items-start", children: [
     /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      /* @__PURE__ */ e("span", { className: "relative flex h-4 w-4 items-center justify-center", children: ha[t] }),
-      /* @__PURE__ */ e("span", { className: "text-[13px] leading-5 text-secondaryText select-none", children: o || pa[t] }),
-========
       /* @__PURE__ */ e("span", { className: "relative flex h-4 w-4 items-center justify-center", children: fa[t] }),
       /* @__PURE__ */ e("span", { className: "text-[13px] leading-5 text-secondaryText select-none", children: i || ha[t] }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       v && /* @__PURE__ */ r(
         "button",
         {
@@ -1741,11 +1241,7 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
         ref: f,
         className: `ml-6 mt-1 space-y-1 overflow-hidden transition-all duration-300 ease-out ${s ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`,
         children: n.map((p, h) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          const S = sr[p.type] ?? sr.tool, u = p.status ? fa[p.status] : void 0;
-========
           const S = sr[p.type] ?? sr.tool, u = p.status ? xa[p.status] : void 0;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           return /* @__PURE__ */ r(
             "div",
             {
@@ -1778,13 +1274,8 @@ const la = async () => (Ct || (Ct = Promise.all([import("remark-math"), import("
       }
     )
   ] });
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, xa = je.memo(qt);
-function ba(t, n) {
-========
 }, ba = je.memo(qt);
 function ga(t, n) {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   if (typeof t == "function") {
     t(n);
     return;
@@ -1795,17 +1286,10 @@ function Ft(t) {
   const n = Number.parseFloat(t);
   return Number.isFinite(n) ? n : 0;
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function ga({
-  messages: t,
-  isTyping: n,
-  statusPhase: o = "thinking",
-========
 function ya({
   messages: t,
   isTyping: n,
   statusPhase: i = "thinking",
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   statusLabel: l,
   statusVisible: s,
   searchSteps: m = [],
@@ -1827,11 +1311,7 @@ function ya({
   onMessageElement: ae
 }) {
   var ke, xe;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const V = !!p, q = pe(null), P = pe(null), Q = pe(/* @__PURE__ */ new Map()), x = pe(), [K, le] = y(), L = n && (s ?? !f) || s === !0 && (o === "awaiting_clarification" || o === "awaiting_confirmation" || o === "awaiting_approval" || o === "warning" || o === "failed");
-========
   const V = !!p, q = pe(null), P = pe(null), Q = pe(/* @__PURE__ */ new Map()), x = pe(), [K, le] = y(), L = n && (s ?? !f) || s === !0 && (i === "awaiting_clarification" || i === "awaiting_confirmation" || i === "awaiting_approval" || i === "warning" || i === "failed");
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   let X = -1, w = -1;
   if (n) {
     for (let M = t.length - 1; M >= 0; M -= 1)
@@ -1847,11 +1327,7 @@ function ya({
   }
   const b = w >= 0 ? u(t[w], w) : void 0, T = X >= 0 ? u(t[X], X) : void 0, g = b && T ? `${b}:${T}` : void 0, re = ze(
     (M) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      q.current = M, ba(A, M);
-========
       q.current = M, ga(A, M);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     },
     [A]
   );
@@ -1926,11 +1402,7 @@ function ya({
                           className: p ? `min-w-0 flex-1 rounded-xl px-2 transition-colors ${he ? "bg-surfaceMuted" : "bg-transparent hover:bg-bgLight"} ${M.role === "user" ? "py-2.5" : "py-1.5"}` : void 0,
                           children: [
                             /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                              Sr,
-========
                               Mr,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                               {
                                 msg: M,
                                 actionKey: j,
@@ -1948,11 +1420,7 @@ function ya({
                             I === X && L && /* @__PURE__ */ e("div", { className: "flex w-full justify-start px-1 md:px-2", children: /* @__PURE__ */ e(
                               qt,
                               {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                                phase: o,
-========
                                 phase: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                                 label: l,
                                 searchSteps: [...m]
                               }
@@ -1968,11 +1436,7 @@ function ya({
               X < 0 && L && /* @__PURE__ */ e("div", { className: "flex w-full justify-center px-2", children: /* @__PURE__ */ e("div", { className: "flex w-full max-w-[860px] justify-start px-1 md:px-2", children: /* @__PURE__ */ e(
                 qt,
                 {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                  phase: o,
-========
                   phase: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                   label: l,
                   searchSteps: [...m]
                 }
@@ -1994,19 +1458,11 @@ function ya({
     )
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-je.memo(ga);
-function bs({
-  children: t,
-  maxWidth: n = 840,
-  disclaimer: o = "AI 内容可能有误差，请在实验前核实。"
-========
 je.memo(ya);
 function gs({
   children: t,
   maxWidth: n = 840,
   disclaimer: i = "AI 内容可能有误差，请在实验前核实。"
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
 }) {
   return /* @__PURE__ */ r(
     "div",
@@ -2015,70 +1471,39 @@ function gs({
       style: { maxWidth: n },
       children: [
         t,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        o && /* @__PURE__ */ e("div", { className: "mt-3 text-center text-xs text-tertiaryText", children: o })
-========
         i && /* @__PURE__ */ e("div", { className: "mt-3 text-center text-xs text-tertiaryText", children: i })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       ]
     }
   );
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const gs = cr(
-  function({ header: n, children: o, sidePanels: l }, s) {
-    return /* @__PURE__ */ r("div", { className: "flex h-full w-full flex-col bg-white", children: [
-      n,
-      /* @__PURE__ */ r("div", { ref: s, "data-testid": "chat-workspace-layout", className: "relative flex min-h-0 w-full flex-1 overflow-hidden", children: [
-        /* @__PURE__ */ e("div", { "data-testid": "chat-workspace-main", className: "flex min-w-0 flex-1 flex-col", children: o }),
-========
 const ys = dr(
   function({ header: n, children: i, sidePanels: l }, s) {
     return /* @__PURE__ */ r("div", { className: "flex h-full w-full flex-col bg-white", children: [
       n,
       /* @__PURE__ */ r("div", { ref: s, "data-testid": "chat-workspace-layout", className: "relative flex min-h-0 w-full flex-1 overflow-hidden", children: [
         /* @__PURE__ */ e("div", { "data-testid": "chat-workspace-main", className: "flex min-w-0 flex-1 flex-col", children: i }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         l
       ] })
     ] });
   }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-), ys = cr(
-  function({ open: n, width: o, resizing: l = !1, overlay: s = !1, overlayRight: m = 0, children: f }, v) {
-========
 ), vs = dr(
   function({ open: n, width: i, resizing: l = !1, overlay: s = !1, overlayRight: m = 0, children: f }, v) {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     return /* @__PURE__ */ e(
       "aside",
       {
         ref: v,
         "data-overlay": s ? "true" : "false",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        style: { width: n ? o : 0, ...s ? { right: m } : {} },
-        className: `h-full min-h-0 shrink-0 overflow-hidden ${s ? "absolute inset-y-0 z-30 shadow-lg" : ""} ${l ? "transition-none" : "transition-[width] duration-300 ease-out"} ${n ? "min-w-0" : "pointer-events-none"}`,
-        children: /* @__PURE__ */ e("div", { style: { width: o }, className: "h-full min-w-0", children: f })
-========
         style: { width: n ? i : 0, ...s ? { right: m } : {} },
         className: `h-full min-h-0 shrink-0 overflow-hidden ${s ? "absolute inset-y-0 z-30 shadow-lg" : ""} ${l ? "transition-none" : "transition-[width] duration-300 ease-out"} ${n ? "min-w-0" : "pointer-events-none"}`,
         children: /* @__PURE__ */ e("div", { style: { width: i }, className: "h-full min-w-0", children: f })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       }
     );
   }
 );
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function ya({
-  isSidebarOpen: t,
-  title: n,
-  editingTitle: o,
-========
 function va({
   isSidebarOpen: t,
   title: n,
   editingTitle: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   titleInputRef: l,
   divided: s = !1,
   actions: m,
@@ -2102,16 +1527,6 @@ function va({
               className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight",
               title: "展开边栏",
               "aria-label": "展开边栏",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              children: /* @__PURE__ */ e(yr, { size: 20 })
-            }
-          ),
-          n !== void 0 && /* @__PURE__ */ e("div", { className: "min-w-0", children: o !== void 0 ? /* @__PURE__ */ e(
-            "input",
-            {
-              ref: l,
-              value: o,
-========
               children: /* @__PURE__ */ e(vr, { size: 20 })
             }
           ),
@@ -2120,7 +1535,6 @@ function va({
             {
               ref: l,
               value: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               onChange: (N) => p == null ? void 0 : p(N.target.value),
               onBlur: h,
               onKeyDown: S,
@@ -2143,11 +1557,7 @@ function va({
     }
   );
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function vs({ active: t = !1, icon: n, label: o, onClick: l }) {
-========
 function ws({ active: t = !1, icon: n, label: i, onClick: l }) {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   return /* @__PURE__ */ r(
     "button",
     {
@@ -2156,24 +1566,11 @@ function ws({ active: t = !1, icon: n, label: i, onClick: l }) {
       className: `flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-primaryText transition-colors duration-200 ${t ? "bg-chatWorkspaceActionSurface" : "bg-transparent hover:bg-chatWorkspaceActionSurface"}`,
       children: [
         n,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        /* @__PURE__ */ e("span", { className: "max-w-[150px] truncate", children: o })
-========
         /* @__PURE__ */ e("span", { className: "max-w-[150px] truncate", children: i })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       ]
     }
   );
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function ws({
-  items: t,
-  activeMessageIndex: n,
-  initiallyExpanded: o = !1,
-  onSelect: l
-}) {
-  const [s, m] = y(o), [f, v] = y(null), [p, h] = y(0), [S, u] = y(0), [N, $] = y(!1), W = pe(null), D = pe({}), _ = pe(null), G = ze(() => {
-========
 function Ns({
   items: t,
   activeMessageIndex: n,
@@ -2181,7 +1578,6 @@ function Ns({
   onSelect: l
 }) {
   const [s, m] = y(i), [f, v] = y(null), [p, h] = y(0), [S, u] = y(0), [N, $] = y(!1), W = pe(null), D = pe({}), _ = pe(null), G = ze(() => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     const A = W.current;
     if (!A) {
       h(0), u(0);
@@ -2274,17 +1670,10 @@ function Ns({
     }
   ) });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function Ns({
-  selectedCount: t,
-  shareLink: n,
-  modalOpen: o,
-========
 function ks({
   selectedCount: t,
   shareLink: n,
   modalOpen: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   copied: l = !1,
   contentMaxWidth: s = 840,
   onCancel: m,
@@ -2323,11 +1712,7 @@ function ks({
     /* @__PURE__ */ e(
       Ut,
       {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        visible: o,
-========
         visible: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         title: "创建分享链接",
         width: 450,
         onCancel: v,
@@ -2354,17 +1739,10 @@ function ks({
     )
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function Mr({
-  attachments: t,
-  className: n = "mx-[120px] mb-6 mt-8 border-t border-lineSubtle pt-6",
-  uploading: o = !1,
-========
 function $r({
   attachments: t,
   className: n = "mx-[120px] mb-6 mt-8 border-t border-lineSubtle pt-6",
   uploading: i = !1,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   deletingAttachmentId: l,
   unavailableHint: s,
   error: m,
@@ -2379,19 +1757,11 @@ function $r({
         {
           type: "secondary",
           size: "small",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          disabled: o,
-          onClick: f,
-          children: /* @__PURE__ */ r("span", { className: "inline-flex items-center gap-1.5", children: [
-            o ? /* @__PURE__ */ e(ot, { size: 14, className: "animate-spin" }) : /* @__PURE__ */ e(Vr, { size: 14 }),
-            o ? "上传中" : "上传附件"
-========
           disabled: i,
           onClick: f,
           children: /* @__PURE__ */ r("span", { className: "inline-flex items-center gap-1.5", children: [
             i ? /* @__PURE__ */ e(it, { size: 14, className: "animate-spin" }) : /* @__PURE__ */ e(Kr, { size: 14 }),
             i ? "上传中" : "上传附件"
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           ] })
         }
       ) })
@@ -2406,11 +1776,7 @@ function $r({
           children: [
             /* @__PURE__ */ e(Bt, { size: 14, className: "shrink-0" }),
             /* @__PURE__ */ e("span", { className: "max-w-72 truncate", children: p.name }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            p.status === "processing" && /* @__PURE__ */ e(ot, { size: 12, className: "animate-spin" }),
-========
             p.status === "processing" && /* @__PURE__ */ e(it, { size: 12, className: "animate-spin" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             v && /* @__PURE__ */ e(
               "button",
               {
@@ -2420,11 +1786,7 @@ function $r({
                 className: "-my-1 -mr-2 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-tertiaryText transition-colors hover:bg-bgLight hover:text-danger disabled:cursor-wait",
                 "aria-label": `删除附件 ${p.name}`,
                 title: "删除附件",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                children: h ? /* @__PURE__ */ e(ot, { size: 13, className: "animate-spin" }) : /* @__PURE__ */ e(vr, { size: 13 })
-========
                 children: h ? /* @__PURE__ */ e(it, { size: 13, className: "animate-spin" }) : /* @__PURE__ */ e(wr, { size: 13 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               }
             )
           ]
@@ -2436,20 +1798,6 @@ function $r({
     m && /* @__PURE__ */ e("p", { role: "alert", className: "mt-2 text-sm text-danger", children: m })
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const va = {
-  disabled: /* @__PURE__ */ e(Kr, { size: 14 }),
-  pending: /* @__PURE__ */ e(_t, { size: 14 }),
-  indexed: /* @__PURE__ */ e(gt, { size: 14 })
-};
-function $r({
-  createdByName: t,
-  updatedByName: n,
-  updatedAt: o,
-  index: l
-}) {
-  return !t && !n && !o && !l ? null : /* @__PURE__ */ r("div", { className: "mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-tertiaryText", children: [
-========
 const wa = {
   disabled: /* @__PURE__ */ e(Xr, { size: 14 }),
   pending: /* @__PURE__ */ e(_t, { size: 14 }),
@@ -2462,7 +1810,6 @@ function Lr({
   index: l
 }) {
   return !t && !n && !i && !l ? null : /* @__PURE__ */ r("div", { className: "mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-tertiaryText", children: [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     t && /* @__PURE__ */ r("span", { children: [
       "创建人: ",
       t
@@ -2471,30 +1818,13 @@ function Lr({
       "最近修改: ",
       n
     ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    o && /* @__PURE__ */ e("span", { children: o }),
-    l && /* @__PURE__ */ r("span", { className: "inline-flex items-center gap-1.5", title: l.detail, children: [
-      va[l.status],
-========
     i && /* @__PURE__ */ e("span", { children: i }),
     l && /* @__PURE__ */ r("span", { className: "inline-flex items-center gap-1.5", title: l.detail, children: [
       wa[l.status],
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       l.statusLabel
     ] })
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const wa = "_preview_a55vk_1", Na = "_editor_a55vk_3", Lr = {
-  preview: wa,
-  editor: Na
-};
-function ka({
-  document: t,
-  layout: n = "page"
-}) {
-  const [o, l] = y(!1), s = pe(null), m = n === "page" ? "px-[120px]" : "px-6 md:px-8";
-========
 const Na = "_preview_a55vk_1", ka = "_editor_a55vk_3", zr = {
   preview: Na,
   editor: ka
@@ -2504,7 +1834,6 @@ function Ta({
   layout: n = "page"
 }) {
   const [i, l] = y(!1), s = pe(null), m = n === "page" ? "px-[120px]" : "px-6 md:px-8";
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   Ne(() => () => {
     s.current !== null && window.clearTimeout(s.current);
   }, []);
@@ -2515,11 +1844,7 @@ function Ta({
     /* @__PURE__ */ r("section", { className: `mb-4 shrink-0 ${m}`, children: [
       /* @__PURE__ */ e("h1", { className: "break-words text-2xl font-semibold text-primaryText", children: t.title }),
       /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        $r,
-========
         Lr,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         {
           createdByName: t.createdByName,
           updatedByName: t.updatedByName,
@@ -2533,19 +1858,11 @@ function Ta({
       "section",
       {
         onScroll: f,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        className: `auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${o ? "is-scrolling" : ""}`,
-        children: [
-          t.markdown.trim() ? /* @__PURE__ */ e("div", { className: `${Lr.preview} ${m}`, children: /* @__PURE__ */ e(Nr, { remarkPlugins: [kr], children: t.markdown }) }) : /* @__PURE__ */ e("div", { className: `${n === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} rounded-lg border border-dashed border-borderSoft`, children: /* @__PURE__ */ e(Vt, { description: "正文暂无内容" }) }),
-          /* @__PURE__ */ e(
-            Mr,
-========
         className: `auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${i ? "is-scrolling" : ""}`,
         children: [
           t.markdown.trim() ? /* @__PURE__ */ e("div", { className: `${zr.preview} ${m}`, children: /* @__PURE__ */ e(kr, { remarkPlugins: [Tr], children: t.markdown }) }) : /* @__PURE__ */ e("div", { className: `${n === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} rounded-lg border border-dashed border-borderSoft`, children: /* @__PURE__ */ e(Vt, { description: "正文暂无内容" }) }),
           /* @__PURE__ */ e(
             $r,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             {
               attachments: t.attachments,
               className: `${n === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} mb-6 mt-8 border-t border-lineSubtle pt-6`
@@ -2556,17 +1873,10 @@ function Ta({
     )
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function ks({
-  tabs: t,
-  activeKey: n,
-  onSelectTab: o,
-========
 function Ts({
   tabs: t,
   activeKey: n,
   onSelectTab: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   onCloseTab: l,
   onClose: s,
   pendingActionKey: m,
@@ -2595,17 +1905,10 @@ function Ts({
             "button",
             {
               type: "button",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              onClick: () => o($.key),
-              className: `inline-flex w-full items-center gap-1.5 rounded-lg px-3 py-1.5 pr-6 text-sm transition-colors ${W ? "bg-chatPanelItemSurface text-primaryText" : "text-secondaryText hover:bg-chatPanelItemSurface"}`,
-              children: [
-                $.type === "knowledge" || $.type === "draft" ? /* @__PURE__ */ e(Bt, { size: 14, className: "shrink-0 text-tertiaryText" }) : /* @__PURE__ */ e(Xr, { size: 14, className: "shrink-0 text-tertiaryText" }),
-========
               onClick: () => i($.key),
               className: `inline-flex w-full items-center gap-1.5 rounded-lg px-3 py-1.5 pr-6 text-sm transition-colors ${W ? "bg-chatPanelItemSurface text-primaryText" : "text-secondaryText hover:bg-chatPanelItemSurface"}`,
               children: [
                 $.type === "knowledge" || $.type === "draft" ? /* @__PURE__ */ e(Bt, { size: 14, className: "shrink-0 text-tertiaryText" }) : /* @__PURE__ */ e(Gr, { size: 14, className: "shrink-0 text-tertiaryText" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 /* @__PURE__ */ e("span", { className: "min-w-0 truncate text-left", children: $.title })
               ]
             }
@@ -2650,15 +1953,6 @@ function Ts({
         )
       ] })
     ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden pb-4 pt-2", children: S ? N || (S.document ? /* @__PURE__ */ e(ka, { document: S.document, layout: "panel" }) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText", children: S.loading ? "正在加载文档…" : S.error || "文档暂时无法预览" })) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-4 text-center text-sm text-secondaryText", children: "点击右侧项目文件内容可在此处预览" }) })
-  ] });
-}
-function Ts({
-  projectName: t = "未归属项目",
-  searchQuery: n,
-  error: o,
-========
     /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden pb-4 pt-2", children: S ? N || (S.document ? /* @__PURE__ */ e(Ta, { document: S.document, layout: "panel" }) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText", children: S.loading ? "正在加载文档…" : S.error || "文档暂时无法预览" })) : /* @__PURE__ */ e("div", { className: "flex h-full items-center justify-center px-4 text-center text-sm text-secondaryText", children: "点击右侧项目文件内容可在此处预览" }) })
   ] });
 }
@@ -2666,7 +1960,6 @@ function Cs({
   projectName: t = "未归属项目",
   searchQuery: n,
   error: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   knowledgeDocs: l,
   experiments: s,
   activePreviewKey: m,
@@ -2703,11 +1996,7 @@ function Cs({
           )
         ] })
       ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      /* @__PURE__ */ e("section", { children: /* @__PURE__ */ e("div", { className: "space-y-1", children: o ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-danger-soft px-3 py-2 text-xs text-danger", role: "alert", children: o }) : S === 0 ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-bgLight px-3 py-2 text-xs text-secondaryText", children: n.trim() ? "未找到匹配的文件" : "暂无项目文件" }) : /* @__PURE__ */ r(Ge, { children: [
-========
       /* @__PURE__ */ e("section", { children: /* @__PURE__ */ e("div", { className: "space-y-1", children: i ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-danger-soft px-3 py-2 text-xs text-danger", role: "alert", children: i }) : S === 0 ? /* @__PURE__ */ e("div", { className: "rounded-lg bg-bgLight px-3 py-2 text-xs text-secondaryText", children: n.trim() ? "未找到匹配的文件" : "暂无项目文件" }) : /* @__PURE__ */ r(Ge, { children: [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         l.map((u) => {
           const N = `knowledge:${u.id}`, $ = m === N;
           return /* @__PURE__ */ r(
@@ -2744,11 +2033,7 @@ function Cs({
     ] }) })
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Ta = 50, Ca = 100 * 1024 * 1024, Sa = "⏎发送 | ⇧+⏎换行 | @引用 | /skill", Ma = [
-========
 const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用 | /skill", $a = [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   { id: "docx", badge: "D", description: "文档创建、编辑与分析，支持批注和修订。", source: "内置" },
   { id: "pdf", badge: "P", description: "PDF 提取、合并拆分、表单处理与批量分析。", source: "内置" },
   { id: "pptx", badge: "P", description: "演示文稿创建与编辑，支持布局和演讲备注。", source: "内置" },
@@ -2759,16 +2044,6 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
   { id: "home-delivery", badge: "H", description: "外卖与生活配送场景的智能推荐。", source: "内置" },
   { id: "life-assistant", badge: "L", description: "生活事务分发与跨技能场景协作。", source: "内置" },
   { id: "reminders", badge: "R", description: "提醒创建、查看和完成状态管理。", source: "内置" }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-], $a = /(?:^|\s)\/([^\s/]*)$/, La = /(?:^|\s)@([^\s@]*)$/, za = (t, n) => {
-  const l = t.slice(0, n).match($a);
-  return l ? l[1] : null;
-}, Aa = (t, n) => {
-  const l = t.slice(0, n).match(La);
-  return l ? l[1] : null;
-}, Cs = (t, n, o, l) => {
-  const s = t.slice(0, n), m = t.slice(o), f = s.match(/(?:^|\s)\/[^\s/]*$/);
-========
 ], La = /(?:^|\s)\/([^\s/]*)$/, za = /(?:^|\s)@([^\s@]*)$/, Aa = (t, n) => {
   const l = t.slice(0, n).match(La);
   return l ? l[1] : null;
@@ -2777,7 +2052,6 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
   return l ? l[1] : null;
 }, Ss = (t, n, i, l) => {
   const s = t.slice(0, n), m = t.slice(i), f = s.match(/(?:^|\s)\/[^\s/]*$/);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   if (!f) {
     const u = `/${l} `;
     return { value: `${s}${u}${m}`, cursor: s.length + u.length };
@@ -2787,13 +2061,8 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
     value: `${S}${m}`,
     cursor: S.length
   };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, Ss = (t, n, o, l) => {
-  const s = t.slice(0, n), m = t.slice(o), f = s.match(/(?:^|\s)@[^\s@]*$/);
-========
 }, Ms = (t, n, i, l) => {
   const s = t.slice(0, n), m = t.slice(i), f = s.match(/(?:^|\s)@[^\s@]*$/);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   if (!f) {
     const u = `@${l} `;
     return { value: `${s}${u}${m}`, cursor: s.length + u.length };
@@ -2803,17 +2072,6 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
     value: `${S}${m}`,
     cursor: S.length
   };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-}, Ea = [], Ms = [], zr = ({
-  onSend: t,
-  disabled: n,
-  autoFocus: o = !1,
-  isStreaming: l = !1,
-  onCancel: s,
-  leadingControls: m,
-  skillOptions: f = Ma,
-  fileOptions: v = Ea,
-========
 }, Pa = [], $s = [], Ar = ({
   onSend: t,
   disabled: n,
@@ -2823,16 +2081,11 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
   leadingControls: m,
   skillOptions: f = $a,
   fileOptions: v = Pa,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   uploadAccept: p,
   validateUploadFile: h,
   onUploadValidationError: S
 }) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const [u, N] = y(""), [$, W] = y(!1), [D, _] = y(!1), [G, Y] = y(""), [O, A] = y(-1), [ae, V] = y(!1), [q, P] = y(""), [Q, x] = y(-1), [K, le] = y([]), [oe, L] = y([]), [X, w] = y([]), [b, T] = y(!1), g = pe(null), re = pe(null), ke = _r(), xe = pe([]), M = l, I = M && !!s;
-========
   const [u, N] = y(""), [$, W] = y(!1), [D, _] = y(!1), [G, Y] = y(""), [O, A] = y(-1), [ae, V] = y(!1), [q, P] = y(""), [Q, x] = y(-1), [K, le] = y([]), [ie, L] = y([]), [X, w] = y([]), [b, T] = y(!1), g = pe(null), re = pe(null), ke = Ir(), xe = pe([]), M = l, I = M && !!s;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   Ne(() => {
     xe.current = K;
   }, [K]), Ne(() => () => {
@@ -2847,20 +2100,12 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
     const c = q.trim().toLowerCase();
     return c ? v.filter((k) => `${k.name} ${k.projectName} ${k.sourceType} ${k.operatorName ?? ""} ${k.operatedAt ?? ""}`.toLowerCase().includes(c)) : v.filter((k) => k.isRecent).slice(0, 10);
   }, [v, q]), ge = ze((c, k) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const ne = k ?? c.length, de = za(c, ne);
-========
     const ne = k ?? c.length, de = Aa(c, ne);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     if (de !== null) {
       _(!0), Y(de), A(-1), V(!1), P(""), x(-1);
       return;
     }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const ue = Aa(c, ne);
-========
     const ue = Ea(c, ne);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     if (ue !== null) {
       V(!0), P(ue), x(-1), _(!1), Y(""), A(-1);
       return;
@@ -2924,11 +2169,7 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
     le((de) => {
       const ue = new Set(de.map((ce) => ce.id)), fe = [...de];
       return ne.forEach((ce) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        if (ce.size > Ca || fe.length >= Ta) return;
-========
         if (ce.size > Sa || fe.length >= Ca) return;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         const se = `${ce.name}-${ce.size}-${ce.lastModified}`;
         if (ue.has(se)) return;
         const H = ce.type.startsWith("image/");
@@ -2960,15 +2201,9 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
         previewUrl: c.previewUrl,
         file: c.file
       })),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      references: [...oe, ...X]
-    }), N(""), le([]), L([]), w([]), _(!1), Y(""), A(-1), V(!1), P(""), x(-1));
-  }, [u, n, l, t, K, X, oe]);
-========
       references: [...ie, ...X]
     }), N(""), le([]), L([]), w([]), _(!1), Y(""), A(-1), V(!1), P(""), x(-1));
   }, [u, n, l, t, K, X, ie]);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   return /* @__PURE__ */ e("div", { className: "w-full max-w-[840px] mx-auto", children: /* @__PURE__ */ r("div", { className: "relative bg-white rounded-3xl shadow-sm border border-borderGray flex flex-col transition-all focus-within:shadow-lg focus-within:border-borderGray", children: [
     /* @__PURE__ */ e(
       "input",
@@ -2982,22 +2217,13 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
         onChange: ee
       }
     ),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    (K.length > 0 || oe.length > 0 || X.length > 0) && /* @__PURE__ */ e("div", { className: "px-5 pt-4 pb-1", children: /* @__PURE__ */ r("div", { className: "flex flex-wrap gap-2", children: [
-      oe.map((c) => /* @__PURE__ */ r(
-========
     (K.length > 0 || ie.length > 0 || X.length > 0) && /* @__PURE__ */ e("div", { className: "px-5 pt-4 pb-1", children: /* @__PURE__ */ r("div", { className: "flex flex-wrap gap-2", children: [
       ie.map((c) => /* @__PURE__ */ r(
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         "div",
         {
           className: "group relative inline-flex max-w-full items-center gap-1.5 rounded-full border border-chatSkillBorder bg-chatSkillSurface pl-3 pr-3 py-1.5 text-sm text-chatSkillText shadow-sm transition-[padding] duration-150 hover:pr-7",
           children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            /* @__PURE__ */ e(pr, { size: 12, className: "shrink-0 text-chatSkillText" }),
-========
             /* @__PURE__ */ e(hr, { size: 12, className: "shrink-0 text-chatSkillText" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate font-medium", children: c.label }),
             /* @__PURE__ */ e(
               "button",
@@ -3018,11 +2244,7 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
         {
           className: "group relative inline-flex max-w-full items-center gap-1.5 rounded-full border border-chatReferenceBorder bg-chatReferenceSurface pl-3 pr-3 py-1.5 text-sm text-chatReferenceText shadow-sm transition-[padding] duration-150 hover:pr-7",
           children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            /* @__PURE__ */ e(hr, { size: 12, className: "shrink-0 text-chatReferenceText" }),
-========
             /* @__PURE__ */ e(fr, { size: 12, className: "shrink-0 text-chatReferenceText" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             /* @__PURE__ */ e("span", { className: "max-w-[190px] truncate font-medium", children: c.label }),
             /* @__PURE__ */ e(
               "button",
@@ -3043,11 +2265,7 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
         {
           className: "group relative inline-flex max-w-full items-center gap-1.5 rounded-full border border-chatAttachmentBorder bg-white pl-3 pr-3 py-1.5 text-sm text-primaryText shadow-sm transition-[padding] duration-150 hover:pr-7",
           children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            c.previewUrl ? /* @__PURE__ */ e("span", { className: "inline-flex h-[14px] w-[14px] shrink-0 overflow-hidden rounded-[3px] bg-chatAttachmentIconSurface", children: /* @__PURE__ */ e("img", { src: c.previewUrl, alt: c.name, className: "h-full w-full object-cover" }) }) : /* @__PURE__ */ e(fr, { size: 13, className: "shrink-0 text-tertiaryText" }),
-========
             c.previewUrl ? /* @__PURE__ */ e("span", { className: "inline-flex h-[14px] w-[14px] shrink-0 overflow-hidden rounded-[3px] bg-chatAttachmentIconSurface", children: /* @__PURE__ */ e("img", { src: c.previewUrl, alt: c.name, className: "h-full w-full object-cover" }) }) : /* @__PURE__ */ e(xr, { size: 13, className: "shrink-0 text-tertiaryText" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             /* @__PURE__ */ r("span", { className: "relative min-w-0", children: [
               /* @__PURE__ */ e("span", { className: "peer block max-w-[190px] truncate", children: c.name }),
               /* @__PURE__ */ e("span", { className: "pointer-events-none absolute left-0 top-[calc(100%+6px)] z-50 hidden max-w-[280px] rounded-md bg-chatFloatingSurface px-2.5 py-1.5 text-xs text-white shadow-chatTooltip peer-hover:block", children: c.name })
@@ -3071,11 +2289,7 @@ const Ca = 50, Sa = 100 * 1024 * 1024, Ma = "⏎发送 | ⇧+⏎换行 | @引用
       "textarea",
       {
         ref: g,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        autoFocus: o,
-========
         autoFocus: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         value: u,
         onChange: (c) => {
           const k = c.target.value;
@@ -3144,13 +2358,8 @@ ${u.slice(de)}`, fe = ne + 1;
         onBlur: () => {
           W(!1), _(!1), V(!1);
         },
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        placeholder: $ ? Sa : "输入你的科研问题...",
-        className: `w-full min-h-[72px] max-h-[180px] px-5 ${K.length > 0 || oe.length > 0 || X.length > 0 ? "pt-2" : "pt-4"} pb-3 outline-none resize-none text-[14px] bg-transparent text-primaryText placeholder:text-tertiaryText leading-relaxed`
-========
         placeholder: $ ? Ma : "输入你的科研问题...",
         className: `w-full min-h-[72px] max-h-[180px] px-5 ${K.length > 0 || ie.length > 0 || X.length > 0 ? "pt-2" : "pt-4"} pb-3 outline-none resize-none text-[14px] bg-transparent text-primaryText placeholder:text-tertiaryText leading-relaxed`
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       }
     ),
     D && /* @__PURE__ */ e("div", { className: "absolute inset-x-4 bottom-full mb-2 z-40", onMouseDown: (c) => c.preventDefault(), children: /* @__PURE__ */ r("div", { className: "overflow-hidden rounded-xl border border-chatPopupBorder bg-white shadow-chatPopup", children: [
@@ -3221,11 +2430,7 @@ ${u.slice(de)}`, fe = ne + 1;
                   onClick: U,
                   "aria-controls": ke,
                   className: "w-8 h-8 rounded-full border border-borderGray flex items-center justify-center text-tertiaryText hover:bg-bgLight transition-colors bg-white",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                  children: /* @__PURE__ */ e(wr, { size: 16 })
-========
                   children: /* @__PURE__ */ e(Nr, { size: 16 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 }
               ),
               /* @__PURE__ */ r(
@@ -3251,39 +2456,19 @@ ${u.slice(de)}`, fe = ne + 1;
           "aria-label": M ? "停止生成" : "发送消息",
           title: M ? "停止生成" : "发送消息",
           className: `w-9 h-9 rounded-full flex items-center justify-center transition-all ${I || !M && u.trim() && !n ? "bg-primary text-white shadow-md hover:bg-primary-hover" : "bg-tertiaryText text-white"}`,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          children: M ? /* @__PURE__ */ e(Gr, { size: 12, fill: "currentColor" }) : /* @__PURE__ */ e(Yr, { size: 16 })
-========
           children: M ? /* @__PURE__ */ e(Yr, { size: 12, fill: "currentColor" }) : /* @__PURE__ */ e(Qr, { size: 16 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         }
       ) })
     ] })
   ] }) });
 };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-je.memo(zr);
-const Pa = ({ messages: t, isTyping: n, statusPhase: o = "thinking", searchSteps: l = [] }) => {
-========
 je.memo(Ar);
 const Ba = ({ messages: t, isTyping: n, statusPhase: i = "thinking", searchSteps: l = [] }) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   const s = pe(null);
   Ne(() => {
     var f;
     (f = s.current) == null || f.scrollIntoView({ behavior: "smooth" });
   }, [t.length, n]);
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const m = be(() => t.map((f, v) => /* @__PURE__ */ e(ma, { msg: f }, `${v}-${f.role}`)), [t]);
-  return /* @__PURE__ */ r("div", { className: "flex-1 overflow-y-auto px-8 py-6", children: [
-    m,
-    n && /* @__PURE__ */ e(xa, { phase: o, searchSteps: l }),
-    /* @__PURE__ */ e("div", { ref: s })
-  ] });
-};
-je.memo(Pa);
-const Ba = [
-========
   const m = be(() => t.map((f, v) => /* @__PURE__ */ e(pa, { msg: f }, `${v}-${f.role}`)), [t]);
   return /* @__PURE__ */ r("div", { className: "flex-1 overflow-y-auto px-8 py-6", children: [
     m,
@@ -3293,16 +2478,11 @@ const Ba = [
 };
 je.memo(Ba);
 const _a = [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   "整理实验笔记",
   "设计实验方案",
   "文献解读",
   "每周工作总结"
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-], Ar = ({ onSelect: t, prompts: n = Ba, disabled: o = !1 }) => {
-========
 ], Er = ({ onSelect: t, prompts: n = _a, disabled: i = !1 }) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   const l = ze((s) => {
     t(s);
   }, [t]);
@@ -3311,26 +2491,13 @@ const _a = [
     {
       type: "button",
       onClick: () => l(s),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      disabled: o,
-========
       disabled: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       className: "px-5 py-2.5 rounded-full border border-borderGray text-sm text-secondaryText bg-white hover:bg-bgLight transition-colors shadow-sm disabled:cursor-not-allowed disabled:opacity-60",
       children: s
     },
     s
   )) });
 };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-je.memo(Ar);
-const _a = (t, n) => {
-  const o = Math.random() * t, l = Math.random() * n;
-  return {
-    x: o,
-    y: l,
-    baseX: o,
-========
 je.memo(Er);
 const Ia = (t, n) => {
   const i = Math.random() * t, l = Math.random() * n;
@@ -3338,22 +2505,15 @@ const Ia = (t, n) => {
     x: i,
     y: l,
     baseX: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     baseY: l,
     size: Math.random() * 1.5 + 0.5,
     density: Math.random() * 30 + 1,
     vx: (Math.random() - 0.5) * 0.4,
     vy: (Math.random() - 0.5) * 0.4
   };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-};
-function $s({ onLogin: t, onLoginSuccess: n, onNavigate: o }) {
-  const l = pe(null), s = pe(null), [m, f] = y(""), [v, p] = y(""), [h, S] = y(!0), [u, N] = y(!1), [$, W] = y(!1), [D, _] = y(null), G = pe(null), [Y, O] = y(!1), [A, ae] = y("email"), [V, q] = y(""), [P, Q] = y(""), [x, K] = y(""), [le, oe] = y(""), [L, X] = y(0), [w, b] = y(!1), T = be(() => m.trim().length > 0 && v.trim().length > 0 && !u, [
-========
 }, lr = "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-base text-tertiaryText transition-all peer-focus:left-4 peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:rounded peer-focus:bg-surface peer-focus:px-1.5 peer-focus:text-xs peer-focus:font-medium peer-focus:text-primary peer-[&:not(:placeholder-shown)]:left-4 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:-translate-y-1/2 peer-[&:not(:placeholder-shown)]:rounded peer-[&:not(:placeholder-shown)]:bg-surface peer-[&:not(:placeholder-shown)]:px-1.5 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:font-medium peer-[&:not(:placeholder-shown)]:text-primary peer-autofill:left-4 peer-autofill:top-0 peer-autofill:-translate-y-1/2 peer-autofill:rounded peer-autofill:bg-surface peer-autofill:px-1.5 peer-autofill:text-xs peer-autofill:font-medium peer-autofill:text-primary";
 function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
   const l = pe(null), s = pe(null), [m, f] = y(""), [v, p] = y(""), [h, S] = y(!0), [u, N] = y(!1), [$, W] = y(!1), [D, _] = y(null), G = pe(null), [Y, O] = y(!1), [A, ae] = y("email"), [V, q] = y(""), [P, Q] = y(""), [x, K] = y(""), [le, ie] = y(""), [L, X] = y(0), [w, b] = y(!1), T = be(() => m.trim().length > 0 && v.trim().length > 0 && !u, [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     m,
     u,
     v
@@ -3382,11 +2542,7 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
       const se = I.getBoundingClientRect();
       R = window.devicePixelRatio || 1, ee = se.width, Z = se.height, M.width = ee * R, M.height = Z * R, M.style.width = `${ee}px`, M.style.height = `${Z}px`, j.setTransform(R, 0, 0, R, 0, 0);
       const H = ee < 768 ? 40 : 90;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      Ee = Array.from({ length: H }, () => _a(ee, Z));
-========
       Ee = Array.from({ length: H }, () => Ia(ee, Z));
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     }, ne = (se) => {
       j.beginPath(), j.arc(se.x, se.y, se.size, 0, Math.PI * 2), j.closePath(), j.fill();
     }, de = () => {
@@ -3458,11 +2614,7 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
       ae("success");
     }
   }, xe = () => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    O(!1), ae("email"), q(""), Q(""), K(""), oe(""), X(0), b(!1);
-========
     O(!1), ae("email"), q(""), Q(""), K(""), ie(""), X(0), b(!1);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   };
   return /* @__PURE__ */ r("div", { ref: s, className: "relative h-screen w-full overflow-hidden bg-bgLight text-primaryText", children: [
     /* @__PURE__ */ e("div", { className: "absolute inset-0 z-0", children: /* @__PURE__ */ e("canvas", { ref: l, className: "h-full w-full" }) }),
@@ -3534,11 +2686,7 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
             ] }),
             /* @__PURE__ */ e("span", { className: "text-sm text-authTextDefault transition-colors group-hover:text-authTextStrong", children: "记住我" })
           ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          /* @__PURE__ */ e("button", { type: "button", onClick: () => o("/forgot-password"), className: "text-sm font-medium text-authLink transition-colors hover:text-primary", children: "忘记密码？" })
-========
           /* @__PURE__ */ e("button", { type: "button", onClick: () => i("/forgot-password"), className: "text-sm font-medium text-authLink transition-colors hover:text-primary", children: "忘记密码？" })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         ] }),
         /* @__PURE__ */ r(
           "button",
@@ -3583,17 +2731,10 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
             "button",
             {
               type: "button",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              onClick: () => o("/register"),
-              className: "inline-flex items-center gap-1.5 text-sm font-normal text-authTextMuted transition-colors hover:text-authTextDefault",
-              children: [
-                /* @__PURE__ */ e(Qr, { size: 16, className: "text-authTextFaint" }),
-========
               onClick: () => i("/register"),
               className: "inline-flex items-center gap-1.5 text-sm font-normal text-authTextMuted transition-colors hover:text-authTextDefault",
               children: [
                 /* @__PURE__ */ e(Zr, { size: 16, className: "text-authTextFaint" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 "加入实验室"
               ]
             }
@@ -3603,17 +2744,10 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
             "button",
             {
               type: "button",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              onClick: () => o("/register?mode=create-lab"),
-              className: "inline-flex items-center gap-1.5 text-sm font-normal text-authTextMuted transition-colors hover:text-authTextDefault",
-              children: [
-                /* @__PURE__ */ e(Zr, { size: 16, className: "text-authTextFaint" }),
-========
               onClick: () => i("/register?mode=create-lab"),
               className: "inline-flex items-center gap-1.5 text-sm font-normal text-authTextMuted transition-colors hover:text-authTextDefault",
               children: [
                 /* @__PURE__ */ e(Jr, { size: 16, className: "text-authTextFaint" }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 "创建实验室"
               ]
             }
@@ -3695,11 +2829,7 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
               {
                 type: "password",
                 value: le,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                onChange: (M) => oe(M.target.value),
-========
                 onChange: (M) => ie(M.target.value),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 placeholder: " ",
                 className: `peer h-14 w-full rounded-xl border border-controlBorderDefault bg-surface px-5 py-4 text-base leading-none text-primaryText shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-brandFocus ${le.length > 0 && x !== le ? "border-authFieldError focus:border-authFieldError focus:ring-authFieldErrorFocus" : ""}`
               }
@@ -3751,21 +2881,12 @@ function Ls({ onLogin: t, onLoginSuccess: n, onNavigate: i }) {
     )
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Ia = (t, n) => {
-  const o = Math.random() * t, l = Math.random() * n;
-  return {
-    x: o,
-    y: l,
-    baseX: o,
-========
 const Ra = (t, n) => {
   const i = Math.random() * t, l = Math.random() * n;
   return {
     x: i,
     y: l,
     baseX: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     baseY: l,
     size: Math.random() * 1.5 + 0.5,
     density: Math.random() * 30 + 1,
@@ -3773,26 +2894,15 @@ const Ra = (t, n) => {
     vy: (Math.random() - 0.5) * 0.4
   };
 };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function Ls({
-  mode: t = "join-lab",
-  onSendVerificationCode: n,
-  onVerifyIdentity: o,
-========
 function zs({
   mode: t = "join-lab",
   onSendVerificationCode: n,
   onVerifyIdentity: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   onRegister: l,
   onEnterWorkspace: s,
   onNavigate: m
 }) {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const f = pe(null), v = pe(null), p = pe(null), [h, S] = y("identity"), [u, N] = y(""), [$, W] = y(""), [D, _] = y(""), [G, Y] = y(""), [O, A] = y(""), [ae, V] = y(""), q = t === "create-lab", [P, Q] = y(""), [x, K] = y(""), [le, oe] = y(!1), [L, X] = y(0), [w, b] = y(""), [T, g] = y(null), re = P.length > 0 && P.trim().length < 6;
-========
   const f = pe(null), v = pe(null), p = pe(null), [h, S] = y("identity"), [u, N] = y(""), [$, W] = y(""), [D, _] = y(""), [G, Y] = y(""), [O, A] = y(""), [ae, V] = y(""), q = t === "create-lab", [P, Q] = y(""), [x, K] = y(""), [le, ie] = y(!1), [L, X] = y(0), [w, b] = y(""), [T, g] = y(null), re = P.length > 0 && P.trim().length < 6;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   Ne(() => {
     if (L <= 0) return;
     const U = window.setTimeout(() => X((ee) => ee - 1), 1e3);
@@ -3813,11 +2923,7 @@ function zs({
       const Ce = ee.getBoundingClientRect();
       ue = window.devicePixelRatio || 1, ne = Ce.width, de = Ce.height, U.width = ne * ue, U.height = de * ue, U.style.width = `${ne}px`, U.style.height = `${de}px`, Z.setTransform(ue, 0, 0, ue, 0, 0);
       const J = ne < 768 ? 40 : 90;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      fe = Array.from({ length: J }, () => Ia(ne, de));
-========
       fe = Array.from({ length: J }, () => Ra(ne, de));
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     }, Pe = (Ce) => {
       Z.beginPath(), Z.arc(Ce.x, Ce.y, Ce.size, 0, Math.PI * 2), Z.closePath(), Z.fill();
     }, De = () => {
@@ -3852,11 +2958,7 @@ function zs({
   }, []);
   const ke = async () => {
     if (!(!/^1[3-9]\d{9}$/.test(D) || L > 0)) {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      oe(!0), g(null);
-========
       ie(!0), g(null);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       try {
         const U = await n(D);
         if (!U.ok) {
@@ -3867,11 +2969,7 @@ function zs({
       } catch {
         g({ ok: !1, message: "操作失败，请稍后重试。" });
       } finally {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        oe(!1);
-========
         ie(!1);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       }
     }
   }, xe = () => ({
@@ -3896,15 +2994,9 @@ function zs({
     }
   }, [h, u, $, D, G, O, ae, q, P, x, le]), j = async (U) => {
     if (U.preventDefault(), !!I) {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      oe(!0), g(null);
-      try {
-        const ee = xe(), Z = h === "password" ? await l({ ...ee, password: P }) : await o(ee);
-========
       ie(!0), g(null);
       try {
         const ee = xe(), Z = h === "password" ? await l({ ...ee, password: P }) : await i(ee);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         if (!Z.ok) {
           g(Z);
           return;
@@ -3913,11 +3005,7 @@ function zs({
       } catch {
         g({ ok: !1, message: "操作失败，请稍后重试。" });
       } finally {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        oe(!1);
-========
         ie(!1);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       }
     }
   }, he = {
@@ -4168,19 +3256,11 @@ function zs({
     ] }) })
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Ra = (t, n) => {
-  const o = Math.random() * t, l = Math.random() * n;
-  return { x: o, y: l, baseX: o, baseY: l, size: Math.random() * 1.5 + 0.5, density: Math.random() * 30 + 1, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4 };
-};
-function zs({ onSendCode: t, onResetPassword: n, onBackToLogin: o }) {
-========
 const Da = (t, n) => {
   const i = Math.random() * t, l = Math.random() * n;
   return { x: i, y: l, baseX: i, baseY: l, size: Math.random() * 1.5 + 0.5, density: Math.random() * 30 + 1, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4 };
 };
 function As({ onSendCode: t, onResetPassword: n, onBackToLogin: i }) {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   const l = pe(null), s = pe(null), m = pe(null), [f, v] = y("phone"), [p, h] = y(""), [S, u] = y(""), [N, $] = y(""), [W, D] = y(""), [_, G] = y(!1), [Y, O] = y(0), [A, ae] = y(""), [V, q] = y(null);
   Ne(() => {
     if (Y <= 0) return;
@@ -4195,11 +3275,7 @@ function As({ onSendCode: t, onResetPassword: n, onBackToLogin: i }) {
     let ke = 0, xe = 0, M = 0, I = [];
     const j = { x: -1e3, y: -1e3, radius: 120 }, he = 150, ge = () => {
       const Z = X.getBoundingClientRect(), R = window.devicePixelRatio || 1;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      xe = Z.width, M = Z.height, L.width = xe * R, L.height = M * R, L.style.width = `${xe}px`, L.style.height = `${M}px`, w.setTransform(R, 0, 0, R, 0, 0), I = Array.from({ length: xe < 768 ? 40 : 90 }, () => Ra(xe, M));
-========
       xe = Z.width, M = Z.height, L.width = xe * R, L.height = M * R, L.style.width = `${xe}px`, L.style.height = `${M}px`, w.setTransform(R, 0, 0, R, 0, 0), I = Array.from({ length: xe < 768 ? 40 : 90 }, () => Da(xe, M));
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     }, Se = () => {
       w.clearRect(0, 0, xe, M);
       for (let Z = 0; Z < I.length; Z += 1) {
@@ -4314,11 +3390,7 @@ function As({ onSendCode: t, onResetPassword: n, onBackToLogin: i }) {
         ] }),
         /* @__PURE__ */ r("p", { className: "mt-6 text-center text-sm text-authTextMuted", children: [
           "想起密码了？",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          /* @__PURE__ */ e("button", { type: "button", onClick: () => o(), className: "ml-1 font-medium text-primary transition-colors hover:text-primary-hover", children: "返回登录" })
-========
           /* @__PURE__ */ e("button", { type: "button", onClick: () => i(), className: "ml-1 font-medium text-primary transition-colors hover:text-primary-hover", children: "返回登录" })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         ] })
       ] }) : /* @__PURE__ */ r("div", { className: "flex flex-col items-center justify-center space-y-6", children: [
         /* @__PURE__ */ r("div", { className: "relative", children: [
@@ -4330,29 +3402,17 @@ function As({ onSendCode: t, onResetPassword: n, onBackToLogin: i }) {
           /* @__PURE__ */ e("p", { className: "mt-2 text-sm text-authTextMuted", children: "请用新密码登录" })
         ] }),
         /* @__PURE__ */ e("button", { type: "button", onClick: () => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          m.current = window.setTimeout(() => o({ replace: !0 }), 1e3);
-========
           m.current = window.setTimeout(() => i({ replace: !0 }), 1e3);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         }, className: "mt-4 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg", children: "返回登录" })
       ] })
     ] }) })
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const lr = 10, or = (t) => t.isTaskConversation === !0 || t.source === "task" || t.id.startsWith("task-") || typeof t.taskId == "string" && t.taskId.trim().length > 0;
-function As({
-  currentPath: t,
-  projects: n,
-  initialChats: o,
-========
 const ir = 10, or = (t) => t.isTaskConversation === !0 || t.source === "task" || t.id.startsWith("task-") || typeof t.taskId == "string" && t.taskId.trim().length > 0;
 function Es({
   currentPath: t,
   projects: n,
   initialChats: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   logoUrl: l,
   user: s,
   children: m,
@@ -4370,47 +3430,6 @@ function Es({
   onDeleteChat: G
 }) {
   const [Y, O] = y(!0), [A, ae] = y(240), [V, q] = y(!1), P = pe(0), Q = pe(240), [x, K] = y(() => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const i = { unassigned: !0 };
-    return n.forEach((E) => {
-      i[E.id] = !0;
-    }), i;
-  }), [le, oe] = y(!1), [L, X] = y(() => [...o]), [w, b] = y(null), [T, g] = y(null), [re, ke] = y("time"), [xe, M] = y(!1), [I, j] = y(null), [he, ge] = y(""), [Se, ye] = y(!1), [U, ee] = y(""), [Z, R] = y(!1), [Ee, $e] = y(f), [c, k] = y(!1), ne = v ?? Ee, de = pe(null), ue = pe(null), fe = pe(null), ce = () => {
-    oe(!1), N();
-  }, se = (i) => {
-    K((E) => ({ ...E, [i]: !E[i] }));
-  }, H = (i) => {
-    var C;
-    X((z) => z.filter((we) => we.id !== i)), b(null), I === i && (j(null), ge("")), G == null || G(i), ((C = t.match(/^\/chat\/([^/]+)$/)) == null ? void 0 : C[1]) === i && u("/chat/new", { replace: !0 });
-  }, Pe = (i) => {
-    const E = L.find((z) => z.id === i);
-    if (!E) return;
-    const C = !E.isPinned;
-    X((z) => z.map(
-      (Te) => Te.id === i ? { ...Te, isPinned: C } : Te
-    )), D == null || D(i, C), b(null);
-  }, De = (i) => {
-    j(i.id), ge(i.title), b(null);
-  }, We = () => {
-    j(null), ge("");
-  }, Ve = (i) => {
-    const E = he.trim();
-    E && (X((C) => C.map((z) => z.id === i ? { ...z, title: E } : z)), W == null || W(i, E)), We();
-  }, Je = (i, E) => {
-    if (i.stopPropagation(), i.key === "Enter") {
-      i.preventDefault(), Ve(E);
-      return;
-    }
-    i.key === "Escape" && (i.preventDefault(), We());
-  }, Ce = (i) => {
-    var E;
-    if (I === i) {
-      (E = de.current) == null || E.focus();
-      return;
-    }
-    u(`/chat/${i}`);
-  }, J = (i, E = !1) => I === i.id ? /* @__PURE__ */ r(
-========
     const o = { unassigned: !0 };
     return n.forEach((E) => {
       o[E.id] = !0;
@@ -4450,7 +3469,6 @@ function Es({
     }
     u(`/chat/${o}`);
   }, J = (o, E = !1) => I === o.id ? /* @__PURE__ */ r(
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     "div",
     {
       className: "flex min-w-0 items-center gap-2 flex-1",
@@ -4466,13 +3484,8 @@ function Es({
             ref: de,
             value: he,
             onChange: (z) => ge(z.target.value),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            onKeyDown: (z) => Je(z, i.id),
-            onBlur: () => Ve(i.id),
-========
             onKeyDown: (z) => Je(z, o.id),
             onBlur: () => Ve(o.id),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             onClick: (z) => z.stopPropagation(),
             className: "w-full bg-transparent px-0 text-sm text-primaryText outline-none",
             maxLength: 80,
@@ -4483,16 +3496,6 @@ function Es({
     }
   ) : /* @__PURE__ */ r("div", { className: "flex min-w-0 items-center gap-2 flex-1", children: [
     E && /* @__PURE__ */ e(jt, { size: 14, className: "shrink-0" }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    /* @__PURE__ */ e("span", { className: "truncate", children: i.title })
-  ] }), et = (i) => {
-    P.current = i.clientX, Q.current = A, q(!0);
-  };
-  Ne(() => {
-    if (!V) return;
-    const i = 200, E = 440, C = (we) => {
-      const Te = we.clientX - P.current, Le = Math.min(E, Math.max(i, Q.current + Te));
-========
     /* @__PURE__ */ e("span", { className: "truncate", children: o.title })
   ] }), et = (o) => {
     P.current = o.clientX, Q.current = A, q(!0);
@@ -4501,7 +3504,6 @@ function Es({
     if (!V) return;
     const o = 200, E = 440, C = (we) => {
       const Te = we.clientX - P.current, Le = Math.min(E, Math.max(o, Q.current + Te));
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       ae(Le);
     }, z = () => {
       q(!1);
@@ -4514,22 +3516,15 @@ function Es({
   }, [Y]), Ne(() => {
     $ == null || $(L);
   }, [L, $]), Ne(() => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    X([...o]);
-  }, [o]), Ne(() => {
-    if (!I) return;
-    const i = window.requestAnimationFrame(() => {
-========
     X([...i]);
   }, [i]), Ne(() => {
     if (!I) return;
     const o = window.requestAnimationFrame(() => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       var E;
       (E = de.current) == null || E.focus();
     });
     return () => {
-      window.cancelAnimationFrame(i);
+      window.cancelAnimationFrame(o);
     };
   }, [I]), Ne(() => () => {
     ue.current !== null && window.clearTimeout(ue.current), fe.current !== null && window.clearTimeout(fe.current);
@@ -4570,35 +3565,6 @@ function Es({
       label: "退出登录",
       danger: !0
     }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  ], [h, p]), Qe = (i) => {
-    if (oe(!1), i.key === "skills") {
-      u("/skills");
-      return;
-    }
-    if (i.key === "ai-usage") {
-      u("/ai-usage");
-      return;
-    }
-    if (i.key === "members") {
-      u("/members");
-      return;
-    }
-    if (i.key === "system-settings") {
-      u("/system-settings");
-      return;
-    }
-    i.key === "logout" && ce();
-  }, at = (i) => i.delete ? [{ key: "delete", label: "删除", icon: /* @__PURE__ */ e(vr, { size: 14 }), danger: !0 }] : [], dt = (i, E = S) => {
-    const C = [];
-    return E.rename && C.push({ key: "rename", label: "重命名", icon: /* @__PURE__ */ e(an, { size: 14 }) }), E.share && C.push({ key: "share", label: "分享对话", icon: /* @__PURE__ */ e(sn, { size: 14 }) }), E.pin && C.push({
-      key: "pin",
-      label: i.isPinned ? "取消置顶" : "置顶对话",
-      icon: /* @__PURE__ */ e(jt, { size: 14 })
-    }), C;
-  }, Ue = (i, E, C = {}) => {
-    const z = C.actions ?? S, we = C.onMenuOpenIdChange ?? b, Te = !!(z.rename || z.share || z.pin || z.delete), Le = C.showTaskBadge !== !1 && or(i);
-========
   ], [h, p]), Qe = (o) => {
     if (ie(!1), o.key === "skills") {
       u("/skills");
@@ -4626,40 +3592,12 @@ function Es({
     }), C;
   }, Ue = (o, E, C = {}) => {
     const z = C.actions ?? S, we = C.onMenuOpenIdChange ?? b, Te = !!(z.rename || z.share || z.pin || z.delete), Le = C.showTaskBadge !== !1 && or(o);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     return !Te && !Le ? null : /* @__PURE__ */ r("div", { className: `relative shrink-0 flex h-5 w-5 items-center justify-center ${Le ? "ml-6" : "ml-2"}`, children: [
       Le && !E && /* @__PURE__ */ e("span", { className: "pointer-events-none absolute right-0 shrink-0 whitespace-nowrap rounded-full bg-shellChatBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellChatBadgeText transition-opacity group-hover:opacity-0", children: "任务" }),
       Te && /* @__PURE__ */ e(
         At,
         {
           open: E,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          onOpenChange: (Me) => we(Me ? i.id : null),
-          placement: "bottom-end",
-          width: C.width ?? Math.max(140, Math.min(176, A - 56)),
-          portal: C.portal,
-          trigger: /* @__PURE__ */ e(nn, { size: 14 }),
-          onTriggerClick: (Me) => {
-            Me.stopPropagation();
-          },
-          items: dt(i, z),
-          footerItems: at(z),
-          onItemClick: (Me, Re) => {
-            if (Re.stopPropagation(), Me.key === "rename") {
-              De(i), we(null);
-              return;
-            }
-            if (Me.key === "share") {
-              _ ? _(i.id) : u(`/chat/${i.id}?share=1`), we(null);
-              return;
-            }
-            if (Me.key === "pin") {
-              Pe(i.id), we(null);
-              return;
-            }
-            if (Me.key === "delete") {
-              H(i.id), we(null);
-========
           onOpenChange: (Me) => we(Me ? o.id : null),
           placement: "bottom-end",
           width: C.width ?? Math.max(140, Math.min(176, A - 56)),
@@ -4685,7 +3623,6 @@ function Es({
             }
             if (Me.key === "delete") {
               H(o.id), we(null);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               return;
             }
             we(null);
@@ -4710,34 +3647,6 @@ function Es({
       isActive: t === "/tools" || t.startsWith("/tool/")
     }
   ], rt = be(() => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-    const i = t.match(/^\/chat\/([^/]+)$/);
-    return i ? L.find((E) => E.id === i[1]) ?? null : null;
-  }, [L, t]), Ke = be(
-    () => L.filter((i) => i.isPinned),
-    [L]
-  ), st = be(
-    () => L.filter((i) => !i.isPinned),
-    [L]
-  ), Xe = be(
-    () => re === "time" ? Ke.slice(0, lr) : Ke,
-    [Ke, re]
-  ), a = be(() => {
-    if (re !== "time") return [];
-    const i = Math.max(lr - Xe.length, 0);
-    return st.slice(0, i);
-  }, [re, st, Xe.length]), d = be(
-    () => Xe.length + a.length,
-    [Xe.length, a.length]
-  ), F = re === "time" && L.length > d, B = be(() => new Map(n.map((i) => [i.id, i.name])), [n]), ie = U.trim().toLowerCase(), te = be(() => ie ? L.filter((i) => {
-    const E = i.projectId ? B.get(i.projectId) ?? "未分组" : "未分组";
-    return `${i.title} ${E} ${i.date}`.toLowerCase().includes(ie);
-  }) : L, [L, ie, B]);
-  Ne(() => {
-    if (!rt) return;
-    const i = rt.projectId ?? "unassigned";
-    K((E) => E[i] !== !1 ? E : { ...E, [i]: !0 });
-========
     const o = t.match(/^\/chat\/([^/]+)$/);
     return o ? L.find((E) => E.id === o[1]) ?? null : null;
   }, [L, t]), Ke = be(
@@ -4764,19 +3673,13 @@ function Es({
     if (!rt) return;
     const o = rt.projectId ?? "unassigned";
     K((E) => E[o] !== !1 ? E : { ...E, [o]: !0 });
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   }, [rt]);
   const me = () => {
     ee(""), ye(!0);
   }, ve = () => {
     ye(!1), g(null), We(), R(!1), fe.current !== null && (window.clearTimeout(fe.current), fe.current = null);
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  }, _e = (i) => {
-    ye(!1), g(null), u(`/chat/${i}`);
-========
   }, _e = (o) => {
     ye(!1), g(null), u(`/chat/${o}`);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   };
   return /* @__PURE__ */ r("div", { className: "flex h-screen w-full bg-bgLight font-sans antialiased text-primaryText overflow-hidden relative", children: [
     /* @__PURE__ */ r(
@@ -4802,11 +3705,7 @@ function Es({
                       onClick: () => O(!1),
                       "aria-label": "收起边栏",
                       className: "rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                      children: /* @__PURE__ */ e(Jr, { size: 16 })
-========
                       children: /* @__PURE__ */ e(en, { size: 16 })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                     }
                   ) })
                 ] }),
@@ -4816,37 +3715,24 @@ function Es({
                     onClick: () => u("/chat/new"),
                     className: `nav-item ${t === "/chat/new" ? "bg-shellNavActive text-primaryText" : "text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                     children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                      /* @__PURE__ */ e(en, { size: 14 }),
-========
                       /* @__PURE__ */ e(tn, { size: 14 }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                       /* @__PURE__ */ e("span", { children: "发起新对话" })
                     ]
                   }
                 ) }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                /* @__PURE__ */ e("div", { className: "px-0 flex flex-col gap-0.5 mb-4", children: tt.map((i) => {
-                  const E = i.isActive;
-                  return /* @__PURE__ */ r(
-                    "button",
-                    {
-                      onClick: () => u(i.path),
-========
                 /* @__PURE__ */ e("div", { className: "px-0 flex flex-col gap-0.5 mb-4", children: tt.map((o) => {
                   const E = o.isActive;
                   return /* @__PURE__ */ r(
                     "button",
                     {
                       onClick: () => u(o.path),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                       className: `nav-item ${E ? "bg-shellNavActive text-primaryText" : "text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
                       children: [
-                        i.icon,
-                        /* @__PURE__ */ e("span", { children: i.label })
+                        o.icon,
+                        /* @__PURE__ */ e("span", { children: o.label })
                       ]
                     },
-                    i.path
+                    o.path
                   );
                 }) }),
                 /* @__PURE__ */ r(
@@ -4857,18 +3743,6 @@ function Es({
                     children: [
                       /* @__PURE__ */ e("div", { className: "sticky top-0 z-20 bg-bgLight px-[10px] pb-4 pt-0.5", children: /* @__PURE__ */ e("div", { className: "flex items-center pl-[8px] pr-4 text-sm font-normal text-secondaryText", children: /* @__PURE__ */ e("span", { className: "opacity-60", children: "近期对话" }) }) }),
                       Xe.length > 0 && /* @__PURE__ */ r("div", { className: "mb-1", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                        /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: Xe.map((i) => {
-                          const E = t === `/chat/${i.id}`, C = w === i.id;
-                          return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
-                            "div",
-                            {
-                              onClick: () => Ce(i.id),
-                              className: `mx-[10px] text-sm pl-[10px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${I === i.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : E ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
-                              children: [
-                                J(i, re !== "time"),
-                                I !== i.id && Ue(i, C)
-========
                         /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: Xe.map((o) => {
                           const E = t === `/chat/${o.id}`, C = w === o.id;
                           return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
@@ -4879,36 +3753,26 @@ function Es({
                               children: [
                                 J(o, re !== "time"),
                                 I !== o.id && Ue(o, C)
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                               ]
                             }
-                          ) }, i.id);
+                          ) }, o.id);
                         }) }),
                         /* @__PURE__ */ e("div", { className: "mx-[10px] my-2 border-t border-shellDivider" })
                       ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                      re === "project" && n.map((i) => {
-                        const E = L.filter((z) => z.projectId === i.id && !z.isPinned), C = x[i.id] !== !1;
-========
                       re === "project" && n.map((o) => {
                         const E = L.filter((z) => z.projectId === o.id && !z.isPinned), C = x[o.id] !== !1;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                         return /* @__PURE__ */ r("div", { className: "mb-0.5", children: [
                           /* @__PURE__ */ r(
                             "div",
                             {
                               className: "group mx-[10px] flex items-center gap-2 pl-[8px] pr-4 py-2 text-sm font-normal text-secondaryText cursor-pointer hover:text-primaryText rounded-md hover:bg-bgLight transition-colors",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                              onClick: () => se(i.id),
-========
                               onClick: () => se(o.id),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                               children: [
                                 /* @__PURE__ */ r("div", { className: "relative h-[14px] w-[14px] shrink-0", children: [
                                   /* @__PURE__ */ e(Dt, { size: 14, className: "text-secondaryText transition-opacity group-hover:opacity-0" }),
                                   /* @__PURE__ */ e("span", { className: "absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100", children: C ? /* @__PURE__ */ e(zt, { size: 14, className: "text-secondaryText" }) : /* @__PURE__ */ e($t, { size: 14, className: "text-secondaryText" }) })
                                 ] }),
-                                /* @__PURE__ */ e("span", { className: "truncate", children: i.name })
+                                /* @__PURE__ */ e("span", { className: "truncate", children: o.name })
                               ]
                             }
                           ),
@@ -4926,16 +3790,11 @@ function Es({
                               }
                             ) }, z.id);
                           }) })
-                        ] }, i.id);
+                        ] }, o.id);
                       }),
                       re === "project" && (() => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                        const i = L.filter((C) => !C.projectId && !C.isPinned);
-                        if (i.length === 0) return null;
-========
                         const o = L.filter((C) => !C.projectId && !C.isPinned);
                         if (o.length === 0) return null;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                         const E = x.unassigned !== !1;
                         return /* @__PURE__ */ r("div", { className: "mb-0.5 mt-1", children: [
                           /* @__PURE__ */ r(
@@ -4952,11 +3811,7 @@ function Es({
                               ]
                             }
                           ),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                          E && /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: i.length === 0 ? /* @__PURE__ */ e("div", { className: "mx-[10px] py-1.5 pl-[30px] pr-4 text-sm text-shellTextFaint", children: "暂无对话" }) : i.map((C) => {
-========
                           E && /* @__PURE__ */ e("div", { className: "flex flex-col gap-0.5 mt-0.5", children: o.length === 0 ? /* @__PURE__ */ e("div", { className: "mx-[10px] py-1.5 pl-[30px] pr-4 text-sm text-shellTextFaint", children: "暂无对话" }) : o.map((C) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                             const z = t === `/chat/${C.id}`, we = w === C.id;
                             return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
                               "div",
@@ -4973,18 +3828,6 @@ function Es({
                         ] });
                       })(),
                       re === "time" && /* @__PURE__ */ r("div", { className: "flex flex-col gap-0.5", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                        a.map((i) => {
-                          const E = t === `/chat/${i.id}`, C = w === i.id;
-                          return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
-                            "div",
-                            {
-                              onClick: () => Ce(i.id),
-                              className: `mx-[10px] text-sm pl-[10px] pr-2 py-1.5 rounded-md cursor-pointer transition-colors flex items-center justify-between group ${I === i.id ? "border border-shellChatEditBorder bg-bgLight font-normal text-primaryText" : E ? "bg-shellNavActive font-normal text-primaryText" : "font-normal text-secondaryText hover:bg-shellNavActive hover:text-primaryText"}`,
-                              children: [
-                                J(i),
-                                I !== i.id && Ue(i, C)
-========
                         a.map((o) => {
                           const E = t === `/chat/${o.id}`, C = w === o.id;
                           return /* @__PURE__ */ e("div", { className: "relative", children: /* @__PURE__ */ r(
@@ -4995,10 +3838,9 @@ function Es({
                               children: [
                                 J(o),
                                 I !== o.id && Ue(o, C)
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                               ]
                             }
-                          ) }, i.id);
+                          ) }, o.id);
                         }),
                         F && /* @__PURE__ */ r(
                           "button",
@@ -5017,11 +3859,7 @@ function Es({
                   }
                 ),
                 ne && !c && /* @__PURE__ */ e("div", { className: "mx-3 mb-2 rounded-[12px] bg-white p-2 shadow-shellWarning", children: /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                  /* @__PURE__ */ e("span", { className: "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-warning-soft text-warning", children: /* @__PURE__ */ e(tn, { size: 15, style: { fill: "var(--chatui-color-status-warning)", stroke: "var(--chatui-color-static-white)" } }) }),
-========
                   /* @__PURE__ */ e("span", { className: "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-warning-soft text-warning", children: /* @__PURE__ */ e(rn, { size: 15, style: { fill: "var(--chatui-color-status-warning)", stroke: "var(--chatui-color-static-white)" } }) }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                   /* @__PURE__ */ e("span", { className: "min-w-0 flex-1 truncate text-sm font-medium text-primaryText", children: "用量即将耗尽" }),
                   /* @__PURE__ */ e(
                     "button",
@@ -5037,11 +3875,7 @@ function Es({
                   At,
                   {
                     open: le,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                    onOpenChange: oe,
-========
                     onOpenChange: ie,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                     placement: "top-start",
                     width: A - 24,
                     portal: !0,
@@ -5050,11 +3884,7 @@ function Es({
                         /* @__PURE__ */ e("span", { className: "flex h-8 w-8 overflow-hidden items-center justify-center rounded-full bg-shellAvatarSurface text-sm font-medium text-white", children: s.avatarUrl ? /* @__PURE__ */ e("img", { src: s.avatarUrl, alt: `${s.name}头像`, className: "h-full w-full object-cover" }) : s.avatarText }),
                         /* @__PURE__ */ e("span", { className: "text-sm font-normal", children: s.name })
                       ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                      /* @__PURE__ */ e("span", { className: "p-1 rounded-full", children: /* @__PURE__ */ e(rn, { size: 18 }) })
-========
                       /* @__PURE__ */ e("span", { className: "p-1 rounded-full", children: /* @__PURE__ */ e(nn, { size: 18 }) })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                     ] }),
                     items: Oe,
                     onItemClick: Qe,
@@ -5104,11 +3934,7 @@ function Es({
               {
                 type: "text",
                 value: U,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                onChange: (i) => ee(i.target.value),
-========
                 onChange: (o) => ee(o.target.value),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 placeholder: "搜索对话或项目",
                 className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none"
               }
@@ -5119,47 +3945,26 @@ function Es({
             {
               onScroll: Be,
               className: `max-h-[440px] overflow-y-auto auto-hide-scrollbar ${Z ? "is-scrolling is-scrolling-thin" : ""}`,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              children: te.map((i) => {
-                const E = i.projectId ? B.get(i.projectId) ?? "未分组" : "未分组", C = or(i), z = T === i.id;
-                return /* @__PURE__ */ r(
-                  "div",
-                  {
-                    onClick: () => _e(i.id),
-========
               children: te.map((o) => {
                 const E = o.projectId ? B.get(o.projectId) ?? "未分组" : "未分组", C = or(o), z = T === o.id;
                 return /* @__PURE__ */ r(
                   "div",
                   {
                     onClick: () => _e(o.id),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                     className: "group flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors hover:bg-shellHistoryHover",
                     children: [
                       /* @__PURE__ */ r("div", { className: "min-w-0 flex-1", children: [
                         /* @__PURE__ */ r("div", { className: "flex min-w-0 items-center gap-2 text-sm font-medium text-primaryText", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                          J(i, i.isPinned),
-                          C && I !== i.id && /* @__PURE__ */ e("span", { className: "shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText", children: "任务" })
-========
                           J(o, o.isPinned),
                           C && I !== o.id && /* @__PURE__ */ e("span", { className: "shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText", children: "任务" })
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                         ] }),
                         /* @__PURE__ */ r("div", { className: "mt-1 flex items-center gap-1 text-xs text-tertiaryText", children: [
                           /* @__PURE__ */ e("span", { className: "truncate", children: E }),
                           /* @__PURE__ */ e("span", { children: "·" }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                          /* @__PURE__ */ e("span", { children: i.date })
-                        ] })
-                      ] }),
-                      I !== i.id && Ue(i, z, {
-========
                           /* @__PURE__ */ e("span", { children: o.date })
                         ] })
                       ] }),
                       I !== o.id && Ue(o, z, {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                         actions: { rename: !0, pin: !0, delete: !0 },
                         portal: !0,
                         showTaskBadge: !1,
@@ -5168,7 +3973,7 @@ function Es({
                       })
                     ]
                   },
-                  i.id
+                  o.id
                 );
               })
             }
@@ -5178,17 +3983,10 @@ function Es({
     )
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function Es({
-  projects: t,
-  selectedProjectId: n,
-  autoFocusInput: o = !1,
-========
 function Ps({
   projects: t,
   selectedProjectId: n,
   autoFocusInput: i = !1,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   disabled: l = !1,
   embedded: s = !1,
   isSidebarOpen: m = !0,
@@ -5218,15 +4016,9 @@ function Ps({
       label: /* @__PURE__ */ e("span", { className: "truncate", children: w.name }),
       active: (Q == null ? void 0 : Q.id) === w.id
     }))
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  ], [t, Q]), K = be(() => $ ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(wr, { size: 16 }) }] : [], [$]), le = () => {
-    A(!1), V("");
-  }, oe = (w) => {
-========
   ], [t, Q]), K = be(() => $ ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(Nr, { size: 16 }) }] : [], [$]), le = () => {
     A(!1), V("");
   }, ie = (w) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     if (w.key === "create") {
       A(!0), V("");
       return;
@@ -5262,11 +4054,7 @@ function Ps({
             /* @__PURE__ */ r("div", { children: [
               /* @__PURE__ */ e("div", { className: "mb-1.5 text-sm font-semibold text-primaryText", children: "新建项目" }),
               /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                Tr,
-========
                 Cr,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 {
                   value: ae,
                   onChange: (w) => V(w.target.value),
@@ -5293,19 +4081,11 @@ function Ps({
         }
       ) }),
       /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        zr,
-        {
-          onSend: _,
-          disabled: l,
-          autoFocus: o,
-========
         Ar,
         {
           onSend: _,
           disabled: l,
           autoFocus: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           skillOptions: f,
           fileOptions: v,
           uploadAccept: h,
@@ -5326,11 +4106,7 @@ function Ps({
               ] }),
               items: x,
               footerItems: K,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              onItemClick: oe,
-========
               onItemClick: ie,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               className: "!inline-flex",
               listClassName: "max-h-[220px] overflow-y-auto"
             }
@@ -5339,11 +4115,7 @@ function Ps({
       )
     ] }),
     /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      Ar,
-========
       Er,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       {
         onSelect: D ?? _,
         prompts: p,
@@ -5353,11 +4125,7 @@ function Ps({
   ] });
   return s ? X : /* @__PURE__ */ r("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      ya,
-========
       va,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       {
         isSidebarOpen: m,
         onOpenSidebar: W ?? (() => {
@@ -5367,18 +4135,6 @@ function Ps({
     /* @__PURE__ */ e("div", { className: "flex min-h-0 w-full flex-1 overflow-hidden", children: X })
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Da = "_shell_1a2mx_1", ja = "_header_1a2mx_9", Fa = "_headerActions_1a2mx_17", Ha = "_saveError_1a2mx_25", qa = "_viewport_1a2mx_33", Wa = "_editorCanvas_1a2mx_41", Oa = "_titleInput_1a2mx_49", Ua = "_milkdownHost_1a2mx_57", lt = {
-  shell: Da,
-  header: ja,
-  headerActions: Fa,
-  saveError: Ha,
-  viewport: qa,
-  editorCanvas: Wa,
-  titleInput: Oa,
-  milkdownHost: Ua
-}, Va = {
-========
 const ja = "_shell_1a2mx_1", Fa = "_header_1a2mx_9", Ha = "_headerActions_1a2mx_17", qa = "_saveError_1a2mx_25", Wa = "_viewport_1a2mx_33", Oa = "_editorCanvas_1a2mx_41", Ua = "_titleInput_1a2mx_49", Va = "_milkdownHost_1a2mx_57", lt = {
   shell: ja,
   header: Fa,
@@ -5389,7 +4145,6 @@ const ja = "_shell_1a2mx_1", Fa = "_header_1a2mx_9", Ha = "_headerActions_1a2mx_
   titleInput: Ua,
   milkdownHost: Va
 }, Ka = {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   "--crepe-color-background": "var(--chatui-color-surface)",
   "--crepe-color-on-background": "var(--chatui-color-text-primary)",
   "--crepe-color-surface": "var(--chatui-color-surface-muted)",
@@ -5422,45 +4177,25 @@ const ja = "_shell_1a2mx_1", Fa = "_header_1a2mx_9", Ha = "_headerActions_1a2mx_
   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
     <text x="8" y="23" fill="currentColor" font-family="inherit" font-size="22" font-weight="500">T</text>
   </svg>
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-`, Ka = `
-========
 `, Xa = `
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   <span class="chatui-selection-block-type-current">${Wt}</span>
   <svg class="chatui-selection-block-type-chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
     <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-`, ir = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-    <text x="2" y="23" fill="currentColor" font-family="inherit" font-size="24" font-weight="400">{ }</text>
-  </svg>
-`, Xa = `
-========
 `, cr = `
   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
     <text x="2" y="23" fill="currentColor" font-family="inherit" font-size="24" font-weight="400">{ }</text>
   </svg>
 `, Ga = `
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M4 7H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 3" />
     <path d="M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
   </svg>
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-`, Ga = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path d="M4 7H20M9 7V4H15V7M18 7L17 20H7L6 7M10 11V16M14 11V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-  </svg>
-`, Ya = [
-========
 `, Ya = `
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M4 7H20M9 7V4H15V7M18 7L17 20H7L6 7M10 11V16M14 11V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 `, Qa = [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   { key: "paragraph", label: "正文" },
   { key: "h1", label: "一级标题" },
   { key: "h2", label: "二级标题" },
@@ -5471,17 +4206,10 @@ const ja = "_shell_1a2mx_1", Fa = "_header_1a2mx_9", Ha = "_headerActions_1a2mx_
   { key: "quote", label: "引用" },
   { key: "code", label: "代码块" }
 ], ht = (t) => `chatui-document-menu-type-${t}`;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function Ps({
-  title: t,
-  initialMarkdown: n = "",
-  createdByName: o,
-========
 function Bs({
   title: t,
   initialMarkdown: n = "",
   createdByName: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   updatedByName: l,
   updatedAt: s,
   index: m,
@@ -5499,11 +4227,7 @@ function Bs({
   onSave: G,
   onClose: Y
 }) {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  const O = pe(null), A = pe(null), ae = pe(n), V = pe(W), [q, P] = y(!1), [Q, x] = y(null), [K, le] = y(""), oe = u === "page" ? "px-[120px]" : "px-6 md:px-8";
-========
   const O = pe(null), A = pe(null), ae = pe(n), V = pe(W), [q, P] = y(!1), [Q, x] = y(null), [K, le] = y(""), ie = u === "page" ? "px-[120px]" : "px-6 md:px-8";
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   Ne(() => {
     V.current = W;
   }, [W]), Ne(() => {
@@ -5522,11 +4246,7 @@ function Bs({
               "block-type",
               "块类型"
             ).addItem("block-type-dropdown", {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              icon: Ka,
-========
               icon: Xa,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               active: () => !1,
               onRun: () => {
               }
@@ -5595,47 +4315,28 @@ function Bs({
               } catch {
               }
               return C;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            }, ie = (E) => {
-========
             }, oe = (E) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               const C = B(E), z = kt.type(E), we = (Me) => {
                 const { $from: Re } = C.state.selection;
                 for (let He = Re.depth; He > 0; He -= 1)
                   if (Re.node(He).type.name === Me) return !0;
                 return !1;
               };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              for (let Me = 0; Me < 10 && !(!we(z.name) || !un(z)(
-========
               for (let Me = 0; Me < 10 && !(!we(z.name) || !mn(z)(
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 C.state,
                 C.dispatch
               )); Me += 1)
                 ;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              for (let Me = 0; Me < 10 && !(!we("blockquote") || !dn(C.state, C.dispatch)); Me += 1)
-                ;
-              const Te = pn.type(E), Le = C.state.selection.$from.parent;
-              Le.isTextblock && Le.type !== Te && E.get(cn).call(hn.key, {
-========
               for (let Me = 0; Me < 10 && !(!we("blockquote") || !un(C.state, C.dispatch)); Me += 1)
                 ;
               const Te = hn.type(E), Le = C.state.selection.$from.parent;
               Le.isTextblock && Le.type !== Te && E.get(dn).call(fn.key, {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 nodeType: Te
               });
             };
             b.set(
               "paragraph",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              ie
-========
               oe
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             );
             const te = (E) => {
               const C = B(E), { selection: z } = C.state, we = kt.type(E), { $from: Te } = z;
@@ -5680,16 +4381,6 @@ function Bs({
                 "task-list"
               ].includes(C), ut = F.has(C) ? (Ze) => {
                 var Kt;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                if (ie(Ze), !He) {
-                  if (C === "quote") {
-                    const nt = Ze.get(Nt), { $from: mt } = nt.state.selection, yt = mt.parent, Rt = mt.before(mt.depth), Xt = nt.state.schema.nodes.blockquote;
-                    if (!Xt) return;
-                    const Br = Xt.create(null, yt), vt = nt.state.tr.replaceWith(
-                      Rt,
-                      Rt + yt.nodeSize,
-                      Br
-========
                 if (oe(Ze), !He) {
                   if (C === "quote") {
                     const nt = Ze.get(Nt), { $from: mt } = nt.state.selection, yt = mt.parent, Rt = mt.before(mt.depth), Xt = nt.state.schema.nodes.blockquote;
@@ -5698,7 +4389,6 @@ function Bs({
                       Rt,
                       Rt + yt.nodeSize,
                       _r
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                     );
                     vt.setSelection(
                       Yt.near(
@@ -5715,17 +4405,6 @@ function Bs({
                   (Kt = Le.onRun) == null || Kt.call(Le, Ze);
                   return;
                 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                const xt = Ze.get(Nt), Er = C === "ordered-list" ? Qt.type(Ze) : Zt.type(Ze);
-                if (!mn(Er)(
-                  xt.state,
-                  xt.dispatch
-                ) || C !== "task-list") return;
-                const Pr = kt.type(Ze), { $from: It } = xt.state.selection;
-                for (let nt = It.depth; nt > 0; nt -= 1) {
-                  const mt = It.node(nt);
-                  if (mt.type !== Pr) continue;
-========
                 const xt = Ze.get(Nt), Pr = C === "ordered-list" ? Qt.type(Ze) : Zt.type(Ze);
                 if (!pn(Pr)(
                   xt.state,
@@ -5735,7 +4414,6 @@ function Bs({
                 for (let nt = It.depth; nt > 0; nt -= 1) {
                   const mt = It.node(nt);
                   if (mt.type !== Br) continue;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                   const yt = It.before(nt);
                   xt.dispatch(
                     xt.state.tr.setNodeMarkup(yt, void 0, {
@@ -5764,11 +4442,7 @@ function Bs({
                 Wt,
                 ht("paragraph")
               ),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-              onRun: ie
-========
               onRun: oe
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             }), [
               {
                 key: "h1",
@@ -5805,11 +4479,7 @@ Markdown: - [ ] 空格`
               },
               {
                 key: "code",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                icon: ir,
-========
                 icon: cr,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 label: "代码块\nMarkdown: ``` 空格"
               },
               {
@@ -5819,11 +4489,7 @@ Markdown: > 空格`
               },
               {
                 key: "divider",
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                icon: Xa,
-========
                 icon: Ga,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 label: `分割线
 Markdown: --- 空格`
               }
@@ -5838,11 +4504,7 @@ Markdown: --- 空格`
             }), a.addGroup("actions", "操作").addItem("delete", {
               label: "删除",
               icon: Mt(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                Ga,
-========
                 Ya,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 "chatui-document-menu-action-delete"
               ),
               onRun: te
@@ -5883,24 +4545,6 @@ Markdown: --- 空格`
       }) : [];
     }, k = (a) => {
       var B;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const d = c(), F = d.map((ie) => ({ block: ie, rect: ie.getBoundingClientRect() })).filter(({ rect: ie }) => a >= ie.top && a <= ie.bottom).sort((ie, te) => ie.rect.height - te.rect.height);
-      return F[0] ? F[0].block : ((B = d.map((ie) => {
-        const te = ie.getBoundingClientRect(), me = Math.min(
-          Math.abs(a - te.top),
-          Math.abs(a - te.bottom)
-        );
-        return { block: ie, distance: me };
-      }).sort((ie, te) => ie.distance - te.distance)[0]) == null ? void 0 : B.block) ?? null;
-    }, ne = (a, d = M) => {
-      var i, E, C, z;
-      const F = j, B = F ? R(F) : a, ie = F ? F.matches("p") : d, te = g.querySelector(
-        ".milkdown-slash-menu"
-      );
-      (E = (i = te == null ? void 0 : te.querySelector(`svg.${ht("paragraph")}`)) == null ? void 0 : i.closest("li")) == null || E.toggleAttribute(
-        "hidden",
-        B === null && ie
-========
       const d = c(), F = d.map((oe) => ({ block: oe, rect: oe.getBoundingClientRect() })).filter(({ rect: oe }) => a >= oe.top && a <= oe.bottom).sort((oe, te) => oe.rect.height - te.rect.height);
       return F[0] ? F[0].block : ((B = d.map((oe) => {
         const te = oe.getBoundingClientRect(), me = Math.min(
@@ -5917,7 +4561,6 @@ Markdown: --- 空格`
       (E = (o = te == null ? void 0 : te.querySelector(`svg.${ht("paragraph")}`)) == null ? void 0 : o.closest("li")) == null || E.toggleAttribute(
         "hidden",
         B === null && oe
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       ), te == null || te.querySelectorAll('li[data-chatui-selected="true"]').forEach(
         (we) => we.removeAttribute("data-chatui-selected")
       ), B && ((z = (C = te == null ? void 0 : te.querySelector(`svg.${ht(B)}`)) == null ? void 0 : C.closest("li")) == null || z.setAttribute("data-chatui-selected", "true"));
@@ -5937,11 +4580,7 @@ Markdown: --- 空格`
       const a = (F = g.getSelection()) == null ? void 0 : F.anchorNode, d = a instanceof Element ? a : a == null ? void 0 : a.parentElement;
       de($e(d ?? null));
     }, fe = (a) => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const { $from: d } = a.get(Nt).state.selection, F = kt.type(a), B = Qt.type(a), ie = Zt.type(a);
-========
       const { $from: d } = a.get(Nt).state.selection, F = kt.type(a), B = Qt.type(a), oe = Zt.type(a);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       for (let me = d.depth; me > 0; me -= 1) {
         const ve = d.node(me);
         if (ve.type === F && typeof ve.attrs.checked == "boolean")
@@ -5950,19 +4589,11 @@ Markdown: --- 空格`
       for (let me = d.depth; me > 0; me -= 1) {
         const ve = d.node(me);
         if (ve.type === B) return "ordered-list";
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        if (ve.type === ie) return "bullet-list";
-        if (ve.type.name === "blockquote") return "quote";
-      }
-      const te = d.parent;
-      if (te.type === fn.type(a)) {
-========
         if (ve.type === oe) return "bullet-list";
         if (ve.type.name === "blockquote") return "quote";
       }
       const te = d.parent;
       if (te.type === xn.type(a)) {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         const me = Number(te.attrs.level);
         if (me === 1 || me === 2 || me === 3)
           return `h${me}`;
@@ -5973,11 +4604,7 @@ Markdown: --- 空格`
       return a === "paragraph" ? Mt(
         Wt,
         "chatui-selection-block-type-paragraph"
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      ) : a === "h1" ? pt(1) : a === "h2" ? pt(2) : a === "h3" ? pt(3) : a === "code" ? ir : ((d = g.querySelector(
-========
       ) : a === "h1" ? pt(1) : a === "h2" ? pt(2) : a === "h3" ? pt(3) : a === "code" ? cr : ((d = g.querySelector(
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         `.milkdown-slash-menu svg.${ht(a)}`
       )) == null ? void 0 : d.outerHTML) ?? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="4" y="17" fill="currentColor" font-size="14">${a === "quote" ? "“" : "•"}</text></svg>`;
     }, se = () => {
@@ -5995,17 +4622,10 @@ Markdown: --- 空格`
       T.editor.action((te) => {
         B = fe(te);
       }), a.dataset.chatuiBlockType = B;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const ie = a.querySelector(
-        ".chatui-selection-block-type-current"
-      );
-      ie && (ie.innerHTML = ce(B)), U == null || U.querySelectorAll("[data-block-type]").forEach((te) => {
-========
       const oe = a.querySelector(
         ".chatui-selection-block-type-current"
       );
       oe && (oe.innerHTML = ce(B)), U == null || U.querySelectorAll("[data-block-type]").forEach((te) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         te.dataset.active = te.dataset.blockType === B ? "true" : "false";
       });
     }, Pe = () => {
@@ -6019,17 +4639,10 @@ Markdown: --- 空格`
     }, We = () => {
       if (U) return U;
       const a = g.createElement("div");
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      return a.className = "chatui-selection-block-type-menu", a.dataset.show = "false", a.setAttribute("role", "menu"), Ya.forEach(({ key: d, label: F }) => {
-        const B = g.createElement("button");
-        B.type = "button", B.dataset.blockType = d, B.setAttribute("role", "menuitem"), B.innerHTML = `<span class="chatui-selection-block-type-option-icon">${ce(d)}</span><span>${F}</span>`, B.addEventListener("pointerdown", (ie) => {
-          ie.preventDefault(), ie.stopPropagation(), T.editor.action((te) => {
-========
       return a.className = "chatui-selection-block-type-menu", a.dataset.show = "false", a.setAttribute("role", "menu"), Qa.forEach(({ key: d, label: F }) => {
         const B = g.createElement("button");
         B.type = "button", B.dataset.blockType = d, B.setAttribute("role", "menuitem"), B.innerHTML = `<span class="chatui-selection-block-type-option-icon">${ce(d)}</span><span>${F}</span>`, B.addEventListener("pointerdown", (oe) => {
           oe.preventDefault(), oe.stopPropagation(), T.editor.action((te) => {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             var me;
             (me = b.get(d)) == null || me(te);
           }), Pe(), window.requestAnimationFrame(H);
@@ -6043,17 +4656,10 @@ Markdown: --- 空格`
       ee !== null && (window.clearTimeout(ee), ee = null);
       const d = We();
       H(), d.dataset.show = "true", d.style.visibility = "hidden";
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const F = a.getBoundingClientRect(), B = d.getBoundingClientRect(), ie = 6, te = 8, me = F.top >= B.height + ie + te, ve = Math.min(
-        Math.max(F.left, te),
-        g.documentElement.clientWidth - B.width - te
-      ), _e = me ? F.top - B.height - ie : F.bottom + ie;
-========
       const F = a.getBoundingClientRect(), B = d.getBoundingClientRect(), oe = 6, te = 8, me = F.top >= B.height + oe + te, ve = Math.min(
         Math.max(F.left, te),
         g.documentElement.clientWidth - B.width - te
       ), _e = me ? F.top - B.height - oe : F.bottom + oe;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       d.style.left = `${ve}px`, d.style.top = `${_e}px`, d.style.visibility = "visible", d.dataset.placement = me ? "top" : "bottom", a.setAttribute("aria-expanded", "true");
     }, Je = (a) => {
       const d = a.target instanceof Element ? a.target : null;
@@ -6072,21 +4678,13 @@ Markdown: --- 空格`
       if (!a || !d || d.dataset.show !== "true") return;
       const F = d.getBoundingClientRect();
       if (!F.width || !F.height) return;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const B = a.getBoundingClientRect(), ie = g.defaultView, te = (ie == null ? void 0 : ie.innerWidth) ?? g.documentElement.clientWidth, me = (ie == null ? void 0 : ie.innerHeight) ?? g.documentElement.clientHeight, ve = 12, _e = 8, i = Math.max(
-========
       const B = a.getBoundingClientRect(), oe = g.defaultView, te = (oe == null ? void 0 : oe.innerWidth) ?? g.documentElement.clientWidth, me = (oe == null ? void 0 : oe.innerHeight) ?? g.documentElement.clientHeight, ve = 12, _e = 8, o = Math.max(
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
         ve,
         te - F.width - ve
       ), E = Math.max(
         ve,
         me - F.height - ve
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      ), C = (He) => Math.min(Math.max(He, ve), i), z = (He) => Math.min(Math.max(He, ve), E);
-========
       ), C = (He) => Math.min(Math.max(He, ve), o), z = (He) => Math.min(Math.max(He, ve), E);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       let we = "left", Te = B.left - F.width - _e, Le = z(B.top);
       if (Te < ve) {
         const He = B.top - _e - ve, ut = me - B.bottom - _e - ve, Ze = ut >= F.height || ut >= He;
@@ -6134,21 +4732,12 @@ Markdown: --- 空格`
             return;
           }
           if (Be(null), d != null && d.closest(".milkdown-block-handle")) return;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-          const _e = Ee(), i = d && (_e != null && _e.contains(d)) ? $e(d) ?? k(a.clientY) : null;
-          if (i && j && i !== j) {
-            Qe();
-            return;
-          }
-          if (i === j) return;
-========
           const _e = Ee(), o = d && (_e != null && _e.contains(d)) ? $e(d) ?? k(a.clientY) : null;
           if (o && j && o !== j) {
             Qe();
             return;
           }
           if (o === j) return;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
           I && Qe();
           return;
         }
@@ -6160,13 +4749,8 @@ Markdown: --- 空格`
       }
       const B = Ee();
       if (!d || !(B != null && B.contains(d))) return;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const ie = $e(d) ?? k(a.clientY);
-      de(ie);
-========
       const oe = $e(d) ?? k(a.clientY);
       de(oe);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     }, dt = (a) => {
       var ve;
       const d = g.querySelector(
@@ -6180,11 +4764,7 @@ Markdown: --- 空格`
         F.top + F.height / 2
       );
       B && de(B);
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const ie = ke, te = M;
-========
       const oe = ke, te = M;
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       he = a, j = B ?? xe, Oe(a);
       const me = ((ve = g.defaultView) == null ? void 0 : ve.PointerEvent) ?? PointerEvent;
       a.dispatchEvent(
@@ -6198,11 +4778,7 @@ Markdown: --- 空格`
           cancelable: !0
         })
       ), window.setTimeout(() => {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        ne(ie, te), Ye();
-========
         ne(oe, te), Ye();
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       }, 0);
     }, Ue = (a) => {
       const d = a.target instanceof Element ? a.target : null, F = d == null ? void 0 : d.closest(
@@ -6224,17 +4800,10 @@ Markdown: --- 空格`
       if (!F) return;
       const B = a.relatedTarget instanceof Element ? a.relatedTarget : null;
       if (B && F.contains(B)) return;
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      const ie = B == null ? void 0 : B.closest(
-        ".milkdown-slash-menu .menu-groups li"
-      );
-      Be(ie ?? null);
-========
       const oe = B == null ? void 0 : B.closest(
         ".milkdown-slash-menu .menu-groups li"
       );
       Be(oe ?? null);
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
     }, rt = (a) => {
       const d = a.target instanceof Element ? a.target : null, F = d == null ? void 0 : d.closest(
         ".milkdown-block-handle .operation-item:first-child"
@@ -6381,11 +4950,7 @@ Markdown: --- 空格`
         children: [
           S && /* @__PURE__ */ e("div", { className: lt.saveError, children: S }),
           /* @__PURE__ */ r("div", { className: lt.editorCanvas, children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-            /* @__PURE__ */ r("section", { className: `mb-4 shrink-0 ${oe}`, children: [
-========
             /* @__PURE__ */ r("section", { className: `mb-4 shrink-0 ${ie}`, children: [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
               /* @__PURE__ */ e(
                 "input",
                 {
@@ -6397,15 +4962,9 @@ Markdown: --- 空格`
                 }
               ),
               /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                $r,
-                {
-                  createdByName: o,
-========
                 Lr,
                 {
                   createdByName: i,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                   updatedByName: l,
                   updatedAt: s,
                   index: m
@@ -6418,13 +4977,8 @@ Markdown: --- 空格`
                 "div",
                 {
                   ref: O,
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                  className: `${lt.milkdownHost} ${Lr.editor} ${oe} chatui-project-document-editor`,
-                  style: Va
-========
                   className: `${lt.milkdownHost} ${zr.editor} ${ie} chatui-project-document-editor`,
                   style: Ka
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 }
               ),
               D && /* @__PURE__ */ e(
@@ -6441,11 +4995,7 @@ Markdown: --- 空格`
                 }
               ),
               /* @__PURE__ */ e(
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                Mr,
-========
                 $r,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 {
                   attachments: f,
                   className: `${u === "page" ? "mx-[120px]" : "mx-6 md:mx-8"} mb-6 mt-8 border-t border-lineSubtle pt-6`,
@@ -6469,26 +5019,15 @@ Markdown: --- 空格`
     )
   ] });
 }
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-const Qa = { low: "低风险", medium: "中风险", high: "高风险" }, Za = {
-========
 const Za = { low: "低风险", medium: "中风险", high: "高风险" }, Ja = {
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   low: "bg-skillRiskLow text-primary",
   medium: "bg-skillRiskMedium text-warning",
   high: "bg-danger-soft text-danger"
 };
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-function Bs({
-  isSidebarOpen: t,
-  skills: n,
-  loading: o = !1,
-========
 function _s({
   isSidebarOpen: t,
   skills: n,
   loading: i = !1,
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
   error: l,
   pendingSkillIds: s = [],
   onOpenSidebar: m,
@@ -6508,11 +5047,7 @@ function _s({
   };
   return /* @__PURE__ */ r("div", { className: "relative flex h-full w-full flex-col bg-surface", children: [
     /* @__PURE__ */ e("header", { className: "z-10 flex h-16 shrink-0 items-center bg-homeHeaderSurface px-4 backdrop-blur-sm", children: /* @__PURE__ */ r("div", { className: "flex min-w-0 items-center gap-3", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-      !t && /* @__PURE__ */ e("button", { type: "button", onClick: m, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(yr, { size: 20 }) }),
-========
       !t && /* @__PURE__ */ e("button", { type: "button", onClick: m, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(vr, { size: 20 }) }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       /* @__PURE__ */ r("div", { className: "flex items-center gap-2 text-sm", children: [
         /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "系统设置" }),
         /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
@@ -6548,28 +5083,17 @@ function _s({
           /* @__PURE__ */ e("span", { children: l }),
           p && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: p, children: "重新加载" })
         ] }),
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        !l && o && /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-label": "正在加载 Skills", "aria-busy": "true", children: Array.from({ length: 6 }, (x, K) => /* @__PURE__ */ e("div", { className: "h-[168px] animate-pulse rounded-lg border border-lineSubtle bg-skillTagSurface" }, K)) }),
-        !l && !o && A.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-busy": s.length > 0, children: A.map((x) => {
-          const K = D.includes(x.id), le = O.has(x.id), oe = K ? "border-skillSelectedBorder bg-skillSelectedSurface" : G === x.id ? "border-lineSubtle bg-skillCardHover" : "border-lineSubtle bg-surface";
-          return /* @__PURE__ */ r("article", { className: `rounded-lg border p-4 transition-shadow hover:shadow-sm ${oe}`, onMouseEnter: () => Y(x.id), onMouseLeave: () => Y((L) => L === x.id ? null : L), children: [
-========
         !l && i && /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-label": "正在加载 Skills", "aria-busy": "true", children: Array.from({ length: 6 }, (x, K) => /* @__PURE__ */ e("div", { className: "h-[168px] animate-pulse rounded-lg border border-lineSubtle bg-skillTagSurface" }, K)) }),
         !l && !i && A.length ? /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3", "aria-busy": s.length > 0, children: A.map((x) => {
           const K = D.includes(x.id), le = O.has(x.id), ie = K ? "border-skillSelectedBorder bg-skillSelectedSurface" : G === x.id ? "border-lineSubtle bg-skillCardHover" : "border-lineSubtle bg-surface";
           return /* @__PURE__ */ r("article", { className: `rounded-lg border p-4 transition-shadow hover:shadow-sm ${ie}`, onMouseEnter: () => Y(x.id), onMouseLeave: () => Y((L) => L === x.id ? null : L), children: [
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
             /* @__PURE__ */ r("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ r("div", { className: "min-w-0", children: [
                 /* @__PURE__ */ e("div", { className: "truncate text-base font-medium text-primaryText", children: x.name }),
                 /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: x.source })
               ] }),
               /* @__PURE__ */ r("div", { className: "flex items-center gap-2", children: [
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-                /* @__PURE__ */ e("span", { className: `rounded px-2 py-1 text-xs font-medium ${Za[x.riskLevel]}`, children: Qa[x.riskLevel] }),
-========
                 /* @__PURE__ */ e("span", { className: `rounded px-2 py-1 text-xs font-medium ${Ja[x.riskLevel]}`, children: Za[x.riskLevel] }),
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
                 $ && /* @__PURE__ */ e("button", { type: "button", onClick: () => q(x.id), className: "relative inline-flex h-4 w-4 items-center justify-center rounded-sm", "aria-label": K ? `取消选择 ${x.name}` : `选择 ${x.name}`, children: /* @__PURE__ */ e("span", { className: `pointer-events-none inline-flex h-full w-full items-center justify-center rounded-sm border transition-colors ${K ? "border-transparent bg-primary text-white" : "border-skillCheckbox bg-surface text-transparent"}`, children: /* @__PURE__ */ e("svg", { className: "h-2.5 w-2.5", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ e("path", { d: "M3.5 8.2L6.5 11.1L12.5 5.1", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) }) }) })
               ] })
             ] }),
@@ -6579,11 +5103,7 @@ function _s({
               !$ && /* @__PURE__ */ e("button", { type: "button", disabled: le, onClick: () => P(x), className: `shrink-0 items-center rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-wait disabled:opacity-60 ${G === x.id || le ? "inline-flex" : "hidden"} ${x.installed ? "bg-skillTagSurface text-primaryText" : "bg-primary text-white"}`, children: le ? "处理中..." : x.installed ? "卸载" : "安装" })
             ] })
           ] }, x.id);
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-        }) }) : !l && !o ? /* @__PURE__ */ e("div", { className: "mt-4 flex h-36 items-center justify-center rounded-lg border border-lineSubtle text-sm text-tertiaryText", children: "暂无匹配的 Skills" }) : null
-========
         }) }) : !l && !i ? /* @__PURE__ */ e("div", { className: "mt-4 flex h-36 items-center justify-center rounded-lg border border-lineSubtle text-sm text-tertiaryText", children: "暂无匹配的 Skills" }) : null
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
       ] })
     ] }) }),
     $ && /* @__PURE__ */ e("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 z-30 border-t border-lineSubtle bg-surface", children: /* @__PURE__ */ r("div", { className: "pointer-events-auto mx-auto flex max-w-[1240px] items-center justify-between px-4 py-3 md:px-8 lg:px-10", children: [
@@ -6600,56 +5120,6 @@ function _s({
   ] });
 }
 export {
-<<<<<<<< HEAD:packages/chatui/dist/SkillPage-D4iMvss8.js
-  As as A,
-  Gn as B,
-  Ea as C,
-  ys as D,
-  Pa as E,
-  zs as F,
-  aa as G,
-  Mr as H,
-  zr as I,
-  Ps as J,
-  $r as K,
-  $s as L,
-  Sr as M,
-  Ss as N,
-  Cs as O,
-  ka as P,
-  Ar as Q,
-  Ls as R,
-  Bs as S,
-  qt as T,
-  Aa as U,
-  za as V,
-  At as a,
-  qe as b,
-  xs as c,
-  ea as d,
-  Ut as e,
-  Tr as f,
-  Vt as g,
-  ta as h,
-  Zn as i,
-  fs as j,
-  jn as k,
-  Sa as l,
-  Ba as m,
-  Ms as n,
-  Ma as o,
-  bs as p,
-  ga as q,
-  na as r,
-  Es as s,
-  ks as t,
-  Ts as u,
-  Ns as v,
-  ws as w,
-  gs as x,
-  ya as y,
-  vs as z
-========
   Es as A,
   Yn as B,
   Pa as C,
@@ -6698,5 +5168,4 @@ export {
   ys as x,
   va as y,
   ws as z
->>>>>>>> 3e5391e (release: 同步前端 e86ad40):packages/chatui/dist/SkillPage-DeC6ih_F.js
 };
