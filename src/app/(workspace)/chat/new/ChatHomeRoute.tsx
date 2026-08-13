@@ -168,6 +168,7 @@ export function ChatHomeRoute({
             message: payload.content.trim(),
             draftId: uploaded.draftId,
             projectId: targetProjectId,
+            thinkingLevel: payload.thinkingLevel,
             ...sendScope,
           },
           {
@@ -254,7 +255,7 @@ export function ChatHomeRoute({
   const handleSend = (payload: string | InputSendPayload) => {
     const normalizedPayload: InputSendPayload =
       typeof payload === "string"
-        ? { content: payload, attachments: [], references: [] }
+        ? { content: payload, attachments: [], references: [], thinkingLevel: "low" }
         : payload;
     void runNewChat(normalizedPayload);
   };

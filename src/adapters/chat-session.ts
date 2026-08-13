@@ -757,6 +757,7 @@ export function buildChatRegeneratePayload(
       content: message.content,
       attachments: [],
       references: [],
+      thinkingLevel: "low",
     };
   }
 
@@ -1246,6 +1247,25 @@ export function reduceChatStreamEvent(
       statusLabel: undefined,
       statusVisible: true,
       hasReceivedAssistantChunk: true,
+    };
+  }
+
+  if (eventType === "reasoning" && typeof payload.content === "string") {
+    const messages = [...state.messages];
+    const lastIndex = messages.length - 1;
+    const lastMessage = messages[lastIndex];
+    if (lastMessage?.role !== "assistant") return state;
+
+    messages[lastIndex] = {
+      ...lastMessage,
+      reasoning: `${lastMessage.reasoning ?? ""}${payload.content}`,
+    };
+    return {
+      ...state,
+      messages,
+      statusPhase: "thinking",
+      statusLabel: undefined,
+      statusVisible: true,
     };
   }
 

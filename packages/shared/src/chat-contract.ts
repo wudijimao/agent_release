@@ -10,6 +10,7 @@ export interface ChatSendRequest {
   sessionId?: string;
   projectId?: string;
   draftId?: string;
+  thinkingLevel?: "low" | "medium" | "high";
   selectedSkillSlugs?: string[];
   contextRefs?: HomeContextRef[];
 }
@@ -156,6 +157,11 @@ export interface ChatStreamTextEvent {
   content: string;
 }
 
+export interface ChatStreamReasoningEvent {
+  type: "reasoning";
+  content: string;
+}
+
 export interface ChatStreamTaskTraceEvent {
   type: "task_trace";
   step: unknown;
@@ -184,6 +190,7 @@ export interface ChatStreamErrorEvent {
 export type ChatStreamKnownEvent =
   | ChatStreamMetaEvent
   | ChatStreamTextEvent
+  | ChatStreamReasoningEvent
   | ChatStreamTaskTraceEvent
   | ChatStreamDisplayStartEvent
   | ChatStreamDisplayPatchEvent

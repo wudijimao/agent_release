@@ -41,6 +41,7 @@ export { InputArea } from "./InputArea";
 export type {
   ChatFileOption,
   ChatSkillOption,
+  ChatThinkingLevel,
   InputAreaProps,
   InputAttachment,
   InputReference,

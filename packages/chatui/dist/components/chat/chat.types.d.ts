@@ -51,6 +51,7 @@ export interface ChatMessage {
     id?: string;
     role: 'user' | 'assistant';
     content: string;
+    reasoning?: string;
     attachments?: ChatAttachment[];
     references?: ChatReference[];
     miraDraft?: MiraDraftCardViewModel;

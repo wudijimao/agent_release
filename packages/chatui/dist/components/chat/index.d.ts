@@ -17,7 +17,7 @@ export type { ChatShareControlsProps } from "./ChatShareControls";
 export { ChatPreviewPanel, ChatProjectFilesPanel } from "./ChatWorkspacePanels";
 export type { ChatPreviewActionViewModel, ChatPreviewItemType, ChatPreviewItemViewModel, ChatPreviewPanelProps, ChatProjectExperimentItemViewModel, ChatProjectFilesPanelProps, ChatProjectKnowledgeItemViewModel, } from "./ChatWorkspacePanels";
 export { InputArea } from "./InputArea";
-export type { ChatFileOption, ChatSkillOption, InputAreaProps, InputAttachment, InputReference, InputSendPayload, } from "./InputArea";
+export type { ChatFileOption, ChatSkillOption, ChatThinkingLevel, InputAreaProps, InputAttachment, InputReference, InputSendPayload, } from "./InputArea";
 export { CHAT_FILE_OPTIONS, CHAT_INPUT_GUIDE_TEXT, CHAT_RECENT_FILE_OPTIONS, CHAT_SKILL_OPTIONS, insertFileReference, insertSkillCommand, resolveAtQuery, resolveSlashQuery, } from "./InputArea";
 export { MessageItem } from "./MessageItem";
 export type { MessageItemProps } from "./MessageItem";

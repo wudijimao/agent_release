@@ -6,7 +6,9 @@ export interface InputSendPayload {
     content: string;
     attachments: InputAttachment[];
     references: InputReference[];
+    thinkingLevel: ChatThinkingLevel;
 }
+export type ChatThinkingLevel = 'low' | 'medium' | 'high';
 export interface InputAreaProps {
     onSend: (payload: InputSendPayload) => void;
     disabled: boolean;

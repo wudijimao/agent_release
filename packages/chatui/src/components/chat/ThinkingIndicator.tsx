@@ -64,6 +64,8 @@ export interface ThinkingIndicatorProps {
   defaultExpanded?: boolean;
   /** 当前回复在本地经过的秒数 */
   elapsedSeconds?: number;
+  /** Current live reasoning content for the active reply. */
+  reasoning?: string;
 }
 
 /* ── 阶段对应文案 ── */
@@ -162,8 +164,10 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
   label,
   defaultExpanded = true,
   elapsedSeconds,
+  reasoning,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const [reasoningExpanded, setReasoningExpanded] = useState(false);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
 
   /* 当步骤列表变化时自动展开 */
@@ -178,6 +182,8 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
     elapsedSeconds === undefined
       ? undefined
       : `${Math.floor(elapsedSeconds / 60)}:${String(elapsedSeconds % 60).padStart(2, '0')}`;
+  const reasoningLines = reasoning?.split(/\r?\n/).map((line) => line.trim()).filter(Boolean) ?? [];
+  const reasoningLastLine = reasoningLines[reasoningLines.length - 1] ?? '';
 
   return (
     <div className="flex w-full flex-col items-start">
@@ -216,6 +222,34 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
       </div>
 
       {/* ── 搜索步骤列表（可折叠） ── */}
+      {reasoning && (
+        <div className="mt-1 w-full max-w-[680px] rounded-xl border border-lineSubtle bg-surfaceMuted px-3 py-2.5">
+          <button
+            type="button"
+            onClick={() => setReasoningExpanded((current) => !current)}
+            className="flex w-full items-center gap-1.5 text-left text-[13px] font-medium text-secondaryText"
+            aria-expanded={reasoningExpanded}
+          >
+            {reasoningExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+            <span className="shrink-0">Thinking</span>
+            {!reasoningExpanded && reasoningLastLine && (
+              <span className="relative ml-2 min-w-0 flex-1 overflow-hidden text-left text-[12px] font-normal text-tertiaryText">
+                <span className="block whitespace-nowrap">{reasoningLastLine}</span>
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-r from-transparent to-surfaceMuted"
+                />
+              </span>
+            )}
+          </button>
+          {reasoningExpanded && (
+            <div className="mt-2 whitespace-pre-wrap border-t border-lineSubtle pt-2 text-[13px] leading-6 text-secondaryText">
+              {reasoning}
+            </div>
+          )}
+        </div>
+      )}
+
       {hasSteps && (
         <div
           ref={stepsContainerRef}

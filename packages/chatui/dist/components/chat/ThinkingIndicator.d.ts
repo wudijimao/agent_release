@@ -33,6 +33,8 @@ export interface ThinkingIndicatorProps {
     defaultExpanded?: boolean;
     /** 当前回复在本地经过的秒数 */
     elapsedSeconds?: number;
+    /** Current live reasoning content for the active reply. */
+    reasoning?: string;
 }
 export declare const ThinkingIndicator: React.FC<ThinkingIndicatorProps>;
 declare const _default: React.NamedExoticComponent<ThinkingIndicatorProps>;

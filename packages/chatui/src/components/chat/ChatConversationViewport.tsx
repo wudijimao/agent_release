@@ -128,6 +128,14 @@ export function ChatConversationViewport({
       : undefined;
   const activeTurnKey =
     activeUserKey && activeAssistantKey ? `${activeUserKey}:${activeAssistantKey}` : undefined;
+  const activeAssistantMessage =
+    activeAssistantIndex >= 0 ? messages[activeAssistantIndex] : undefined;
+  const isShowingLiveReasoning = Boolean(
+    activeAssistantMessage?.reasoning && !activeAssistantMessage.content,
+  );
+  const shouldShowFloatingStatus =
+    shouldShowStatus &&
+    (!hasReceivedAssistantChunk || isShowingLiveReasoning || hasPersistentStatus);
 
   useEffect(() => {
     if (!isTyping) {
@@ -282,12 +290,23 @@ export function ChatConversationViewport({
                 <div
                   className={
                     selection
-                      ? `min-w-0 flex-1 rounded-xl px-2 transition-colors ${
+                      ? `relative min-w-0 flex-1 rounded-xl px-2 transition-colors ${
                           isSelected ? 'bg-surfaceMuted' : 'bg-transparent hover:bg-bgLight'
                         } ${message.role === 'user' ? 'py-2.5' : 'py-1.5'}`
-                      : undefined
+                      : 'relative'
                   }
                 >
+                  {index === activeAssistantIndex && shouldShowFloatingStatus && (
+                    <div className="absolute left-0 top-0 z-10 flex w-full justify-start px-1 md:px-2">
+                      <ThinkingIndicator
+                        phase={statusPhase}
+                        label={statusLabel}
+                        searchSteps={isShowingLiveReasoning ? [] : [...searchSteps]}
+                        elapsedSeconds={isTyping ? replyElapsedSeconds : undefined}
+                        reasoning={isShowingLiveReasoning ? activeAssistantMessage?.reasoning : undefined}
+                      />
+                    </div>
+                  )}
                   <MessageItem
                     msg={message}
                     actionKey={messageKey}
@@ -301,16 +320,6 @@ export function ChatConversationViewport({
                     onDisplayCardAction={onDisplayCardAction}
                     isTyping={isTyping && index === activeAssistantIndex}
                   />
-                  {index === activeAssistantIndex && shouldShowStatus && (
-                      <div className="flex w-full justify-start px-1 md:px-2">
-                        <ThinkingIndicator
-                          phase={statusPhase}
-                          label={statusLabel}
-                          searchSteps={[...searchSteps]}
-                          elapsedSeconds={isTyping ? replyElapsedSeconds : undefined}
-                        />
-                      </div>
-                    )}
                 </div>
               </div>
             );
@@ -322,7 +331,7 @@ export function ChatConversationViewport({
                 <ThinkingIndicator
                   phase={statusPhase}
                   label={statusLabel}
-                  searchSteps={[...searchSteps]}
+                  searchSteps={isShowingLiveReasoning ? [] : [...searchSteps]}
                   elapsedSeconds={isTyping ? replyElapsedSeconds : undefined}
                 />
               </div>

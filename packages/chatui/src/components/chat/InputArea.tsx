@@ -9,7 +9,10 @@ export interface InputSendPayload {
   content: string;
   attachments: InputAttachment[];
   references: InputReference[];
+  thinkingLevel: ChatThinkingLevel;
 }
+
+export type ChatThinkingLevel = 'low' | 'medium' | 'high';
 
 export interface InputAreaProps {
   onSend: (payload: InputSendPayload) => void;
@@ -154,6 +157,7 @@ export const InputArea = ({
   const [referencedSkills, setReferencedSkills] = useState<InputReference[]>([]);
   const [referencedDocs, setReferencedDocs] = useState<InputReference[]>([]);
   const [showUploadHint, setShowUploadHint] = useState(false);
+  const [thinkingLevel, setThinkingLevel] = useState<ChatThinkingLevel>('low');
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const isComposingRef = useRef(false);
@@ -408,6 +412,7 @@ export const InputArea = ({
         file: file.file,
       })),
       references: [...referencedSkills, ...referencedDocs],
+      thinkingLevel,
     });
 
     setVal('');
@@ -422,7 +427,7 @@ export const InputArea = ({
     setShowFileMenu(false);
     setFileQuery('');
     setActiveFileIndex(-1);
-  }, [val, disabled, isStreaming, onSend, uploadedFiles, referencedDocs, referencedSkills]);
+  }, [val, disabled, isStreaming, onSend, uploadedFiles, referencedDocs, referencedSkills, thinkingLevel]);
 
   return (
     <div className="w-full max-w-[840px] mx-auto">
@@ -752,6 +757,20 @@ export const InputArea = ({
         <div className="flex justify-between items-center p-3 pt-0">
           <div className="flex items-center gap-2 min-w-0">
             {leadingControls}
+            <label className="inline-flex h-8 items-center rounded-full border border-borderGray bg-white px-2.5 text-[12px] text-secondaryText transition-colors hover:bg-bgLight">
+              <span className="mr-1.5 whitespace-nowrap">推理</span>
+              <select
+                value={thinkingLevel}
+                disabled={isStreaming}
+                onChange={(event) => setThinkingLevel(event.target.value as ChatThinkingLevel)}
+                aria-label="推理程度"
+                className="cursor-pointer appearance-none bg-transparent pr-1 font-medium text-primaryText outline-none disabled:cursor-not-allowed"
+              >
+                <option value="low">低</option>
+                <option value="medium">中</option>
+                <option value="high">高</option>
+              </select>
+            </label>
             <div
               className="relative"
               onMouseEnter={() => setShowUploadHint(true)}

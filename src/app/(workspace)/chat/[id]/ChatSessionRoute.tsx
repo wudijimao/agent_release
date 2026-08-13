@@ -180,6 +180,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const currentProject = projects.find(
     (project) => project.id === currentChat?.projectId,
   );
+  const currentChatId = currentChat?.id;
+  const currentProjectName = currentProject?.name;
   const { activeLab } = useLab();
   const { status, error: authError, refreshSession } = useAuth();
   const { catalog: resourceCatalog, error: resourceError } =
@@ -334,9 +336,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       try {
         const session = await loadChatSession(api, sessionId, {
           signal,
-          projectName: currentProject?.name,
+          projectName: currentProjectName,
         });
         if (signal?.aborted) return;
+        if (streamControllerRef.current) return;
         setTitle(session.title);
         setStreamState({
           ...initialStreamState,
@@ -368,7 +371,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (!signal?.aborted) setPageStatus("ready");
       }
     },
-    [api, currentProject, refreshChats, sessionId],
+    [api, currentProjectName, refreshChats, sessionId],
   );
 
   const loadProjectWorkspace = useCallback(
@@ -415,7 +418,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, [chats, currentChat, navigation, status]);
 
   useEffect(() => {
-    if (status !== "authenticated" || !currentChat) return;
+    if (status !== "authenticated" || !currentChatId) return;
     const controller = new AbortController();
     queueMicrotask(() => {
       if (!controller.signal.aborted) {
@@ -423,7 +426,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       }
     });
     return () => controller.abort();
-  }, [currentChat, loadPage, status]);
+  }, [currentChatId, loadPage, status]);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -607,6 +610,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           {
             message: payload.content.trim(),
             sessionId,
+            thinkingLevel: payload.thinkingLevel,
             ...sendScope,
           },
           {

@@ -466,7 +466,7 @@ test("regenerate payload reuses the closest previous user message without stale 
       ],
       3,
     ),
-    { content: "第二次问题", attachments: [], references: [] },
+    { content: "第二次问题", attachments: [], references: [], thinkingLevel: "low" },
   );
 
   assert.equal(
@@ -489,6 +489,22 @@ test("loadChatSession calls the real history detail endpoint", async () => {
 
   assert.deepEqual(calls, ["/api/chat/history?sessionId=session%2F1"]);
   assert.equal(result.id, "session-1");
+});
+
+test("stream reducer accumulates live reasoning before answer text", () => {
+  let state = beginChatStream([], { role: "user", content: "问题" });
+
+  state = reduceChatStreamEvent(state, "reasoning", { content: "先分析" });
+  state = reduceChatStreamEvent(state, "reasoning", { content: "，再判断" });
+
+  assert.equal(state.messages.at(-1)?.reasoning, "先分析，再判断");
+  assert.equal(state.messages.at(-1)?.content, "");
+  assert.equal(state.statusPhase, "thinking");
+
+  state = reduceChatStreamEvent(state, "text", { content: "结论" });
+  assert.equal(state.messages.at(-1)?.reasoning, "先分析，再判断");
+  assert.equal(state.messages.at(-1)?.content, "结论");
+  assert.equal(state.statusPhase, "generating");
 });
 
 test("stream reducer keeps consuming ordered task status after the first text chunk", () => {
