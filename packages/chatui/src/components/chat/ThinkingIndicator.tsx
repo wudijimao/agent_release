@@ -62,6 +62,8 @@ export interface ThinkingIndicatorProps {
   label?: string;
   /** 是否默认展开搜索步骤，默认 true */
   defaultExpanded?: boolean;
+  /** 当前回复在本地经过的秒数 */
+  elapsedSeconds?: number;
 }
 
 /* ── 阶段对应文案 ── */
@@ -159,6 +161,7 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
   searchSteps = [],
   label,
   defaultExpanded = true,
+  elapsedSeconds,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
@@ -171,6 +174,10 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
   }, [searchSteps.length]);
 
   const hasSteps = searchSteps.length > 0;
+  const elapsedLabel =
+    elapsedSeconds === undefined
+      ? undefined
+      : `${Math.floor(elapsedSeconds / 60)}:${String(elapsedSeconds % 60).padStart(2, '0')}`;
 
   return (
     <div className="flex w-full flex-col items-start">
@@ -185,6 +192,15 @@ export const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
         <span className="text-[13px] leading-5 text-secondaryText select-none">
           {label || PHASE_LABEL[phase]}
         </span>
+
+        {elapsedLabel && (
+          <span
+            className="text-[12px] tabular-nums leading-5 text-tertiaryText select-none"
+            aria-label={`已用时 ${elapsedLabel}`}
+          >
+            {elapsedLabel}
+          </span>
+        )}
 
         {/* 搜索步骤折叠按钮 */}
         {hasSteps && (

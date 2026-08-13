@@ -31,6 +31,8 @@ export interface ThinkingIndicatorProps {
     label?: string;
     /** 是否默认展开搜索步骤，默认 true */
     defaultExpanded?: boolean;
+    /** 当前回复在本地经过的秒数 */
+    elapsedSeconds?: number;
 }
 export declare const ThinkingIndicator: React.FC<ThinkingIndicatorProps>;
 declare const _default: React.NamedExoticComponent<ThinkingIndicatorProps>;

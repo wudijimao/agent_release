@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { MessageItem } from './MessageItem';
 import { ThinkingIndicator, type SearchStep, type StatusPhase } from './ThinkingIndicator';
@@ -90,7 +90,9 @@ export function ChatConversationViewport({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const messageElementsRef = useRef(new Map<number, HTMLDivElement>());
   const positionedTurnKeyRef = useRef<string>();
+  const replyStartedAtRef = useRef<number>();
   const [reservedTurn, setReservedTurn] = useState<ReservedTurnLayout>();
+  const [replyElapsedSeconds, setReplyElapsedSeconds] = useState(0);
   const hasPersistentStatus =
     statusPhase === 'awaiting_clarification' ||
     statusPhase === 'awaiting_confirmation' ||
@@ -126,6 +128,25 @@ export function ChatConversationViewport({
       : undefined;
   const activeTurnKey =
     activeUserKey && activeAssistantKey ? `${activeUserKey}:${activeAssistantKey}` : undefined;
+
+  useEffect(() => {
+    if (!isTyping) {
+      replyStartedAtRef.current = undefined;
+      setReplyElapsedSeconds(0);
+      return;
+    }
+
+    replyStartedAtRef.current = Date.now();
+    setReplyElapsedSeconds(0);
+
+    const timer = window.setInterval(() => {
+      const startedAt = replyStartedAtRef.current;
+      if (startedAt === undefined) return;
+      setReplyElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [isTyping]);
 
   const setScrollContainer = useCallback(
     (element: HTMLDivElement | null) => {
@@ -286,6 +307,7 @@ export function ChatConversationViewport({
                           phase={statusPhase}
                           label={statusLabel}
                           searchSteps={[...searchSteps]}
+                          elapsedSeconds={isTyping ? replyElapsedSeconds : undefined}
                         />
                       </div>
                     )}
@@ -301,6 +323,7 @@ export function ChatConversationViewport({
                   phase={statusPhase}
                   label={statusLabel}
                   searchSteps={[...searchSteps]}
+                  elapsedSeconds={isTyping ? replyElapsedSeconds : undefined}
                 />
               </div>
             </div>

@@ -126,10 +126,9 @@ export function mapAiUsageViewModel(
     estimatedDays <= 7;
   const overviewCards: AiUsageOverviewCard[] = [
     {
-      title: "账户 Token 余额",
+      title: "账户余额",
       value: numberFormatter.format(summary.tokenBalance),
       helper: "实验室共享额度",
-      tooltip: "当前实验室可供 AI 调用消耗的 Token 余额",
       ...(summary.tokenBalance <= 0 ? { warningLabel: "余额不足" } : {}),
     },
     {

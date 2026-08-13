@@ -96,6 +96,8 @@ test("AI usage view model filters trend by month and member", () => {
   assert.equal(view.trendTotal, 100);
   assert.equal(view.rechargeRecords.length, 1);
   assert.equal(view.memberOptions[1]?.label, "Mira");
+  assert.equal(view.overviewCards[0]?.title, "账户余额");
+  assert.equal(view.overviewCards[0]?.tooltip, undefined);
   assert.equal(view.overviewCards[2]?.warningLabel, "用量提醒");
 });
 
