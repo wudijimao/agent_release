@@ -156,6 +156,8 @@ export const InputArea = ({
   const [showUploadHint, setShowUploadHint] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const isComposingRef = useRef(false);
+  const compositionEndedAtRef = useRef(0);
   const filePickerRef = useRef<HTMLInputElement | null>(null);
   const filePickerId = useId();
   const uploadedFilesRef = useRef<UploadedInputFile[]>([]);
@@ -510,6 +512,17 @@ export const InputArea = ({
           ref={textareaRef}
           autoFocus={autoFocus}
           value={val}
+          onCompositionStart={() => {
+            isComposingRef.current = true;
+          }}
+          onCompositionEnd={(event) => {
+            isComposingRef.current = false;
+            compositionEndedAtRef.current = performance.now();
+            syncCommandMenuState(
+              event.currentTarget.value,
+              event.currentTarget.selectionStart,
+            );
+          }}
           onChange={(event) => {
             const nextValue = event.target.value;
             setVal(nextValue);
@@ -523,6 +536,17 @@ export const InputArea = ({
             syncCommandMenuState(event.currentTarget.value, event.currentTarget.selectionStart);
           }}
           onKeyDown={(event) => {
+            const nativeEvent = event.nativeEvent;
+            if (
+              isComposingRef.current ||
+              nativeEvent.isComposing ||
+              nativeEvent.keyCode === 229 ||
+              (event.key === 'Enter' &&
+                performance.now() - compositionEndedAtRef.current < 50)
+            ) {
+              return;
+            }
+
             if (event.key === 'Enter' && (event.shiftKey || event.metaKey || event.ctrlKey)) {
               event.preventDefault();
               const textarea = event.currentTarget;
