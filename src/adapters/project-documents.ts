@@ -11,7 +11,11 @@ import {
   type ProjectKnowledgeType,
 } from "@bioagent/shared";
 
-import type { ApiClient } from "@/lib/api";
+import {
+  ATTACHMENT_TOO_LARGE_MESSAGE,
+  isPayloadTooLargeError,
+  type ApiClient,
+} from "@/lib/api";
 import { createClientId } from "@/lib/client-id";
 
 type ProjectDocumentCreateApi = Pick<ApiClient, "post">;
@@ -265,11 +269,19 @@ async function uploadProjectDocumentAttachment(
 ) {
   const mimeType = file.type || "application/octet-stream";
   const encodedNodeId = encodeURIComponent(nodeId);
-  const presigned = await api.post<KbAttachmentPresignResponse>(
-    `/api/knowledge/wiki2/nodes/${encodedNodeId}/attachments/presign`,
-    { fileName: file.name },
-    signal ? { signal } : undefined,
-  );
+  let presigned: KbAttachmentPresignResponse;
+  try {
+    presigned = await api.post<KbAttachmentPresignResponse>(
+      `/api/knowledge/wiki2/nodes/${encodedNodeId}/attachments/presign`,
+      { fileName: file.name },
+      signal ? { signal } : undefined,
+    );
+  } catch (error) {
+    if (isPayloadTooLargeError(error)) {
+      throw new Error(ATTACHMENT_TOO_LARGE_MESSAGE);
+    }
+    throw error;
+  }
 
   const uploadResponse = await fetchImpl(presigned.uploadUrl, {
     method: "PUT",
@@ -278,7 +290,11 @@ async function uploadProjectDocumentAttachment(
     signal,
   });
   if (!uploadResponse.ok) {
-    throw new Error(`文档上传失败（HTTP ${uploadResponse.status}）`);
+    throw new Error(
+      uploadResponse.status === 413
+        ? ATTACHMENT_TOO_LARGE_MESSAGE
+        : `文档上传失败（HTTP ${uploadResponse.status}）`,
+    );
   }
 
   const attachment = await api.post<KbAttachment>(

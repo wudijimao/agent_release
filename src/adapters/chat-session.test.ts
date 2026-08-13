@@ -850,6 +850,10 @@ test("interruptChatStream removes only an empty assistant placeholder", () => {
 
 test("getChatStreamErrorMessage reduces technical failures to four user-facing categories", () => {
   assert.equal(
+    getChatStreamErrorMessage(new ApiError("HTTP_413", "Request failed", 413)),
+    "附件尺寸过大",
+  );
+  assert.equal(
     getChatStreamErrorMessage(
       new ChatStreamTimeoutError("connect"),
     ),

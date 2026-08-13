@@ -10,7 +10,11 @@ import {
   type HomeContextRef,
 } from "@bioagent/shared";
 
-import type { ApiClient, ApiRequestOptions } from "@/lib/api";
+import {
+  ATTACHMENT_TOO_LARGE_MESSAGE,
+  type ApiClient,
+  type ApiRequestOptions,
+} from "@/lib/api";
 
 const CHAT_ATTACHMENTS_PATH = "/api/chat/attachments";
 const DEFAULT_MIME_TYPE = "application/octet-stream";
@@ -134,7 +138,9 @@ async function uploadPresignedObject(options: {
   if (!response.ok) {
     throw new ChatAttachmentUploadError(
       "ATTACHMENT_OBJECT_UPLOAD_FAILED",
-      `附件上传失败（HTTP ${response.status}）`,
+      response.status === 413
+        ? ATTACHMENT_TOO_LARGE_MESSAGE
+        : `附件上传失败（HTTP ${response.status}）`,
       response.status,
     );
   }

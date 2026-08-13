@@ -224,3 +224,32 @@ test("existing document attachment upload keeps recognition out of the body", as
     insertMode: "none",
   });
 });
+
+test("project document upload reports a friendly message for HTTP 413", async () => {
+  const api = {
+    async post<T>(path: string) {
+      if (path.endsWith("/attachments/presign")) {
+        return {
+          key: "wiki2/large.pdf",
+          objectKey: "wiki2/large.pdf",
+          uploadUrl: "https://storage.example/upload",
+          storageUrl: "https://storage.example/large.pdf",
+        } as T;
+      }
+      throw new Error(`Unexpected request: ${path}`);
+    },
+    async delete<T>() {
+      return { deleted: true } as T;
+    },
+  };
+
+  await assert.rejects(
+    uploadProjectDocumentAttachments(api, {
+      nodeId: "node-1",
+      files: [new File(["large"], "large.pdf", { type: "application/pdf" })],
+      fetch: async () => new Response(null, { status: 413 }),
+    }),
+    (error: unknown) =>
+      error instanceof Error && error.message === "附件尺寸过大",
+  );
+});

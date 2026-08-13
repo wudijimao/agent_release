@@ -33,6 +33,9 @@ export function buildBackendRewrites(backendUrl = DEFAULT_BACKEND_URL) {
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    proxyClientMaxBodySize: "128mb",
+  },
   ...(process.env.NEXT_OUTPUT_STANDALONE === "1"
     ? {
         output: "standalone" as const,

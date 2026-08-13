@@ -247,6 +247,25 @@ test("uploadChatAttachment stops before registration when object storage rejects
   assert.equal(calls[0]?.path, "/api/chat/attachments/presign");
 });
 
+test("uploadChatAttachment reports a friendly message for HTTP 413", async () => {
+  const calls: ApiCall[] = [];
+  const api = createAttachmentApi({ calls });
+
+  await assert.rejects(
+    uploadChatAttachment({
+      api,
+      file: new File(["# notes"], "notes.md", { type: "text/markdown" }),
+      fetch: async () => new Response(null, { status: 413 }),
+    }),
+    (error: unknown) => {
+      assert.ok(error instanceof ChatAttachmentUploadError);
+      assert.equal(error.status, 413);
+      assert.equal(error.message, "附件尺寸过大");
+      return true;
+    },
+  );
+});
+
 test("uploadChatAttachment rejects a new upload when the server omits its draft id", async () => {
   const calls: ApiCall[] = [];
   const api = createAttachmentApi({

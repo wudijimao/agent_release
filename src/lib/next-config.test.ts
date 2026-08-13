@@ -5,6 +5,7 @@ import {
   applicationSecurityHeaders,
   buildBackendRewrites,
 } from "../../next.config";
+import nextConfig from "../../next.config";
 
 test("backend rewrites expose health separately from API routes in every environment", () => {
   assert.deepEqual(
@@ -41,4 +42,8 @@ test("application responses carry the migrated security header policy", () => {
   assert.equal(headers.get("X-Content-Type-Options"), "nosniff");
   assert.match(headers.get("Content-Security-Policy") || "", /frame-ancestors 'none'/);
   assert.match(headers.get("Permissions-Policy") || "", /camera=\(\)/);
+});
+
+test("Next.js proxy accepts request bodies up to 128MB", () => {
+  assert.equal(nextConfig.experimental?.proxyClientMaxBodySize, "128mb");
 });

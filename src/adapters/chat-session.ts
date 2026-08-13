@@ -16,7 +16,13 @@ import type {
   StatusPhase,
 } from "@bioagent/chatui";
 
-import { ApiError, ChatStreamTimeoutError, type ApiClient } from "@/lib/api";
+import {
+  ATTACHMENT_TOO_LARGE_MESSAGE,
+  ApiError,
+  ChatStreamTimeoutError,
+  isPayloadTooLargeError,
+  type ApiClient,
+} from "@/lib/api";
 import {
   mapMiraDocumentDraft,
   type MiraDocumentDraftAction,
@@ -776,6 +782,10 @@ export function interruptChatStream(
 }
 
 export function getChatStreamErrorMessage(error: unknown): string {
+  if (isPayloadTooLargeError(error)) {
+    return ATTACHMENT_TOO_LARGE_MESSAGE;
+  }
+
   if (error instanceof ChatStreamTimeoutError) {
     return "AI 响应超时，请重试。";
   }
