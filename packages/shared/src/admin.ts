@@ -30,6 +30,7 @@ export interface AdminOverviewResponse {
   last7dTokenUsage: number;
   estimatedRemainingDays?: number | null;
   pendingSharedRequestCount: number;
+  billing?: AdminAiBillingSummary;
 }
 
 export interface AdminMemberUsageSummary {
@@ -73,6 +74,7 @@ export interface AdminUsageSummaryResponse {
   monthTokenUsage: number;
   last7dTokenUsage: number;
   estimatedRemainingDays?: number | null;
+  billing?: AdminAiBillingSummary;
   byMember: Array<{
     userId: string;
     name: string;
@@ -84,6 +86,15 @@ export interface AdminUsageSummaryResponse {
     name: string;
     totalTokens: number;
   }>;
+}
+
+export interface AdminAiBillingSummary {
+  totalAmountCents: number;
+  usedAmountCents: number;
+  remainingAmountCents: number;
+  currency: 'CNY' | string;
+  isEnabled: boolean;
+  updatedAt?: string | null;
 }
 
 export interface AdminUsageEventItem {
@@ -99,6 +110,7 @@ export interface AdminUsageEventItem {
   inputTokens: number;
   outputTokens: number;
   totalTokens: number;
+  estimatedCostCents?: number | null;
   eventSource: AdminUsageEventSource | string;
   createdAt: string;
 }

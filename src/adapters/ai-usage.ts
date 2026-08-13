@@ -30,6 +30,12 @@ export interface AiUsageViewModel {
 }
 
 const numberFormatter = new Intl.NumberFormat("zh-CN");
+const currencyFormatter = new Intl.NumberFormat("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 const dateTimeFormatter = new Intl.DateTimeFormat("zh-CN", {
   year: "numeric",
   month: "2-digit",
@@ -59,7 +65,9 @@ export function shouldShowAiUsageReminder(
   summary: AdminUsageSummaryResponse,
 ): boolean {
   return (
-    summary.tokenBalance <= 0 ||
+    (summary.billing
+      ? summary.billing.remainingAmountCents <= 0
+      : summary.tokenBalance <= 0) ||
     (summary.estimatedRemainingDays !== null &&
       summary.estimatedRemainingDays !== undefined &&
       summary.estimatedRemainingDays <= 7)
@@ -124,12 +132,13 @@ export function mapAiUsageViewModel(
     estimatedDays !== null &&
     estimatedDays !== undefined &&
     estimatedDays <= 7;
+  const remainingAmountCents = summary.billing?.remainingAmountCents ?? 0;
   const overviewCards: AiUsageOverviewCard[] = [
     {
       title: "账户余额",
-      value: numberFormatter.format(summary.tokenBalance),
+      value: currencyFormatter.format(remainingAmountCents / 100),
       helper: "实验室共享额度",
-      ...(summary.tokenBalance <= 0 ? { warningLabel: "余额不足" } : {}),
+      ...(remainingAmountCents <= 0 ? { warningLabel: "余额不足" } : {}),
     },
     {
       title: "本月 Token 消耗",

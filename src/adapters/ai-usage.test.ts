@@ -18,6 +18,13 @@ const summary: AdminUsageSummaryResponse = {
   monthTokenUsage: 3_000,
   last7dTokenUsage: 700,
   estimatedRemainingDays: 6,
+  billing: {
+    totalAmountCents: 200_000,
+    usedAmountCents: 76_544,
+    remainingAmountCents: 123_456,
+    currency: "CNY",
+    isEnabled: true,
+  },
   byMember: [
     {
       userId: "user-1",
@@ -97,6 +104,7 @@ test("AI usage view model filters trend by month and member", () => {
   assert.equal(view.rechargeRecords.length, 1);
   assert.equal(view.memberOptions[1]?.label, "Mira");
   assert.equal(view.overviewCards[0]?.title, "账户余额");
+  assert.equal(view.overviewCards[0]?.value, "¥1,234.56");
   assert.equal(view.overviewCards[0]?.tooltip, undefined);
   assert.equal(view.overviewCards[2]?.warningLabel, "用量提醒");
 });
@@ -110,9 +118,18 @@ test("AI usage reminder follows the fixed seven-day threshold", () => {
   assert.equal(
     shouldShowAiUsageReminder({
       ...summary,
-      tokenBalance: 0,
+      billing: { ...summary.billing!, remainingAmountCents: 0 },
       estimatedRemainingDays: null,
     }),
     true,
+  );
+  assert.equal(
+    shouldShowAiUsageReminder({
+      ...summary,
+      tokenBalance: 0,
+      billing: { ...summary.billing!, remainingAmountCents: 100 },
+      estimatedRemainingDays: null,
+    }),
+    false,
   );
 });
