@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useId } from 'react';
-import { Plus, Send, Search, Clock3, FileText, Paperclip, Puzzle, AtSign, X, Square } from 'lucide-react';
+import { Plus, Send, Search, Clock3, FileText, Paperclip, Puzzle, AtSign, X, Square, ChevronRight, ChevronUp, Cpu, Brain, Check } from 'lucide-react';
 import type { ChatAttachment, ChatReference } from './chat.types';
 
 export type InputAttachment = ChatAttachment;
@@ -130,6 +130,20 @@ export const insertFileReference = (text: string, start: number, end: number, fi
 export const CHAT_FILE_OPTIONS: readonly ChatFileOption[] = [];
 export const CHAT_RECENT_FILE_OPTIONS: readonly ChatFileOption[] = [];
 
+export interface ThinkingDepthOption {
+  id: ChatThinkingLevel;
+  label: string;
+  desc: string;
+}
+
+export const THINKING_DEPTH_OPTIONS: ThinkingDepthOption[] = [
+  { id: 'low', label: 'Fast', desc: '快速响应，适合简单问题' },
+  { id: 'medium', label: 'Deep', desc: '深度分析，平衡速度与质量' },
+  { id: 'high', label: 'Max', desc: '最强推理，适合复杂任务' },
+];
+
+const FIXED_MODEL_LABEL = 'DeepSeek V4';
+
 export const InputArea = ({
   onSend,
   disabled,
@@ -157,7 +171,10 @@ export const InputArea = ({
   const [referencedSkills, setReferencedSkills] = useState<InputReference[]>([]);
   const [referencedDocs, setReferencedDocs] = useState<InputReference[]>([]);
   const [showUploadHint, setShowUploadHint] = useState(false);
-  const [thinkingLevel, setThinkingLevel] = useState<ChatThinkingLevel>('low');
+  const [thinkingLevel, setThinkingLevel] = useState<ChatThinkingLevel>('medium');
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [showDepthSubmenu, setShowDepthSubmenu] = useState(false);
+  const [depthSubmenuPos, setDepthSubmenuPos] = useState<{ bottom: number; left: number } | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const isComposingRef = useRef(false);
@@ -165,6 +182,10 @@ export const InputArea = ({
   const filePickerRef = useRef<HTMLInputElement | null>(null);
   const filePickerId = useId();
   const uploadedFilesRef = useRef<UploadedInputFile[]>([]);
+  const settingsMenuRef = useRef<HTMLDivElement | null>(null);
+  const primaryMenuRef = useRef<HTMLDivElement | null>(null);
+  const depthRowRef = useRef<HTMLDivElement | null>(null);
+  const depthSubmenuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showStop = isStreaming;
   const canCancel = showStop && Boolean(onCancel);
 
@@ -179,6 +200,24 @@ export const InputArea = ({
           URL.revokeObjectURL(file.previewUrl);
         }
       });
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showSettingsMenu) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (settingsMenuRef.current && !settingsMenuRef.current.contains(event.target as Node)) {
+        setShowSettingsMenu(false);
+        setShowDepthSubmenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [showSettingsMenu]);
+
+  useEffect(() => {
+    return () => {
+      if (depthSubmenuTimerRef.current) clearTimeout(depthSubmenuTimerRef.current);
     };
   }, []);
 
@@ -757,20 +796,6 @@ export const InputArea = ({
         <div className="flex justify-between items-center p-3 pt-0">
           <div className="flex items-center gap-2 min-w-0">
             {leadingControls}
-            <label className="inline-flex h-8 items-center rounded-full border border-borderGray bg-white px-2.5 text-[12px] text-secondaryText transition-colors hover:bg-bgLight">
-              <span className="mr-1.5 whitespace-nowrap">推理</span>
-              <select
-                value={thinkingLevel}
-                disabled={isStreaming}
-                onChange={(event) => setThinkingLevel(event.target.value as ChatThinkingLevel)}
-                aria-label="推理程度"
-                className="cursor-pointer appearance-none bg-transparent pr-1 font-medium text-primaryText outline-none disabled:cursor-not-allowed"
-              >
-                <option value="low">低</option>
-                <option value="medium">中</option>
-                <option value="high">高</option>
-              </select>
-            </label>
             <div
               className="relative"
               onMouseEnter={() => setShowUploadHint(true)}
@@ -793,6 +818,156 @@ export const InputArea = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div ref={settingsMenuRef} className="relative">
+              <button
+                type="button"
+                disabled={isStreaming}
+                onClick={() => {
+                  setShowSettingsMenu((visible) => !visible);
+                  setShowDepthSubmenu(false);
+                }}
+                aria-haspopup="menu"
+                aria-expanded={showSettingsMenu}
+                className={`flex h-8 select-none items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-medium transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
+                  showSettingsMenu
+                    ? 'border-controlBorderHover bg-primary-soft text-primary'
+                    : 'border-borderGray bg-white text-secondaryText hover:border-controlBorder hover:bg-bgLight'
+                }`}
+              >
+                <Cpu size={13} className="shrink-0" />
+                <span className="max-w-[90px] truncate leading-none">{FIXED_MODEL_LABEL}</span>
+                <span className="inline-flex items-center justify-center rounded bg-bgLight px-1 py-0.5 text-[10px] font-semibold leading-none text-tertiaryText">
+                  {THINKING_DEPTH_OPTIONS.find((depth) => depth.id === thinkingLevel)?.label}
+                </span>
+                <ChevronUp
+                  size={12}
+                  className={`shrink-0 transition-transform duration-200 ${showSettingsMenu ? 'rotate-0' : 'rotate-180'}`}
+                />
+              </button>
+
+              {showSettingsMenu && (
+                <div
+                  ref={primaryMenuRef}
+                  role="menu"
+                  className="absolute bottom-full right-0 z-50 mb-2 w-[220px] rounded-xl border border-[#e6ecf2] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.12)]"
+                  onMouseDown={(event) => event.preventDefault()}
+                >
+                  <div className="px-3 pb-1 pt-2.5">
+                    <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-tertiaryText">
+                      <Cpu size={11} />
+                      模型
+                    </span>
+                  </div>
+
+                  <div className="px-1.5 pb-1">
+                    <button
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked="true"
+                      onClick={() => {
+                        setShowSettingsMenu(false);
+                        setShowDepthSubmenu(false);
+                      }}
+                      className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-primaryText transition-colors hover:bg-[#f4f7fb]"
+                    >
+                      <span className="truncate text-[13px] font-medium leading-tight">{FIXED_MODEL_LABEL}</span>
+                      <span className="flex w-4 shrink-0 items-center gap-1.5">
+                        <Check size={14} className="shrink-0 text-primaryText" />
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="mx-3 border-t border-[#eef2f6]" />
+
+                  <div className="px-1.5 py-1.5">
+                    <div
+                      ref={depthRowRef}
+                      className="relative"
+                      onMouseEnter={() => {
+                        if (depthSubmenuTimerRef.current) clearTimeout(depthSubmenuTimerRef.current);
+                        if (primaryMenuRef.current) {
+                          const primaryRect = primaryMenuRef.current.getBoundingClientRect();
+                          setDepthSubmenuPos({
+                            bottom: window.innerHeight - primaryRect.bottom,
+                            left: primaryRect.left - 209,
+                          });
+                        }
+                        setShowDepthSubmenu(true);
+                      }}
+                      onMouseLeave={() => {
+                        depthSubmenuTimerRef.current = setTimeout(() => setShowDepthSubmenu(false), 120);
+                      }}
+                    >
+                      <button
+                        type="button"
+                        className={`flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 transition-colors ${
+                          showDepthSubmenu ? 'bg-[#f4f7fb]' : 'hover:bg-[#f4f7fb]'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <Brain size={13} className="shrink-0 text-tertiaryText" />
+                          <span className="text-[13px] font-medium leading-tight text-primaryText">思考深度</span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-1.5">
+                          <span className="rounded bg-bgLight px-1.5 py-0.5 text-[10px] font-semibold leading-none text-tertiaryText">
+                            {THINKING_DEPTH_OPTIONS.find((depth) => depth.id === thinkingLevel)?.label}
+                          </span>
+                          <ChevronRight size={13} className="text-tertiaryText" />
+                        </span>
+                      </button>
+
+                      {showDepthSubmenu && depthSubmenuPos && (
+                        <div
+                          role="menu"
+                          style={{
+                            position: 'fixed',
+                            bottom: `${depthSubmenuPos.bottom}px`,
+                            left: `${depthSubmenuPos.left}px`,
+                          }}
+                          className="z-[9999] w-[200px] overflow-hidden rounded-xl border border-[#e6ecf2] bg-white py-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.12)]"
+                          onMouseEnter={() => {
+                            if (depthSubmenuTimerRef.current) clearTimeout(depthSubmenuTimerRef.current);
+                            setShowDepthSubmenu(true);
+                          }}
+                          onMouseLeave={() => {
+                            depthSubmenuTimerRef.current = setTimeout(() => setShowDepthSubmenu(false), 120);
+                          }}
+                        >
+                          {THINKING_DEPTH_OPTIONS.map((depth) => {
+                            const isActive = thinkingLevel === depth.id;
+                            return (
+                              <button
+                                key={depth.id}
+                                type="button"
+                                role="menuitemradio"
+                                aria-checked={isActive}
+                                onClick={() => {
+                                  setThinkingLevel(depth.id);
+                                  setShowDepthSubmenu(false);
+                                  setShowSettingsMenu(false);
+                                }}
+                                className={`mx-1.5 flex w-[calc(100%-0.75rem)] items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left transition-colors ${
+                                  isActive ? 'bg-[#f4f7fb]' : 'hover:bg-[#f8fafc]'
+                                }`}
+                              >
+                                <span className="flex min-w-0 flex-col gap-0.5">
+                                  <span className="flex items-center gap-1.5">
+                                    <span className="text-[13px] font-semibold text-primaryText">{depth.label}</span>
+                                    {isActive && <span className="inline-block h-1.5 w-1.5 rounded-full bg-tertiaryText" />}
+                                  </span>
+                                  <span className="text-[11px] leading-tight text-tertiaryText">{depth.desc}</span>
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
               onClick={showStop ? onCancel : handleSend}

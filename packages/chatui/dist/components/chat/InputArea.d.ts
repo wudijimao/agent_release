@@ -54,6 +54,12 @@ export declare const insertFileReference: (text: string, start: number, end: num
 };
 export declare const CHAT_FILE_OPTIONS: readonly ChatFileOption[];
 export declare const CHAT_RECENT_FILE_OPTIONS: readonly ChatFileOption[];
+export interface ThinkingDepthOption {
+    id: ChatThinkingLevel;
+    label: string;
+    desc: string;
+}
+export declare const THINKING_DEPTH_OPTIONS: ThinkingDepthOption[];
 export declare const InputArea: ({ onSend, disabled, autoFocus, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element;
 declare const _default: React.MemoExoticComponent<({ onSend, disabled, autoFocus, isStreaming, onCancel, leadingControls, skillOptions, fileOptions, uploadAccept, validateUploadFile, onUploadValidationError, }: InputAreaProps) => React.JSX.Element>;
 export default _default;
