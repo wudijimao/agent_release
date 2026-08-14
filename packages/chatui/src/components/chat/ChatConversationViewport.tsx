@@ -56,6 +56,8 @@ interface ReservedTurnLayout {
   minHeight: number;
 }
 
+const AUTO_FOLLOW_BOTTOM_THRESHOLD = 24;
+
 function readPixelValue(value: string) {
   const parsed = Number.parseFloat(value);
   return Number.isFinite(parsed) ? parsed : 0;
@@ -91,6 +93,7 @@ export function ChatConversationViewport({
   const messageElementsRef = useRef(new Map<number, HTMLDivElement>());
   const positionedTurnKeyRef = useRef<string>();
   const replyStartedAtRef = useRef<number>();
+  const shouldFollowBottomRef = useRef(true);
   const [reservedTurn, setReservedTurn] = useState<ReservedTurnLayout>();
   const [replyElapsedSeconds, setReplyElapsedSeconds] = useState(0);
   const hasPersistentStatus =
@@ -164,6 +167,33 @@ export function ChatConversationViewport({
     [scrollContainerRef],
   );
 
+  const handleScroll = useCallback<React.UIEventHandler<HTMLDivElement>>(
+    (event) => {
+      const container = event.currentTarget;
+      const distanceToBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight;
+      shouldFollowBottomRef.current = distanceToBottom <= AUTO_FOLLOW_BOTTOM_THRESHOLD;
+      onScroll?.(event);
+    },
+    [onScroll],
+  );
+
+  useLayoutEffect(() => {
+    const container = internalScrollContainerRef.current;
+    const content = contentRef.current;
+    if (!container || !content) return;
+
+    const followBottom = () => {
+      if (!shouldFollowBottomRef.current) return;
+      container.scrollTop = container.scrollHeight;
+    };
+
+    followBottom();
+    const resizeObserver = new ResizeObserver(followBottom);
+    resizeObserver.observe(content);
+    return () => resizeObserver.disconnect();
+  }, []);
+
   useLayoutEffect(() => {
     if (
       !activeTurnKey ||
@@ -236,7 +266,7 @@ export function ChatConversationViewport({
       <div
         ref={setScrollContainer}
         data-chat-scroll-container
-        onScroll={onScroll}
+        onScroll={handleScroll}
         className="flex h-full flex-col items-center overflow-y-auto px-4 py-8 pt-20 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden"
       >
         <div
