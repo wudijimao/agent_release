@@ -362,4 +362,52 @@ test.describe("正常状态 / 应用骨架", () => {
     await expect(page.getByText("刷新后的最新对话").first()).toBeVisible();
     expect(listRequestCount).toBeGreaterThanOrEqual(2);
   });
+
+  test("SHELL-12 切换对话时先进入目标界面再等待详情", async ({ page }) => {
+    const gate = createRequestGate();
+    await mockAuthenticatedSession(page);
+    await mockChatHistory(page, [
+      { id: "chat-slow", title: "慢速对话" },
+    ]);
+    await mockProjectsBootstrap(page);
+    await mockAiUsageReminder(page);
+    await page.route(/\/api\/chat\/history\?.*sessionId=chat-slow/, async (route) => {
+      try {
+        await gate.waiting;
+        const now = "2025-07-15T12:00:00.000Z";
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json; charset=utf-8",
+          body: JSON.stringify({
+            session: {
+              id: "chat-slow",
+              title: "慢速对话",
+              scene: "home",
+              updatedAt: now,
+              createdAt: now,
+            },
+            sessionId: "chat-slow",
+            messages: [],
+            runs: [],
+            pendingMcpToolCalls: [],
+            attachments: [],
+            currentContextRefs: null,
+          }),
+        });
+      } finally {
+        gate.markRequestCompleted();
+      }
+    });
+
+    await page.goto("/projects");
+    await expect(page.getByText("慢速对话")).toBeVisible({ timeout: 10000 });
+    await page.getByText("慢速对话").click();
+
+    await expect(page).toHaveURL(/\/chat\/chat-slow$/, { timeout: 5000 });
+    await expect(page.getByText("正在加载对话…")).toBeVisible();
+
+    gate.releaseRequest();
+    await gate.requestCompleted;
+    await expect(page.getByText("正在加载对话…")).toBeHidden({ timeout: 10000 });
+  });
 });

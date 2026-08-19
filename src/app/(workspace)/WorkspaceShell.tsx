@@ -30,11 +30,6 @@ import {
   loadAiUsageReminder,
   shouldShowAiUsageReminder,
 } from "@/adapters/ai-usage";
-import {
-  isChatSessionNotFoundError,
-  loadChatSession,
-  type ChatSessionViewModel,
-} from "@/adapters/chat-session";
 import { loadProjectsBootstrap, mapProjectsToShell } from "@/adapters/projects";
 import {
   canAccessWorkspacePath,
@@ -53,8 +48,7 @@ interface ChatShellContextValue {
   chats: readonly AppShellChat[];
   projects: readonly AppShellProject[];
   defaultProjectId?: string;
-  getCachedSession(sessionId: string): ChatSessionViewModel | undefined;
-  openChat(sessionId: string, options?: OpenChatOptions): Promise<void>;
+  openChat(sessionId: string, options?: OpenChatOptions): void;
   refreshChats(): Promise<void>;
   refreshProjects(): Promise<void>;
   touchChat(sessionId: string): void;
@@ -103,14 +97,17 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   );
   const [notice, setNotice] = useState("");
   const [aiUsageWarningActive, setAiUsageWarningActive] = useState(false);
-  const sessionCacheRef = useRef(new Map<string, ChatSessionViewModel>());
+  const chatRefreshRequestIdRef = useRef(0);
 
   const refreshChats = useCallback(async () => {
+    const requestId = ++chatRefreshRequestIdRef.current;
     try {
       const items = await loadAppShellChats(api);
+      if (requestId !== chatRefreshRequestIdRef.current) return;
       setChats(items);
       setNotice("");
     } catch (loadError) {
+      if (requestId !== chatRefreshRequestIdRef.current) return;
       setNotice(
         loadError instanceof Error ? loadError.message : "历史对话加载失败",
       );
@@ -210,32 +207,19 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   }, [notice]);
 
   const openChat = useCallback(
-    async (sessionId: string, options?: OpenChatOptions) => {
+    (sessionId: string, options?: OpenChatOptions) => {
       setNotice("");
-      try {
-        const session = await loadChatSession(api, sessionId);
-        sessionCacheRef.current.set(sessionId, session);
-        const href = `/chat/${sessionId}`;
-        if (options?.replace) navigation.replace(href);
-        else navigation.push(href);
-      } catch (loadError) {
-        if (isChatSessionNotFoundError(loadError)) {
-          await refreshChats();
-          return;
-        }
-        setNotice(
-          loadError instanceof Error ? loadError.message : "对话加载失败",
-        );
-      }
+      const href = `/chat/${sessionId}`;
+      if (options?.replace) navigation.replace(href);
+      else navigation.push(href);
     },
-    [api, navigation, refreshChats],
+    [navigation],
   );
 
   const contextValue = useMemo<Omit<ChatShellContextValue, "isSidebarOpen" | "openSidebar" | "chats" | "touchChat">>(
     () => ({
       projects,
       defaultProjectId,
-      getCachedSession: (sessionId) => sessionCacheRef.current.get(sessionId),
       openChat,
       refreshChats,
       refreshProjects,
@@ -279,7 +263,6 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const handleDeleteChat = useCallback(async (sessionId: string) => {
     try {
       await deleteChatSession(api, sessionId);
-      sessionCacheRef.current.delete(sessionId);
       await refreshChats();
     } catch (mutationError) {
       setNotice(

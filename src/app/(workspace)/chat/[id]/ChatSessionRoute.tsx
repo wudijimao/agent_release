@@ -20,7 +20,7 @@ import {
   type ChatTimelineItem,
   type InputSendPayload,
 } from "@bioagent/chatui";
-import { Folder } from "lucide-react";
+import { Folder, Send } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -64,6 +64,7 @@ import {
   type MiraDocumentDraftAction,
 } from "@/adapters/mira-document-drafts";
 import {
+  getProjectDocumentAttachmentUrl,
   loadProjectDocumentDetail,
   updateProjectDocument,
 } from "@/adapters/project-document-detail";
@@ -88,6 +89,53 @@ type StreamAttempt = {
   payload: InputSendPayload;
   baseMessages: ChatMessage[];
 };
+
+const AI_SERVICE_ERROR_MESSAGE = "AI 服务异常，请稍后重试。";
+const ERROR_REPORT_COPIED_MESSAGE = "已复制到剪贴板，请反馈给开发人员";
+
+function formatChatErrorReport(error: unknown, sessionId: string) {
+  const source = error && typeof error === "object"
+    ? error as Record<string, unknown>
+    : undefined;
+  const report = {
+    occurredAt: new Date().toISOString(),
+    sessionId,
+    name: error instanceof Error ? error.name : undefined,
+    message: error instanceof Error ? error.message : String(error),
+    status: source?.status,
+    code: source?.code,
+    requestId: source?.requestId,
+    details: source?.details,
+    stack: error instanceof Error ? error.stack : undefined,
+  };
+
+  try {
+    return JSON.stringify(report, null, 2);
+  } catch {
+    return [
+      `occurredAt: ${report.occurredAt}`,
+      `sessionId: ${sessionId}`,
+      `message: ${report.message}`,
+    ].join("\n");
+  }
+}
+
+async function copyTextToClipboard(text: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  if (!copied) throw new Error("Clipboard copy failed");
+}
 
 function RouteStatus({
   message,
@@ -167,7 +215,6 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const {
     chats,
     defaultProjectId,
-    getCachedSession,
     isSidebarOpen,
     openSidebar,
     projects,
@@ -175,7 +222,6 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     refreshProjects,
     touchChat,
   } = useChatShell();
-  const cachedSession = getCachedSession(sessionId);
   const currentChat = chats.find((chat) => chat.id === sessionId);
   const currentProject = projects.find(
     (project) => project.id === currentChat?.projectId,
@@ -186,14 +232,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const { status, error: authError, refreshSession } = useAuth();
   const { catalog: resourceCatalog, error: resourceError } =
     useChatResourceCatalog(status === "authenticated");
-  const [pageStatus, setPageStatus] = useState<PageStatus>(
-    cachedSession ? "ready" : "loading",
-  );
-  const [title, setTitle] = useState(cachedSession?.title ?? "新对话");
+  const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
+  const [title, setTitle] = useState("新对话");
   const [streamState, setStreamState] = useState<ChatStreamViewState>(() => ({
     ...initialStreamState,
-    messages: cachedSession?.messages ?? [],
-    statusVisible: cachedSession?.isReplying ?? false,
+    messages: [],
+    statusVisible: false,
   }));
   const [miraDraftActions, setMiraDraftActions] = useState<
     Record<string, MiraDocumentDraftAction>
@@ -210,11 +254,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const [pendingDocumentPreviewKey, setPendingDocumentPreviewKey] =
     useState<string>();
   const [isStreaming, setIsStreaming] = useState(false);
-  const [isRemoteReplying, setIsRemoteReplying] = useState(
-    cachedSession?.isReplying ?? false,
-  );
+  const [isRemoteReplying, setIsRemoteReplying] = useState(false);
   const [pageError, setPageError] = useState("");
   const [streamNotice, setStreamNotice] = useState("");
+  const [streamErrorReport, setStreamErrorReport] = useState("");
+  const [copyToastVisible, setCopyToastVisible] = useState(false);
   const [lastAttempt, setLastAttempt] = useState<StreamAttempt | null>(null);
   const [projectWorkspace, setProjectWorkspace] =
     useState<ProjectChatWorkspaceViewModel | null>(null);
@@ -243,6 +287,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const positionedSessionIdRef = useRef<string | null>(null);
   const historyLoadedSessionIdRef = useRef<string | null>(null);
   const persistedMessageIdsRef = useRef<string[]>([]);
+  const copyToastTimerRef = useRef<number | undefined>(undefined);
   const [timelineSelection, setTimelineSelection] = useState<{
     sessionId: string;
     messageIndex: number;
@@ -442,6 +487,14 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   useEffect(() => () => streamControllerRef.current?.abort(), []);
 
   useEffect(() => {
+    return () => {
+      if (copyToastTimerRef.current !== undefined) {
+        window.clearTimeout(copyToastTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (
       status !== "authenticated" ||
       !isRemoteReplying ||
@@ -546,6 +599,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       setLastAttempt({ payload, baseMessages });
       setPageError("");
       setStreamNotice("");
+      setStreamErrorReport("");
+      setCopyToastVisible(false);
       setIsStreaming(true);
       setIsRemoteReplying(false);
       touchChat(sessionId);
@@ -692,6 +747,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           return;
         }
         const errorMessage = getChatStreamErrorMessage(reportedError);
+        setStreamErrorReport(formatChatErrorReport(reportedError, sessionId));
         setStreamState((current) => {
           const interrupted = interruptChatStream(current);
           return uploadCompleted
@@ -967,6 +1023,24 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       return next;
     });
   }, []);
+
+  const handleCopyErrorReport = useCallback(async () => {
+    if (!streamErrorReport) return;
+
+    try {
+      await copyTextToClipboard(streamErrorReport);
+      setCopyToastVisible(true);
+      if (copyToastTimerRef.current !== undefined) {
+        window.clearTimeout(copyToastTimerRef.current);
+      }
+      copyToastTimerRef.current = window.setTimeout(() => {
+        setCopyToastVisible(false);
+        copyToastTimerRef.current = undefined;
+      }, 3_000);
+    } catch {
+      setStreamNotice("复制失败，请稍后重试。");
+    }
+  }, [streamErrorReport]);
 
   const handlePreviewMiraDraft = useCallback(
     async (actionKey: string) => {
@@ -1267,6 +1341,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           updatedAt={item.document.updatedAt}
           index={item.document.index}
           attachments={item.document.attachments}
+          onDownloadAttachment={(attachmentId) => {
+            window.open(
+              getProjectDocumentAttachmentUrl(attachmentId),
+              "_blank",
+              "noopener,noreferrer",
+            );
+          }}
           layout="panel"
           showHeaderActions={false}
           saving={
@@ -1448,6 +1529,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               onAction={handlePreviewAction}
               resolveActions={resolvePreviewActions}
               renderContent={renderPreviewContent}
+              onDownloadAttachment={(attachmentId) => {
+                window.open(
+                  getProjectDocumentAttachmentUrl(attachmentId),
+                  "_blank",
+                  "noopener,noreferrer",
+                );
+              }}
               onResizeStart={(event) => startPanelResize("preview", event)}
             />
           </ChatWorkspaceSidePanel>
@@ -1460,7 +1548,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               projectName={
                 projectWorkspace?.projectName
                 ?? currentProject?.name
-                ?? "未归属项目"
+                ?? "个人工作台"
               }
               searchQuery={fileSearchQuery}
               knowledgeDocs={displayedProjectContent.knowledgeDocs}
@@ -1520,22 +1608,35 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             role={pageError || resourceError ? "alert" : "status"}
             className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-lineSubtle bg-surfaceMuted px-4 py-2 text-sm text-secondaryText"
           >
-            <span>{pageError || streamNotice || resourceError}</span>
-            {lastAttempt && (
-              <BaseButton
-                type="secondary"
-                size="small"
-                disabled={isStreaming}
-                onClick={() =>
-                  void runStream(
-                    lastAttempt.payload,
-                    lastAttempt.baseMessages,
-                  )
-                }
-              >
-                重试
-              </BaseButton>
-            )}
+            <span className="min-w-0 flex-1">{pageError || streamNotice || resourceError}</span>
+            <div className="flex shrink-0 items-center gap-2">
+              {pageError === AI_SERVICE_ERROR_MESSAGE && streamErrorReport && (
+                <button
+                  type="button"
+                  onClick={() => void handleCopyErrorReport()}
+                  aria-label="报错"
+                  title="报错"
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-lineSubtle bg-white text-secondaryText transition-colors hover:border-controlBorder hover:bg-bgLight hover:text-primaryText"
+                >
+                  <Send size={13} aria-hidden="true" />
+                </button>
+              )}
+              {lastAttempt && (
+                <BaseButton
+                  type="secondary"
+                  size="small"
+                  disabled={isStreaming}
+                  onClick={() =>
+                    void runStream(
+                      lastAttempt.payload,
+                      lastAttempt.baseMessages,
+                    )
+                  }
+                >
+                  重试
+                </BaseButton>
+              )}
+            </div>
           </div>
         )}
         <InputArea
@@ -1550,6 +1651,16 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           onUploadValidationError={setStreamNotice}
         />
       </ChatComposerDock>
+
+      {copyToastVisible && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="pointer-events-none fixed left-1/2 top-5 z-[10000] -translate-x-1/2 rounded-full border border-lineSubtle bg-white px-5 py-2.5 text-sm font-medium text-primaryText shadow-lg"
+        >
+          {ERROR_REPORT_COPIED_MESSAGE}
+        </div>
+      )}
 
       <BaseModal
         visible={miraDraftTargetSelection !== null}
@@ -1586,7 +1697,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         }}
       >
         <p className="mb-3 text-sm leading-6 text-secondaryText">
-          当前对话属于“未归属”项目，请选择文档最终保存的位置。
+          当前对话属于“个人工作台”，请选择文档最终保存的位置。
         </p>
         <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
           {projects.filter((project) => project.selectable !== false).length ? (

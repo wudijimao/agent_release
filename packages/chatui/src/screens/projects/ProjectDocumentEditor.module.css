@@ -158,6 +158,64 @@
   fill: currentColor;
 }
 
+:global(.chatui-table-size-menu) {
+  position: fixed;
+  z-index: 80;
+  display: none;
+  width: 220px;
+  padding: 12px;
+  border: 1px solid var(--chatui-color-line-subtle);
+  border-radius: 8px;
+  background: var(--chatui-color-surface);
+  box-shadow: var(--chatui-shadow-md);
+}
+
+:global(.chatui-table-size-menu[data-show='true']) {
+  display: block;
+}
+
+:global(.chatui-table-size-menu-heading) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--chatui-color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+:global(.chatui-table-size-menu-status) {
+  color: var(--chatui-color-brand-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+:global(.chatui-table-size-menu-grid) {
+  display: grid;
+  grid-template-columns: repeat(8, 20px);
+  gap: 5px;
+}
+
+:global(.chatui-table-size-menu-grid button) {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--chatui-color-control-border);
+  border-radius: 3px;
+  background: var(--chatui-color-surface-muted);
+  cursor: pointer;
+}
+
+:global(.chatui-table-size-menu-grid button[data-active='true']) {
+  border-color: var(--chatui-color-brand-primary);
+  background: var(--chatui-color-brand-primary-soft-strong);
+}
+
+:global(.chatui-table-size-menu-grid button:focus-visible) {
+  outline: 2px solid var(--chatui-color-brand-primary);
+  outline-offset: 1px;
+}
+
 .milkdownHost
   :global(.milkdown .ProseMirror > .prosemirror-virtual-cursor:first-child + *) {
   margin-top: 0;
@@ -237,6 +295,17 @@
   @apply flex h-9 min-w-0 items-center gap-3 rounded-[6px] px-2 py-0;
 }
 
+.milkdownHost
+  :global(.milkdown-slash-menu .menu-groups .menu-group li[data-chatui-submenu='true']::after) {
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  content: '';
+  transform: rotate(-45deg);
+}
+
 .milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group:nth-child(2) li > span:last-child) {
   @apply text-sm font-normal leading-5 text-primaryText;
 }
@@ -270,6 +339,10 @@
 
 .milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-task) {
   @apply fill-documentMenuTask text-documentMenuTask;
+}
+
+.milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-table) {
+  @apply fill-current text-primaryText;
 }
 
 .milkdownHost :global(.milkdown-slash-menu .menu-groups .menu-group li svg.chatui-document-menu-icon-math) {

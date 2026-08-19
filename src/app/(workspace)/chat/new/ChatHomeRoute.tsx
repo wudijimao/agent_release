@@ -108,7 +108,7 @@ export function ChatHomeRoute({
       const targetProjectId = selectedProjectId ?? defaultProjectId;
       if (!targetProjectId) {
         setNoticeRole("alert");
-        setNotice("未能加载未归属项目，请刷新后重试");
+        setNotice("未能加载个人工作台，请刷新后重试");
         return;
       }
 
@@ -130,6 +130,7 @@ export function ChatHomeRoute({
         references: payload.references,
       });
       let uploadCompleted = payload.attachments.length === 0;
+      let hasRequestedInitialChatRefresh = false;
       setStreamState(nextState);
 
       try {
@@ -181,6 +182,11 @@ export function ChatHomeRoute({
           nextState = reduceChatStreamEvent(nextState, event.type, event.data);
           setStreamState(nextState);
           if (nextState.error) throw new Error(nextState.error);
+
+          if (nextState.sessionId && !hasRequestedInitialChatRefresh) {
+            hasRequestedInitialChatRefresh = true;
+            void refreshChats();
+          }
         }
 
         if (!nextState.sessionId) {
@@ -289,7 +295,7 @@ export function ChatHomeRoute({
       try {
         const targetProjectId = selectedProjectId ?? defaultProjectId;
         if (!targetProjectId) {
-          throw new Error("未能加载未归属项目，请刷新后重试");
+          throw new Error("未能加载个人工作台，请刷新后重试");
         }
         const created = await createAgentSession(api, {
           agentType: scenario.agentType,

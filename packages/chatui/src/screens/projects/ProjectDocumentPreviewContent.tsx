@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { BaseEmpty } from '../../components/common';
@@ -8,14 +8,24 @@ import { ProjectDocumentMetadata } from './ProjectDocumentMetadata';
 import type { ProjectDocumentPreviewViewModel } from './ProjectDocumentPreview';
 import markdownStyles from './ProjectDocumentMarkdown.module.css';
 
+const markdownComponents: Components = {
+  table: ({ node: _node, ...props }) => (
+    <div className={markdownStyles.tableContainer}>
+      <table {...props} />
+    </div>
+  ),
+};
+
 export interface ProjectDocumentPreviewContentProps {
   document: ProjectDocumentPreviewViewModel;
   layout?: 'page' | 'panel';
+  onDownloadAttachment?(attachmentId: string): void;
 }
 
 export function ProjectDocumentPreviewContent({
   document,
   layout = 'page',
+  onDownloadAttachment,
 }: ProjectDocumentPreviewContentProps) {
   const [isContentScrolling, setIsContentScrolling] = useState(false);
   const contentScrollTimerRef = useRef<number | null>(null);
@@ -46,11 +56,13 @@ export function ProjectDocumentPreviewContent({
 
       <section
         onScroll={handleContentScroll}
-        className={`auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${isContentScrolling ? 'is-scrolling' : ''}`}
+        className={`document-preview-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${isContentScrolling ? 'is-scrolling' : ''}`}
       >
         {document.markdown.trim() ? (
           <div className={`${markdownStyles.preview} ${contentInset}`}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{document.markdown}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+              {document.markdown}
+            </ReactMarkdown>
           </div>
         ) : (
           <div className={`${layout === 'page' ? 'mx-[120px]' : 'mx-6 md:mx-8'} rounded-lg border border-dashed border-borderSoft`}>
@@ -60,6 +72,7 @@ export function ProjectDocumentPreviewContent({
 
         <ProjectDocumentAttachments
           attachments={document.attachments}
+          onDownloadAttachment={onDownloadAttachment}
           className={`${layout === 'page' ? 'mx-[120px]' : 'mx-6 md:mx-8'} mb-6 mt-8 border-t border-lineSubtle pt-6`}
         />
       </section>

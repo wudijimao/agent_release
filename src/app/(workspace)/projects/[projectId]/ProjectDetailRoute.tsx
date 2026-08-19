@@ -16,7 +16,7 @@ import type {
   ProjectKnowledgeSection,
   ProjectKnowledgeType,
 } from "@bioagent/shared";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { loadLabMembers } from "@/adapters/lab-members";
 import {
@@ -26,9 +26,14 @@ import {
 import {
   deleteProjectDocumentAttachment,
   deleteProjectDocument,
+  getProjectDocumentAttachmentUrl,
   loadProjectDocumentDetail,
   updateProjectDocument,
 } from "@/adapters/project-document-detail";
+import {
+  projectDocumentTitleForEdit,
+  projectDocumentTitleForSave,
+} from "@/adapters/project-document-title";
 import {
   createProjectDocument,
   importProjectDocuments,
@@ -72,10 +77,6 @@ interface ProjectDocumentDraft extends ProjectDocumentContentDraft {
   templateId: string;
   knowledgeType: ProjectKnowledgeType;
   section: ProjectKnowledgeSection;
-}
-
-function savedDocumentTitle(title: string) {
-  return title.trim() || "未命名文档";
 }
 
 function RouteStatus({
@@ -130,8 +131,14 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   const [documentEditDraft, setDocumentEditDraft] =
     useState<ProjectDocumentContentDraft | null>(null);
   const [documentDirty, setDocumentDirty] = useState(false);
+  const documentDraftRef = useRef<ProjectDocumentDraft | null>(null);
+  const documentRevisionRef = useRef(0);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const activeLabId = activeLab?.id || "";
+
+  useEffect(() => {
+    documentDraftRef.current = documentDraft;
+  }, [documentDraft]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -209,6 +216,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
 
       setDocumentSaving(true);
       setDocumentSaveError("");
+      const savingRevision = documentRevisionRef.current;
       try {
         if (documentDraft) {
           const parentNodeId = detail?.defaultKbNodeId;
@@ -217,7 +225,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
               "当前项目尚未创建默认知识库，暂时无法保存文档。",
             );
           }
-          const title = savedDocumentTitle(documentDraft.title);
+          const title = projectDocumentTitleForSave(documentDraft.title);
           const created = await createProjectDocument(api, {
             projectId,
             parentNodeId,
@@ -234,20 +242,22 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           const preview = await loadProjectDocumentDetail(api, created.id);
           setDetail(await loadProjectDetail(api, projectId));
           if (keepEditing) {
+            const latestDraft = documentDraftRef.current ?? documentDraft;
             setDocumentPreview(preview);
             setDocumentEditDraft({
-              title,
-              markdown: documentDraft.markdown,
+              title: latestDraft.title,
+              markdown: latestDraft.markdown,
             });
           }
           setDocumentDraft(null);
-          setDocumentDirty(false);
+          documentDraftRef.current = null;
+          setDocumentDirty(documentRevisionRef.current !== savingRevision);
           if (showNotice) setNotice("文档已保存到当前项目");
           return preview;
         }
 
         if (documentPreview && documentEditDraft) {
-          const title = savedDocumentTitle(documentEditDraft.title);
+          const title = projectDocumentTitleForSave(documentEditDraft.title);
           await updateProjectDocument(api, {
             kbNodeId: documentPreview.id,
             title,
@@ -259,15 +269,10 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           );
           setDetail(await loadProjectDetail(api, projectId));
           setDocumentPreview(preview);
-          if (keepEditing) {
-            setDocumentEditDraft({
-              title,
-              markdown: documentEditDraft.markdown,
-            });
-          } else {
+          if (!keepEditing) {
             setDocumentEditDraft(null);
           }
-          setDocumentDirty(false);
+          setDocumentDirty(documentRevisionRef.current !== savingRevision);
           if (showNotice) setNotice("文档已保存");
           return preview;
         }
@@ -357,12 +362,14 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         saving={documentSaving}
         saveError={documentSaveError}
         onTitleChange={(title) => {
+          documentRevisionRef.current += 1;
           setDocumentDraft((current) =>
             current ? { ...current, title } : current,
           );
           setDocumentDirty(true);
         }}
         onMarkdownChange={(markdown) => {
+          documentRevisionRef.current += 1;
           setDocumentDraft((current) =>
             current ? { ...current, markdown } : current,
           );
@@ -400,16 +407,25 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         saving={documentSaving}
         saveError={documentSaveError}
         onTitleChange={(title) => {
+          documentRevisionRef.current += 1;
           setDocumentEditDraft((current) =>
             current ? { ...current, title } : current,
           );
           setDocumentDirty(true);
         }}
         onMarkdownChange={(markdown) => {
+          documentRevisionRef.current += 1;
           setDocumentEditDraft((current) =>
             current ? { ...current, markdown } : current,
           );
           setDocumentDirty(true);
+        }}
+        onDownloadAttachment={(attachmentId) => {
+          window.open(
+            getProjectDocumentAttachmentUrl(attachmentId),
+            "_blank",
+            "noopener,noreferrer",
+          );
         }}
         onUploadAttachments={uploadEditorAttachments}
         onDeleteAttachment={async (attachmentId) => {
@@ -449,7 +465,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           });
           setDocumentSaveError("");
           setDocumentEditDraft({
-            title: documentPreview.title,
+            title: projectDocumentTitleForEdit(documentPreview.title),
             markdown: documentPreview.markdown,
           });
           setDocumentDirty(false);
@@ -460,6 +476,13 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           await refreshProjects();
           setDocumentPreview(null);
           setNotice("文档已删除");
+        }}
+        onDownloadAttachment={(attachmentId) => {
+          window.open(
+            getProjectDocumentAttachmentUrl(attachmentId),
+            "_blank",
+            "noopener,noreferrer",
+          );
         }}
       />
     );

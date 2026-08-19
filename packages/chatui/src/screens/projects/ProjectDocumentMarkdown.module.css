@@ -24,20 +24,26 @@
 }
 
 .preview h2,
+.editor :global(.milkdown .ProseMirror h2) {
+  @apply mb-3 mt-8 p-0 text-[28px] font-bold leading-9 tracking-[-0.01em] text-primaryText;
+}
+
 .preview h3,
-.editor :global(.milkdown .ProseMirror h2),
 .editor :global(.milkdown .ProseMirror h3) {
-  @apply mb-2 mt-4 p-0 text-base font-semibold leading-6 tracking-[-0.01em] text-primaryText;
+  @apply mb-3 mt-7 p-0 text-2xl font-bold leading-8 tracking-[-0.01em] text-primaryText;
 }
 
 .preview h4,
 .editor :global(.milkdown .ProseMirror h4) {
-  @apply mb-2 mt-6 p-0 text-base font-semibold leading-6 tracking-[-0.01em] text-primaryText;
+  @apply mb-2 mt-6 p-0 text-xl font-semibold leading-7 tracking-[-0.01em] text-primaryText;
 }
 
 .preview h5,
+.editor :global(.milkdown .ProseMirror h5) {
+  @apply mb-2 mt-5 p-0 text-base font-semibold leading-6 tracking-[-0.01em] text-primaryText;
+}
+
 .preview h6,
-.editor :global(.milkdown .ProseMirror h5),
 .editor :global(.milkdown .ProseMirror h6) {
   @apply mb-2 mt-4 p-0 text-sm font-semibold leading-6 tracking-[-0.01em] text-primaryText;
 }
@@ -320,59 +326,76 @@
   @apply my-5 h-px border-0 bg-lineSubtle p-0;
 }
 
+.tableContainer {
+  @apply my-8 overflow-x-auto rounded-xl border border-borderGray bg-surface;
+}
+
+.tableContainer,
+.editor :global(.milkdown .milkdown-table-block .table-wrapper) {
+  scrollbar-color: var(--chatui-color-table-scrollbar) transparent;
+  scrollbar-width: thin;
+}
+
+.tableContainer::-webkit-scrollbar,
+.editor :global(.milkdown .milkdown-table-block .table-wrapper::-webkit-scrollbar) {
+  height: 6px;
+}
+
+.tableContainer::-webkit-scrollbar-track,
+.editor :global(.milkdown .milkdown-table-block .table-wrapper::-webkit-scrollbar-track) {
+  background: transparent;
+}
+
+.tableContainer::-webkit-scrollbar-thumb,
+.editor :global(.milkdown .milkdown-table-block .table-wrapper::-webkit-scrollbar-thumb) {
+  border-radius: 999px;
+  background: var(--chatui-color-table-scrollbar);
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover,
+.editor :global(.milkdown .milkdown-table-block .table-wrapper::-webkit-scrollbar-thumb:hover) {
+  background: var(--chatui-color-table-scrollbar-hover);
+}
+
 .preview table {
-  @apply my-8 w-full table-auto border-collapse text-sm leading-6;
+  @apply my-0 min-w-full table-auto border-collapse text-sm leading-6;
 }
 
 .editor :global(.milkdown .milkdown-table-block) {
-  @apply my-8 overflow-x-auto;
+  @apply my-8 overflow-visible;
+}
+
+.editor :global(.milkdown .milkdown-table-block .table-wrapper) {
+  @apply overflow-x-auto rounded-xl border border-borderGray bg-surface;
 }
 
 .editor :global(.milkdown .milkdown-table-block table) {
-  @apply my-0 w-full table-auto border-collapse text-sm leading-6;
+  @apply my-0 min-w-full table-auto border-collapse text-sm leading-6;
 }
 
-.preview th,
-.preview td,
-.editor :global(.milkdown .milkdown-table-block th),
-.editor :global(.milkdown .milkdown-table-block td) {
-  @apply border-0 px-2 py-2 text-left text-primaryText;
-}
-
-.preview th p,
-.preview td p,
-.editor :global(.milkdown .milkdown-table-block th p),
-.editor :global(.milkdown .milkdown-table-block td p) {
-  @apply my-0 text-sm leading-6;
+.preview tr,
+.editor :global(.milkdown .milkdown-table-block tr) {
+  @apply border-b border-borderGray last:border-b-0;
 }
 
 .preview th,
 .editor :global(.milkdown .milkdown-table-block th) {
-  @apply border-b border-lineSubtle bg-transparent pb-2 align-bottom font-semibold;
+  @apply min-w-[72px] border-0 border-r border-borderGray bg-bgLight px-4 py-2.5 text-left text-xs font-medium text-tertiaryText last:border-r-0;
 }
 
-.preview tbody tr,
-.editor :global(.milkdown .milkdown-table-block tbody tr) {
-  @apply border-b border-lineSubtle;
+.preview td,
+.editor :global(.milkdown .milkdown-table-block td) {
+  @apply min-w-[72px] border-0 border-r border-borderGray px-4 py-2.5 text-left text-sm text-primaryText last:border-r-0;
 }
 
-.preview tbody tr:last-child,
-.editor :global(.milkdown .milkdown-table-block tbody tr:last-child) {
-  @apply border-b-0;
+.preview th p,
+.editor :global(.milkdown .milkdown-table-block th p) {
+  @apply my-0 text-xs leading-6 text-tertiaryText;
 }
 
-.preview th:first-child,
-.preview td:first-child,
-.editor :global(.milkdown .milkdown-table-block th:first-child),
-.editor :global(.milkdown .milkdown-table-block td:first-child) {
-  @apply pl-0;
-}
-
-.preview th:last-child,
-.preview td:last-child,
-.editor :global(.milkdown .milkdown-table-block th:last-child),
-.editor :global(.milkdown .milkdown-table-block td:last-child) {
-  @apply pr-0;
+.preview td p,
+.editor :global(.milkdown .milkdown-table-block td p) {
+  @apply my-0 text-sm leading-6 text-primaryText;
 }
 
 .preview img,

@@ -270,4 +270,32 @@ test.describe("正常状态 / 项目", () => {
     await gate.requestCompleted;
     await expect(page.getByRole("heading", { name: "视觉测试项目" })).toBeVisible({ timeout: 10000 });
   });
+
+  test("PROJECT-13 切换项目时先进入目标界面再等待详情", async ({ page }) => {
+    const gate = createRequestGate();
+    await mockProjectDetailPageExtended(page);
+    await page.route(/^.*\/api\/projects\/proj-visual-test$/, async (route) => {
+      try {
+        await gate.waiting;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json; charset=utf-8",
+          body: JSON.stringify(projectDetailFixture()),
+        });
+      } finally {
+        gate.markRequestCompleted();
+      }
+    });
+
+    await page.goto("/projects");
+    await expect(page.getByText("视觉测试项目")).toBeVisible({ timeout: 10000 });
+    await page.getByText("视觉测试项目").click();
+
+    await expect(page).toHaveURL(/\/projects\/proj-visual-test$/, { timeout: 5000 });
+    await expect(page.getByText("正在加载项目…")).toBeVisible();
+
+    gate.releaseRequest();
+    await gate.requestCompleted;
+    await expect(page.getByRole("heading", { name: "视觉测试项目" })).toBeVisible({ timeout: 10000 });
+  });
 });

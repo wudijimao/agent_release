@@ -39,12 +39,13 @@ function tableToMarkdown(value: unknown): string {
   const rows = value.rows
     .map((row) => {
       if (!isRecord(row) || !Array.isArray(row.cells)) return [];
-      return row.cells.map((cell) =>
-        inlineText(cell)
+      return row.cells.map((cell) => {
+        const text = inlineText(cell)
           .replace(/\|/g, "\\|")
           .replace(/\r?\n/g, "<br>")
-          .trim(),
-      );
+          .trim();
+        return text.replace(/<br\s*\/?>/gi, "").trim() ? text : "";
+      });
     })
     .filter((row) => row.length > 0);
   if (!rows.length) return "";
@@ -67,7 +68,11 @@ function blockToMarkdown(block: unknown): string {
 
   const type = typeof block.type === "string" ? block.type : "paragraph";
   const props = isRecord(block.props) ? block.props : {};
-  const text = inlineText(block.content).trim();
+  const rawText = inlineText(block.content);
+  const text = (type === "table"
+    ? rawText
+    : rawText.replace(/<br\s*\/?>/gi, "\n")
+  ).trim();
   const children = Array.isArray(block.children)
     ? block.children.map(blockToMarkdown).filter(Boolean).join("\n")
     : "";
@@ -154,7 +159,6 @@ export function knowledgeContentToMarkdown(
       return parts;
     }, [])
     .join("")
-    .replace(/<br\s*\/?>/gi, "\n")
     .trim();
   return markdown || contentText.trim();
 }
@@ -216,12 +220,17 @@ export function mapProjectDocumentDetail(
       payload.node.effectivePermission === "edit" ||
       payload.node.effectivePermission === "admin",
     attachments: payload.attachments.map((attachment) => {
+      const conversionRequested = Boolean(
+        attachment.convertStatus !== "pending" ||
+          attachment.convertRequestedEngine ||
+          attachment.lastConvertEngine,
+      );
       const status =
-        attachment.convertStatus === "done"
+        attachment.convertStatus === "error"
+          ? ("failed" as const)
+          : !conversionRequested || attachment.convertStatus === "done"
           ? ("ready" as const)
-          : attachment.convertStatus === "error"
-            ? ("failed" as const)
-            : ("processing" as const);
+          : ("processing" as const);
       return {
         id: attachment.id,
         name: attachment.originalName,
@@ -230,7 +239,9 @@ export function mapProjectDocumentDetail(
         status,
         statusLabel:
           status === "ready"
-            ? "内容识别完成"
+            ? conversionRequested
+              ? "内容识别完成"
+              : "附件可下载"
             : status === "failed"
               ? attachment.convertError || "内容识别失败"
               : "正在识别内容",

@@ -62,6 +62,17 @@ test.describe("正常状态 / 新对话主页", () => {
 
   test("CHAT-03 发送消息后在对话中展示", async ({ page }) => {
     await mockChatSendMocks(page);
+    let historyListRequestCount = 0;
+    page.on("request", (request) => {
+      const url = new URL(request.url());
+      if (
+        request.method() === "GET" &&
+        url.pathname === "/api/chat/history" &&
+        !url.searchParams.has("sessionId")
+      ) {
+        historyListRequestCount += 1;
+      }
+    });
 
     await page.goto("/chat/new");
     await expect(page.getByRole("heading", { name: "研究，由此开始" })).toBeVisible({ timeout: 10000 });
@@ -72,6 +83,8 @@ test.describe("正常状态 / 新对话主页", () => {
 
     await expect(page.getByText("你好")).toBeVisible({ timeout: 15000 });
     await expect(page.getByText("这是 AI 的回复内容。")).toBeVisible({ timeout: 15000 });
+    await expect(page).toHaveURL(/\/chat\/sess-visual-chat$/);
+    await expect.poll(() => historyListRequestCount).toBeGreaterThanOrEqual(4);
     await waitForVisualReady(page);
 
     await expect(page).toHaveScreenshot("chat-03-message-sent.png", {

@@ -90,6 +90,24 @@ test("knowledge content maps standard and recognition blocks to markdown", () =>
   assert.match(markdown, /\| 样本 \| 数值 \|/);
 });
 
+test("knowledge content serializes standard heading levels one through six", () => {
+  const markdown = knowledgeContentToMarkdown({
+    type: "kb-doc",
+    content: Array.from({ length: 6 }, (_, index) => ({
+      type: "heading",
+      props: { level: index + 1 },
+      content: `标题 ${index + 1}`,
+    })),
+  });
+
+  assert.equal(
+    markdown,
+    Array.from({ length: 6 }, (_, index) =>
+      `${"#".repeat(index + 1)} 标题 ${index + 1}`,
+    ).join("\n\n"),
+  );
+});
+
 test("knowledge content preserves template tables as editable markdown", () => {
   assert.equal(
     knowledgeContentToMarkdown({
@@ -113,6 +131,37 @@ test("knowledge content preserves template tables as editable markdown", () => {
       "| Sample | A \\| B |",
     ].join("\n"),
   );
+});
+
+test("knowledge content keeps empty tables valid markdown", () => {
+  const cases = [
+    {
+      rows: [{ cells: ["<br />"] }],
+      markdown: "|  |\n| --- |",
+    },
+    {
+      rows: [{ cells: ["<br />", "<br>"] }],
+      markdown: "|  |  |\n| --- | --- |",
+    },
+    {
+      rows: [{ cells: [""] }, { cells: ["<br />"] }],
+      markdown: "|  |\n| --- |\n|  |",
+    },
+  ];
+
+  for (const { rows, markdown } of cases) {
+    assert.equal(
+      knowledgeContentToMarkdown({
+        content: [
+          {
+            type: "table",
+            content: { type: "tableContent", headerRows: 1, rows },
+          },
+        ],
+      }),
+      markdown,
+    );
+  }
 });
 
 test("knowledge content treats stored br tags as line breaks", () => {
@@ -155,7 +204,22 @@ test("knowledge content keeps consecutive list blocks in one markdown list", () 
 test("document detail mapper exposes only preview data", () => {
   const result = mapProjectDocumentDetail({
     node,
-    attachments: [attachment],
+    attachments: [
+      attachment,
+      {
+        ...attachment,
+        id: "attachment-plain",
+        convertStatus: "pending",
+        convertRequestedEngine: null,
+        lastConvertEngine: null,
+      },
+      {
+        ...attachment,
+        id: "attachment-converting",
+        convertStatus: "pending",
+        convertRequestedEngine: "docling",
+      },
+    ],
     versions,
     pageIndex: {
       indexingEnabled: true,
@@ -172,6 +236,9 @@ test("document detail mapper exposes only preview data", () => {
   assert.equal(result.updatedAt, "2026.06.02 10:20");
   assert.equal(result.attachments[0]?.status, "ready");
   assert.equal(result.attachments[0]?.sizeLabel, "2 KB");
+  assert.equal(result.attachments[1]?.status, "ready");
+  assert.equal(result.attachments[1]?.statusLabel, "附件可下载");
+  assert.equal(result.attachments[2]?.status, "processing");
   assert.equal(result.index.status, "indexed");
   assert.match(result.index.detail, /3 个索引片段/);
 });

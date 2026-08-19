@@ -19,10 +19,11 @@ export interface ProjectDocumentEditorProps {
     showHeaderActions?: boolean;
     onTitleChange(title: string): void;
     onMarkdownChange(markdown: string): void;
+    onDownloadAttachment?(attachmentId: string): void;
     onUploadAttachments?(files: File[]): void | Promise<void>;
     onDeleteAttachment?(attachmentId: string): void | Promise<void>;
     onSave(): void;
     onClose(): void;
 }
-export declare function ProjectDocumentEditor({ title, initialMarkdown, createdByName, updatedByName, updatedAt, index, attachments, attachmentAccept, attachmentUnavailableHint, saving, saveError, layout, showHeaderActions, onTitleChange, onMarkdownChange, onUploadAttachments, onDeleteAttachment, onSave, onClose, }: ProjectDocumentEditorProps): React.JSX.Element;
+export declare function ProjectDocumentEditor({ title, initialMarkdown, createdByName, updatedByName, updatedAt, index, attachments, attachmentAccept, attachmentUnavailableHint, saving, saveError, layout, showHeaderActions, onTitleChange, onMarkdownChange, onDownloadAttachment, onUploadAttachments, onDeleteAttachment, onSave, onClose, }: ProjectDocumentEditorProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentEditor.d.ts.map

@@ -26,6 +26,7 @@ export interface ProjectDocumentPreviewProps {
   onBackToProject(): void;
   onEdit(): void;
   onDelete(): void | Promise<void>;
+  onDownloadAttachment?(attachmentId: string): void;
 }
 
 export function ProjectDocumentPreview({
@@ -37,6 +38,7 @@ export function ProjectDocumentPreview({
   onBackToProject,
   onEdit,
   onDelete,
+  onDownloadAttachment,
 }: ProjectDocumentPreviewProps) {
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -80,7 +82,10 @@ export function ProjectDocumentPreview({
 
       <div className="min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10">
         <div className="mx-auto flex h-full min-h-0 max-w-[1240px] flex-col">
-          <ProjectDocumentPreviewContent document={document} />
+          <ProjectDocumentPreviewContent
+            document={document}
+            onDownloadAttachment={onDownloadAttachment}
+          />
         </div>
       </div>
 

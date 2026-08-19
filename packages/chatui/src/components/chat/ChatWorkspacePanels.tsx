@@ -34,6 +34,7 @@ export interface ChatPreviewPanelProps {
   onAction?(itemKey: string, actionId: string): void;
   resolveActions?(item: ChatPreviewItemViewModel): readonly ChatPreviewActionViewModel[] | undefined;
   renderContent?(item: ChatPreviewItemViewModel): ReactNode;
+  onDownloadAttachment?(attachmentId: string): void;
   onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
 
@@ -47,6 +48,7 @@ export function ChatPreviewPanel({
   onAction,
   resolveActions,
   renderContent,
+  onDownloadAttachment,
   onResizeStart,
 }: ChatPreviewPanelProps) {
   const activeItem = tabs.find((tab) => tab.key === activeKey) ?? null;
@@ -131,7 +133,11 @@ export function ChatPreviewPanel({
           customContent ? (
             customContent
           ) : activeItem.document ? (
-            <ProjectDocumentPreviewContent document={activeItem.document} layout="panel" />
+            <ProjectDocumentPreviewContent
+              document={activeItem.document}
+              layout="panel"
+              onDownloadAttachment={onDownloadAttachment}
+            />
           ) : (
             <div className="flex h-full items-center justify-center px-6 text-center text-sm text-secondaryText">
               {activeItem.loading ? '正在加载文档…' : activeItem.error || '文档暂时无法预览'}
@@ -174,7 +180,7 @@ export interface ChatProjectFilesPanelProps {
 }
 
 export function ChatProjectFilesPanel({
-  projectName = '未归属项目',
+  projectName = '个人工作台',
   searchQuery,
   error,
   knowledgeDocs,

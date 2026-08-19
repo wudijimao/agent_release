@@ -86,9 +86,9 @@ function miraContextRef(item: HomeUnifiedResourceItem): HomeContextRef {
 
 function miraProjectName(item: HomeUnifiedResourceItem) {
   const path = optionalString(item.metadata?.path) || item.subtitle;
-  if (!path) return "Mira";
+  if (!path) return "Helia";
   const [root] = path.split(".").filter(Boolean);
-  return root || "Mira";
+  return root || "Helia";
 }
 
 export function mapChatResourceCatalog(

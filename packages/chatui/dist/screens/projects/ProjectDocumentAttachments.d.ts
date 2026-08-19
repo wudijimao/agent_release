@@ -15,7 +15,8 @@ export interface ProjectDocumentAttachmentsProps {
     unavailableHint?: string;
     error?: string;
     onRequestUpload?(): void;
+    onDownloadAttachment?(attachmentId: string): void;
     onDeleteAttachment?(attachmentId: string): void;
 }
-export declare function ProjectDocumentAttachments({ attachments, className, uploading, deletingAttachmentId, unavailableHint, error, onRequestUpload, onDeleteAttachment, }: ProjectDocumentAttachmentsProps): React.JSX.Element;
+export declare function ProjectDocumentAttachments({ attachments, className, uploading, deletingAttachmentId, unavailableHint, error, onRequestUpload, onDownloadAttachment, onDeleteAttachment, }: ProjectDocumentAttachmentsProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentAttachments.d.ts.map

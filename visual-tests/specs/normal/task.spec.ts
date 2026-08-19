@@ -75,7 +75,11 @@ test.describe("正常状态 / 定时任务与文献订阅", () => {
     await mockToolsPage(page, { tasks: [] });
 
     let createBody: Record<string, unknown> | null = null;
+    let listRequestCount = 0;
     page.on("request", (request) => {
+      if (request.method() === "GET" && request.url().endsWith("/api/scheduled-tasks")) {
+        listRequestCount += 1;
+      }
       if (request.method() === "POST" && request.url().endsWith("/api/scheduled-tasks")) {
         createBody = request.postDataJSON();
       }
@@ -104,6 +108,7 @@ test.describe("正常状态 / 定时任务与文献订阅", () => {
     await page.getByRole("button", { name: "创建任务" }).click();
     await expect(dialog).toBeHidden();
     await expect(page.getByText("每日生信新闻")).toBeVisible({ timeout: 10000 });
+    await expect.poll(() => listRequestCount).toBeGreaterThanOrEqual(2);
     expect(createBody).not.toBeNull();
     expect(createBody?.scheduleKind).toBe("daily");
     expect((createBody?.scheduleConfig as Record<string, unknown>)?.time).toBe("15:00");

@@ -274,6 +274,13 @@ export function ToolsRoute() {
         : [...current, saved]);
       setEditorDraft(null);
       setEditingTaskId(null);
+
+      try {
+        const refreshedTasks = await listScheduledTasks(api);
+        setTasks(refreshedTasks);
+      } catch {
+        // Keep the optimistic result when the background refresh fails.
+      }
     } catch (error) {
       setActionError(errorMessage(error, editingTaskId ? "定时任务修改失败" : "定时任务创建失败"));
     } finally {

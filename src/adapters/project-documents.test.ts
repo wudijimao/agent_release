@@ -22,6 +22,84 @@ test("project document adapter converts common markdown blocks", () => {
   assert.equal(document.content[3]?.props?.checked, true);
 });
 
+test("project document adapter preserves all standard heading levels", () => {
+  const document = markdownToKnowledgeDocument(
+    [
+      "# 一级",
+      "## 二级",
+      "### 三级",
+      "#### 四级",
+      "##### 五级",
+      "###### 六级",
+      "####### 非标准标题",
+    ].join("\n\n"),
+  );
+
+  assert.deepEqual(
+    document.content.slice(0, 6).map((item) => item.props?.level),
+    [1, 2, 3, 4, 5, 6],
+  );
+  assert.equal(document.content[6]?.type, "paragraph");
+  assert.equal(document.content[6]?.content, "####### 非标准标题");
+});
+
+test("project document adapter preserves GFM tables as structured blocks", () => {
+  const document = markdownToKnowledgeDocument(
+    [
+      "表格前正文",
+      "",
+      "| 样本 | 结果 | 备注 |",
+      "| --- | :---: | ---: |",
+      "| A-01 | 阳性 | A \\| B |",
+      "| A-02 | 阴性 | |",
+      "",
+      "表格后正文",
+    ].join("\n"),
+  );
+
+  assert.deepEqual(
+    document.content.map((item) => item.type),
+    ["paragraph", "table", "paragraph"],
+  );
+  assert.deepEqual(document.content[1]?.content, {
+    type: "tableContent",
+    headerRows: 1,
+    rows: [
+      { cells: ["样本", "结果", "备注"] },
+      { cells: ["A-01", "阳性", "A | B"] },
+      { cells: ["A-02", "阴性", ""] },
+    ],
+  });
+});
+
+test("project document adapter preserves empty Milkdown tables", () => {
+  const cases = [
+    {
+      markdown: "| <br /> |\n| :----- |",
+      rows: [{ cells: [""] }],
+    },
+    {
+      markdown: "| <br /> | <br /> |\n| :----- | :----- |",
+      rows: [{ cells: ["", ""] }],
+    },
+    {
+      markdown: "| <br /> |\n| :----- |\n| <br /> |",
+      rows: [{ cells: [""] }, { cells: [""] }],
+    },
+  ];
+
+  for (const { markdown, rows } of cases) {
+    const document = markdownToKnowledgeDocument(markdown);
+    assert.equal(document.content.length, 1);
+    assert.equal(document.content[0]?.type, "table");
+    assert.deepEqual(document.content[0]?.content, {
+      type: "tableContent",
+      headerRows: 1,
+      rows,
+    });
+  }
+});
+
 test("project document creation uses the atomic Wiki2 project contract", async () => {
   const calls: Array<{ method: string; path: string; body?: unknown }> = [];
   const api = {
@@ -179,7 +257,7 @@ test("project document import removes its node when upload fails", async () => {
   assert.deepEqual(deleted, ["/api/knowledge/wiki2/nodes/node-1"]);
 });
 
-test("existing document attachment upload keeps recognition out of the body", async () => {
+test("existing document attachment upload registers the file without queuing recognition", async () => {
   const calls: Array<{ path: string; body?: unknown }> = [];
   const api = {
     async post<T>(path: string, body?: unknown) {
@@ -197,7 +275,7 @@ test("existing document attachment upload keeps recognition out of the body", as
         nodeId: "node / 1",
         originalName: "result.csv",
         mimeType: "text/csv",
-        convertStatus: path.endsWith("/convert-jobs") ? "pending" : "none",
+        convertStatus: "pending",
       } as T;
     },
     async delete<T>() {
@@ -216,13 +294,8 @@ test("existing document attachment upload keeps recognition out of the body", as
     [
       "/api/knowledge/wiki2/nodes/node%20%2F%201/attachments/presign",
       "/api/knowledge/wiki2/nodes/node%20%2F%201/attachments",
-      "/api/knowledge/wiki2/attachments/attachment%20%2F%201/convert-jobs",
     ],
   );
-  assert.deepEqual(calls[2]?.body, {
-    engine: "docling",
-    insertMode: "none",
-  });
 });
 
 test("project document upload reports a friendly message for HTTP 413", async () => {

@@ -74,9 +74,14 @@ function createApiStub(options: {
 
 test("projects adapter uses the bootstrap, detail, and create contracts", async () => {
   const summary = project();
+  const defaultSummary = project({
+    id: "default-project",
+    name: "未归属",
+    isDefaultUnassigned: true,
+  });
   const bootstrap: ProjectsBootstrapPayload = {
-    defaultProject: summary,
-    projects: [summary],
+    defaultProject: defaultSummary,
+    projects: [summary, defaultSummary],
   };
   const calls: unknown[][] = [];
   const api = createApiStub({
@@ -92,7 +97,10 @@ test("projects adapter uses the bootstrap, detail, and create contracts", async 
     },
   });
 
-  assert.equal(await loadProjectsBootstrap(api), bootstrap);
+  assert.deepEqual(await loadProjectsBootstrap(api), {
+    defaultProject: { ...defaultSummary, name: "个人工作台" },
+    projects: [summary, { ...defaultSummary, name: "个人工作台" }],
+  });
   await loadProjectDetail(api, "project/id");
   await createProject(api, {
     type: "personal",
@@ -278,7 +286,7 @@ test("projects view mapper keeps server counts and derives chat counts", () => {
     },
     {
       id: "project-2",
-      name: "肿瘤免疫项目",
+      name: "个人工作台",
       selectable: false,
     },
   ]);
@@ -292,7 +300,7 @@ test("projects view mapper keeps server counts and derives chat counts", () => {
     },
     {
       id: "project-2",
-      name: "肿瘤免疫项目",
+      name: "个人工作台",
       description: "暂无项目描述",
       documentCount: 0,
       conversationCount: 0,

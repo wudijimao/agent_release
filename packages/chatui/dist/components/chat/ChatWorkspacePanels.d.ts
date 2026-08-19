@@ -27,9 +27,10 @@ export interface ChatPreviewPanelProps {
     onAction?(itemKey: string, actionId: string): void;
     resolveActions?(item: ChatPreviewItemViewModel): readonly ChatPreviewActionViewModel[] | undefined;
     renderContent?(item: ChatPreviewItemViewModel): ReactNode;
+    onDownloadAttachment?(attachmentId: string): void;
     onResizeStart(event: MouseEvent<HTMLDivElement>): void;
 }
-export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, resolveActions, renderContent, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
+export declare function ChatPreviewPanel({ tabs, activeKey, onSelectTab, onCloseTab, onClose, pendingActionKey, onAction, resolveActions, renderContent, onDownloadAttachment, onResizeStart, }: ChatPreviewPanelProps): import("react").JSX.Element;
 export interface ChatProjectKnowledgeItemViewModel {
     id: string;
     title: string;

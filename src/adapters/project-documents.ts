@@ -60,7 +60,13 @@ interface KnowledgeBlock {
   id: string;
   type: string;
   props?: Record<string, unknown>;
-  content?: string;
+  content?: unknown;
+}
+
+interface KnowledgeTableContent {
+  type: "tableContent";
+  headerRows: 1;
+  rows: Array<{ cells: string[] }>;
 }
 
 export interface ImportProjectDocumentsInput {
@@ -120,7 +126,7 @@ export function validateProjectDocumentImportFile(file: File) {
 
 function block(
   type: string,
-  content?: string,
+  content?: unknown,
   props?: Record<string, unknown>,
 ): KnowledgeBlock {
   return {
@@ -129,6 +135,58 @@ function block(
     ...(props ? { props } : {}),
     ...(content === undefined ? {} : { content }),
   };
+}
+
+function splitMarkdownTableRow(line: string) {
+  const source = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+  const cells: string[] = [];
+  let cell = "";
+  let escaped = false;
+  for (const character of source) {
+    if (escaped) {
+      cell += character === "|" ? "|" : `\\${character}`;
+      escaped = false;
+      continue;
+    }
+    if (character === "\\") {
+      escaped = true;
+      continue;
+    }
+    if (character === "|") {
+      cells.push(normalizeMarkdownTableCell(cell));
+      cell = "";
+      continue;
+    }
+    cell += character;
+  }
+  if (escaped) cell += "\\";
+  cells.push(normalizeMarkdownTableCell(cell));
+  return cells;
+}
+
+function normalizeMarkdownTableCell(cell: string) {
+  const value = cell.trim();
+  return value.replace(/<br\s*\/?>/gi, "").trim() ? value : "";
+}
+
+function isMarkdownTableDivider(line: string) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length > 0 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+}
+
+function tableBlock(rows: string[][]): KnowledgeBlock {
+  const columnCount = Math.max(...rows.map((row) => row.length));
+  const content: KnowledgeTableContent = {
+    type: "tableContent",
+    headerRows: 1,
+    rows: rows.map((row) => ({
+      cells: [
+        ...row,
+        ...Array.from({ length: columnCount - row.length }, () => ""),
+      ],
+    })),
+  };
+  return block("table", content);
 }
 
 export function markdownToKnowledgeDocument(markdown: string) {
@@ -151,7 +209,8 @@ export function markdownToKnowledgeDocument(markdown: string) {
     }
   };
 
-  for (const rawLine of lines) {
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+    const rawLine = lines[lineIndex] ?? "";
     const trimmed = rawLine.trim();
 
     if (trimmed.startsWith("```")) {
@@ -171,7 +230,25 @@ export function markdownToKnowledgeDocument(markdown: string) {
       continue;
     }
 
-    const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
+    const nextLine = lines[lineIndex + 1] ?? "";
+    if (trimmed.includes("|") && isMarkdownTableDivider(nextLine)) {
+      flushParagraph();
+      const rows = [splitMarkdownTableRow(rawLine)];
+      lineIndex += 2;
+      while (lineIndex < lines.length) {
+        const tableLine = lines[lineIndex] ?? "";
+        if (!tableLine.trim() || !tableLine.includes("|")) {
+          lineIndex -= 1;
+          break;
+        }
+        rows.push(splitMarkdownTableRow(tableLine));
+        lineIndex += 1;
+      }
+      blocks.push(tableBlock(rows));
+      continue;
+    }
+
+    const heading = trimmed.match(/^(#{1,6})\s+(.+)$/);
     if (heading) {
       flushParagraph();
       blocks.push(
@@ -264,7 +341,7 @@ async function uploadProjectDocumentAttachment(
   conversion: {
     insertMode: "none" | "replace_placeholder";
     targetBlockId?: string;
-  },
+  } | undefined,
   signal?: AbortSignal,
 ) {
   const mimeType = file.type || "application/octet-stream";
@@ -308,6 +385,8 @@ async function uploadProjectDocumentAttachment(
     signal ? { signal } : undefined,
   );
 
+  if (!conversion) return attachment;
+
   return api.post<KbAttachment>(
     `/api/knowledge/wiki2/attachments/${encodeURIComponent(attachment.id)}/convert-jobs`,
     {
@@ -345,7 +424,7 @@ export async function uploadProjectDocumentAttachments(
         input.nodeId,
         file,
         fetchImpl,
-        { insertMode: "none" },
+        undefined,
         input.signal,
       ),
     );

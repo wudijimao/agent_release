@@ -47,7 +47,7 @@ const task: ScheduledTaskDto = {
   consecutiveFailureCount: 0,
   targetParentNodeId: null,
   targetWikiNodeId: null,
-  targetPath: "待选择 Mira 保存位置",
+  targetPath: "待选择 Helia 保存位置",
   titleTemplate: null,
   contextRefs: [],
   sourceConfig: {},

@@ -20,7 +20,7 @@ const display: HomeAssistantDisplay = {
   state: "waiting_confirmation",
   validation: { status: "valid", issues: [] },
   payload: {
-    targetPath: "Mira",
+    targetPath: "Helia",
     mode: "create",
     title: "CRISPR 论文分析",
     markdown: "# CRISPR 论文分析\n\n正文",

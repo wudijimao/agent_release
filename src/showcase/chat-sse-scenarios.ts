@@ -489,7 +489,7 @@ const miraDocumentDraftEvents: readonly ChatSseShowcaseEvent[] = [
   },
   {
     event: "display_start",
-    label: "生成 Mira 文档草稿卡片",
+    label: "生成 Helia 文档草稿卡片",
     data: {
       type: "display_start",
       display: {
@@ -601,7 +601,7 @@ export const CHAT_SSE_SHOWCASE_SCENARIOS: readonly ChatSseShowcaseScenario[] = [
   },
   {
     id: "mira-document-draft",
-    name: "Mira 文档草稿",
+    name: "Helia 文档草稿",
     description: "逐步展示文档草稿生成、文档预览以及确认或取消归档的交互。",
     userMessage: "把刚才的实验结果整理成文档并保存到当前项目",
     events: miraDocumentDraftEvents,

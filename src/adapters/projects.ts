@@ -25,10 +25,35 @@ import type {
 
 import type { ApiClient } from "@/lib/api";
 
+export const DEFAULT_PERSONAL_WORKSPACE_NAME = "个人工作台";
+
+export function projectNameForDisplay(
+  project: Pick<ProjectSummary, "name" | "isDefaultUnassigned">,
+) {
+  return project.isDefaultUnassigned
+    ? DEFAULT_PERSONAL_WORKSPACE_NAME
+    : project.name;
+}
+
+function projectSummaryForDisplay(project: ProjectSummary): ProjectSummary {
+  return { ...project, name: projectNameForDisplay(project) };
+}
+
+function projectDetailForDisplay(project: ProjectDetail): ProjectDetail {
+  return { ...project, name: projectNameForDisplay(project) };
+}
+
 export async function loadProjectsBootstrap(
   api: ApiClient,
 ): Promise<ProjectsBootstrapPayload> {
-  return api.get<ProjectsBootstrapPayload>("/api/projects/bootstrap");
+  const payload = await api.get<ProjectsBootstrapPayload>(
+    "/api/projects/bootstrap",
+  );
+  return {
+    ...payload,
+    defaultProject: projectSummaryForDisplay(payload.defaultProject),
+    projects: payload.projects.map(projectSummaryForDisplay),
+  };
 }
 
 export function isUnassignedProject(
@@ -42,7 +67,11 @@ export async function loadProjectDetail(
   api: ApiClient,
   projectId: string,
 ): Promise<ProjectDetail> {
-  return api.get<ProjectDetail>(`/api/projects/${encodeURIComponent(projectId)}`);
+  return projectDetailForDisplay(
+    await api.get<ProjectDetail>(
+      `/api/projects/${encodeURIComponent(projectId)}`,
+    ),
+  );
 }
 
 export async function createProject(
@@ -110,7 +139,7 @@ export function mapProjectsToShell(
 ): AppShellProject[] {
   return projects.map((project) => ({
     id: project.id,
-    name: project.name,
+    name: projectNameForDisplay(project),
     selectable: !project.isDefaultUnassigned,
   }));
 }
@@ -130,7 +159,7 @@ export function mapProjectsToList(
 
   return projects.map((project) => ({
     id: project.id,
-    name: project.name,
+    name: projectNameForDisplay(project),
     description: project.description || "暂无项目描述",
     documentCount: project.knowledgeCount,
     conversationCount: conversationCounts.get(project.id) || 0,
@@ -180,7 +209,7 @@ export function mapProjectChatWorkspace(
     return [sectionLabel, typeLabel];
   };
   return {
-    projectName: project.name,
+    projectName: projectNameForDisplay(project),
     ...(project.defaultKbNodeId !== undefined
       ? { defaultKbNodeId: project.defaultKbNodeId }
       : {}),
@@ -202,7 +231,7 @@ export function mapProjectChatWorkspace(
           key: `knowledge:${item.kbNodeId}`,
           type: "knowledge",
           title: item.title,
-          subtitle: `${project.name} · ${tags.join(" · ")}`,
+          subtitle: `${projectNameForDisplay(project)} · ${tags.join(" · ")}`,
         };
       }),
       ...experimentItems.map((item): ChatPreviewItemViewModel => {
@@ -213,7 +242,7 @@ export function mapProjectChatWorkspace(
           key: `experiment:${item.kbNodeId}`,
           type: "experiment-log",
           title: item.title,
-          subtitle: `${project.name} · ${tags.join(" · ")}`,
+          subtitle: `${projectNameForDisplay(project)} · ${tags.join(" · ")}`,
           status,
         };
       }),
@@ -255,7 +284,7 @@ export function mapProjectDetail(project: ProjectDetail): {
   return {
     project: {
       id: project.id,
-      name: project.name,
+      name: projectNameForDisplay(project),
       description: project.description || "暂无项目描述",
     },
     documents,

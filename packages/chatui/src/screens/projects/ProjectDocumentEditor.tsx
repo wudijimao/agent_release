@@ -9,13 +9,17 @@ import {
 } from '@milkdown/kit/prose/schema-list';
 import { TextSelection } from '@milkdown/kit/prose/state';
 import {
+  addBlockTypeCommand,
   bulletListSchema,
   headingSchema,
   listItemSchema,
   orderedListSchema,
   paragraphSchema,
+  selectTextNearPosCommand,
   setBlockTypeCommand,
 } from '@milkdown/kit/preset/commonmark';
+import { createTable } from '@milkdown/kit/preset/gfm';
+import { trailingConfig } from '@milkdown/kit/plugin/trailing';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { BaseButton } from '../../components/common';
@@ -58,7 +62,9 @@ const crepeTheme = {
 const addIconClass = (icon: string, className: string) =>
   icon.replace('<svg', `<svg class="${className}"`);
 
-const headingMenuIcon = (level: 1 | 2 | 3) => `
+type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
+const headingMenuIcon = (level: HeadingLevel) => `
   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
     <text x="3" y="23" fill="currentColor" font-family="inherit" font-size="23" font-weight="500">
       H<tspan font-size="13">${level}</tspan>
@@ -92,6 +98,12 @@ const dividerMenuIcon = `
   </svg>
 `;
 
+const tableMenuIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M20 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3ZM20 5V8H5V5H20ZM15 19H10V10H15V19ZM5 10H8V19H5V10ZM17 19V10H20V19H17Z" />
+  </svg>
+`;
+
 const deleteMenuIcon = `
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M4 7H20M9 7V4H15V7M18 7L17 20H7L6 7M10 11V16M14 11V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -102,6 +114,9 @@ type BlockMenuKey =
   | 'h1'
   | 'h2'
   | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
   | 'ordered-list'
   | 'bullet-list'
   | 'task-list'
@@ -118,6 +133,9 @@ const selectionBlockTypeOptions: Array<{
   { key: 'h1', label: '一级标题' },
   { key: 'h2', label: '二级标题' },
   { key: 'h3', label: '三级标题' },
+  { key: 'h4', label: '四级标题' },
+  { key: 'h5', label: '五级标题' },
+  { key: 'h6', label: '六级标题' },
   { key: 'bullet-list', label: '无序列表' },
   { key: 'ordered-list', label: '有序列表' },
   { key: 'task-list', label: '任务列表' },
@@ -145,6 +163,7 @@ export interface ProjectDocumentEditorProps {
   showHeaderActions?: boolean;
   onTitleChange(title: string): void;
   onMarkdownChange(markdown: string): void;
+  onDownloadAttachment?(attachmentId: string): void;
   onUploadAttachments?(files: File[]): void | Promise<void>;
   onDeleteAttachment?(attachmentId: string): void | Promise<void>;
   onSave(): void;
@@ -167,6 +186,7 @@ export function ProjectDocumentEditor({
   showHeaderActions = true,
   onTitleChange,
   onMarkdownChange,
+  onDownloadAttachment,
   onUploadAttachments,
   onDeleteAttachment,
   onSave,
@@ -176,6 +196,8 @@ export function ProjectDocumentEditor({
   const attachmentInputRef = useRef<HTMLInputElement | null>(null);
   const initialMarkdownRef = useRef(initialMarkdown);
   const onMarkdownChangeRef = useRef(onMarkdownChange);
+  const contentScrollTimerRef = useRef<number | null>(null);
+  const [isContentScrolling, setIsContentScrolling] = useState(false);
   const [uploadingAttachments, setUploadingAttachments] = useState(false);
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null);
   const [attachmentError, setAttachmentError] = useState('');
@@ -185,9 +207,32 @@ export function ProjectDocumentEditor({
     onMarkdownChangeRef.current = onMarkdownChange;
   }, [onMarkdownChange]);
 
+  useEffect(
+    () => () => {
+      if (contentScrollTimerRef.current !== null) {
+        window.clearTimeout(contentScrollTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  const handleContentScroll = () => {
+    setIsContentScrolling(true);
+    if (contentScrollTimerRef.current !== null) {
+      window.clearTimeout(contentScrollTimerRef.current);
+    }
+    contentScrollTimerRef.current = window.setTimeout(
+      () => setIsContentScrolling(false),
+      700,
+    );
+  };
+
   useEffect(() => {
     const root = editorRootRef.current;
     if (!root) return;
+    let insertTableAtOpenedBlock:
+      | ((ctx: Ctx, rows: number, columns: number) => void)
+      | null = null;
     const selectionBlockActions = new Map<
       SelectionBlockTypeKey,
       (ctx: Ctx) => void
@@ -222,9 +267,9 @@ export function ProjectDocumentEditor({
             h1: { label: '一级标题' },
             h2: { label: '二级标题' },
             h3: { label: '三级标题' },
-            h4: null,
-            h5: null,
-            h6: null,
+            h4: { label: '四级标题' },
+            h5: { label: '五级标题' },
+            h6: { label: '六级标题' },
             quote: { label: '引用' },
             divider: { label: '分割线' },
           },
@@ -238,7 +283,7 @@ export function ProjectDocumentEditor({
             label: '常用',
             image: null,
             codeBlock: { label: '代码块' },
-            table: null,
+            table: { label: '表格' },
             math: { label: '公式' },
           },
           buildMenu: (builder) => {
@@ -252,6 +297,9 @@ export function ProjectDocumentEditor({
               'h1',
               'h2',
               'h3',
+              'h4',
+              'h5',
+              'h6',
               'ordered-list',
               'bullet-list',
               'task-list',
@@ -267,7 +315,7 @@ export function ProjectDocumentEditor({
                 )
                   ? boundBlock
                   : boundBlock?.querySelector<HTMLElement>(
-                      '[data-content-dom="true"] p, [data-content-dom="true"] h1, [data-content-dom="true"] h2, [data-content-dom="true"] h3, [data-content-dom="true"] pre',
+                      '[data-content-dom="true"] p, [data-content-dom="true"] h1, [data-content-dom="true"] h2, [data-content-dom="true"] h3, [data-content-dom="true"] h4, [data-content-dom="true"] h5, [data-content-dom="true"] h6, [data-content-dom="true"] pre',
                     );
               const selectionTarget =
                 boundTextBlock ??
@@ -336,6 +384,16 @@ export function ProjectDocumentEditor({
                 });
               }
             };
+            insertTableAtOpenedBlock = (ctx, rows, columns) => {
+              const view = focusOpenedMenuBlock(ctx);
+              const { from } = view.state.selection;
+              ctx.get(commandsCtx).call(addBlockTypeCommand.key, {
+                nodeType: createTable(ctx, rows, columns),
+              });
+              ctx.get(commandsCtx).call(selectTextNearPosCommand.key, {
+                pos: from,
+              });
+            };
             selectionBlockActions.set(
               'paragraph',
               clearCurrentBlockFormat,
@@ -387,7 +445,12 @@ export function ProjectDocumentEditor({
             const appendItem = (
               group: ReturnType<typeof builder.addGroup>,
               key: string,
-              options?: { icon?: string; iconClass?: string; label?: string },
+              options?: {
+                icon?: string;
+                iconClass?: string;
+                label?: string;
+                onRun?: (ctx: Ctx) => void;
+              },
             ) => {
               const item = itemMap.get(key);
               if (!item) return;
@@ -467,7 +530,7 @@ export function ProjectDocumentEditor({
                       break;
                     }
                   }
-                : definition.onRun;
+                : options?.onRun ?? definition.onRun;
               if (replaceBlockActions.has(key) && onRun) {
                 selectionBlockActions.set(
                   key as BlockMenuKey,
@@ -509,6 +572,21 @@ export function ProjectDocumentEditor({
                 label: '三级标题 (Ctrl + Alt + 3)\nMarkdown: ### 空格',
               },
               {
+                key: 'h4',
+                icon: headingMenuIcon(4),
+                label: '四级标题 (Ctrl + Alt + 4)\nMarkdown: #### 空格',
+              },
+              {
+                key: 'h5',
+                icon: headingMenuIcon(5),
+                label: '五级标题 (Ctrl + Alt + 5)\nMarkdown: ##### 空格',
+              },
+              {
+                key: 'h6',
+                icon: headingMenuIcon(6),
+                label: '六级标题 (Ctrl + Alt + 6)\nMarkdown: ###### 空格',
+              },
+              {
                 key: 'ordered-list',
                 label: '有序列表\nMarkdown: 1. 空格',
               },
@@ -542,6 +620,11 @@ export function ProjectDocumentEditor({
             appendItem(common, 'task-list', {
               iconClass: 'chatui-document-menu-icon-task',
             });
+            appendItem(common, 'table', {
+              icon: tableMenuIcon,
+              iconClass: 'chatui-document-menu-icon-table',
+              onRun: () => undefined,
+            });
             appendItem(common, 'math', {
               iconClass: 'chatui-document-menu-icon-math',
             });
@@ -558,6 +641,16 @@ export function ProjectDocumentEditor({
           },
         },
       },
+    });
+    editor.editor.config((ctx) => {
+      const defaultTrailingConfig = ctx.get(trailingConfig.key);
+      ctx.set(trailingConfig.key, {
+        ...defaultTrailingConfig,
+        shouldAppend: (lastNode, state) =>
+          lastNode?.type.name === 'table'
+            ? false
+            : defaultTrailingConfig.shouldAppend(lastNode, state),
+      });
     });
 
     editor.on((listener) => {
@@ -582,17 +675,192 @@ export function ProjectDocumentEditor({
     let selectionTypeMenu: HTMLElement | null = null;
     let selectionTypeMenuHideTimer: number | null = null;
     let selectionToolbarObserver: MutationObserver | null = null;
+    let tableSizeMenu: HTMLElement | null = null;
+    let tableSizeMenuHideTimer: number | null = null;
+    const tablePickerSize = 8;
+
+    const getTableMenuItem = () =>
+      ownerDocument
+        .querySelector<SVGElement>(
+          '.milkdown-slash-menu svg.chatui-document-menu-icon-table',
+        )
+        ?.closest<HTMLElement>('li') ?? null;
+
+    const updateTableSizeSelection = (rows: number, columns: number) => {
+      if (!tableSizeMenu) return;
+      tableSizeMenu
+        .querySelectorAll<HTMLButtonElement>('[data-table-row]')
+        .forEach((cell) => {
+          const cellRow = Number(cell.dataset.tableRow);
+          const cellColumn = Number(cell.dataset.tableColumn);
+          cell.dataset.active =
+            cellRow <= rows && cellColumn <= columns ? 'true' : 'false';
+          cell.tabIndex = cellRow === rows && cellColumn === columns ? 0 : -1;
+        });
+      const status = tableSizeMenu.querySelector<HTMLElement>(
+        '.chatui-table-size-menu-status',
+      );
+      if (status) status.textContent = `${rows} × ${columns}`;
+    };
+
+    const hideTableSizeMenu = () => {
+      if (tableSizeMenuHideTimer !== null) {
+        window.clearTimeout(tableSizeMenuHideTimer);
+        tableSizeMenuHideTimer = null;
+      }
+      if (tableSizeMenu) tableSizeMenu.dataset.show = 'false';
+      getTableMenuItem()?.setAttribute('aria-expanded', 'false');
+    };
+
+    const scheduleTableSizeMenuHide = () => {
+      if (tableSizeMenuHideTimer !== null) {
+        window.clearTimeout(tableSizeMenuHideTimer);
+      }
+      tableSizeMenuHideTimer = window.setTimeout(hideTableSizeMenu, 140);
+    };
+
+    const ensureTableSizeMenu = () => {
+      if (tableSizeMenu) return tableSizeMenu;
+      const menu = ownerDocument.createElement('div');
+      menu.className = 'chatui-table-size-menu';
+      menu.dataset.show = 'false';
+      menu.setAttribute('role', 'menu');
+      menu.setAttribute('aria-label', '选择表格尺寸');
+
+      const heading = ownerDocument.createElement('div');
+      heading.className = 'chatui-table-size-menu-heading';
+      heading.innerHTML =
+        '<span>插入表格</span><span class="chatui-table-size-menu-status">1 × 1</span>';
+      menu.append(heading);
+
+      const grid = ownerDocument.createElement('div');
+      grid.className = 'chatui-table-size-menu-grid';
+      grid.setAttribute('role', 'grid');
+      grid.setAttribute('aria-rowcount', String(tablePickerSize));
+      grid.setAttribute('aria-colcount', String(tablePickerSize));
+      for (let row = 1; row <= tablePickerSize; row += 1) {
+        for (let column = 1; column <= tablePickerSize; column += 1) {
+          const cell = ownerDocument.createElement('button');
+          cell.type = 'button';
+          cell.dataset.tableRow = String(row);
+          cell.dataset.tableColumn = String(column);
+          cell.setAttribute('role', 'gridcell');
+          cell.setAttribute('aria-label', `插入 ${row} × ${column} 表格`);
+          cell.addEventListener('pointerenter', () => {
+            updateTableSizeSelection(row, column);
+          });
+          cell.addEventListener('focus', () => {
+            updateTableSizeSelection(row, column);
+          });
+          cell.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              hideTableSizeMenu();
+              getTableMenuItem()?.focus();
+              return;
+            }
+            const movement: Record<string, [number, number]> = {
+              ArrowUp: [-1, 0],
+              ArrowDown: [1, 0],
+              ArrowLeft: [0, -1],
+              ArrowRight: [0, 1],
+            };
+            const delta = movement[event.key];
+            if (!delta) return;
+            event.preventDefault();
+            const nextRow = Math.min(
+              tablePickerSize,
+              Math.max(1, row + delta[0]),
+            );
+            const nextColumn = Math.min(
+              tablePickerSize,
+              Math.max(1, column + delta[1]),
+            );
+            menu
+              .querySelector<HTMLButtonElement>(
+                `[data-table-row="${nextRow}"][data-table-column="${nextColumn}"]`,
+              )
+              ?.focus();
+          });
+          cell.addEventListener('pointerdown', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            editor.editor.action((ctx) => {
+              insertTableAtOpenedBlock?.(ctx, row, column);
+            });
+            hideTableSizeMenu();
+            hideBlockMenu();
+          });
+          grid.append(cell);
+        }
+      }
+      menu.append(grid);
+      menu.addEventListener('pointerenter', () => {
+        if (tableSizeMenuHideTimer !== null) {
+          window.clearTimeout(tableSizeMenuHideTimer);
+          tableSizeMenuHideTimer = null;
+        }
+      });
+      menu.addEventListener('pointerleave', scheduleTableSizeMenuHide);
+      ownerDocument.body.append(menu);
+      tableSizeMenu = menu;
+      updateTableSizeSelection(1, 1);
+      return menu;
+    };
+
+    const showTableSizeMenu = () => {
+      const trigger = getTableMenuItem();
+      if (!trigger) return;
+      if (tableSizeMenuHideTimer !== null) {
+        window.clearTimeout(tableSizeMenuHideTimer);
+        tableSizeMenuHideTimer = null;
+      }
+      trigger.dataset.chatuiSubmenu = 'true';
+      trigger.setAttribute('aria-haspopup', 'menu');
+      trigger.setAttribute('aria-expanded', 'true');
+      const menu = ensureTableSizeMenu();
+      updateTableSizeSelection(1, 1);
+      menu.dataset.show = 'true';
+      menu.style.visibility = 'hidden';
+
+      const triggerRect = trigger.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const viewportWidth =
+        ownerDocument.defaultView?.innerWidth ??
+        ownerDocument.documentElement.clientWidth;
+      const viewportHeight =
+        ownerDocument.defaultView?.innerHeight ??
+        ownerDocument.documentElement.clientHeight;
+      const gap = 8;
+      const padding = 8;
+      const placeRight =
+        triggerRect.right + gap + menuRect.width + padding <= viewportWidth;
+      const left = placeRight
+        ? triggerRect.right + gap
+        : Math.max(padding, triggerRect.left - menuRect.width - gap);
+      const top = Math.min(
+        Math.max(triggerRect.top, padding),
+        Math.max(padding, viewportHeight - menuRect.height - padding),
+      );
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+      menu.style.visibility = 'visible';
+      menu.dataset.placement = placeRight ? 'right' : 'left';
+    };
 
     const resolveBlockKeyFromElement = (
       target: Element | null,
     ): BlockMenuKey | null => {
       const block = target?.closest(
-        'h1, h2, h3, blockquote, pre, .milkdown-code-block, .milkdown-list-item-block',
+        'h1, h2, h3, h4, h5, h6, blockquote, pre, .milkdown-code-block, .milkdown-list-item-block',
       );
       if (!block || !block.closest('.ProseMirror')) return null;
       if (block.matches('h1')) return 'h1';
       if (block.matches('h2')) return 'h2';
       if (block.matches('h3')) return 'h3';
+      if (block.matches('h4')) return 'h4';
+      if (block.matches('h5')) return 'h5';
+      if (block.matches('h6')) return 'h6';
       if (block.matches('blockquote')) return 'quote';
       if (
         block.matches('pre, .milkdown-code-block') ||
@@ -756,7 +1024,7 @@ export function ProjectDocumentEditor({
       const currentBlock = $from.parent;
       if (currentBlock.type === headingSchema.type(ctx)) {
         const level = Number(currentBlock.attrs.level);
-        if (level === 1 || level === 2 || level === 3) {
+        if (level >= 1 && level <= 6) {
           return `h${level}` as SelectionBlockTypeKey;
         }
       }
@@ -771,9 +1039,9 @@ export function ProjectDocumentEditor({
           'chatui-selection-block-type-paragraph',
         );
       }
-      if (key === 'h1') return headingMenuIcon(1);
-      if (key === 'h2') return headingMenuIcon(2);
-      if (key === 'h3') return headingMenuIcon(3);
+      if (/^h[1-6]$/.test(key)) {
+        return headingMenuIcon(Number(key.slice(1)) as HeadingLevel);
+      }
       if (key === 'code') return codeMenuIcon;
 
       return (
@@ -1046,6 +1314,7 @@ export function ProjectDocumentEditor({
     };
 
     const hideBlockMenu = () => {
+      hideTableSizeMenu();
       clickedMenuAnchor = null;
       blockMenuPointerEntered = false;
       openedMenuBlockElement = null;
@@ -1061,6 +1330,10 @@ export function ProjectDocumentEditor({
 
     const handlePointerMove = (event: PointerEvent) => {
       const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('.chatui-table-size-menu')) {
+        blockMenuPointerEntered = true;
+        return;
+      }
       const blockMenu = ownerDocument.querySelector<HTMLElement>(
         '.milkdown-slash-menu',
       );
@@ -1173,11 +1446,16 @@ export function ProjectDocumentEditor({
         openBlockMenuFromHandle(addButton);
         return;
       }
-      setPointerHighlightedMenuItem(
+      const item =
         target?.closest<HTMLElement>(
           '.milkdown-slash-menu .menu-groups li',
-        ) ?? null,
-      );
+        ) ?? null;
+      setPointerHighlightedMenuItem(item);
+      if (item === getTableMenuItem()) {
+        showTableSizeMenu();
+      } else if (!target?.closest('.chatui-table-size-menu')) {
+        scheduleTableSizeMenuHide();
+      }
     };
 
     const handleMenuPointerOut = (event: PointerEvent) => {
@@ -1192,11 +1470,65 @@ export function ProjectDocumentEditor({
           ? event.relatedTarget
           : null;
       if (relatedTarget && item.contains(relatedTarget)) return;
+      if (
+        item === getTableMenuItem() &&
+        relatedTarget?.closest('.chatui-table-size-menu')
+      ) {
+        return;
+      }
+      if (item === getTableMenuItem()) scheduleTableSizeMenuHide();
 
       const nextItem = relatedTarget?.closest<HTMLElement>(
         '.milkdown-slash-menu .menu-groups li',
       );
       setPointerHighlightedMenuItem(nextItem ?? null);
+    };
+
+    const handleTableMenuPointerDown = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const item = target?.closest<HTMLElement>(
+        '.milkdown-slash-menu .menu-groups li',
+      );
+      const tableMenuItem = getTableMenuItem();
+      if (!item || !tableMenuItem || item !== tableMenuItem) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      showTableSizeMenu();
+    };
+
+    const handleEditorPointerDown = (event: PointerEvent) => {
+      if (event.button !== 0) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const proseMirror = getProseMirror();
+      if (!target || !proseMirror?.contains(target)) return;
+      if (
+        target.closest(
+          'button, input, select, textarea, a, [contenteditable="false"]',
+        )
+      ) {
+        return;
+      }
+
+      editor.editor.action((ctx) => {
+        const view = ctx.get(editorViewCtx);
+        const position = view.posAtCoords({
+          left: event.clientX,
+          top: event.clientY,
+        });
+        if (!position) return;
+        const resolvedPosition = view.state.doc.resolve(
+          Math.min(
+            Math.max(position.pos, 0),
+            view.state.doc.content.size,
+          ),
+        );
+        view.dispatch(
+          view.state.tr.setSelection(
+            TextSelection.near(resolvedPosition),
+          ),
+        );
+        view.focus();
+      });
     };
 
     const handleAddButtonClick = (event: MouseEvent) => {
@@ -1230,6 +1562,64 @@ export function ProjectDocumentEditor({
       if (event.key === '/') window.setTimeout(syncFromEditorSelection, 0);
     };
 
+    const handleEditorKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key !== 'Backspace' ||
+        event.defaultPrevented ||
+        event.isComposing
+      ) {
+        return;
+      }
+
+      const target = event.target instanceof Element ? event.target : null;
+      const proseMirror = getProseMirror();
+      if (!target || !proseMirror?.contains(target)) return;
+
+      let handled = false;
+      editor.editor.action((ctx) => {
+        const view = ctx.get(editorViewCtx);
+        const { selection } = view.state;
+        const { $from } = selection;
+        const paragraph = paragraphSchema.type(ctx);
+        if (
+          !selection.empty ||
+          $from.depth !== 1 ||
+          $from.parent.type !== paragraph ||
+          $from.parent.content.size !== 0 ||
+          $from.parentOffset !== 0
+        ) {
+          return;
+        }
+
+        const paragraphStart = $from.before(1);
+        const paragraphEnd = $from.after(1);
+        const previousNode = view.state.doc.resolve(paragraphStart).nodeBefore;
+        if (previousNode?.type.name !== 'table') return;
+
+        const transaction = view.state.tr.delete(
+          paragraphStart,
+          paragraphEnd,
+        );
+        const selectionPosition = Math.min(
+          paragraphStart,
+          transaction.doc.content.size,
+        );
+        transaction.setSelection(
+          TextSelection.near(
+            transaction.doc.resolve(selectionPosition),
+            -1,
+          ),
+        );
+        view.dispatch(transaction);
+        view.focus();
+        handled = true;
+      });
+
+      if (!handled) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+
     ownerDocument.addEventListener('pointermove', handlePointerMove);
     ownerDocument.addEventListener('pointerover', handleMenuPointerOver);
     ownerDocument.addEventListener('pointerout', handleMenuPointerOut);
@@ -1246,8 +1636,23 @@ export function ProjectDocumentEditor({
       handleEditorSelectionChange,
     );
     ownerDocument.addEventListener(
+      'keydown',
+      handleEditorKeyDown,
+      true,
+    );
+    ownerDocument.addEventListener(
+      'pointerdown',
+      handleEditorPointerDown,
+      true,
+    );
+    ownerDocument.addEventListener(
       'pointerdown',
       preventDuplicateHandleActivation,
+      true,
+    );
+    ownerDocument.addEventListener(
+      'pointerdown',
+      handleTableMenuPointerDown,
       true,
     );
     ownerDocument.addEventListener(
@@ -1272,6 +1677,7 @@ export function ProjectDocumentEditor({
             return;
           }
           if (blockMenu.dataset.show !== 'true') {
+            hideTableSizeMenu();
             clickedMenuAnchor = null;
             openedMenuBlockElement = null;
             setPointerHighlightedMenuItem(null);
@@ -1324,8 +1730,23 @@ export function ProjectDocumentEditor({
         handleEditorSelectionChange,
       );
       ownerDocument.removeEventListener(
+        'keydown',
+        handleEditorKeyDown,
+        true,
+      );
+      ownerDocument.removeEventListener(
+        'pointerdown',
+        handleEditorPointerDown,
+        true,
+      );
+      ownerDocument.removeEventListener(
         'pointerdown',
         preventDuplicateHandleActivation,
+        true,
+      );
+      ownerDocument.removeEventListener(
+        'pointerdown',
+        handleTableMenuPointerDown,
         true,
       );
       ownerDocument.removeEventListener(
@@ -1338,6 +1759,9 @@ export function ProjectDocumentEditor({
       hideSelectionTypeMenu();
       selectionTypeMenu?.remove();
       selectionTypeMenu = null;
+      hideTableSizeMenu();
+      tableSizeMenu?.remove();
+      tableSizeMenu = null;
       void creation.then(() => {
         menuPositionObserver?.disconnect();
         selectionToolbarObserver?.disconnect();
@@ -1433,7 +1857,10 @@ export function ProjectDocumentEditor({
             <div className="mt-4 h-px bg-lineSubtle" />
           </section>
 
-          <section className="auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1">
+          <section
+            onScroll={handleContentScroll}
+            className={`document-preview-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${isContentScrolling ? 'is-scrolling' : ''}`}
+          >
             <div
               ref={editorRootRef}
               className={`${styles.milkdownHost} ${markdownStyles.editor} ${contentInset} chatui-project-document-editor`}
@@ -1457,6 +1884,7 @@ export function ProjectDocumentEditor({
               deletingAttachmentId={deletingAttachmentId}
               unavailableHint={attachmentUnavailableHint}
               error={attachmentError}
+              onDownloadAttachment={onDownloadAttachment}
               onRequestUpload={
                 onUploadAttachments
                   ? () => attachmentInputRef.current?.click()

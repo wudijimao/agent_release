@@ -1,5 +1,5 @@
-import { B as ft, a as V, b as A, c as ve, d as gt, e as F, f as ce, g as fe, P as yt } from "./SkillPage-B1R4Qyhu.js";
-import { A as la, h as na, i as ia, j as oa, k as da, C as ca, l as ma, m as xa, n as ha, o as pa, p as ua, q as ba, r as fa, s as ga, t as ya, u as Na, v as va, w as wa, x as Ta, y as ka, z as Ca, D as Sa, F as Ma, I as _a, L as Ia, M as za, E as Pa, G as Da, H as Ea, J as Aa, K as Ba, Q as $a, R as Oa, S as La, T as Ha, N as Ra, O as Fa, U as Ga, V as Ua } from "./SkillPage-B1R4Qyhu.js";
+import { B as ft, a as V, b as A, c as ve, d as gt, e as F, f as ce, g as fe, P as yt } from "./SkillPage-BVkIOdVJ.js";
+import { A as la, h as na, i as ia, j as oa, k as da, C as ca, l as ma, m as xa, n as ha, o as pa, p as ua, q as ba, r as fa, s as ga, t as ya, u as Na, v as va, w as wa, x as Ta, y as ka, z as Ca, D as Sa, F as Ma, I as _a, L as Ia, M as za, E as Pa, G as Da, H as Ea, J as Aa, K as Ba, Q as $a, R as Oa, S as La, T as Ha, N as Ra, O as Fa, U as Ga, V as Ua } from "./SkillPage-BVkIOdVJ.js";
 import { jsxs as t, jsx as e, Fragment as ge } from "react/jsx-runtime";
 import Nt, { useState as x, useMemo as D, useCallback as Ae, useContext as vt, createContext as wt, useEffect as ae, useRef as ye } from "react";
 import { Inbox as Tt, Paperclip as kt, X as Ct, Pencil as we, Trash2 as se, HelpCircle as St, MoreHorizontal as Te, Menu as W, Plus as me, AlertCircle as Mt, ShieldCheck as _t, RefreshCw as It, MessageCircle as zt, Folder as Pt, ChevronDown as Ne, Check as Be, Users as Ve, Search as Dt, Upload as Et, FileText as At, CircleHelp as Bt, ArrowLeft as $t, Play as Ot } from "lucide-react";
@@ -20,25 +20,25 @@ const Ut = "_wrapper_g5uno_1", Kt = "_uploadContent_g5uno_7", Wt = "_uploadIcon_
   fileName: Zt,
   fileSize: jt,
   removeButton: Vt
-}, er = ".pdf,.doc,.docx,.txt,.md,.csv", tr = 20 * 1024 * 1024, tt = 5, rt = (r, n) => r.name === n.name && r.size === n.size && r.lastModified === n.lastModified && r.type === n.type, rr = (r) => r < 1024 ? `${r} B` : r < 1024 * 1024 ? `${(r / 1024).toFixed(1)} KB` : `${(r / (1024 * 1024)).toFixed(1)} MB`, nt = Nt.forwardRef(
+}, er = ".pdf,.doc,.docx,.txt,.md,.csv", tr = 20 * 1024 * 1024, tt = 5, rt = (r, l) => r.name === l.name && r.size === l.size && r.lastModified === l.lastModified && r.type === l.type, rr = (r) => r < 1024 ? `${r} B` : r < 1024 * 1024 ? `${(r / 1024).toFixed(1)} KB` : `${(r / (1024 * 1024)).toFixed(1)} MB`, nt = Nt.forwardRef(
   ({
     value: r,
-    defaultValue: n = [],
+    defaultValue: l = [],
     onChange: o,
     onError: s,
     accept: d = er,
-    maxSize: v = tr,
+    maxSize: w = tr,
     maxCount: k = tt,
     disabled: N = !1,
     className: M,
-    uploadTitle: g = "点击或拖拽文件到此上传",
+    uploadTitle: v = "点击或拖拽文件到此上传",
     uploadDescription: p = `支持单文件或批量上传，单次最多 ${tt} 个，单个文件不超过 20MB`,
-    uploadIcon: m
-  }, c) => {
-    const [l, b] = x(n), y = r !== void 0, w = D(() => (y ? r : l) ?? [], [l, y, r]), C = (u) => {
+    uploadIcon: c
+  }, m) => {
+    const [n, b] = x(l), y = r !== void 0, g = D(() => (y ? r : n) ?? [], [n, y, r]), C = (u) => {
       y || b(u), o == null || o(u);
     }, P = (u) => {
-      const h = [...w];
+      const h = [...g];
       if (Array.from(u).forEach((a) => {
         h.some((S) => rt(S, a)) || h.push(a);
       }), h.length > k) {
@@ -48,16 +48,16 @@ const Ut = "_wrapper_g5uno_1", Kt = "_uploadContent_g5uno_7", Wt = "_uploadIcon_
       C(h);
     };
     return /* @__PURE__ */ t("div", { className: $e(K.wrapper, M), children: [
-      /* @__PURE__ */ e(ft, { ref: c, accept: d, multiple: !0, disabled: N, maxSize: v, maxCount: k, onChange: P, onError: s, children: /* @__PURE__ */ t("div", { className: K.uploadContent, children: [
-        m ?? /* @__PURE__ */ e(Tt, { size: 30, strokeWidth: 2.2, className: K.uploadIcon }),
-        /* @__PURE__ */ e("div", { className: K.uploadTitle, children: g }),
+      /* @__PURE__ */ e(ft, { ref: m, accept: d, multiple: !0, disabled: N, maxSize: w, maxCount: k, onChange: P, onError: s, children: /* @__PURE__ */ t("div", { className: K.uploadContent, children: [
+        c ?? /* @__PURE__ */ e(Tt, { size: 30, strokeWidth: 2.2, className: K.uploadIcon }),
+        /* @__PURE__ */ e("div", { className: K.uploadTitle, children: v }),
         /* @__PURE__ */ e("div", { className: K.uploadDescription, children: p })
       ] }) }),
-      w.length > 0 && /* @__PURE__ */ e("div", { className: K.fileList, children: w.map((u, h) => /* @__PURE__ */ t("div", { className: K.fileItem, children: [
+      g.length > 0 && /* @__PURE__ */ e("div", { className: K.fileList, children: g.map((u, h) => /* @__PURE__ */ t("div", { className: K.fileItem, children: [
         /* @__PURE__ */ e(kt, { size: 14, className: K.fileItemIcon }),
         /* @__PURE__ */ e("span", { className: K.fileName, children: u.name }),
         /* @__PURE__ */ e("span", { className: K.fileSize, children: rr(u.size) }),
-        /* @__PURE__ */ e("button", { type: "button", onClick: () => C(w.filter((a) => !rt(a, u))), className: K.removeButton, "aria-label": `移除文件 ${u.name}`, disabled: N, children: /* @__PURE__ */ e(Ct, { size: 14 }) })
+        /* @__PURE__ */ e("button", { type: "button", onClick: () => C(g.filter((a) => !rt(a, u))), className: K.removeButton, "aria-label": `移除文件 ${u.name}`, disabled: N, children: /* @__PURE__ */ e(Ct, { size: 14 }) })
       ] }, `${u.name}-${u.lastModified}-${h}`)) })
     ] });
   }
@@ -83,33 +83,33 @@ const ar = "_toggle_198gd_1", sr = "_toggleSmall_198gd_18", lr = "_toggleRegular
   thumbOnMedium: yr
 }, Oe = ({
   checked: r,
-  defaultChecked: n = !1,
+  defaultChecked: l = !1,
   size: o = "medium",
   disabled: s = !1,
   onChange: d,
-  className: v,
+  className: w,
   ...k
 }) => {
-  const [N, M] = x(n), g = r !== void 0, p = g ? r : N, m = `${o.charAt(0).toUpperCase()}${o.slice(1)}`, c = Ae(() => {
+  const [N, M] = x(l), v = r !== void 0, p = v ? r : N, c = `${o.charAt(0).toUpperCase()}${o.slice(1)}`, m = Ae(() => {
     if (s) return;
     const y = !p;
-    g || M(y), d == null || d(y);
-  }, [s, p, g, d]), l = D(
+    v || M(y), d == null || d(y);
+  }, [s, p, v, d]), n = D(
     () => $e(
       X.toggle,
-      X[`toggle${m}`],
+      X[`toggle${c}`],
       p ? X.toggleOn : X.toggleOff,
       s && X.toggleDisabled,
-      v
+      w
     ),
-    [v, s, p, m]
+    [w, s, p, c]
   ), b = D(
     () => $e(
       X.thumb,
-      X[`thumb${m}`],
-      X[`thumb${p ? "On" : "Off"}${m}`]
+      X[`thumb${c}`],
+      X[`thumb${p ? "On" : "Off"}${c}`]
     ),
-    [p, m]
+    [p, c]
   );
   return /* @__PURE__ */ e(
     "button",
@@ -118,8 +118,8 @@ const ar = "_toggle_198gd_1", sr = "_toggleSmall_198gd_18", lr = "_toggleRegular
       type: "button",
       role: "switch",
       "aria-checked": p,
-      className: l,
-      onClick: c,
+      className: n,
+      onClick: m,
       disabled: s,
       children: /* @__PURE__ */ e("span", { className: b })
     }
@@ -129,9 +129,9 @@ Oe.displayName = "BaseToggle";
 const it = wt(null);
 function Fr({
   adapter: r,
-  children: n
+  children: l
 }) {
-  return /* @__PURE__ */ e(it.Provider, { value: r, children: n });
+  return /* @__PURE__ */ e(it.Provider, { value: r, children: l });
 }
 function Gr() {
   const r = vt(it);
@@ -141,23 +141,23 @@ function Gr() {
 }
 function Ur({
   labName: r,
-  members: n,
+  members: l,
   inviteCode: o,
   isSidebarOpen: s,
   loading: d = !1,
-  error: v,
+  error: w,
   actionError: k,
   canManage: N = !1,
   onOpenSidebar: M,
-  onRetry: g,
+  onRetry: v,
   onRegenerateInvite: p,
-  onUpdateRole: m,
-  onRemoveMember: c
+  onUpdateRole: c,
+  onRemoveMember: m
 }) {
-  const [l, b] = x(!1), [y, w] = x(!1), [C, P] = x(!1), [u, h] = x(!1), [a, S] = x(null), [z, B] = x("成员"), [$, E] = x(null), [L, R] = x(null), [f, T] = x(1), [H, G] = x(10), ee = n.filter((_) => _.role === "管理员").length, le = D(() => {
+  const [n, b] = x(!1), [y, g] = x(!1), [C, P] = x(!1), [u, h] = x(!1), [a, S] = x(null), [z, B] = x("成员"), [$, E] = x(null), [L, R] = x(null), [f, T] = x(1), [H, G] = x(10), ee = l.filter((_) => _.role === "管理员").length, le = D(() => {
     const _ = (f - 1) * H;
-    return n.slice(_, _ + H);
-  }, [f, n, H]), Z = D(
+    return l.slice(_, _ + H);
+  }, [f, l, H]), Z = D(
     () => [
       { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(we, { size: 14 }) },
       { key: "remove", label: "移除", icon: /* @__PURE__ */ e(se, { size: 14 }), danger: !0 }
@@ -165,9 +165,9 @@ function Ur({
     []
   );
   ae(() => {
-    const _ = Math.max(1, Math.ceil(n.length / H));
+    const _ = Math.max(1, Math.ceil(l.length / H));
     f > _ && T(_);
-  }, [f, n.length, H]);
+  }, [f, l.length, H]);
   const xe = (_) => {
     S(_), B(_.role), P(!0);
   }, Y = (_) => {
@@ -180,12 +180,12 @@ function Ur({
         const _ = document.createElement("textarea");
         _.value = o, _.style.position = "fixed", _.style.opacity = "0", document.body.appendChild(_), _.focus(), _.select(), document.execCommand("copy"), document.body.removeChild(_);
       }
-      w(!0), window.setTimeout(() => w(!1), 1500);
+      g(!0), window.setTimeout(() => g(!1), 1500);
     }
   }, he = async () => {
     E("invite");
     try {
-      await p(), w(!1);
+      await p(), g(!1);
     } finally {
       E(null);
     }
@@ -193,7 +193,7 @@ function Ur({
     if (a) {
       E("edit");
       try {
-        await m(a.id, z), P(!1);
+        await c(a.id, z), P(!1);
       } finally {
         E(null);
       }
@@ -202,7 +202,7 @@ function Ur({
     if (a) {
       E("remove");
       try {
-        await c(a.id), h(!1);
+        await m(a.id), h(!1);
       } finally {
         E(null);
       }
@@ -280,15 +280,15 @@ function Ur({
         /* @__PURE__ */ e("h2", { className: "text-xl font-semibold text-primaryText md:text-2xl", children: r || "实验室成员" }),
         /* @__PURE__ */ t("span", { className: "shrink-0 rounded-full bg-surfaceMuted px-2.5 py-0.5 text-[13px] font-medium text-secondaryText", children: [
           "共",
-          n.length,
+          l.length,
           "人"
         ] })
       ] }),
-      v && /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-3 rounded-xl border border-danger bg-danger-soft px-4 py-3 text-sm text-danger", children: [
-        /* @__PURE__ */ e("span", { children: v }),
-        g && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: g, children: "重新加载" })
+      w && /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-3 rounded-xl border border-danger bg-danger-soft px-4 py-3 text-sm text-danger", children: [
+        /* @__PURE__ */ e("span", { children: w }),
+        v && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: v, children: "重新加载" })
       ] }),
-      !v && ee < 2 && !d && /* @__PURE__ */ t("div", { className: "!mt-3 flex items-center gap-2.5 rounded-xl border border-warning bg-warning-soft px-4 py-3.5 text-sm text-warning shadow-sm", children: [
+      !w && ee < 2 && !d && /* @__PURE__ */ t("div", { className: "!mt-3 flex items-center gap-2.5 rounded-xl border border-warning bg-warning-soft px-4 py-3.5 text-sm text-warning shadow-sm", children: [
         /* @__PURE__ */ e(Mt, { size: 16, className: "shrink-0" }),
         /* @__PURE__ */ t("span", { children: [
           "当前管理员",
@@ -312,7 +312,7 @@ function Ur({
           gt,
           {
             current: f,
-            total: n.length,
+            total: l.length,
             pageSize: H,
             onChange: T,
             showSizeChanger: !0,
@@ -328,7 +328,7 @@ function Ur({
         /* @__PURE__ */ e("span", { children: "所有成员均已纳入实验室合规性审计流水线" })
       ] })
     ] }) }),
-    /* @__PURE__ */ t(F, { visible: l, title: "邀请新成员", width: 360, onCancel: () => b(!1), footer: null, bodyClassName: "!px-6 !py-5", children: [
+    /* @__PURE__ */ t(F, { visible: n, title: "邀请新成员", width: 360, onCancel: () => b(!1), footer: null, bodyClassName: "!px-6 !py-5", children: [
       /* @__PURE__ */ e("h4", { className: "text-[17px] font-semibold text-primaryText", children: "邀请码" }),
       /* @__PURE__ */ e("div", { className: "mt-4 grid grid-cols-6 gap-2", children: (o || "------").split("").map((_, O) => /* @__PURE__ */ e("div", { className: "flex h-[44px] items-center justify-center rounded-lg bg-surfaceMuted text-[24px] font-medium text-primaryText", children: _ }, `${_}-${O}`)) }),
       /* @__PURE__ */ e("p", { className: "mt-4 text-sm leading-6 text-tertiaryText", children: "请将6位数字邀请码分享给新成员，新成员加入后默认为成员，管理员可在成员列表中调整权限" }),
@@ -367,21 +367,21 @@ function Ur({
 }
 function Nr({
   items: r,
-  loading: n = !1,
+  loading: l = !1,
   pendingId: o,
   onFetch: s,
   onToggle: d,
-  onEdit: v,
+  onEdit: w,
   onDelete: k
 }) {
-  const [N, M] = x(null), g = D(() => [
+  const [N, M] = x(null), v = D(() => [
     {
       title: "订阅名称",
       dataIndex: "name",
       width: "19%",
-      render: (p, m) => /* @__PURE__ */ t("div", { className: "min-w-0", children: [
+      render: (p, c) => /* @__PURE__ */ t("div", { className: "min-w-0", children: [
         /* @__PURE__ */ e("div", { className: "truncate font-medium text-primaryText", children: String(p) }),
-        /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: m.source })
+        /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: c.source })
       ] })
     },
     {
@@ -400,9 +400,9 @@ function Nr({
       title: "内容统计",
       dataIndex: "itemStats",
       width: "16%",
-      render: (p, m) => /* @__PURE__ */ t("div", { children: [
+      render: (p, c) => /* @__PURE__ */ t("div", { children: [
         /* @__PURE__ */ e("div", { className: "text-secondaryText", children: String(p) }),
-        /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: m.projectStats })
+        /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: c.projectStats })
       ] })
     },
     {
@@ -415,14 +415,14 @@ function Nr({
       title: "状态",
       dataIndex: "isEnabled",
       width: "7%",
-      render: (p, m) => /* @__PURE__ */ e(
+      render: (p, c) => /* @__PURE__ */ e(
         Oe,
         {
           size: "small",
-          checked: m.isEnabled,
-          disabled: o === m.id,
-          onChange: () => d(m.id),
-          "aria-label": m.isEnabled ? "停用文献订阅" : "启用文献订阅"
+          checked: c.isEnabled,
+          disabled: o === c.id,
+          onChange: () => d(c.id),
+          "aria-label": c.isEnabled ? "停用文献订阅" : "启用文献订阅"
         }
       )
     },
@@ -431,8 +431,8 @@ function Nr({
       dataIndex: "id",
       width: "8%",
       align: "right",
-      render: (p, m) => {
-        const c = [
+      render: (p, c) => {
+        const m = [
           { key: "fetch", label: "立即抓取", icon: /* @__PURE__ */ e(It, { size: 14 }) },
           { key: "edit", label: "编辑", icon: /* @__PURE__ */ e(we, { size: 14 }) },
           { key: "delete", label: "删除", icon: /* @__PURE__ */ e(se, { size: 14 }), danger: !0 }
@@ -440,67 +440,67 @@ function Nr({
         return /* @__PURE__ */ e(
           V,
           {
-            open: N === m.id,
-            onOpenChange: (l) => M(l ? m.id : null),
+            open: N === c.id,
+            onOpenChange: (n) => M(n ? c.id : null),
             placement: "bottom-end",
             width: 140,
             portal: !0,
             menuClassName: "!min-w-[140px]",
             trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Te, { size: 16 }) }),
-            items: c,
-            onItemClick: (l) => {
-              M(null), l.key === "fetch" ? s(m.id) : l.key === "edit" ? v(m.id) : k(m.id);
+            items: m,
+            onItemClick: (n) => {
+              M(null), n.key === "fetch" ? s(c.id) : n.key === "edit" ? w(c.id) : k(c.id);
             }
           }
         );
       }
     }
-  ], [N, k, v, s, d, o]);
+  ], [N, k, w, s, d, o]);
   return /* @__PURE__ */ e("section", { children: /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-white", children: /* @__PURE__ */ e(
     ve,
     {
       className: "task-table-scroll w-full [&_table]:min-w-[1080px]",
-      columns: g,
+      columns: v,
       dataSource: r,
       rowKey: "id",
       striped: !1,
-      loading: n
+      loading: l
     }
   ) }) });
 }
 const Pe = 30, vr = 3;
 function wr(r) {
-  const n = Array.from(r ?? ""), o = Pe * vr, s = n.length > o ? [...n.slice(0, Math.max(o - 3, 0)), ".", ".", "."] : n, d = [];
-  for (let v = 0; v < s.length; v += Pe)
-    d.push(s.slice(v, v + Pe).join(""));
+  const l = Array.from(r ?? ""), o = Pe * vr, s = l.length > o ? [...l.slice(0, Math.max(o - 3, 0)), ".", ".", "."] : l, d = [];
+  for (let w = 0; w < s.length; w += Pe)
+    d.push(s.slice(w, w + Pe).join(""));
   return d.join(`
 `);
 }
 function Kr({
   templates: r,
-  tasks: n,
+  tasks: l,
   isSidebarOpen: o,
   loading: s = !1,
   error: d,
-  pendingTaskId: v,
+  pendingTaskId: w,
   literatureSubscriptions: k = [],
   literatureLoading: N = !1,
   pendingLiteratureId: M,
-  onOpenSidebar: g,
+  onOpenSidebar: v,
   onCreateCustom: p,
-  onCreateFromTemplate: m,
-  onToggleTask: c,
-  onEditTask: l,
+  onCreateFromTemplate: c,
+  onToggleTask: m,
+  onEditTask: n,
   onDeleteTask: b,
   onOpenTaskChat: y,
-  onCreateLiterature: w,
+  onCreateLiterature: g,
   onFetchLiterature: C,
   onToggleLiterature: P,
   onEditLiterature: u,
   onDeleteLiterature: h,
   onRetry: a
 }) {
-  const [S, z] = x(null), [B, $] = x("scheduled"), E = !!(w && C && P && u && h), L = E ? B : "scheduled", R = D(
+  const [S, z] = x(null), [B, $] = x("scheduled"), E = !!(g && C && P && u && h), L = E ? B : "scheduled", R = D(
     () => [
       {
         title: "任务名称",
@@ -538,8 +538,8 @@ function Kr({
           {
             size: "small",
             checked: T.isEnabled,
-            disabled: T.isToggleDisabled || v === T.id,
-            onChange: () => c(T.id),
+            disabled: T.isToggleDisabled || w === T.id,
+            onChange: () => m(T.id),
             "aria-label": T.isEnabled ? "关闭任务" : "开启任务"
           }
         )
@@ -567,19 +567,19 @@ function Kr({
               trigger: /* @__PURE__ */ e("span", { className: "inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText", children: /* @__PURE__ */ e(Te, { size: 16 }) }),
               items: H,
               onItemClick: (G) => {
-                z(null), G.key === "chat" && T.mainSessionId ? y == null || y(T.mainSessionId) : G.key === "edit" ? l(T.id) : b(T.id);
+                z(null), G.key === "chat" && T.mainSessionId ? y == null || y(T.mainSessionId) : G.key === "edit" ? n(T.id) : b(T.id);
               }
             }
           );
         }
       }
     ],
-    [S, b, l, y, c, v]
+    [S, b, n, y, m, w]
   );
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
       /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
-        !o && /* @__PURE__ */ e("button", { type: "button", onClick: g, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
+        !o && /* @__PURE__ */ e("button", { type: "button", onClick: v, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
         /* @__PURE__ */ e("div", { className: "flex items-center gap-2 text-sm", children: /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: "任务" }) })
       ] }),
       /* @__PURE__ */ e(
@@ -598,7 +598,7 @@ function Kr({
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto overflow-x-hidden px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px]", children: [
       /* @__PURE__ */ t("section", { children: [
         /* @__PURE__ */ e("h2", { className: "text-2xl font-semibold text-primaryText", children: "定时任务" }),
-        /* @__PURE__ */ e("div", { className: "mt-6 grid grid-cols-1 gap-[18px] md:grid-cols-2 lg:grid-cols-3", children: r.map((f) => /* @__PURE__ */ t("button", { type: "button", onClick: () => m(f.id), className: "flex flex-col rounded-lg border border-lineSoft bg-white p-4 text-left transition-all hover:border-borderSoft hover:shadow-sm", children: [
+        /* @__PURE__ */ e("div", { className: "mt-6 grid grid-cols-1 gap-[18px] md:grid-cols-2 lg:grid-cols-3", children: r.map((f) => /* @__PURE__ */ t("button", { type: "button", onClick: () => c(f.id), className: "flex flex-col rounded-lg border border-lineSoft bg-white p-4 text-left transition-all hover:border-borderSoft hover:shadow-sm", children: [
           /* @__PURE__ */ e("h3", { className: "text-[17px] font-medium text-primaryText", children: f.name }),
           /* @__PURE__ */ e("p", { className: "mt-1 line-clamp-2 min-h-[38px] text-sm leading-5 text-secondaryText", children: f.description })
         ] }, f.id)) })
@@ -634,8 +634,8 @@ function Kr({
             /* @__PURE__ */ e("span", { children: d }),
             a && /* @__PURE__ */ e("button", { type: "button", className: "font-medium underline", onClick: a, children: "重新加载" })
           ] }),
-          /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-white", children: /* @__PURE__ */ e(ve, { className: "task-table-scroll w-full [&_table]:min-w-[940px]", columns: R, dataSource: n, rowKey: "id", striped: !1, loading: s }) })
-        ] }) : w && C && P && u && h && /* @__PURE__ */ e("div", { role: "tabpanel", children: /* @__PURE__ */ e(
+          /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-white", children: /* @__PURE__ */ e(ve, { className: "task-table-scroll w-full [&_table]:min-w-[940px]", columns: R, dataSource: l, rowKey: "id", striped: !1, loading: s }) })
+        ] }) : g && C && P && u && h && /* @__PURE__ */ e("div", { role: "tabpanel", children: /* @__PURE__ */ e(
           Nr,
           {
             items: k,
@@ -670,42 +670,42 @@ const { RangePicker: Tr } = Rt, kr = [
   ["fri", "周五"],
   ["sat", "周六"],
   ["sun", "周日"]
-].map(([r, n]) => ({ value: r, label: n })), Mr = [
+].map(([r, l]) => ({ value: r, label: l })), Mr = [
   { value: "daily", label: "每天" },
   { value: "weekly", label: "每周", children: Sr },
-  { value: "monthly", label: "每月", children: Array.from({ length: 28 }, (r, n) => ({ value: String(n + 1), label: `${n + 1}号` })) }
+  { value: "monthly", label: "每月", children: Array.from({ length: 28 }, (r, l) => ({ value: String(l + 1), label: `${l + 1}号` })) }
 ];
 function Wr({
   visible: r,
-  kind: n,
+  kind: l,
   editing: o = !1,
   literatureValue: s,
   scheduleValue: d,
-  projects: v = [],
+  projects: w = [],
   literatureProjects: k = [],
   onLiteratureChange: N,
   onScheduleChange: M,
-  onCancel: g,
+  onCancel: v,
   onConfirm: p,
-  onCreateProject: m
+  onCreateProject: c
 }) {
-  const [c, l] = x(!1), b = n === "literature", y = v.find((a) => a.id === d.projectId) ?? null, w = b ? o ? "修改文献订阅任务" : "设置文献订阅任务" : o ? "修改定时任务" : "新建定时任务", C = d.repeatMode === "weekly" || d.repeatMode === "monthly" ? [d.repeatMode, d.repeatSubValue || (d.repeatMode === "weekly" ? "mon" : "1")] : [d.repeatMode], P = D(() => [
+  const [m, n] = x(!1), b = l === "literature", y = w.find((a) => a.id === d.projectId) ?? null, g = b ? o ? "修改文献订阅任务" : "设置文献订阅任务" : o ? "修改定时任务" : "新建定时任务", C = d.repeatMode === "weekly" || d.repeatMode === "monthly" ? [d.repeatMode, d.repeatSubValue || (d.repeatMode === "weekly" ? "mon" : "1")] : [d.repeatMode], P = D(() => [
     { key: "none", label: "不选择项目", active: !y },
-    ...v.map((a) => ({ key: a.id, label: /* @__PURE__ */ e("span", { className: "truncate", children: a.name }), active: (y == null ? void 0 : y.id) === a.id }))
-  ], [v, y]), u = D(() => m ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(me, { size: 16 }) }] : [], [m]), h = (a) => {
-    if (l(!1), a.key === "create") return m == null ? void 0 : m();
+    ...w.map((a) => ({ key: a.id, label: /* @__PURE__ */ e("span", { className: "truncate", children: a.name }), active: (y == null ? void 0 : y.id) === a.id }))
+  ], [w, y]), u = D(() => c ? [{ key: "create", label: "新建项目", icon: /* @__PURE__ */ e(me, { size: 16 }) }] : [], [c]), h = (a) => {
+    if (n(!1), a.key === "create") return c == null ? void 0 : c();
     M({ ...d, projectId: a.key === "none" ? null : a.key });
   };
   return /* @__PURE__ */ e(
     F,
     {
       visible: r,
-      title: w,
+      title: g,
       width: 600,
       className: "tools-task-modal",
       okText: o ? "保存修改" : b ? "创建订阅" : "创建任务",
       cancelText: "取消",
-      onCancel: g,
+      onCancel: v,
       onConfirm: p,
       okButtonProps: { disabled: !s.topic.trim() || (b ? !s.keywords.trim() || s.sourceTypes.length === 0 || s.sourceTypes.includes("pubmed") && s.pubmedMatchMode === "advanced" && !s.advancedQuery.trim() : !d.taskPrompt.trim()) },
       children: /* @__PURE__ */ t("div", { className: "space-y-5", children: [
@@ -818,8 +818,8 @@ function Wr({
               /* @__PURE__ */ e("div", { className: "absolute bottom-4 left-3 z-20", children: /* @__PURE__ */ e(
                 V,
                 {
-                  open: c,
-                  onOpenChange: l,
+                  open: m,
+                  onOpenChange: n,
                   placement: "top-start",
                   width: 260,
                   trigger: /* @__PURE__ */ t("span", { className: "inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-secondaryText transition-colors hover:bg-bgLight", children: [
@@ -927,7 +927,7 @@ function Wr({
 }
 function Yr({
   visible: r,
-  description: n,
+  description: l,
   confirmLoading: o = !1,
   onCancel: s,
   onConfirm: d
@@ -947,24 +947,24 @@ function Yr({
       okButtonProps: {
         className: "!border-danger !bg-danger hover:!border-danger-hover hover:!bg-danger-hover"
       },
-      children: /* @__PURE__ */ e("p", { className: "text-sm text-primaryText", children: n })
+      children: /* @__PURE__ */ e("p", { className: "text-sm text-primaryText", children: l })
     }
   );
 }
 function qr({
   projects: r,
-  isSidebarOpen: n,
+  isSidebarOpen: l,
   loading: o = !1,
   error: s,
   onOpenSidebar: d,
-  onOpenProject: v,
+  onOpenProject: w,
   onCreateProject: k,
   onRetry: N
 }) {
-  const [M, g] = x(!1), [p, m] = x(""), [c, l] = x(""), [b, y] = x(""), [w, C] = x(!1), P = () => {
-    m(""), l(""), y(""), g(!0);
+  const [M, v] = x(!1), [p, c] = x(""), [m, n] = x(""), [b, y] = x(""), [g, C] = x(!1), P = () => {
+    c(""), n(""), y(""), v(!0);
   }, u = () => {
-    w || (g(!1), y(""));
+    g || (v(!1), y(""));
   }, h = async () => {
     const a = p.trim();
     if (!a) {
@@ -975,8 +975,8 @@ function qr({
     try {
       await k({
         name: a,
-        description: c.trim()
-      }), g(!1);
+        description: m.trim()
+      }), v(!1);
     } catch (S) {
       y(S instanceof Error ? S.message : "项目创建失败");
     } finally {
@@ -986,7 +986,7 @@ function qr({
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
       /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
-        !n && /* @__PURE__ */ e("button", { type: "button", onClick: d, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
+        !l && /* @__PURE__ */ e("button", { type: "button", onClick: d, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
         /* @__PURE__ */ e("div", { className: "flex items-center gap-2 text-sm", children: /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: "项目" }) })
       ] }),
       /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", icon: /* @__PURE__ */ e(me, { size: 14 }), className: "shrink-0", onClick: P, children: "创建新项目" })
@@ -1002,7 +1002,7 @@ function qr({
           "button",
           {
             type: "button",
-            onClick: () => v(a.id),
+            onClick: () => w(a.id),
             className: "group rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm",
             children: [
               /* @__PURE__ */ e("div", { className: "mb-1", children: /* @__PURE__ */ e("h3", { className: "truncate text-lg font-medium text-primaryText", children: a.name }) }),
@@ -1032,13 +1032,13 @@ function qr({
         title: "创建新项目",
         width: 560,
         maskClosable: !1,
-        okText: w ? "创建中…" : "创建",
+        okText: g ? "创建中…" : "创建",
         cancelText: "取消",
         onCancel: u,
         onConfirm: () => {
           h();
         },
-        okButtonProps: { disabled: w },
+        okButtonProps: { disabled: g },
         bodyClassName: "!px-6 !py-5",
         children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
           /* @__PURE__ */ t("section", { className: "space-y-2", children: [
@@ -1051,9 +1051,9 @@ function qr({
               {
                 value: p,
                 placeholder: "请输入项目名称",
-                disabled: w,
+                disabled: g,
                 onChange: (a) => {
-                  m(a.target.value), b && y("");
+                  c(a.target.value), b && y("");
                 }
               }
             )
@@ -1063,11 +1063,11 @@ function qr({
             /* @__PURE__ */ e(
               "textarea",
               {
-                value: c,
-                onChange: (a) => l(a.target.value),
+                value: m,
+                onChange: (a) => n(a.target.value),
                 placeholder: "请输入项目描述",
                 rows: 4,
-                disabled: w,
+                disabled: g,
                 className: "w-full resize-none rounded-lg border border-borderGray bg-white px-3 py-2 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
               }
             )
@@ -1079,55 +1079,55 @@ function qr({
   ] });
 }
 const st = 84, _r = { 日: 0, 天: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6 }, be = (r) => String(r).padStart(2, "0"), J = (r) => `${r.getFullYear()}年${be(r.getMonth() + 1)}月${be(r.getDate())}日 ${be(r.getHours())}:${be(r.getMinutes())}`;
-function De(r, n, o = /* @__PURE__ */ new Date()) {
-  const s = r.trim(), d = (c, l) => {
-    const b = l.match(/^(\d{1,2}):(\d{2})$/);
-    return b ? (c.setHours(Number(b[1]), Number(b[2]), 0, 0), c) : null;
+function De(r, l, o = /* @__PURE__ */ new Date()) {
+  const s = r.trim(), d = (m, n) => {
+    const b = n.match(/^(\d{1,2}):(\d{2})$/);
+    return b ? (m.setHours(Number(b[1]), Number(b[2]), 0, 0), m) : null;
   };
   if (s === "刚刚") return J(o);
-  const v = s.match(/^今天\s+(\d{1,2}:\d{2})$/);
-  if (v) return J(d(new Date(o), v[1]) ?? o);
+  const w = s.match(/^今天\s+(\d{1,2}:\d{2})$/);
+  if (w) return J(d(new Date(o), w[1]) ?? o);
   const k = s.match(/^昨天\s+(\d{1,2}:\d{2})$/);
   if (k) {
-    const c = new Date(o);
-    return c.setDate(c.getDate() - 1), J(d(c, k[1]) ?? o);
+    const m = new Date(o);
+    return m.setDate(m.getDate() - 1), J(d(m, k[1]) ?? o);
   }
   const N = s.match(/^(上周)?周([一二三四五六日天])\s+(\d{1,2}:\d{2})$/);
   if (N) {
-    const c = new Date(o);
-    let l = c.getDay() - _r[N[2]];
-    return l < 0 && (l += 7), c.setDate(c.getDate() - l - (N[1] ? 7 : 0)), J(d(c, N[3]) ?? o);
+    const m = new Date(o);
+    let n = m.getDay() - _r[N[2]];
+    return n < 0 && (n += 7), m.setDate(m.getDate() - n - (N[1] ? 7 : 0)), J(d(m, N[3]) ?? o);
   }
   const M = s.match(/^(\d{4})[.\-/年](\d{1,2})[.\-/月](\d{1,2})日?\s+(\d{1,2}):(\d{2})$/);
   if (M) return J(new Date(Number(M[1]), Number(M[2]) - 1, Number(M[3]), Number(M[4]), Number(M[5])));
-  const g = s.match(/^(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})$/);
-  if (g) return J(new Date(o.getFullYear(), Number(g[1]) - 1, Number(g[2]), Number(g[3]), Number(g[4])));
-  const p = n.match(/^c-(\d{13})$/);
+  const v = s.match(/^(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})$/);
+  if (v) return J(new Date(o.getFullYear(), Number(v[1]) - 1, Number(v[2]), Number(v[3]), Number(v[4])));
+  const p = l.match(/^c-(\d{13})$/);
   if (p) {
-    const c = new Date(Number(p[1]));
-    if (!Number.isNaN(c.getTime())) return J(c);
+    const m = new Date(Number(p[1]));
+    if (!Number.isNaN(m.getTime())) return J(m);
   }
-  const m = new Date(s);
-  return J(Number.isNaN(m.getTime()) ? o : m);
+  const c = new Date(s);
+  return J(Number.isNaN(c.getTime()) ? o : c);
 }
 function Qr({
   project: r,
-  documents: n,
+  documents: l,
   conversations: o,
   memberCount: s,
   isSidebarOpen: d,
-  onOpenSidebar: v,
+  onOpenSidebar: w,
   onBackToProjects: k,
   onOpenMemberManagement: N,
   onOpenDocument: M,
-  onOpenConversation: g,
+  onOpenConversation: v,
   onCreateDocument: p,
-  onCreateConversation: m,
-  onRenameConversation: c,
-  onDeleteConversation: l,
+  onCreateConversation: c,
+  onRenameConversation: m,
+  onDeleteConversation: n,
   onImportDocuments: b,
   onUpdateProjectName: y,
-  onUpdateProjectDescription: w,
+  onUpdateProjectDescription: g,
   documentImportAccept: C,
   documentImportMaxSize: P,
   documentImportDescription: u,
@@ -1145,10 +1145,10 @@ function Qr({
     });
     return () => window.cancelAnimationFrame(i);
   }, [Me]);
-  const Ye = D(() => ["all", ...Array.from(new Set(n.flatMap((i) => i.tags)))], [n]), qe = D(() => {
+  const Ye = D(() => ["all", ...Array.from(new Set(l.flatMap((i) => i.tags)))], [l]), qe = D(() => {
     const i = B.trim().toLowerCase();
-    return n.filter((I) => (E === "all" || I.tags.includes(E)) && (!i || [I.title, I.summary, ...I.tags].join(" ").toLowerCase().includes(i)));
-  }, [n, B, E]), Qe = D(() => {
+    return l.filter((I) => (E === "all" || I.tags.includes(E)) && (!i || [I.title, I.summary, ...I.tags].join(" ").toLowerCase().includes(i)));
+  }, [l, B, E]), Qe = D(() => {
     const i = B.trim().toLowerCase();
     return i ? o.filter((I) => [I.title, I.date, De(I.date, I.id)].join(" ").toLowerCase().includes(i)) : o;
   }, [o, B]);
@@ -1177,7 +1177,7 @@ function Qr({
     if (_(i), pe(!1), i && i !== (r == null ? void 0 : r.description)) {
       ie("");
       try {
-        await w(i);
+        await g(i);
       } catch (I) {
         _((r == null ? void 0 : r.description) ?? ""), ie(I instanceof Error ? I.message : "项目描述更新失败");
       }
@@ -1207,19 +1207,19 @@ function Qr({
     Fe(null), _e("");
   }, je = async (i) => {
     const I = Ge.trim();
-    if (Ze(), !(!I || I === i.title || !c)) {
+    if (Ze(), !(!I || I === i.title || !m)) {
       de("");
       try {
-        await c(i.id, I);
+        await m(i.id, I);
       } catch (Q) {
         de(Q instanceof Error ? Q.message : "对话重命名失败");
       }
     }
   }, pt = async (i) => {
-    if (l) {
+    if (n) {
       Se(null), de("");
       try {
-        await l(i);
+        await n(i);
       } catch (I) {
         de(I instanceof Error ? I.message : "对话删除失败");
       }
@@ -1228,7 +1228,7 @@ function Qr({
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
       /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
-        !d && /* @__PURE__ */ e("button", { type: "button", onClick: v, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
+        !d && /* @__PURE__ */ e("button", { type: "button", onClick: w, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
         /* @__PURE__ */ t("div", { className: "flex items-center gap-2 text-sm", children: [
           /* @__PURE__ */ e("button", { type: "button", onClick: k, className: "text-tertiaryText transition-colors hover:text-primaryText", children: "项目" }),
           /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
@@ -1299,7 +1299,7 @@ function Qr({
       /* @__PURE__ */ e("div", { className: "mt-10 border-b border-lineSubtle", children: /* @__PURE__ */ t("div", { className: "flex items-end gap-8", children: [
         /* @__PURE__ */ t("button", { type: "button", onClick: () => z("documents"), className: `border-b-2 pb-2 text-sm font-medium transition-colors ${S === "documents" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: [
           "文档 ",
-          n.length
+          l.length
         ] }),
         /* @__PURE__ */ t("button", { type: "button", onClick: () => z("chats"), className: `border-b-2 pb-2 text-sm font-medium transition-colors ${S === "chats" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: [
           "对话 ",
@@ -1312,7 +1312,7 @@ function Qr({
           /* @__PURE__ */ e("input", { type: "text", value: B, onChange: (i) => $(i.target.value), placeholder: `搜索${S === "documents" ? "文档" : "历史对话"}`, className: "h-9 w-full rounded-lg border border-lineSubtle bg-white pl-9 pr-3 text-sm text-primaryText transition-colors placeholder:text-tertiaryText hover:border-controlBorder focus:border-primary focus:outline-none" })
         ] }),
         /* @__PURE__ */ t("div", { className: "flex items-center gap-5", children: [
-          /* @__PURE__ */ e(A, { type: "ghost", size: "small", rounded: "large", icon: S === "documents" ? /* @__PURE__ */ e(me, { size: 16 }) : void 0, className: "!h-auto !gap-1 !border-transparent !bg-transparent !px-0 !py-0 !text-sm !font-semibold !text-primary hover:!bg-transparent hover:!text-primary-hover", onClick: S === "documents" ? p : m, children: S === "documents" ? "新建" : "发起对话" }),
+          /* @__PURE__ */ e(A, { type: "ghost", size: "small", rounded: "large", icon: S === "documents" ? /* @__PURE__ */ e(me, { size: 16 }) : void 0, className: "!h-auto !gap-1 !border-transparent !bg-transparent !px-0 !py-0 !text-sm !font-semibold !text-primary hover:!bg-transparent hover:!text-primary-hover", onClick: S === "documents" ? p : c, children: S === "documents" ? "新建" : "发起对话" }),
           S === "documents" && /* @__PURE__ */ t(ge, { children: [
             /* @__PURE__ */ e("span", { className: "h-4 border-l border-lineSubtle", "aria-hidden": "true" }),
             /* @__PURE__ */ t("button", { type: "button", onClick: () => {
@@ -1335,7 +1335,7 @@ function Qr({
       ] }, i.id)) }) : /* @__PURE__ */ e("div", { className: "mt-4 rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(fe, { description: "暂无匹配的文档" }) }) : Qe.length ? /* @__PURE__ */ t("div", { className: "mt-4 space-y-2", children: [
         Ue && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: Ue }),
         Qe.map((i) => {
-          const I = Me === i.id, Q = ct === i.id, ut = !!(c || l);
+          const I = Me === i.id, Q = ct === i.id, ut = !!(m || n);
           return /* @__PURE__ */ t("div", { className: "group -ml-2 flex w-[calc(100%+0.5rem)] items-center gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-projectConversationHover", children: [
             I ? /* @__PURE__ */ t("div", { className: "min-w-0 flex-1", children: [
               /* @__PURE__ */ e(
@@ -1356,7 +1356,7 @@ function Qr({
                 }
               ),
               /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: De(i.date, i.id) })
-            ] }) : /* @__PURE__ */ t("button", { type: "button", onClick: () => g(i.id), className: "min-w-0 flex-1 text-left", children: [
+            ] }) : /* @__PURE__ */ t("button", { type: "button", onClick: () => v(i.id), className: "min-w-0 flex-1 text-left", children: [
               /* @__PURE__ */ e("div", { className: "truncate text-sm font-medium text-primaryText", children: i.title }),
               /* @__PURE__ */ e("div", { className: "mt-1 text-xs text-tertiaryText", children: De(i.date, i.id) })
             ] }),
@@ -1369,8 +1369,8 @@ function Qr({
                 portal: !0,
                 width: 160,
                 trigger: /* @__PURE__ */ e(Te, { size: 16 }),
-                items: c ? [{ key: "rename", label: "重命名", icon: /* @__PURE__ */ e(we, { size: 14 }) }] : [],
-                footerItems: l ? [{ key: "delete", label: "删除", icon: /* @__PURE__ */ e(se, { size: 14 }), danger: !0 }] : [],
+                items: m ? [{ key: "rename", label: "重命名", icon: /* @__PURE__ */ e(we, { size: 14 }) }] : [],
+                footerItems: n ? [{ key: "delete", label: "删除", icon: /* @__PURE__ */ e(se, { size: 14 }), danger: !0 }] : [],
                 onItemClick: (U, bt) => {
                   bt.stopPropagation(), U.key === "rename" && ht(i), U.key === "delete" && pt(i.id);
                 },
@@ -1438,22 +1438,22 @@ function Qr({
 }
 function Xr({
   visible: r,
-  typeOptions: n,
+  typeOptions: l,
   templates: o,
   loading: s = !1,
   error: d = "",
-  defaultKnowledgeType: v,
+  defaultKnowledgeType: w,
   defaultTemplateId: k,
   onClose: N,
   onRetry: M,
-  onContinue: g
+  onContinue: v
 }) {
   var C, P, u;
-  const p = v || ((C = n[0]) == null ? void 0 : C.value) || "", m = k || ((P = o.find((h) => h.id === "blank")) == null ? void 0 : P.id) || ((u = o[0]) == null ? void 0 : u.id) || "", [c, l] = x(p), [b, y] = x(m);
+  const p = w || ((C = l[0]) == null ? void 0 : C.value) || "", c = k || ((P = o.find((h) => h.id === "blank")) == null ? void 0 : P.id) || ((u = o[0]) == null ? void 0 : u.id) || "", [m, n] = x(p), [b, y] = x(c);
   ae(() => {
-    r && (l(p), y(m));
-  }, [m, p, r]);
-  const w = D(
+    r && (n(p), y(c));
+  }, [c, p, r]);
+  const g = D(
     () => o.find((h) => h.id === b) ?? null,
     [b, o]
   );
@@ -1474,8 +1474,8 @@ function Xr({
               /* @__PURE__ */ e("h3", { className: "text-sm font-semibold text-primaryText", children: "选择文档类型" }),
               /* @__PURE__ */ e("p", { className: "mt-1 text-xs text-tertiaryText", children: "文档类型用于项目内分类和后续检索。" })
             ] }),
-            /* @__PURE__ */ e("div", { className: "grid gap-2 sm:grid-cols-2 lg:grid-cols-3", children: n.map((h) => {
-              const a = h.value === c;
+            /* @__PURE__ */ e("div", { className: "grid gap-2 sm:grid-cols-2 lg:grid-cols-3", children: l.map((h) => {
+              const a = h.value === m;
               return /* @__PURE__ */ t(
                 "button",
                 {
@@ -1484,7 +1484,7 @@ function Xr({
                     "rounded-lg border px-3 py-2.5 text-left transition",
                     a ? "border-primary bg-primary-soft" : "border-lineSubtle bg-surface hover:border-controlBorderHover hover:bg-surfaceMuted"
                   ].join(" "),
-                  onClick: () => l(h.value),
+                  onClick: () => n(h.value),
                   children: [
                     /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-2", children: [
                       /* @__PURE__ */ e("span", { className: "text-sm font-medium text-primaryText", children: h.label }),
@@ -1536,7 +1536,7 @@ function Xr({
           ] })
         ] }),
         /* @__PURE__ */ t("div", { className: "flex shrink-0 items-center justify-between gap-4 border-t border-lineSoft px-6 py-4", children: [
-          /* @__PURE__ */ e("p", { className: "min-w-0 truncate text-xs text-tertiaryText", children: w ? `已选择：${w.name}` : "请选择一个模板" }),
+          /* @__PURE__ */ e("p", { className: "min-w-0 truncate text-xs text-tertiaryText", children: g ? `已选择：${g.name}` : "请选择一个模板" }),
           /* @__PURE__ */ t("div", { className: "flex shrink-0 items-center gap-2", children: [
             /* @__PURE__ */ e(A, { type: "secondary", size: "medium", onClick: N, children: "取消" }),
             /* @__PURE__ */ e(
@@ -1544,8 +1544,8 @@ function Xr({
               {
                 type: "primary",
                 size: "medium",
-                disabled: s || !!d || !c || !b,
-                onClick: () => g({ knowledgeType: c, templateId: b }),
+                disabled: s || !!d || !m || !b,
+                onClick: () => v({ knowledgeType: m, templateId: b }),
                 children: "继续编辑"
               }
             )
@@ -1557,20 +1557,21 @@ function Xr({
 }
 function Jr({
   projectName: r,
-  document: n,
+  document: l,
   isSidebarOpen: o,
   onOpenSidebar: s,
   onBackToProjects: d,
-  onBackToProject: v,
+  onBackToProject: w,
   onEdit: k,
-  onDelete: N
+  onDelete: N,
+  onDownloadAttachment: M
 }) {
-  const [M, g] = x(!1), [p, m] = x(!1), [c, l] = x(""), b = async () => {
-    m(!0), l("");
+  const [v, p] = x(!1), [c, m] = x(!1), [n, b] = x(""), y = async () => {
+    m(!0), b("");
     try {
-      await N(), g(!1);
-    } catch (y) {
-      l(y instanceof Error ? y.message : "文档删除失败");
+      await N(), p(!1);
+    } catch (g) {
+      b(g instanceof Error ? g.message : "文档删除失败");
     } finally {
       m(!1);
     }
@@ -1582,38 +1583,44 @@ function Jr({
         /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-2 text-sm", children: [
           /* @__PURE__ */ e("button", { type: "button", onClick: d, className: "shrink-0 text-tertiaryText transition-colors hover:text-primaryText", children: "项目" }),
           /* @__PURE__ */ e("span", { className: "shrink-0 text-tertiaryText", children: "/" }),
-          /* @__PURE__ */ e("button", { type: "button", onClick: v, className: "max-w-56 truncate text-tertiaryText transition-colors hover:text-primaryText", children: r }),
+          /* @__PURE__ */ e("button", { type: "button", onClick: w, className: "max-w-56 truncate text-tertiaryText transition-colors hover:text-primaryText", children: r }),
           /* @__PURE__ */ e("span", { className: "shrink-0 text-tertiaryText", children: "/" }),
-          /* @__PURE__ */ e("span", { className: "truncate font-medium text-primaryText", children: n.title })
+          /* @__PURE__ */ e("span", { className: "truncate font-medium text-primaryText", children: l.title })
         ] })
       ] }),
-      n.canEdit && /* @__PURE__ */ t("div", { className: "flex items-center gap-2", children: [
+      l.canEdit && /* @__PURE__ */ t("div", { className: "flex items-center gap-2", children: [
         /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => {
-          l(""), g(!0);
+          b(""), p(!0);
         }, children: "删除" }),
         /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", onClick: k, children: "编辑" })
       ] })
     ] }),
-    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto flex h-full min-h-0 max-w-[1240px] flex-col", children: /* @__PURE__ */ e(yt, { document: n }) }) }),
+    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto flex h-full min-h-0 max-w-[1240px] flex-col", children: /* @__PURE__ */ e(
+      yt,
+      {
+        document: l,
+        onDownloadAttachment: M
+      }
+    ) }) }),
     /* @__PURE__ */ t(
       F,
       {
-        visible: M,
+        visible: v,
         title: "删除文档",
         width: 420,
         maskClosable: !1,
         onCancel: () => {
-          p || g(!1);
+          c || p(!1);
         },
         footer: /* @__PURE__ */ t("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
-          /* @__PURE__ */ e(A, { type: "secondary", size: "medium", disabled: p, onClick: () => g(!1), children: "取消" }),
-          /* @__PURE__ */ e(A, { type: "danger", size: "medium", disabled: p, onClick: () => {
-            b();
-          }, children: p ? "删除中…" : "删除" })
+          /* @__PURE__ */ e(A, { type: "secondary", size: "medium", disabled: c, onClick: () => p(!1), children: "取消" }),
+          /* @__PURE__ */ e(A, { type: "danger", size: "medium", disabled: c, onClick: () => {
+            y();
+          }, children: c ? "删除中…" : "删除" })
         ] }),
         children: [
           /* @__PURE__ */ e("div", { className: "text-sm leading-6 text-secondaryText", children: "删除文档后将不可恢复，确认删除当前文档吗？" }),
-          c && /* @__PURE__ */ e("div", { role: "alert", className: "mt-3 text-sm text-danger", children: c })
+          n && /* @__PURE__ */ e("div", { role: "alert", className: "mt-3 text-sm text-danger", children: n })
         ]
       }
     )
@@ -1622,46 +1629,46 @@ function Jr({
 const ot = [{ label: "浏览", value: "浏览" }, { label: "编辑", value: "编辑" }], Ir = [...ot, { label: "移除", value: "移除" }];
 function Zr({
   visible: r,
-  members: n,
+  members: l,
   directory: o,
   onClose: s,
   onInvite: d,
-  onChangePermission: v,
+  onChangePermission: w,
   onRemove: k
 }) {
-  const [N, M] = x([]), [g, p] = x("浏览"), [m, c] = x(""), [l, b] = x(""), y = D(() => {
-    const u = new Set(n.map((h) => h.id));
+  const [N, M] = x([]), [v, p] = x("浏览"), [c, m] = x(""), [n, b] = x(""), y = D(() => {
+    const u = new Set(l.map((h) => h.id));
     return o.filter((h) => !u.has(h.id)).map((h) => ({
       label: `${h.name}（${h.email}）`,
       value: h.id,
       searchText: `${h.name} ${h.email}`
     }));
-  }, [o, n]), w = () => {
-    l || (M([]), p("浏览"), c(""), s());
+  }, [o, l]), g = () => {
+    n || (M([]), p("浏览"), m(""), s());
   }, C = async () => {
     if (!N.length) {
-      c("请先选择要邀请的成员");
+      m("请先选择要邀请的成员");
       return;
     }
-    b("invite"), c("");
+    b("invite"), m("");
     try {
-      await d(N, g), M([]), p("浏览");
+      await d(N, v), M([]), p("浏览");
     } catch (u) {
-      c(u instanceof Error ? u.message : "邀请成员失败");
+      m(u instanceof Error ? u.message : "邀请成员失败");
     } finally {
       b("");
     }
   }, P = async (u, h) => {
-    b(u), c("");
+    b(u), m("");
     try {
-      h === "移除" ? await k(u) : await v(u, h);
+      h === "移除" ? await k(u) : await w(u, h);
     } catch (a) {
-      c(a instanceof Error ? a.message : "成员操作失败");
+      m(a instanceof Error ? a.message : "成员操作失败");
     } finally {
       b("");
     }
   };
-  return /* @__PURE__ */ e(F, { visible: r, title: "管理成员", width: 560, maskClosable: !1, footer: null, onCancel: w, bodyClassName: "!px-6 !py-5", children: /* @__PURE__ */ t("div", { className: "space-y-5", children: [
+  return /* @__PURE__ */ e(F, { visible: r, title: "管理成员", width: 560, maskClosable: !1, footer: null, onCancel: g, bodyClassName: "!px-6 !py-5", children: /* @__PURE__ */ t("div", { className: "space-y-5", children: [
     /* @__PURE__ */ t("section", { className: "space-y-3", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "加入新成员" }),
       /* @__PURE__ */ t("div", { className: "flex items-center gap-3", children: [
@@ -1679,9 +1686,9 @@ function Zr({
               suffixIcon: null,
               placeholder: "搜索姓名/邮箱并选择成员",
               onChange: (u) => {
-                M(u), m && c("");
+                M(u), c && m("");
               },
-              disabled: !!l,
+              disabled: !!n,
               className: "w-full"
             }
           ) }),
@@ -1690,22 +1697,22 @@ function Zr({
             Ie,
             {
               variant: "borderless",
-              value: g,
+              value: v,
               options: ot,
               onChange: (u) => p(u),
-              disabled: !!l,
+              disabled: !!n,
               className: "w-[76px]",
               classNames: { popup: { root: "project-member-permission-dropdown" } }
             }
           )
         ] }),
-        /* @__PURE__ */ e(A, { type: "primary", size: "medium", disabled: !!l, onClick: () => {
+        /* @__PURE__ */ e(A, { type: "primary", size: "medium", disabled: !!n, onClick: () => {
           C();
-        }, children: l === "invite" ? "邀请中…" : "邀请成员" })
+        }, children: n === "invite" ? "邀请中…" : "邀请成员" })
       ] }),
-      m && /* @__PURE__ */ e("div", { className: "text-sm text-danger", children: m })
+      c && /* @__PURE__ */ e("div", { className: "text-sm text-danger", children: c })
     ] }),
-    /* @__PURE__ */ e("section", { className: "space-y-3 border-t border-lineSoft pt-4", children: n.length ? /* @__PURE__ */ e("div", { className: "max-h-64 space-y-2 overflow-y-auto pr-1", children: n.map((u) => /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-3 rounded-lg border border-lineSubtle bg-surface px-3 py-2.5", children: [
+    /* @__PURE__ */ e("section", { className: "space-y-3 border-t border-lineSoft pt-4", children: l.length ? /* @__PURE__ */ e("div", { className: "max-h-64 space-y-2 overflow-y-auto pr-1", children: l.map((u) => /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-3 rounded-lg border border-lineSubtle bg-surface px-3 py-2.5", children: [
       /* @__PURE__ */ t("div", { className: "min-w-0", children: [
         /* @__PURE__ */ e("div", { className: "truncate text-sm font-medium text-primaryText", children: u.name }),
         /* @__PURE__ */ e("div", { className: "mt-0.5 text-xs text-tertiaryText", children: "项目成员" })
@@ -1719,7 +1726,7 @@ function Zr({
           onChange: (h) => {
             P(u.id, String(h));
           },
-          disabled: !!l,
+          disabled: !!n,
           className: "member-permission-action-select w-[84px]",
           classNames: { popup: { root: "project-member-permission-dropdown" } },
           getPopupContainer: () => document.body
@@ -1728,28 +1735,28 @@ function Zr({
     ] }, u.id)) }) : /* @__PURE__ */ e("div", { className: "rounded-lg border border-dashed border-borderSoft px-3 py-5 text-center text-sm text-tertiaryText", children: "暂无成员" }) })
   ] }) });
 }
-const zr = (r) => r.find((n) => n.status !== "实验结束") ?? r[0] ?? null;
+const zr = (r) => r.find((l) => l.status !== "实验结束") ?? r[0] ?? null;
 function jr({
   project: r,
-  experiment: n,
+  experiment: l,
   isSidebarOpen: o,
   onOpenSidebar: s,
   onBackToProjects: d,
-  onBackToProject: v,
+  onBackToProject: w,
   onDelete: k,
   onEdit: N
 }) {
-  const [M, g] = x(!1), [p, m] = x(!1), c = ye(null), l = D(
-    () => n ? zr(n.timeline) : null,
-    [n]
-  ), b = (l == null ? void 0 : l.actor) || (n == null ? void 0 : n.ownerName) || "未知成员";
+  const [M, v] = x(!1), [p, c] = x(!1), m = ye(null), n = D(
+    () => l ? zr(l.timeline) : null,
+    [l]
+  ), b = (n == null ? void 0 : n.actor) || (l == null ? void 0 : l.ownerName) || "未知成员";
   ae(() => () => {
-    c.current !== null && window.clearTimeout(c.current);
+    m.current !== null && window.clearTimeout(m.current);
   }, []);
   const y = () => {
-    g(!0), c.current !== null && window.clearTimeout(c.current), c.current = window.setTimeout(() => g(!1), 700);
-  }, w = () => {
-    m(!1), k();
+    v(!0), m.current !== null && window.clearTimeout(m.current), m.current = window.setTimeout(() => v(!1), 700);
+  }, g = () => {
+    c(!1), k();
   };
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-surface", children: [
     /* @__PURE__ */ t("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: [
@@ -1758,19 +1765,19 @@ function jr({
         /* @__PURE__ */ t("div", { className: "flex items-center gap-2 text-sm", children: [
           /* @__PURE__ */ e("button", { type: "button", onClick: d, className: "text-tertiaryText transition-colors hover:text-primaryText", children: "项目" }),
           /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
-          /* @__PURE__ */ e("button", { type: "button", onClick: v, disabled: !r, className: `transition-colors ${r ? "text-tertiaryText hover:text-primaryText" : "cursor-not-allowed text-tertiaryText opacity-60"}`, children: (r == null ? void 0 : r.name) ?? "实验详情" }),
+          /* @__PURE__ */ e("button", { type: "button", onClick: w, disabled: !r, className: `transition-colors ${r ? "text-tertiaryText hover:text-primaryText" : "cursor-not-allowed text-tertiaryText opacity-60"}`, children: (r == null ? void 0 : r.name) ?? "实验详情" }),
           /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
-          /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: (n == null ? void 0 : n.title) ?? "实验详情" })
+          /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: (l == null ? void 0 : l.title) ?? "实验详情" })
         ] })
       ] }),
       /* @__PURE__ */ t("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => m(!0), children: "删除" }),
+        /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => c(!0), children: "删除" }),
         /* @__PURE__ */ e(A, { type: "primary", size: "small", rounded: "large", onClick: N, children: "编辑" })
       ] })
     ] }),
-    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto flex h-full min-h-0 max-w-[1240px] flex-col", children: !r || !n ? /* @__PURE__ */ e("div", { className: "w-full rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(fe, { description: "实验不存在或已被删除" }) }) : /* @__PURE__ */ t(ge, { children: [
+    /* @__PURE__ */ e("div", { className: "min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto flex h-full min-h-0 max-w-[1240px] flex-col", children: !r || !l ? /* @__PURE__ */ e("div", { className: "w-full rounded-lg border border-dashed border-borderSoft", children: /* @__PURE__ */ e(fe, { description: "实验不存在或已被删除" }) }) : /* @__PURE__ */ t(ge, { children: [
       /* @__PURE__ */ t("section", { className: "mb-4 shrink-0", children: [
-        /* @__PURE__ */ e("h1", { className: "text-2xl font-semibold text-primaryText", children: (l == null ? void 0 : l.detailTitle) ?? n.title }),
+        /* @__PURE__ */ e("h1", { className: "text-2xl font-semibold text-primaryText", children: (n == null ? void 0 : n.detailTitle) ?? l.title }),
         /* @__PURE__ */ e("div", { className: "mt-3 flex items-center justify-between gap-4", children: /* @__PURE__ */ t("div", { className: "flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-tertiaryText", children: [
           /* @__PURE__ */ t("span", { children: [
             "创建人: ",
@@ -1780,72 +1787,72 @@ function jr({
             "最近修改: ",
             b
           ] }),
-          /* @__PURE__ */ e("span", { children: (l == null ? void 0 : l.updatedAt) ?? n.updatedAt })
+          /* @__PURE__ */ e("span", { children: (n == null ? void 0 : n.updatedAt) ?? l.updatedAt })
         ] }) }),
         /* @__PURE__ */ e("div", { className: "mt-4 h-px bg-lineSubtle" })
       ] }),
       /* @__PURE__ */ t("section", { onScroll: y, className: `auto-hide-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 ${M ? "is-scrolling" : ""}`, children: [
-        l != null && l.markdownContent ? /* @__PURE__ */ e("div", { className: "prose prose-slate max-w-none text-primaryText prose-p:my-3 prose-p:text-sm prose-p:leading-7 prose-li:text-sm prose-li:leading-7 prose-headings:text-primaryText prose-headings:tracking-[-0.01em] prose-h2:mb-2 prose-h2:mt-4 prose-h2:text-[16px] prose-h2:font-semibold prose-h3:mb-2 prose-h3:mt-4 prose-h3:text-base prose-h3:font-semibold prose-strong:text-primaryText prose-code:before:content-none prose-code:after:content-none prose-hr:my-5 prose-li:my-1 prose-li:marker:text-secondaryText prose-ol:pl-6 prose-ul:pl-6 prose-blockquote:border-l-2 prose-blockquote:border-lineSubtle prose-blockquote:pl-3 prose-blockquote:text-secondaryText prose-a:text-primary prose-a:no-underline hover:prose-a:underline", children: /* @__PURE__ */ e(Lt, { remarkPlugins: [Ht], children: l.markdownContent }) }) : /* @__PURE__ */ e("div", { className: "mt-6 grid gap-4 md:grid-cols-2", children: ((l == null ? void 0 : l.detailSections) ?? []).map((C) => /* @__PURE__ */ t("article", { className: "rounded-xl border border-lineSubtle bg-surface p-4", children: [
+        n != null && n.markdownContent ? /* @__PURE__ */ e("div", { className: "prose prose-slate max-w-none text-primaryText prose-p:my-3 prose-p:text-sm prose-p:leading-7 prose-li:text-sm prose-li:leading-7 prose-headings:text-primaryText prose-headings:tracking-[-0.01em] prose-h2:mb-2 prose-h2:mt-4 prose-h2:text-[16px] prose-h2:font-semibold prose-h3:mb-2 prose-h3:mt-4 prose-h3:text-base prose-h3:font-semibold prose-strong:text-primaryText prose-code:before:content-none prose-code:after:content-none prose-hr:my-5 prose-li:my-1 prose-li:marker:text-secondaryText prose-ol:pl-6 prose-ul:pl-6 prose-blockquote:border-l-2 prose-blockquote:border-lineSubtle prose-blockquote:pl-3 prose-blockquote:text-secondaryText prose-a:text-primary prose-a:no-underline hover:prose-a:underline", children: /* @__PURE__ */ e(Lt, { remarkPlugins: [Ht], children: n.markdownContent }) }) : /* @__PURE__ */ e("div", { className: "mt-6 grid gap-4 md:grid-cols-2", children: ((n == null ? void 0 : n.detailSections) ?? []).map((C) => /* @__PURE__ */ t("article", { className: "rounded-xl border border-lineSubtle bg-surface p-4", children: [
           /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: C.title }),
           /* @__PURE__ */ e("p", { className: "mt-2 text-sm leading-6 text-secondaryText", children: C.content })
         ] }, C.title)) }),
         /* @__PURE__ */ t("div", { className: "mt-8 border-t border-lineSubtle pt-6", children: [
           /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "记录摘要" }),
-          /* @__PURE__ */ e("p", { className: "mt-2 text-sm leading-6 text-secondaryText", children: l == null ? void 0 : l.summary }),
+          /* @__PURE__ */ e("p", { className: "mt-2 text-sm leading-6 text-secondaryText", children: n == null ? void 0 : n.summary }),
           /* @__PURE__ */ t("div", { className: "mt-3 flex flex-wrap gap-4 text-xs text-tertiaryText", children: [
             /* @__PURE__ */ t("span", { children: [
               "更新人 ",
-              l == null ? void 0 : l.actor
+              n == null ? void 0 : n.actor
             ] }),
             /* @__PURE__ */ t("span", { children: [
               "更新时间 ",
-              l == null ? void 0 : l.updatedAt
+              n == null ? void 0 : n.updatedAt
             ] })
           ] })
         ] }),
         /* @__PURE__ */ t("div", { className: "mb-6 mt-8 border-t border-lineSubtle pt-6", children: [
           /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: "附件" }),
-          /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2.5", children: ((l == null ? void 0 : l.attachments) ?? []).map((C) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText", children: C }, C)) })
+          /* @__PURE__ */ e("div", { className: "mt-3 flex flex-wrap gap-2.5", children: ((n == null ? void 0 : n.attachments) ?? []).map((C) => /* @__PURE__ */ e("span", { className: "inline-flex items-center rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText", children: C }, C)) })
         ] })
       ] })
     ] }) }) }),
-    /* @__PURE__ */ e(F, { visible: p, title: "删除文档", width: 420, maskClosable: !1, onCancel: () => m(!1), footer: /* @__PURE__ */ t("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
-      /* @__PURE__ */ e(A, { type: "secondary", size: "medium", onClick: () => m(!1), children: "取消" }),
-      /* @__PURE__ */ e(A, { type: "danger", size: "medium", onClick: w, children: "删除" })
+    /* @__PURE__ */ e(F, { visible: p, title: "删除文档", width: 420, maskClosable: !1, onCancel: () => c(!1), footer: /* @__PURE__ */ t("div", { className: "flex justify-end gap-2 border-t border-lineSoft px-5 py-3", children: [
+      /* @__PURE__ */ e(A, { type: "secondary", size: "medium", onClick: () => c(!1), children: "取消" }),
+      /* @__PURE__ */ e(A, { type: "danger", size: "medium", onClick: g, children: "删除" })
     ] }), children: /* @__PURE__ */ e("div", { className: "text-sm leading-6 text-secondaryText", children: "删除文档后将不可回复，确认删除当前文档吗？" }) })
   ] });
 }
-function lt({ label: r, description: n, children: o }) {
+function lt({ label: r, description: l, children: o }) {
   return /* @__PURE__ */ t("div", { className: "flex items-center justify-between gap-6 py-5", children: [
     /* @__PURE__ */ t("div", { className: "min-w-0 pr-4", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-medium text-primaryText", children: r }),
-      n && /* @__PURE__ */ e("div", { className: "mt-1.5 text-xs leading-relaxed text-tertiaryText", children: n })
+      l && /* @__PURE__ */ e("div", { className: "mt-1.5 text-xs leading-relaxed text-tertiaryText", children: l })
     ] }),
     /* @__PURE__ */ e("div", { className: "flex shrink-0 items-center justify-end", children: o })
   ] });
 }
 function Vr({
   isSidebarOpen: r,
-  avatarText: n = "研",
+  avatarText: l = "研",
   avatarUrl: o,
   avatarUploading: s = !1,
   actionError: d,
-  onOpenSidebar: v,
+  onOpenSidebar: w,
   onChangePassword: k,
   onChangeAvatar: N
 }) {
-  const [M, g] = x(!1), [p, m] = x(""), [c, l] = x(""), [b, y] = x(""), [w, C] = x(!1), [P, u] = x(""), [h, a] = x(""), [S, z] = x(""), B = ye(null), $ = b.length > 0 && c !== b, E = c.length > 0 && c.trim().length < 6, L = !!(p.trim() && c.trim() && b.trim() && !E && !$ && !w), R = () => {
-    w || (g(!1), m(""), l(""), y(""), u(""), a(""), z(""));
+  const [M, v] = x(!1), [p, c] = x(""), [m, n] = x(""), [b, y] = x(""), [g, C] = x(!1), [P, u] = x(""), [h, a] = x(""), [S, z] = x(""), B = ye(null), $ = b.length > 0 && m !== b, E = m.length > 0 && m.trim().length < 6, L = !!(p.trim() && m.trim() && b.trim() && !E && !$ && !g), R = () => {
+    g || (v(!1), c(""), n(""), y(""), u(""), a(""), z(""));
   }, f = async () => {
     if (L) {
       C(!0), u(""), a(""), z("");
       try {
-        const T = await (k == null ? void 0 : k({ currentPassword: p.trim(), newPassword: c.trim() }));
+        const T = await (k == null ? void 0 : k({ currentPassword: p.trim(), newPassword: m.trim() }));
         if (T && !T.ok) {
           T.field === "currentPassword" ? a(T.message) : T.field === "newPassword" ? z(T.message) : u(T.message);
           return;
         }
-        g(!1), m(""), l(""), y("");
+        v(!1), c(""), n(""), y("");
       } catch (T) {
         u(T instanceof Error ? T.message : "密码修改失败");
       } finally {
@@ -1855,7 +1862,7 @@ function Vr({
   };
   return /* @__PURE__ */ t("div", { className: "flex h-full w-full flex-col bg-white", children: [
     /* @__PURE__ */ e("header", { className: "z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm", children: /* @__PURE__ */ t("div", { className: "flex min-w-0 items-center gap-3", children: [
-      !r && /* @__PURE__ */ e("button", { type: "button", onClick: v, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
+      !r && /* @__PURE__ */ e("button", { type: "button", onClick: w, className: "-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight", title: "展开边栏", children: /* @__PURE__ */ e(W, { size: 20 }) }),
       /* @__PURE__ */ t("div", { className: "flex items-center gap-2 text-sm", children: [
         /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "系统设置" }),
         /* @__PURE__ */ e("span", { className: "text-tertiaryText", children: "/" }),
@@ -1865,9 +1872,9 @@ function Vr({
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10", children: /* @__PURE__ */ e("div", { className: "mx-auto max-w-[720px] py-0", children: /* @__PURE__ */ e("div", { className: "space-y-6", children: /* @__PURE__ */ t("div", { children: [
       /* @__PURE__ */ e("h3", { className: "mb-2 mt-4 text-base font-semibold text-primaryText", children: "账户" }),
       /* @__PURE__ */ t("div", { className: "rounded-lg bg-surface", children: [
-        /* @__PURE__ */ e(lt, { label: "修改密码", description: "定期修改密码可提升账户安全性", children: /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => g(!0), children: "修改" }) }),
+        /* @__PURE__ */ e(lt, { label: "修改密码", description: "定期修改密码可提升账户安全性", children: /* @__PURE__ */ e(A, { type: "secondary", size: "small", rounded: "large", onClick: () => v(!0), children: "修改" }) }),
         /* @__PURE__ */ e(lt, { label: "更换头像", description: "上传新的个人头像（支持 PNG/JPG）", children: /* @__PURE__ */ t("div", { className: "flex items-center gap-2.5", children: [
-          /* @__PURE__ */ e("div", { className: "flex h-8 w-8 overflow-hidden items-center justify-center rounded-full bg-primary-soft text-xs text-primary", children: o ? /* @__PURE__ */ e("img", { src: o, alt: "当前头像", className: "h-full w-full object-cover" }) : n }),
+          /* @__PURE__ */ e("div", { className: "flex h-8 w-8 overflow-hidden items-center justify-center rounded-full bg-primary-soft text-xs text-primary", children: o ? /* @__PURE__ */ e("img", { src: o, alt: "当前头像", className: "h-full w-full object-cover" }) : l }),
           /* @__PURE__ */ e(
             A,
             {
@@ -1916,7 +1923,7 @@ function Vr({
           f();
         },
         cancelText: "取消",
-        okText: w ? "保存中…" : "保存",
+        okText: g ? "保存中…" : "保存",
         okButtonProps: { disabled: !L },
         children: /* @__PURE__ */ t("div", { className: "space-y-4", children: [
           /* @__PURE__ */ e(
@@ -1926,13 +1933,13 @@ function Vr({
               type: "password",
               value: p,
               onChange: (T) => {
-                m(T.target.value), a(""), u("");
+                c(T.target.value), a(""), u("");
               },
               placeholder: "请输入当前密码",
               size: "medium",
               error: !!h,
               helperText: h || void 0,
-              disabled: w
+              disabled: g
             }
           ),
           /* @__PURE__ */ e(
@@ -1940,15 +1947,15 @@ function Vr({
             {
               label: "新密码",
               type: "password",
-              value: c,
+              value: m,
               onChange: (T) => {
-                l(T.target.value), z(""), u("");
+                n(T.target.value), z(""), u("");
               },
               placeholder: "请输入新密码",
               size: "medium",
               error: !!S || E,
               helperText: S || (E ? "新密码至少需要 6 位" : void 0),
-              disabled: w
+              disabled: g
             }
           ),
           /* @__PURE__ */ e(
@@ -1962,7 +1969,7 @@ function Vr({
               size: "medium",
               error: $,
               helperText: $ ? "两次输入的新密码不一致" : void 0,
-              disabled: w
+              disabled: g
             }
           ),
           P && /* @__PURE__ */ e("div", { role: "alert", className: "text-sm text-danger", children: P })
@@ -1971,19 +1978,19 @@ function Vr({
     )
   ] });
 }
-function ea({ onOpenAiUsage: r, onOpenMembers: n, onLogout: o }) {
+function ea({ onOpenAiUsage: r, onOpenMembers: l, onLogout: o }) {
   return /* @__PURE__ */ t("div", { className: "mx-auto max-w-2xl p-8", children: [
     /* @__PURE__ */ e("h1", { className: "mb-8 text-3xl font-bold", children: "⚙️ 系统设置" }),
     /* @__PURE__ */ t("div", { className: "overflow-hidden rounded-2xl border border-borderGray bg-surface shadow-sm", children: [
       /* @__PURE__ */ e("button", { type: "button", onClick: r, className: "w-full cursor-pointer border-b border-borderGray p-4 text-left transition-colors hover:bg-bgLight", children: "AI用量统计" }),
-      /* @__PURE__ */ e("button", { type: "button", onClick: n, className: "w-full cursor-pointer border-b border-borderGray p-4 text-left transition-colors hover:bg-bgLight", children: "项目成员管理" }),
+      /* @__PURE__ */ e("button", { type: "button", onClick: l, className: "w-full cursor-pointer border-b border-borderGray p-4 text-left transition-colors hover:bg-bgLight", children: "项目成员管理" }),
       /* @__PURE__ */ e("button", { type: "button", onClick: o, className: "w-full cursor-pointer p-4 text-left font-medium text-danger transition-colors hover:bg-danger-soft", children: "退出登录" })
     ] })
   ] });
 }
 const Ee = (r) => new Intl.NumberFormat("en-US").format(Math.round(r));
-function Pr({ points: r, labels: n, totalAmount: o }) {
-  const [g, p] = x(null), m = D(() => Math.max(...r, 1), [r]), c = D(() => r.length <= 10 ? 1 : Math.ceil(r.length / 6), [r.length]), l = D(() => r.length <= 1 ? 0 : Math.min(6, 928 / r.length / 2.5), [928, r.length]), b = D(() => r.length === 0 ? 0 : Math.max(3, (928 - (r.length - 1) * l) / r.length), [l, 928, r.length]), y = (w) => w >= 1e4 ? `${(w / 1e4).toFixed(1)}万` : Ee(w);
+function Pr({ points: r, labels: l, totalAmount: o }) {
+  const [v, p] = x(null), c = D(() => Math.max(...r, 1), [r]), m = D(() => r.length <= 10 ? 1 : Math.ceil(r.length / 6), [r.length]), n = D(() => r.length <= 1 ? 0 : Math.min(6, 928 / r.length / 2.5), [928, r.length]), b = D(() => r.length === 0 ? 0 : Math.max(3, (928 - (r.length - 1) * n) / r.length), [n, 928, r.length]), y = (g) => g >= 1e4 ? `${(g / 1e4).toFixed(1)}万` : Ee(g);
   return /* @__PURE__ */ t("div", { children: [
     /* @__PURE__ */ t("div", { className: "mb-3", children: [
       /* @__PURE__ */ e("div", { className: "text-sm font-semibold text-primaryText", children: "月度用量" }),
@@ -1994,25 +2001,25 @@ function Pr({ points: r, labels: n, totalAmount: o }) {
     ] }),
     /* @__PURE__ */ t("div", { className: "relative h-[190px] w-full", children: [
       /* @__PURE__ */ t("svg", { viewBox: "0 0 1000 190", preserveAspectRatio: "none", className: "h-full w-full", children: [
-        [m, 0].map((w) => {
-          const C = 156 - w / m * 138;
+        [c, 0].map((g) => {
+          const C = 156 - g / c * 138;
           return /* @__PURE__ */ t("g", { children: [
             /* @__PURE__ */ e("line", { x1: 52, x2: 980, y1: C.toFixed(2), y2: C.toFixed(2), stroke: "var(--chatui-color-line-subtle)", strokeWidth: "1" }),
-            /* @__PURE__ */ e("text", { x: 44, y: C + 4, textAnchor: "end", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: y(w) })
-          ] }, w);
+            /* @__PURE__ */ e("text", { x: 44, y: C + 4, textAnchor: "end", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: y(g) })
+          ] }, g);
         }),
-        r.map((w, C) => {
-          const P = w / m * 138, u = 52 + C * (b + l), h = 156 - P, a = n[C] ?? "", S = C % c === 0 || C === r.length - 1;
+        r.map((g, C) => {
+          const P = g / c * 138, u = 52 + C * (b + n), h = 156 - P, a = l[C] ?? "", S = C % m === 0 || C === r.length - 1;
           return /* @__PURE__ */ t("g", { onMouseEnter: () => p(C), onMouseLeave: () => p(null), children: [
-            /* @__PURE__ */ e("rect", { x: u.toFixed(2), y: h.toFixed(2), width: b.toFixed(2), height: Math.max(1, P).toFixed(2), rx: "1.5", fill: g === C ? "var(--chatui-color-ai-usage-bar-hover)" : "var(--chatui-color-ai-usage-bar)" }),
+            /* @__PURE__ */ e("rect", { x: u.toFixed(2), y: h.toFixed(2), width: b.toFixed(2), height: Math.max(1, P).toFixed(2), rx: "1.5", fill: v === C ? "var(--chatui-color-ai-usage-bar-hover)" : "var(--chatui-color-ai-usage-bar)" }),
             S && /* @__PURE__ */ e("text", { x: (u + b / 2).toFixed(2), y: 170, textAnchor: "middle", fill: "var(--chatui-color-text-tertiary)", fontSize: "11", children: a })
           ] }, `${a}-${C}`);
         })
       ] }),
-      g !== null && /* @__PURE__ */ t("div", { className: "pointer-events-none absolute top-0 z-20 -translate-x-1/2 rounded-lg bg-aiUsageTooltip px-2.5 py-2 text-xs text-white shadow-md", style: { left: `${(52 + g * (b + l) + b / 2) / 1e3 * 100}%` }, children: [
-        /* @__PURE__ */ e("div", { className: "text-tertiaryText", children: n[g] }),
+      v !== null && /* @__PURE__ */ t("div", { className: "pointer-events-none absolute top-0 z-20 -translate-x-1/2 rounded-lg bg-aiUsageTooltip px-2.5 py-2 text-xs text-white shadow-md", style: { left: `${(52 + v * (b + n) + b / 2) / 1e3 * 100}%` }, children: [
+        /* @__PURE__ */ e("div", { className: "text-tertiaryText", children: l[v] }),
         /* @__PURE__ */ t("div", { className: "mt-0.5 font-semibold text-aiUsageBar", children: [
-          Ee(r[g]),
+          Ee(r[v]),
           " Token"
         ] })
       ] })
@@ -2021,25 +2028,25 @@ function Pr({ points: r, labels: n, totalAmount: o }) {
 }
 function ta({
   isSidebarOpen: r,
-  overviewCards: n,
+  overviewCards: l,
   memberOptions: o,
   monthOptions: s,
   selectedMember: d,
-  selectedMonth: v,
+  selectedMonth: w,
   trendPoints: k,
   trendLabels: N,
   trendTotal: M,
-  rechargeRecords: g,
+  rechargeRecords: v,
   onOpenSidebar: p,
-  onMemberChange: m,
-  onMonthChange: c
+  onMemberChange: c,
+  onMonthChange: m
 }) {
   var L, R;
-  const [l, b] = x("analysis"), [y, w] = x(!1), [C, P] = x(!1), u = ((L = o.find((f) => f.value === d)) == null ? void 0 : L.label) ?? "全部成员", h = ((R = s.find((f) => f.value === v)) == null ? void 0 : R.label) ?? v, a = D(() => o.map((f) => ({ key: `member-${f.value}`, label: f.label, active: f.value === d })), [o, d]), S = D(() => s.map((f) => ({ key: `month-${f.value}`, label: f.label, active: f.value === v })), [s, v]), z = Ae((f) => {
-    m(f.key.replace("member-", "")), w(!1);
-  }, [m]), B = Ae((f) => {
-    c(f.key.replace("month-", "")), P(!1);
-  }, [c]), $ = D(() => [
+  const [n, b] = x("analysis"), [y, g] = x(!1), [C, P] = x(!1), u = ((L = o.find((f) => f.value === d)) == null ? void 0 : L.label) ?? "全部成员", h = ((R = s.find((f) => f.value === w)) == null ? void 0 : R.label) ?? w, a = D(() => o.map((f) => ({ key: `member-${f.value}`, label: f.label, active: f.value === d })), [o, d]), S = D(() => s.map((f) => ({ key: `month-${f.value}`, label: f.label, active: f.value === w })), [s, w]), z = Ae((f) => {
+    c(f.key.replace("member-", "")), g(!1);
+  }, [c]), B = Ae((f) => {
+    m(f.key.replace("month-", "")), P(!1);
+  }, [m]), $ = D(() => [
     { title: "充值金额", dataIndex: "amount", width: "50%", render: (f) => /* @__PURE__ */ e("span", { className: "font-medium text-primaryText", children: String(f) }) },
     { title: "充值时间", dataIndex: "rechargeTime", width: "50%", render: (f) => /* @__PURE__ */ e("span", { className: "text-secondaryText", children: String(f) }) }
   ], []), E = "!min-w-[172px] !rounded-lg !border !border-borderGray !p-1.5 !shadow-md";
@@ -2053,7 +2060,7 @@ function ta({
       ] })
     ] }) }),
     /* @__PURE__ */ e("div", { className: "flex-1 overflow-y-auto px-4 pb-10 pt-2 md:px-8 md:pb-12 md:pt-3 lg:px-10", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[1240px] space-y-5", children: [
-      /* @__PURE__ */ e("section", { className: "grid grid-cols-1 gap-3 md:grid-cols-3", children: n.map((f) => /* @__PURE__ */ e("div", { className: "h-[118px] rounded-xl bg-aiUsageCard px-4", children: /* @__PURE__ */ t("div", { className: "flex h-full flex-col justify-center", children: [
+      /* @__PURE__ */ e("section", { className: "grid grid-cols-1 gap-3 md:grid-cols-3", children: l.map((f) => /* @__PURE__ */ e("div", { className: "h-[118px] rounded-xl bg-aiUsageCard px-4", children: /* @__PURE__ */ t("div", { className: "flex h-full flex-col justify-center", children: [
         /* @__PURE__ */ t("div", { className: "flex items-center gap-1 text-sm text-tertiaryText", children: [
           /* @__PURE__ */ e("span", { children: f.title }),
           f.tooltip && /* @__PURE__ */ t("div", { className: "group relative inline-flex", children: [
@@ -2069,11 +2076,11 @@ function ta({
       ] }) }, f.title)) }),
       /* @__PURE__ */ t("section", { className: "rounded-xl bg-surface", children: [
         /* @__PURE__ */ e("div", { className: "flex items-center justify-between border-b border-lineSubtle pt-3", children: /* @__PURE__ */ t("div", { className: "flex items-center gap-5", children: [
-          /* @__PURE__ */ e("button", { type: "button", onClick: () => b("analysis"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${l === "analysis" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "消耗分析" }),
-          /* @__PURE__ */ e("button", { type: "button", onClick: () => b("recharge"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${l === "recharge" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "充值记录" })
+          /* @__PURE__ */ e("button", { type: "button", onClick: () => b("analysis"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "analysis" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "消耗分析" }),
+          /* @__PURE__ */ e("button", { type: "button", onClick: () => b("recharge"), className: `border-b-2 pb-2.5 text-sm font-medium transition-colors ${n === "recharge" ? "border-primary text-primaryText" : "border-transparent text-tertiaryText"}`, children: "充值记录" })
         ] }) }),
-        l === "analysis" && /* @__PURE__ */ e("div", { className: "py-5", children: /* @__PURE__ */ t("div", { className: "flex flex-wrap items-center gap-2 text-sm text-secondaryText", children: [
-          /* @__PURE__ */ e(V, { open: y, onOpenChange: w, items: a, onItemClick: z, placement: "bottom-start", width: 172, portal: !0, menuClassName: E, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
+        n === "analysis" && /* @__PURE__ */ e("div", { className: "py-5", children: /* @__PURE__ */ t("div", { className: "flex flex-wrap items-center gap-2 text-sm text-secondaryText", children: [
+          /* @__PURE__ */ e(V, { open: y, onOpenChange: g, items: a, onItemClick: z, placement: "bottom-start", width: 172, portal: !0, menuClassName: E, listClassName: "max-h-[240px] overflow-y-auto", trigger: /* @__PURE__ */ t("span", { className: "inline-flex h-10 min-w-[172px] items-center justify-between rounded-xl border border-borderGray bg-surface px-4 text-sm text-primaryText transition-colors hover:border-primary", children: [
             /* @__PURE__ */ e("span", { className: "truncate", children: u }),
             /* @__PURE__ */ e(Ne, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${y ? "rotate-180" : ""}` })
           ] }) }),
@@ -2082,12 +2089,12 @@ function ta({
             /* @__PURE__ */ e(Ne, { size: 16, className: `ml-2 shrink-0 text-secondaryText transition-transform ${C ? "rotate-180" : ""}` })
           ] }) })
         ] }) }),
-        l === "analysis" ? /* @__PURE__ */ e("div", { className: "py-4", children: /* @__PURE__ */ e(Pr, { points: k, labels: N, totalAmount: M }) }) : /* @__PURE__ */ e("div", { className: "pb-5 pt-4", children: g.length > 0 ? /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-surface", children: /* @__PURE__ */ e(ve, { className: "task-table-scroll min-w-[760px]", columns: $, dataSource: g, rowKey: "id" }) }) : /* @__PURE__ */ e("div", { className: "flex min-h-[180px] items-center justify-center text-sm text-tertiaryText", children: "暂无充值记录" }) })
+        n === "analysis" ? /* @__PURE__ */ e("div", { className: "py-4", children: /* @__PURE__ */ e(Pr, { points: k, labels: N, totalAmount: M }) }) : /* @__PURE__ */ e("div", { className: "pb-5 pt-4", children: v.length > 0 ? /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-surface", children: /* @__PURE__ */ e(ve, { className: "task-table-scroll min-w-[760px]", columns: $, dataSource: v, rowKey: "id" }) }) : /* @__PURE__ */ e("div", { className: "flex min-h-[180px] items-center justify-center text-sm text-tertiaryText", children: "暂无充值记录" }) })
       ] })
     ] }) })
   ] });
 }
-function ra({ isSidebarOpen: r, result: n, onOpenSidebar: o, onBack: s, onRun: d, onReset: v }) {
+function ra({ isSidebarOpen: r, result: l, onOpenSidebar: o, onBack: s, onRun: d, onReset: w }) {
   const k = "h-28 w-full resize-none rounded-lg border border-borderGray bg-surface p-4 font-mono text-base text-primaryText outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary";
   return /* @__PURE__ */ e("div", { className: "h-full w-full overflow-y-auto bg-surface p-8 md:p-12", children: /* @__PURE__ */ t("div", { className: "mx-auto max-w-[800px]", children: [
     /* @__PURE__ */ t("div", { className: "mb-2 flex items-center gap-4", children: [
@@ -2110,16 +2117,16 @@ function ra({ isSidebarOpen: r, result: n, onOpenSidebar: o, onBack: s, onRun: d
           /* @__PURE__ */ e(Ot, { size: 16, className: "fill-current" }),
           "运行比对"
         ] }),
-        /* @__PURE__ */ t("button", { type: "button", onClick: v, className: "flex items-center gap-2 rounded-full bg-transparent px-4 py-2 text-base font-medium text-secondaryText transition-colors hover:bg-bgLight", children: [
+        /* @__PURE__ */ t("button", { type: "button", onClick: w, className: "flex items-center gap-2 rounded-full bg-transparent px-4 py-2 text-base font-medium text-secondaryText transition-colors hover:bg-bgLight", children: [
           /* @__PURE__ */ e(se, { size: 16 }),
           "重置"
         ] })
       ] }),
-      n && /* @__PURE__ */ t("div", { className: "mt-8 border-t border-borderGray pt-8", children: [
+      l && /* @__PURE__ */ t("div", { className: "mt-8 border-t border-borderGray pt-8", children: [
         /* @__PURE__ */ e("h3", { className: "mb-4 font-medium text-primaryText", children: "运行结果" }),
         /* @__PURE__ */ t("div", { className: "my-4 overflow-hidden rounded-lg border border-borderGray bg-toolCodeSurface", children: [
           /* @__PURE__ */ e("div", { className: "border-b border-borderGray bg-bgLight px-4 py-2 text-xs font-medium text-secondaryText", children: "结果" }),
-          /* @__PURE__ */ e("div", { className: "overflow-x-auto whitespace-pre-line p-4 font-mono text-sm text-primaryText", children: n })
+          /* @__PURE__ */ e("div", { className: "overflow-x-auto whitespace-pre-line p-4 font-mono text-sm text-primaryText", children: l })
         ] })
       ] })
     ] })

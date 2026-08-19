@@ -423,6 +423,38 @@
   background: var(--chatui-color-scrollbar-subtle-hover);
 }
 
+.document-preview-scrollbar {
+  scrollbar-color: transparent transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.document-preview-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.document-preview-scrollbar::-webkit-scrollbar-track,
+.document-preview-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.document-preview-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+}
+
+.document-preview-scrollbar.is-scrolling {
+  scrollbar-color: var(--chatui-color-scrollbar-subtle) transparent;
+}
+
+.document-preview-scrollbar.is-scrolling::-webkit-scrollbar-thumb {
+  background: var(--chatui-color-scrollbar-subtle);
+}
+
+.document-preview-scrollbar.is-scrolling::-webkit-scrollbar-thumb:hover {
+  background: var(--chatui-color-scrollbar-subtle-hover);
+}
+
 .task-table-scroll {
   scrollbar-color: var(--chatui-color-table-scrollbar) transparent;
   scrollbar-width: thin;

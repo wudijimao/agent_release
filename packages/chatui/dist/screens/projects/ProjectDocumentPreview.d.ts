@@ -21,6 +21,7 @@ export interface ProjectDocumentPreviewProps {
     onBackToProject(): void;
     onEdit(): void;
     onDelete(): void | Promise<void>;
+    onDownloadAttachment?(attachmentId: string): void;
 }
-export declare function ProjectDocumentPreview({ projectName, document, isSidebarOpen, onOpenSidebar, onBackToProjects, onBackToProject, onEdit, onDelete, }: ProjectDocumentPreviewProps): React.JSX.Element;
+export declare function ProjectDocumentPreview({ projectName, document, isSidebarOpen, onOpenSidebar, onBackToProjects, onBackToProject, onEdit, onDelete, onDownloadAttachment, }: ProjectDocumentPreviewProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentPreview.d.ts.map

@@ -31,7 +31,7 @@ export function MiraDraftCard({ draft, onPreview, onConfirm, onCancel }: MiraDra
           <FileText size={20} strokeWidth={1.8} aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="m-0 text-xs leading-5 text-tertiaryText">Mira 文档草稿</p>
+          <p className="m-0 text-xs leading-5 text-tertiaryText">Helia 文档草稿</p>
           <h3 className="m-0 line-clamp-2 text-sm font-medium leading-5 text-primaryText">
             {draft.title}
           </h3>

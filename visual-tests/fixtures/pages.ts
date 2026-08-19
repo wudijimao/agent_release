@@ -179,6 +179,7 @@ export async function mockToolsPage(
         scheduleKind: (body.scheduleKind as never) ?? "daily",
         scheduleConfig: (body.scheduleConfig as Record<string, unknown>) ?? {},
       });
+      tasks.unshift(created);
       return fulfillJson(route, created, 201);
     }
     return route.continue();
@@ -1297,8 +1298,8 @@ export async function mockProjectDetailPageExtended(
         originalName: String(body.originalName ?? "实验数据.csv"),
         mimeType: String(body.mimeType ?? "text/csv"),
         fileSize: Number(body.fileSize ?? 1024),
-        convertStatus: "processing",
-        status: "processing",
+        convertStatus: "pending",
+        status: "ready",
         createdAt: FIXED_NOW,
       };
       uploadedAttachments.push(attachment);

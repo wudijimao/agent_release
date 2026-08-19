@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Loader2, Trash2, Upload } from 'lucide-react';
+import { Download, FileText, Loader2, Trash2, Upload } from 'lucide-react';
 
 import { BaseButton } from '../../components/common';
 
@@ -20,6 +20,7 @@ export interface ProjectDocumentAttachmentsProps {
   unavailableHint?: string;
   error?: string;
   onRequestUpload?(): void;
+  onDownloadAttachment?(attachmentId: string): void;
   onDeleteAttachment?(attachmentId: string): void;
 }
 
@@ -31,6 +32,7 @@ export function ProjectDocumentAttachments({
   unavailableHint,
   error,
   onRequestUpload,
+  onDownloadAttachment,
   onDeleteAttachment,
 }: ProjectDocumentAttachmentsProps) {
   return (
@@ -65,20 +67,40 @@ export function ProjectDocumentAttachments({
             return (
               <div
                 key={attachment.id}
-                className="inline-flex max-w-full items-center gap-2 rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText"
+                className="inline-flex max-w-full items-center rounded-full border border-lineSubtle bg-surface text-sm text-secondaryText"
                 title={attachment.statusLabel}
               >
-                <FileText size={14} className="shrink-0" />
-                <span className="max-w-72 truncate">{attachment.name}</span>
-                {attachment.status === 'processing' && (
-                  <Loader2 size={12} className="animate-spin" />
+                {onDownloadAttachment ? (
+                  <button
+                    type="button"
+                    onClick={() => onDownloadAttachment(attachment.id)}
+                    className="inline-flex min-w-0 items-center gap-2 rounded-full py-1.5 pl-3 pr-2 transition-colors hover:text-primaryText"
+                    aria-label={`下载附件 ${attachment.name}`}
+                    title={`下载附件 ${attachment.name}`}
+                  >
+                    <FileText size={14} className="shrink-0" />
+                    <span className="max-w-72 truncate">{attachment.name}</span>
+                    {attachment.status === 'processing' ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                      <Download size={13} />
+                    )}
+                  </button>
+                ) : (
+                  <span className="inline-flex min-w-0 items-center gap-2 px-3 py-1.5">
+                    <FileText size={14} className="shrink-0" />
+                    <span className="max-w-72 truncate">{attachment.name}</span>
+                    {attachment.status === 'processing' && (
+                      <Loader2 size={12} className="animate-spin" />
+                    )}
+                  </span>
                 )}
                 {onDeleteAttachment && (
                   <button
                     type="button"
                     disabled={deleting}
                     onClick={() => onDeleteAttachment(attachment.id)}
-                    className="-my-1 -mr-2 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-tertiaryText transition-colors hover:bg-bgLight hover:text-danger disabled:cursor-wait"
+                    className="mr-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-tertiaryText transition-colors hover:bg-bgLight hover:text-danger disabled:cursor-wait"
                     aria-label={`删除附件 ${attachment.name}`}
                     title="删除附件"
                   >

@@ -100,6 +100,23 @@ test.describe("正常状态 / 项目文档", () => {
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-04-attachments.png", { fullPage: true });
 
+    await page.evaluate(() => {
+      window.open = ((url?: string | URL) => {
+        document.body.dataset.openedAttachmentUrl = String(url ?? "");
+        return null;
+      }) as typeof window.open;
+    });
+    await page.getByRole("button", { name: "下载附件 实验数据.csv" }).click();
+    await expect.poll(() => page.evaluate(
+      () => document.body.dataset.openedAttachmentUrl,
+    )).toBe("/api/knowledge/wiki2/attachments/att-1/file");
+
+    await page.getByRole("button", { name: "编辑" }).click();
+    await page.getByRole("button", { name: "下载附件 实验数据.csv" }).click();
+    await expect.poll(() => page.evaluate(
+      () => document.body.dataset.openedAttachmentUrl,
+    )).toBe("/api/knowledge/wiki2/attachments/att-1/file");
+
     // 空状态
     await mockProjectDetailPageExtended(page, { documentAttachments: [] });
     await page.goto("/projects/proj-visual-test");
@@ -421,6 +438,10 @@ test.describe("正常状态 / 项目文档", () => {
       buffer: CSV_BYTES,
     });
     await expect(page.getByText("实验数据.csv")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[title="附件可下载"]')).toBeVisible({ timeout: 10000 });
+    await expect(
+      page.getByRole("button", { name: "下载附件 实验数据.csv" }),
+    ).toBeVisible();
   });
 
   test("DOC-11 只读用户不展示编辑删除按钮", async ({ page }) => {

@@ -76,6 +76,23 @@ test("resource mapper keeps stable skill slugs, disabled state, and Mira ids", (
   assert.equal(catalog.contextRefsById.get("mira-node-1")?.type, "mira_node");
 });
 
+test("resource mapper uses Helia as the user-facing fallback source name", () => {
+  const catalog = mapChatResourceCatalog({
+    query: "",
+    items: [
+      {
+        type: "mira_node",
+        id: "mira-node-without-path",
+        title: "无路径文档",
+        source: "mira",
+        selectable: true,
+      },
+    ],
+  });
+
+  assert.equal(catalog.files[0]?.projectName, "Helia");
+});
+
 test("resource selection emits only selectable skills and stable context refs", () => {
   const catalog = mapChatResourceCatalog(response);
   const selection = resolveChatResourceSelection(
