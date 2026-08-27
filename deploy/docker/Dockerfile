@@ -2,6 +2,8 @@ FROM node:24.19.0-bookworm-slim AS base
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="${PNPM_HOME}:${PATH}"
+ENV COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
+ENV npm_config_registry=https://registry.npmmirror.com
 
 RUN corepack enable
 WORKDIR /app
