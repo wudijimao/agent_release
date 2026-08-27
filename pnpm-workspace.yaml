@@ -1,3 +1,12 @@
 packages:
   - "packages/*"
 
+patchedDependencies:
+  "@milkdown/crepe@7.21.3": "patches/@milkdown__crepe@7.21.3.patch"
+
+allowBuilds:
+  "@firebase/util@1.15.3": true
+  "esbuild@0.28.2": true
+  "protobufjs@7.6.5": true
+  "sharp@0.34.5": true
+  "unrs-resolver@1.12.2": true

@@ -17,8 +17,8 @@ command -v docker >/dev/null 2>&1 || fail "Docker is required"
 docker info >/dev/null 2>&1 || fail "Docker daemon is not available"
 
 [[ -f "${REPO_ROOT}/pnpm-lock.yaml" ]] || fail "pnpm-lock.yaml not found in ${REPO_ROOT}"
-[[ -f "${REPO_ROOT}/packages/chatui/dist/index.js" ]] ||
-  fail "packages/chatui/dist is missing; regenerate this release repository"
+[[ -f "${REPO_ROOT}/packages/chatui/package.json" ]] ||
+  fail "packages/chatui source is missing; regenerate this release repository"
 [[ "${IMAGE_REPOSITORY}" =~ ^[A-Za-z0-9._/-]+$ ]] ||
   fail "invalid BIOAGENT_NEXTJS_IMAGE: ${IMAGE_REPOSITORY}"
 [[ "${API_URL}" != *[[:space:]]* ]] ||

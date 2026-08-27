@@ -1,4 +1,4 @@
-FROM node:20.19.5-bookworm-slim AS base
+FROM node:24.20.0-bookworm-slim AS base
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="${PNPM_HOME}:${PATH}"
@@ -11,8 +11,9 @@ FROM base AS dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/chatui/package.json packages/chatui/package.json
 COPY packages/shared/package.json packages/shared/package.json
+COPY patches/@milkdown__crepe@7.21.3.patch patches/@milkdown__crepe@7.21.3.patch
 
-RUN corepack pnpm@9.0.0 install \
+RUN corepack pnpm@11.23.0 install \
     --frozen-lockfile \
     --filter @bioagent/nextjs...
 
@@ -27,12 +28,11 @@ ENV NEXT_OUTPUT_TRACING_ROOT=/app
 
 COPY . .
 
-RUN test -f packages/chatui/dist/index.js \
- && test -f packages/chatui/dist/style.css \
- && corepack pnpm@9.0.0 --filter @bioagent/shared build \
- && corepack pnpm@9.0.0 exec next build
+RUN corepack pnpm@11.23.0 --filter @bioagent/chatui build \
+ && corepack pnpm@11.23.0 --filter @bioagent/shared build \
+ && corepack pnpm@11.23.0 exec next build
 
-FROM node:20.19.5-bookworm-slim AS runner
+FROM node:24.20.0-bookworm-slim AS runner
 
 ARG BIOAGENT_API_URL=http://39.106.18.219
 ENV NODE_ENV=production
