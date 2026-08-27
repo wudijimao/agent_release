@@ -1,4 +1,4 @@
-FROM node:24.20.0-bookworm-slim AS base
+FROM node:24.19.0-bookworm-slim AS base
 
 ENV PNPM_HOME=/pnpm
 ENV PATH="${PNPM_HOME}:${PATH}"
@@ -32,7 +32,7 @@ RUN corepack pnpm@11.23.0 --filter @bioagent/chatui build \
  && corepack pnpm@11.23.0 --filter @bioagent/shared build \
  && corepack pnpm@11.23.0 exec next build
 
-FROM node:24.20.0-bookworm-slim AS runner
+FROM node:24.19.0-bookworm-slim AS runner
 
 ARG BIOAGENT_API_URL=http://39.106.18.219
 ENV NODE_ENV=production

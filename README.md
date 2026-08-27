@@ -20,7 +20,7 @@
 
 运行环境与浏览器基线：
 
-- Node.js 22.13+（Docker 使用 Node.js 24 LTS）
+- Node.js 22.13+（Docker 固定使用 Node.js 24.19.0 LTS）
 - pnpm 11.23.0
 - Chrome 111+、Edge 111+、Firefox 111+、Safari 16.4+
 
