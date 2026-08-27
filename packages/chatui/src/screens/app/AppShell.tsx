@@ -66,12 +66,6 @@ export interface AppShellProps {
 
 const MAX_RECENT_CHATS = 10;
 
-const isTaskConversationChat = (chat: AppShellChat) =>
-  chat.isTaskConversation === true ||
-  chat.source === 'task' ||
-  chat.id.startsWith('task-') ||
-  (typeof chat.taskId === 'string' && chat.taskId.trim().length > 0);
-
 export default function AppShell({
   currentPath,
   projects,
@@ -457,7 +451,6 @@ export default function AppShell({
     options: {
       actions?: AppShellChatActions;
       portal?: boolean;
-      showTaskBadge?: boolean;
       width?: number;
       onMenuOpenIdChange?(chatId: string | null): void;
     } = {},
@@ -465,17 +458,10 @@ export default function AppShell({
     const actions = options.actions ?? chatActions;
     const setOpenMenuId = options.onMenuOpenIdChange ?? setChatMenuOpenId;
     const actionsAvailable = Boolean(actions.rename || actions.share || actions.pin || actions.delete);
-    const isTaskChat = options.showTaskBadge !== false && isTaskConversationChat(chat);
-
-    if (!actionsAvailable && !isTaskChat) return null;
+    if (!actionsAvailable) return null;
 
     return (
-      <div className={`relative shrink-0 flex h-5 w-5 items-center justify-center ${isTaskChat ? 'ml-6' : 'ml-2'}`}>
-        {isTaskChat && !isMenuOpen && (
-          <span className="pointer-events-none absolute right-0 shrink-0 whitespace-nowrap rounded-full bg-shellChatBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellChatBadgeText transition-opacity group-hover:opacity-0">
-            任务
-          </span>
-        )}
+      <div className="relative ml-2 flex h-5 w-5 shrink-0 items-center justify-center">
         {actionsAvailable && <BaseActionMenu
           open={isMenuOpen}
           onOpenChange={(open) => setOpenMenuId(open ? chat.id : null)}
@@ -980,7 +966,6 @@ export default function AppShell({
             >
               {filteredAllChats.map((chat) => {
                 const projectName = chat.projectId ? (projectNameById.get(chat.projectId) ?? '未分组') : '未分组';
-                const isTaskChat = isTaskConversationChat(chat);
                 const isMenuOpen = allChatsMenuOpenId === chat.id;
 
                 return (
@@ -992,11 +977,6 @@ export default function AppShell({
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-primaryText">
                         {renderChatTitle(chat, chat.isPinned)}
-                        {isTaskChat && editingChatId !== chat.id && (
-                          <span className="shrink-0 rounded-full bg-shellTaskBadgeSurface px-1.5 py-0.5 text-[11px] leading-[14px] text-shellTaskBadgeText">
-                            任务
-                          </span>
-                        )}
                       </div>
                       <div className="mt-1 flex items-center gap-1 text-xs text-tertiaryText">
                         <span className="truncate">{projectName}</span>
@@ -1007,7 +987,6 @@ export default function AppShell({
                     {editingChatId !== chat.id && renderChatActionControl(chat, isMenuOpen, {
                       actions: { rename: true, pin: true, delete: true },
                       portal: true,
-                      showTaskBadge: false,
                       width: 160,
                       onMenuOpenIdChange: setAllChatsMenuOpenId,
                     })}

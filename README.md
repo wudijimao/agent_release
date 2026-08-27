@@ -12,9 +12,16 @@
 
 - `BIOAGENT_API_URL`：可选的 BioAgent 服务端根地址，例如 `https://api.example.com`；优先级高于默认值。
 
+发布仓库包含 Next.js 应用以及本地 workspace 包：
+
+- `packages/chatui`：共享 UI 组件和主题，发布时从源码构建。
+- `packages/shared`：前后端共享 DTO，发布时从源码构建。
+- Next.js 通过 `workspace:*` 引用这两个包，不依赖其他仓库预先生成的 `dist`。
+
 运行环境与浏览器基线：
 
-- Node.js 20.9+
+- Node.js 22.13+（Docker 使用 Node.js 24 LTS）
+- pnpm 11.23.0
 - Chrome 111+、Edge 111+、Firefox 111+、Safari 16.4+
 
 本地验证：
