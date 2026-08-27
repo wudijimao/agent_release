@@ -24,6 +24,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+function readDocumentTags(content: unknown): string[] {
+  if (!isRecord(content) || !isRecord(content.properties)) return [];
+  const tags = content.properties.tags;
+  return Array.isArray(tags)
+    ? tags.filter((tag): tag is string => typeof tag === "string" && tag.trim().length > 0)
+    : [];
+}
+
 function inlineText(value: unknown): string {
   if (typeof value === "string") return value;
   if (Array.isArray(value)) return value.map(inlineText).join("");
@@ -213,6 +221,7 @@ export function mapProjectDocumentDetail(
       payload.node.content,
       payload.node.contentText,
     ),
+    tags: readDocumentTags(payload.node.content),
     createdByName,
     updatedByName,
     updatedAt: formatUpdatedAt(payload.node.updatedAt),
@@ -267,13 +276,14 @@ export async function updateProjectDocument(
     kbNodeId: string;
     title: string;
     markdown: string;
+    tags: string[];
   },
 ) {
   return api.put<KbNodeDetail>(
     `/api/knowledge/wiki2/nodes/${encodeURIComponent(input.kbNodeId)}`,
     {
       title: input.title,
-      content: markdownToKnowledgeDocument(input.markdown),
+      content: markdownToKnowledgeDocument(input.markdown, input.tags),
       changeSummary: "编辑项目文档",
     },
   );

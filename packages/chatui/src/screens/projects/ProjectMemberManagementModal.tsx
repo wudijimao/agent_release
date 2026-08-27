@@ -95,7 +95,7 @@ export function ProjectMemberManagementModal({
   };
 
   return (
-    <BaseModal visible={visible} title="管理成员" width={560} maskClosable={false} footer={null} onCancel={resetAndClose} bodyClassName="!px-6 !py-5">
+    <BaseModal visible={visible} title="管理成员" width={560} footer={null} onCancel={resetAndClose} bodyClassName="!px-6 !py-5">
       <div className="space-y-5">
         <section className="space-y-3">
           <div className="text-sm font-medium text-primaryText">加入新成员</div>

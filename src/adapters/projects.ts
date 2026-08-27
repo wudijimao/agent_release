@@ -25,7 +25,7 @@ import type {
 
 import type { ApiClient } from "@/lib/api";
 
-export const DEFAULT_PERSONAL_WORKSPACE_NAME = "个人工作台";
+export const DEFAULT_PERSONAL_WORKSPACE_NAME = "未归属项目";
 
 export function projectNameForDisplay(
   project: Pick<ProjectSummary, "name" | "isDefaultUnassigned">,
@@ -169,21 +169,23 @@ export function mapProjectsToList(
 const KNOWLEDGE_TYPE_LABELS: Record<string, string> = {
   literature: "文献",
   literature_review: "文献解读",
-  protocol: "实验方案",
+  protocol: "Protocol",
   sop: "SOP",
   work_summary: "工作总结",
   experiment_note: "实验记录",
-  experiment_plan: "实验计划",
+  experiment_plan: "实验方案",
   data_source: "数据源",
   analysis_report: "分析报告",
   other: "其他",
 };
 
-const KNOWLEDGE_SECTION_LABELS: Record<string, string> = {
-  knowledge: "知识",
-  experiment: "实验",
-  data: "数据",
-};
+function projectKnowledgeTypeLabel(item: { knowledgeType: string; tags?: string[] }) {
+  if (item.knowledgeType === "other") {
+    const firstTag = item.tags?.find((tag) => tag.trim());
+    if (firstTag) return firstTag;
+  }
+  return KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
+}
 
 export interface ProjectChatWorkspaceViewModel {
   projectName: string;
@@ -202,11 +204,8 @@ export function mapProjectChatWorkspace(
   ];
   const experimentItems = project.sections.knowledge.experiment;
   const itemTags = (item: (typeof knowledgeItems)[number]) => {
-    const sectionLabel =
-      KNOWLEDGE_SECTION_LABELS[item.section] || item.section;
-    const typeLabel =
-      KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
-    return [sectionLabel, typeLabel];
+    const typeLabel = projectKnowledgeTypeLabel(item);
+    return [typeLabel];
   };
   return {
     projectName: projectNameForDisplay(project),
@@ -221,7 +220,7 @@ export function mapProjectChatWorkspace(
     experiments: experimentItems.map((item) => ({
       id: item.kbNodeId,
       title: item.title,
-      status: KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType,
+      status: projectKnowledgeTypeLabel(item),
       tags: itemTags(item),
     })),
     previewItems: [
@@ -236,8 +235,7 @@ export function mapProjectChatWorkspace(
       }),
       ...experimentItems.map((item): ChatPreviewItemViewModel => {
         const tags = itemTags(item);
-        const status =
-          KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
+        const status = projectKnowledgeTypeLabel(item);
         return {
           key: `experiment:${item.kbNodeId}`,
           type: "experiment-log",
@@ -270,14 +268,13 @@ export function mapProjectDetail(project: ProjectDetail): {
     ...project.sections.knowledge.experiment,
     ...project.sections.knowledge.data,
   ].map((item) => {
-    const typeLabel = KNOWLEDGE_TYPE_LABELS[item.knowledgeType] || item.knowledgeType;
-    const sectionLabel = KNOWLEDGE_SECTION_LABELS[item.section] || item.section;
+    const typeLabel = projectKnowledgeTypeLabel(item);
     return {
       id: item.id,
       kbNodeId: item.kbNodeId,
       title: item.title,
-      summary: `${sectionLabel} · ${typeLabel}`,
-      tags: [sectionLabel, typeLabel],
+      summary: typeLabel,
+      tags: [typeLabel],
     };
   });
 

@@ -98,8 +98,8 @@ test("projects adapter uses the bootstrap, detail, and create contracts", async 
   });
 
   assert.deepEqual(await loadProjectsBootstrap(api), {
-    defaultProject: { ...defaultSummary, name: "个人工作台" },
-    projects: [summary, { ...defaultSummary, name: "个人工作台" }],
+    defaultProject: { ...defaultSummary, name: "未归属项目" },
+    projects: [summary, { ...defaultSummary, name: "未归属项目" }],
   });
   await loadProjectDetail(api, "project/id");
   await createProject(api, {
@@ -191,6 +191,18 @@ test("project detail mapper exposes only high-fidelity view models", () => {
             updatedAt: "2026-07-21T09:00:00.000Z",
             createdAt: "2026-07-21T08:00:00.000Z",
           },
+          {
+            id: "knowledge-2",
+            projectId: "project-1",
+            kbNodeId: "node-2",
+            title: "临时记录",
+            knowledgeType: "other",
+            tags: ["自定义记录"],
+            section: "knowledge",
+            visibility: "project_default",
+            updatedAt: "2026-07-21T10:00:00.000Z",
+            createdAt: "2026-07-21T10:00:00.000Z",
+          },
         ],
         experiment: [],
         data: [],
@@ -207,8 +219,15 @@ test("project detail mapper exposes only high-fidelity view models", () => {
         id: "knowledge-1",
         kbNodeId: "node-1",
         title: "免疫检查点综述",
-        summary: "知识 · 文献解读",
-        tags: ["知识", "文献解读"],
+        summary: "文献解读",
+        tags: ["文献解读"],
+      },
+      {
+        id: "knowledge-2",
+        kbNodeId: "node-2",
+        title: "临时记录",
+        summary: "自定义记录",
+        tags: ["自定义记录"],
       },
     ],
     conversations: [
@@ -221,7 +240,12 @@ test("project detail mapper exposes only high-fidelity view models", () => {
       {
         id: "node-1",
         title: "免疫检查点综述",
-        tags: ["知识", "文献解读"],
+        tags: ["文献解读"],
+      },
+      {
+        id: "node-2",
+        title: "临时记录",
+        tags: ["自定义记录"],
       },
     ],
     experiments: [],
@@ -230,7 +254,13 @@ test("project detail mapper exposes only high-fidelity view models", () => {
         key: "knowledge:node-1",
         type: "knowledge",
         title: "免疫检查点综述",
-        subtitle: "肿瘤免疫项目 · 知识 · 文献解读",
+        subtitle: "肿瘤免疫项目 · 文献解读",
+      },
+      {
+        key: "knowledge:node-2",
+        type: "knowledge",
+        title: "临时记录",
+        subtitle: "肿瘤免疫项目 · 自定义记录",
       },
     ],
   });
@@ -286,7 +316,7 @@ test("projects view mapper keeps server counts and derives chat counts", () => {
     },
     {
       id: "project-2",
-      name: "个人工作台",
+      name: "未归属项目",
       selectable: false,
     },
   ]);
@@ -300,7 +330,7 @@ test("projects view mapper keeps server counts and derives chat counts", () => {
     },
     {
       id: "project-2",
-      name: "个人工作台",
+      name: "未归属项目",
       description: "暂无项目描述",
       documentCount: 0,
       conversationCount: 0,

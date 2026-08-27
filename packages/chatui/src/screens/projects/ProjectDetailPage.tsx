@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Menu, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
-import { BaseActionMenu, BaseButton, BaseDocumentUpload, BaseEmpty, BaseModal } from '../../components/common';
+import { ArrowLeft, Menu, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
+import { BaseActionMenu, BaseButton, BaseDeleteConfirmModal, BaseDocumentUpload, BaseEmpty, BaseModal } from '../../components/common';
 
 type ProjectDetailTab = 'documents' | 'chats';
 
@@ -40,7 +40,7 @@ export interface ProjectDetailPageProps {
   onDeleteConversation?(conversationId: string): void | Promise<void>;
   onCreateDocument?(): void;
   onCreateConversation?(): void;
-  onImportDocuments(files: File[]): void | Promise<void>;
+  onImportDocuments(files: File[]): void | readonly string[] | Promise<void | readonly string[]>;
   documentImportAccept?: string;
   documentImportMaxSize?: number;
   documentImportDescription?: React.ReactNode;
@@ -109,6 +109,7 @@ export function ProjectDetailPage({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [importError, setImportError] = useState('');
   const [importing, setImporting] = useState(false);
+  const [newlyImportedDocumentIds, setNewlyImportedDocumentIds] = useState<string[]>([]);
   const [nameDraft, setNameDraft] = useState(project?.name ?? '');
   const [descriptionDraft, setDescriptionDraft] = useState(project?.description ?? '');
   const [editingName, setEditingName] = useState(false);
@@ -121,6 +122,9 @@ export function ProjectDetailPage({
   const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
   const [conversationTitleDraft, setConversationTitleDraft] = useState('');
   const [conversationActionError, setConversationActionError] = useState('');
+  const [conversationPendingDeletion, setConversationPendingDeletion] = useState<ProjectConversationViewModel | null>(null);
+  const [deletingConversation, setDeletingConversation] = useState(false);
+  const [conversationDeleteError, setConversationDeleteError] = useState('');
   const tagFilterRef = useRef<HTMLDivElement | null>(null);
   const conversationTitleInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -192,8 +196,13 @@ export function ProjectDetailPage({
     if (!selectedFiles.length) return setImportError('请先选择至少一个文件');
     setImporting(true); setImportError('');
     try {
-      await onImportDocuments(selectedFiles);
+      const importedDocumentIds = await onImportDocuments(selectedFiles);
       setShowImportModal(false); setSelectedFiles([]);
+      if (importedDocumentIds?.length) {
+        setNewlyImportedDocumentIds((current) => [
+          ...new Set([...current, ...importedDocumentIds]),
+        ]);
+      }
     } catch (error) {
       setImportError(error instanceof Error ? error.message : '文档导入失败');
     } finally { setImporting(false); }
@@ -234,14 +243,17 @@ export function ProjectDetailPage({
     }
   };
 
-  const deleteConversation = async (conversationId: string) => {
-    if (!onDeleteConversation) return;
-    setConversationMenuOpenId(null);
-    setConversationActionError('');
+  const confirmDeleteConversation = async () => {
+    if (!onDeleteConversation || !conversationPendingDeletion || deletingConversation) return;
+    setDeletingConversation(true);
+    setConversationDeleteError('');
     try {
-      await onDeleteConversation(conversationId);
+      await onDeleteConversation(conversationPendingDeletion.id);
+      setConversationPendingDeletion(null);
     } catch (error) {
-      setConversationActionError(error instanceof Error ? error.message : '对话删除失败');
+      setConversationDeleteError(error instanceof Error ? error.message : '对话删除失败');
+    } finally {
+      setDeletingConversation(false);
     }
   };
 
@@ -250,10 +262,10 @@ export function ProjectDetailPage({
       <header className="z-10 flex h-16 shrink-0 items-center justify-between bg-homeHeaderSurface px-4 backdrop-blur-sm">
         <div className="flex min-w-0 items-center gap-3">
           {!isSidebarOpen && <button type="button" onClick={onOpenSidebar} className="-ml-2 rounded-full p-2 text-secondaryText transition-colors hover:bg-bgLight" title="展开边栏"><Menu size={20} /></button>}
-          <div className="flex items-center gap-2 text-sm">
-            <button type="button" onClick={onBackToProjects} className="text-tertiaryText transition-colors hover:text-primaryText">项目</button>
-            <span className="text-tertiaryText">/</span><span className="font-medium text-primaryText">{nameDraft || project?.name || '详情'}</span>
-          </div>
+          <button type="button" onClick={onBackToProjects} className="inline-flex items-center gap-1 text-sm text-tertiaryText transition-colors hover:text-primaryText">
+            <ArrowLeft size={16} />
+            返回
+          </button>
         </div>
         {project && (showMemberManagement || onDeleteProject) && <div className="flex items-center gap-4">
           {showMemberManagement && <button type="button" onClick={onOpenMemberManagement} className="inline-flex items-center gap-1.5 rounded-lg bg-transparent px-1 py-1 text-sm font-medium leading-5 text-secondaryText transition-colors hover:text-primaryText"><Users size={15} /><span>管理成员</span></button>}
@@ -285,9 +297,9 @@ export function ProjectDetailPage({
               {activeTab === 'documents' && <><span className="h-4 border-l border-lineSubtle" aria-hidden="true" /><button type="button" onClick={() => { setSelectedFiles([]); setImportError(''); setShowImportModal(true); }} className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline"><Upload size={14} />导入</button></>}</div>
             </div>
 
-            {activeTab === 'documents' && <div className="mt-3"><div className="flex items-start justify-between gap-3"><div ref={tagFilterRef} className="flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200" style={{ maxHeight: isTagExpanded || !showTagToggle ? undefined : `${TAG_COLLAPSED_MAX_HEIGHT}px` }}>{tagOptions.map((tag) => <button key={tag} type="button" onClick={() => setSelectedTag(tag)} className={`h-7 rounded-full border px-3 text-xs transition-colors ${selectedTag === tag ? 'border-primary bg-primary-soft text-primary' : 'border-lineSubtle bg-white text-secondaryText hover:border-controlBorder'}`}>{tag === 'all' ? '全部' : tag}</button>)}</div>{showTagToggle && <button type="button" onClick={() => setIsTagExpanded((value) => !value)} className="shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText">{isTagExpanded ? '收起' : '展开'}</button>}</div></div>}
+            {activeTab === 'documents' && documents.length > 0 && <div className="mt-3"><div className="flex items-start justify-between gap-3"><div ref={tagFilterRef} className="flex flex-1 flex-wrap gap-2 overflow-hidden transition-[max-height] duration-200" style={{ maxHeight: isTagExpanded || !showTagToggle ? undefined : `${TAG_COLLAPSED_MAX_HEIGHT}px` }}>{tagOptions.map((tag) => <button key={tag} type="button" onClick={() => setSelectedTag(tag)} className={`h-7 rounded-full border px-3 text-xs transition-colors ${selectedTag === tag ? 'border-primary bg-primary-soft text-primary' : 'border-lineSubtle bg-white text-secondaryText hover:border-controlBorder'}`}>{tag === 'all' ? '全部' : tag}</button>)}</div>{showTagToggle && <button type="button" onClick={() => setIsTagExpanded((value) => !value)} className="shrink-0 text-xs text-tertiaryText transition-colors hover:text-primaryText">{isTagExpanded ? '收起' : '展开'}</button>}</div></div>}
 
-            {activeTab === 'documents' ? filteredDocuments.length ? <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">{filteredDocuments.map((item) => <button key={item.id} type="button" onClick={() => onOpenDocument(item.kbNodeId)} className="rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm"><h3 className="truncate text-base font-medium text-primaryText">{item.title}</h3><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-secondaryText">{item.summary}</p>{item.tags.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={`${item.id}-${tag}`} className="inline-flex items-center rounded-lg bg-projectTagSurface px-3 py-1 text-xs text-secondaryText">{tag}</span>)}</div>}</button>)}</div>
+            {activeTab === 'documents' ? filteredDocuments.length ? <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">{filteredDocuments.map((item) => <button key={item.id} type="button" onClick={() => onOpenDocument(item.kbNodeId)} className="rounded-lg border border-lineSubtle bg-surface px-4 py-3.5 text-left transition-all hover:border-controlBorder hover:shadow-sm"><div className="flex min-w-0 items-center gap-2"><h3 className="truncate text-base font-medium text-primaryText">{item.title}</h3>{newlyImportedDocumentIds.includes(item.kbNodeId) && <span className="shrink-0 rounded-full bg-primary px-1.5 py-[2px] text-xs font-medium leading-none text-white">NEW</span>}</div><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-secondaryText">{item.summary}</p>{item.tags.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={`${item.id}-${tag}`} className="inline-flex items-center rounded-lg bg-projectTagSurface px-3 py-1 text-xs text-secondaryText">{tag}</span>)}</div>}</button>)}</div>
               : <div className="mt-4 rounded-lg border border-dashed border-borderSoft"><BaseEmpty description="暂无匹配的文档" /></div>
               : filteredConversations.length ? <div className="mt-4 space-y-2">
                 {conversationActionError && <div role="alert" className="text-sm text-danger">{conversationActionError}</div>}
@@ -327,7 +339,11 @@ export function ProjectDetailPage({
                       onItemClick={(action, event) => {
                         event.stopPropagation();
                         if (action.key === 'rename') startConversationRename(item);
-                        if (action.key === 'delete') void deleteConversation(item.id);
+                        if (action.key === 'delete') {
+                          setConversationMenuOpenId(null);
+                          setConversationDeleteError('');
+                          setConversationPendingDeletion(item);
+                        }
                       }}
                       triggerClassName={`h-6 w-6 rounded-md text-secondaryText hover:bg-bgLight hover:text-primaryText ${isMenuOpen ? 'inline-flex' : 'hidden group-hover:inline-flex'}`}
                       className="relative z-40 shrink-0"
@@ -341,7 +357,7 @@ export function ProjectDetailPage({
         </div>
       </div>
 
-      <BaseModal visible={showImportModal} title="导入文档" width={500} maskClosable={false} cancelText="取消" okText={importing ? '导入中…' : '导入'}
+      <BaseModal visible={showImportModal} title="导入文档" width={500} cancelText="取消" okText={importing ? '导入中…' : '导入'}
         onCancel={() => { if (!importing) { setShowImportModal(false); setSelectedFiles([]); setImportError(''); } }} onConfirm={() => void submitImport()} okButtonProps={{ disabled: importing }} bodyClassName="!px-6 !py-5">
         <div className="space-y-4"><BaseDocumentUpload value={selectedFiles} accept={documentImportAccept} maxCount={5} maxSize={documentImportMaxSize ?? 20 * 1024 * 1024} uploadDescription={documentImportDescription} disabled={importing} onChange={setSelectedFiles} onError={(error) => setImportError(error.message)} />{importError && <div role="alert" className="text-sm text-danger">{importError}</div>}</div>
       </BaseModal>
@@ -369,6 +385,16 @@ export function ProjectDetailPage({
           {deleteError && <p role="alert" className="text-danger">{deleteError}</p>}
         </div>
       </BaseModal>
+
+      <BaseDeleteConfirmModal
+        visible={Boolean(conversationPendingDeletion)}
+        title="删除对话"
+        description={<>删除后，对话“{conversationPendingDeletion?.title}”将无法恢复。确认删除当前对话吗？</>}
+        loading={deletingConversation}
+        error={conversationDeleteError}
+        onCancel={() => { setConversationPendingDeletion(null); setConversationDeleteError(''); }}
+        onConfirm={confirmDeleteConversation}
+      />
     </div>
   );
 }

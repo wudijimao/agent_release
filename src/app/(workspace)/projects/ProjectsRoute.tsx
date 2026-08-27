@@ -2,6 +2,7 @@
 
 import { ProjectsPage, useNavigation } from "@bioagent/chatui";
 import type { ProjectSummary } from "@bioagent/shared";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -9,16 +10,28 @@ import {
   loadProjectsBootstrap,
   mapProjectsToList,
 } from "@/adapters/projects";
+import {
+  loadProjectDocumentTemplates,
+  PROJECT_DOCUMENT_TEMPLATE_DELETED_EVENT,
+  type ProjectDocumentTemplate,
+} from "@/adapters/project-document-templates";
 import { useChatShell } from "@/app/(workspace)/WorkspaceShell";
 import {
   PRODUCT_ANALYTICS_EVENTS,
   trackProductEvent,
 } from "@/lib/product-analytics";
-import { useApiClient } from "@/providers/AuthProvider";
+import { useApiClient, useAuth } from "@/providers/AuthProvider";
 
 export function ProjectsRoute() {
   const api = useApiClient();
+  const { user } = useAuth();
+  const currentUserId = user?.id || "";
   const navigation = useNavigation();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const templatesVisible =
+    searchParams.get("templates") === "open" ||
+    pathname.startsWith("/projects/templates/");
   const {
     chats,
     isSidebarOpen,
@@ -28,6 +41,9 @@ export function ProjectsRoute() {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [templates, setTemplates] = useState<ProjectDocumentTemplate[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
+  const [templatesError, setTemplatesError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -68,6 +84,57 @@ export function ProjectsRoute() {
     () => mapProjectsToList(projects, chats),
     [chats, projects],
   );
+  const loadTemplates = useCallback(async () => {
+    setTemplatesLoading(true);
+    setTemplatesError("");
+    try {
+      setTemplates(await loadProjectDocumentTemplates(api, currentUserId));
+    } catch (loadError) {
+      setTemplatesError(loadError instanceof Error ? loadError.message : "模板加载失败");
+    } finally {
+      setTemplatesLoading(false);
+    }
+  }, [api, currentUserId]);
+
+  useEffect(() => {
+    const handleTemplateDeleted = (event: Event) => {
+      const templateId = (event as CustomEvent<unknown>).detail;
+      if (typeof templateId !== "string") return;
+      setTemplates((current) => current.filter((template) => template.id !== templateId));
+    };
+    window.addEventListener(
+      PROJECT_DOCUMENT_TEMPLATE_DELETED_EVENT,
+      handleTemplateDeleted,
+    );
+    return () => {
+      window.removeEventListener(
+        PROJECT_DOCUMENT_TEMPLATE_DELETED_EVENT,
+        handleTemplateDeleted,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!templatesVisible) return;
+    let cancelled = false;
+
+    loadProjectDocumentTemplates(api, currentUserId)
+      .then((items) => {
+        if (!cancelled) setTemplates(items);
+      })
+      .catch((loadError: unknown) => {
+        if (!cancelled) {
+          setTemplatesError(loadError instanceof Error ? loadError.message : "模板加载失败");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setTemplatesLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [api, currentUserId, pathname, templatesVisible]);
 
   return (
     <ProjectsPage
@@ -78,6 +145,18 @@ export function ProjectsRoute() {
       onOpenSidebar={openSidebar}
       onRetry={() => void load()}
       onOpenProject={(projectId) => navigation.push(`/projects/${projectId}`)}
+      templates={templates}
+      templatesLoading={templatesLoading || (templatesVisible && !templates.length && !templatesError)}
+      templatesError={templatesError}
+      templatesVisible={templatesVisible}
+      onTemplatesVisibleChange={(visible) => {
+        if (visible) navigation.push("/projects?templates=open");
+        else navigation.replace("/projects");
+      }}
+      onOpenTemplates={() => undefined}
+      onRetryTemplates={() => void loadTemplates()}
+      onOpenTemplate={(templateId) => navigation.push(`/projects/templates/${encodeURIComponent(templateId)}`)}
+      onCreateTemplate={() => navigation.push("/projects/templates/new")}
       onCreateProject={async ({ name, description }) => {
         const created = await createProject(api, {
           type: "team",

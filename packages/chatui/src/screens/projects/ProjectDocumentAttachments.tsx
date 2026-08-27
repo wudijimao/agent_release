@@ -1,7 +1,5 @@
 import React from 'react';
-import { Download, FileText, Loader2, Trash2, Upload } from 'lucide-react';
-
-import { BaseButton } from '../../components/common';
+import { Download, FileText, Loader2, Trash2 } from 'lucide-react';
 
 export interface ProjectDocumentAttachmentViewModel extends Record<string, unknown> {
   id: string;
@@ -12,56 +10,48 @@ export interface ProjectDocumentAttachmentViewModel extends Record<string, unkno
   statusLabel: string;
 }
 
+export interface ProjectDocumentAttachmentUploadViewModel {
+  id: string;
+  name: string;
+  progress: number;
+}
+
 export interface ProjectDocumentAttachmentsProps {
   attachments: ProjectDocumentAttachmentViewModel[];
+  uploads?: ProjectDocumentAttachmentUploadViewModel[];
   className?: string;
-  uploading?: boolean;
   deletingAttachmentId?: string | null;
   unavailableHint?: string;
   error?: string;
-  onRequestUpload?(): void;
   onDownloadAttachment?(attachmentId: string): void;
   onDeleteAttachment?(attachmentId: string): void;
 }
 
 export function ProjectDocumentAttachments({
   attachments,
+  uploads = [],
   className = 'mx-[120px] mb-6 mt-8 border-t border-lineSubtle pt-6',
-  uploading = false,
   deletingAttachmentId,
   unavailableHint,
   error,
-  onRequestUpload,
   onDownloadAttachment,
   onDeleteAttachment,
 }: ProjectDocumentAttachmentsProps) {
   return (
     <div className={`relative ${className}`}>
-      <div className={onRequestUpload ? 'pr-28' : undefined}>
-        <div className="text-sm font-medium text-primaryText">附件</div>
-        {onRequestUpload && (
-          <div className="absolute right-0 top-6">
-            <BaseButton
-              type="secondary"
-              size="small"
-              disabled={uploading}
-              onClick={onRequestUpload}
-            >
-              <span className="inline-flex items-center gap-1.5">
-                {uploading ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <Upload size={14} />
-                )}
-                {uploading ? '上传中' : '上传附件'}
-              </span>
-            </BaseButton>
-          </div>
-        )}
-      </div>
+      <div className="text-sm font-medium text-primaryText">附件</div>
 
-      {attachments.length ? (
-        <div className={`mt-3 flex flex-wrap gap-2.5 ${onRequestUpload ? 'pr-28' : ''}`}>
+      {attachments.length || uploads.length ? (
+        <div className="mt-3 flex flex-wrap gap-2.5">
+          {uploads.map((upload) => (
+            <div key={upload.id} className="relative inline-flex max-w-full items-center gap-2 overflow-hidden rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText">
+              <span className="max-w-72 truncate">{upload.name}</span>
+              <span className="shrink-0 tabular-nums text-xs text-tertiaryText">{upload.progress}%</span>
+              <span className="absolute inset-x-3 bottom-0 h-0.5 overflow-hidden rounded-full bg-lineSoft">
+                <span className="block h-full rounded-full bg-primary transition-[width] duration-150" style={{ width: `${upload.progress}%` }} />
+              </span>
+            </div>
+          ))}
           {attachments.map((attachment) => {
             const deleting = deletingAttachmentId === attachment.id;
             return (
@@ -115,9 +105,7 @@ export function ProjectDocumentAttachments({
             );
           })}
         </div>
-      ) : (
-        <p className="mt-2 text-sm text-tertiaryText">暂无附件</p>
-      )}
+      ) : null}
 
       {unavailableHint && (
         <p className="mt-2 text-xs text-tertiaryText">{unavailableHint}</p>

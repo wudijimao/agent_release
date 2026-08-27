@@ -11,9 +11,11 @@ export interface ProjectDocumentTemplateOption {
     icon?: string;
     source?: 'system' | 'workspace';
     structure?: string[];
+    markdown?: string;
 }
 export interface ProjectDocumentCreateSelection {
     knowledgeType: string;
+    tags: string[];
     templateId: string;
 }
 export interface ProjectDocumentCreateModalProps {
@@ -23,10 +25,9 @@ export interface ProjectDocumentCreateModalProps {
     loading?: boolean;
     error?: string;
     defaultKnowledgeType?: string;
-    defaultTemplateId?: string;
     onClose(): void;
     onRetry?(): void;
     onContinue(selection: ProjectDocumentCreateSelection): void;
 }
-export declare function ProjectDocumentCreateModal({ visible, typeOptions, templates, loading, error, defaultKnowledgeType, defaultTemplateId, onClose, onRetry, onContinue, }: ProjectDocumentCreateModalProps): React.JSX.Element;
+export declare function ProjectDocumentCreateModal({ visible, typeOptions, templates, loading, error, defaultKnowledgeType, onClose, onRetry, onContinue, }: ProjectDocumentCreateModalProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentCreateModal.d.ts.map

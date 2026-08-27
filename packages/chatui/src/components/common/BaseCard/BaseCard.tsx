@@ -29,7 +29,7 @@ export const BaseCard: React.FC<BaseCardProps> = ({ title, extra, children, hove
         {extra && <div className="flex items-center gap-2">{extra}</div>}
       </div>
     )}
-    <div className={classNames('p-4 text-primaryText', (title || extra) && 'pt-1', bodyClassName)}>{children}</div>
+    <div className={classNames('p-4 text-primaryText', Boolean(title || extra) && 'pt-1', bodyClassName)}>{children}</div>
   </div>
 );
 

@@ -171,7 +171,7 @@ function normalizeMarkdownTableCell(cell: string) {
 
 function isMarkdownTableDivider(line: string) {
   const cells = splitMarkdownTableRow(line);
-  return cells.length > 0 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+  return cells.length > 0 && cells.every((cell) => /^:?-+:?$/.test(cell));
 }
 
 function tableBlock(rows: string[][]): KnowledgeBlock {
@@ -189,7 +189,7 @@ function tableBlock(rows: string[][]): KnowledgeBlock {
   return block("table", content);
 }
 
-export function markdownToKnowledgeDocument(markdown: string) {
+export function markdownToKnowledgeDocument(markdown: string, tags: string[] = []) {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   const blocks: KnowledgeBlock[] = [];
   let paragraph: string[] = [];
@@ -299,7 +299,7 @@ export function markdownToKnowledgeDocument(markdown: string) {
   return {
     type: "kb-doc",
     version: 2,
-    properties: {},
+    properties: { tags: tags.filter(Boolean) },
     content: blocks.length > 0 ? blocks : [block("paragraph", "")],
   };
 }
@@ -314,6 +314,7 @@ export async function createProjectDocument(
     templateId: string;
     knowledgeType: ProjectKnowledgeType;
     section: ProjectKnowledgeSection;
+    tags: string[];
   },
 ) {
   const created = await api.post<CreatedKnowledgeNode>(
@@ -326,7 +327,7 @@ export async function createProjectDocument(
       projectKnowledgeType: input.knowledgeType,
       projectKnowledgeSection: input.section,
       projectVisibility: "project_default",
-      content: markdownToKnowledgeDocument(input.markdown),
+      content: markdownToKnowledgeDocument(input.markdown, input.tags),
     },
   );
 

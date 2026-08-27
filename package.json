@@ -1,50 +1,56 @@
 {
-  "name": "@bioagent/nextjs",
-  "version": "0.1.0",
-  "private": true,
-  "browserslist": [
-    "chrome 111",
-    "edge 111",
-    "firefox 111",
-    "safari 16.4"
-  ],
-  "scripts": {
-    "predev": "pnpm --filter @bioagent/chatui build",
-    "dev": "next dev",
-    "build": "corepack pnpm@9.0.0 --filter @bioagent/shared build && next build",
-    "start": "next start",
-    "lint": "eslint src next.config.ts",
-    "test": "node --import tsx --test src/**/*.test.ts",
-    "test:visual": "pnpm build && node visual-tests/run.mjs",
-    "test:visual:update": "pnpm build && node visual-tests/run.mjs --update-snapshots",
-    "test:visual:existing": "node visual-tests/run.mjs",
-    "test:visual:install": "playwright install chromium",
-    "release:check": "corepack pnpm@9.0.0 --filter @bioagent/chatui styles:check && corepack pnpm@9.0.0 --filter @bioagent/shared build && corepack pnpm@9.0.0 test && corepack pnpm@9.0.0 lint && corepack pnpm@9.0.0 build"
-  },
-  "dependencies": {
-    "@bioagent/chatui": "workspace:*",
-    "@bioagent/shared": "workspace:*",
-    "firebase": "^12.17.0",
-    "lucide-react": "1.21.0",
-    "next": "16.2.10",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@playwright/test": "1.62.0",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "autoprefixer": "10.4.21",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "postcss": "8.5.10",
-    "tailwindcss": "^3.4.19",
-    "tsx": "^4.19.0",
-    "typescript": "^5"
-  },
-  "packageManager": "pnpm@9.0.0",
-  "engines": {
-    "node": ">=20.9.0"
-  }
+    "name":  "@bioagent/nextjs",
+    "version":  "0.1.0",
+    "private":  true,
+    "browserslist":  [
+                         "chrome 111",
+                         "edge 111",
+                         "firefox 111",
+                         "safari 16.4"
+                     ],
+    "scripts":  {
+                    "predev":  "pnpm --filter @bioagent/chatui build",
+                    "dev":  "next dev",
+                    "prebuild":  "pnpm --filter @bioagent/chatui build",
+                    "build":  "corepack pnpm@9.0.0 --filter @bioagent/shared build \u0026\u0026 next build",
+                    "start":  "next start",
+                    "lint":  "eslint src next.config.ts",
+                    "test":  "node --import tsx --test src/**/*.test.ts",
+                    "test:visual":  "pnpm build \u0026\u0026 node visual-tests/run.mjs",
+                    "test:visual:update":  "pnpm build \u0026\u0026 node visual-tests/run.mjs --update-snapshots",
+                    "test:visual:existing":  "node visual-tests/run.mjs",
+                    "test:visual:install":  "playwright install chromium",
+                    "release:check":  "corepack pnpm@9.0.0 --filter @bioagent/chatui styles:check \u0026\u0026 corepack pnpm@9.0.0 --filter @bioagent/shared build \u0026\u0026 corepack pnpm@9.0.0 test \u0026\u0026 corepack pnpm@9.0.0 lint \u0026\u0026 corepack pnpm@9.0.0 build"
+                },
+    "dependencies":  {
+                         "@bioagent/chatui":  "workspace:*",
+                         "@bioagent/shared":  "workspace:*",
+                         "firebase":  "^12.17.0",
+                         "lucide-react":  "1.21.0",
+                         "next":  "16.2.10",
+                         "react":  "19.2.4",
+                         "react-dom":  "19.2.4"
+                     },
+    "devDependencies":  {
+                            "@playwright/test":  "1.62.0",
+                            "@types/node":  "^20",
+                            "@types/react":  "^19",
+                            "@types/react-dom":  "^19",
+                            "autoprefixer":  "10.4.21",
+                            "eslint":  "^9",
+                            "eslint-config-next":  "16.2.10",
+                            "postcss":  "8.5.10",
+                            "tailwindcss":  "^3.4.19",
+                            "tsx":  "^4.19.0",
+                            "typescript":  "^5"
+                        },
+    "packageManager":  "pnpm@9.0.0",
+    "engines":  {
+                    "node":  "\u003e=20.9.0"
+                },
+    "pnpm":  {
+                 "patchedDependencies":  {
+                                             "@milkdown/crepe@7.21.3":  "patches/@milkdown__crepe@7.21.3.patch"
+                                         }
+             }
 }

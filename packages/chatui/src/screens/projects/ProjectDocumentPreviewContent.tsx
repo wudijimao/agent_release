@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 
 import { BaseEmpty } from '../../components/common';
 import { ProjectDocumentAttachments } from './ProjectDocumentAttachments';
+import type { ProjectDocumentAttachmentUploadViewModel } from './ProjectDocumentAttachments';
 import { ProjectDocumentMetadata } from './ProjectDocumentMetadata';
 import type { ProjectDocumentPreviewViewModel } from './ProjectDocumentPreview';
 import markdownStyles from './ProjectDocumentMarkdown.module.css';
@@ -20,12 +21,16 @@ export interface ProjectDocumentPreviewContentProps {
   document: ProjectDocumentPreviewViewModel;
   layout?: 'page' | 'panel';
   onDownloadAttachment?(attachmentId: string): void;
+  attachmentUploads?: ProjectDocumentAttachmentUploadViewModel[];
+  showTags?: boolean;
 }
 
 export function ProjectDocumentPreviewContent({
   document,
   layout = 'page',
   onDownloadAttachment,
+  attachmentUploads = [],
+  showTags = true,
 }: ProjectDocumentPreviewContentProps) {
   const [isContentScrolling, setIsContentScrolling] = useState(false);
   const contentScrollTimerRef = useRef<number | null>(null);
@@ -51,6 +56,9 @@ export function ProjectDocumentPreviewContent({
           updatedAt={document.updatedAt}
           index={document.index}
         />
+        {showTags && <div className="mt-4 flex flex-wrap items-center gap-2">
+          {(document.tags?.length ?? 0) > 0 ? document.tags?.map((tag) => <span key={tag} className="inline-flex items-center rounded-full border border-lineSubtle bg-bgLight px-2.5 py-1 text-xs text-secondaryText">{tag}</span>) : <span className="text-xs text-tertiaryText">暂无标签</span>}
+        </div>}
         <div className="mt-4 h-px bg-lineSubtle" />
       </section>
 
@@ -70,11 +78,12 @@ export function ProjectDocumentPreviewContent({
           </div>
         )}
 
-        <ProjectDocumentAttachments
+        {(document.attachments.length > 0 || attachmentUploads.length > 0) && <ProjectDocumentAttachments
           attachments={document.attachments}
+          uploads={attachmentUploads}
           onDownloadAttachment={onDownloadAttachment}
           className={`${layout === 'page' ? 'mx-[120px]' : 'mx-6 md:mx-8'} mb-6 mt-8 border-t border-lineSubtle pt-6`}
-        />
+        />}
       </section>
     </div>
   );

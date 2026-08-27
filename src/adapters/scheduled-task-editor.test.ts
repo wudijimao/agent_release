@@ -116,6 +116,16 @@ test("editor restores daily, weekly, and monthly server schedules", () => {
   );
 });
 
+test("editor restores the server runAt time alias", () => {
+  assert.equal(
+    scheduledTaskToEditorDraft(task({
+      scheduleKind: "weekly",
+      scheduleConfig: { runAt: "18:30", weekday: 5 },
+    }))?.schedule.runAt,
+    "18:30",
+  );
+});
+
 test("unsupported legacy schedule kinds cannot enter the editor", () => {
   assert.equal(
     scheduledTaskToEditorDraft(task({

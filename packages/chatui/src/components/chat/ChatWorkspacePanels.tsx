@@ -180,7 +180,7 @@ export interface ChatProjectFilesPanelProps {
 }
 
 export function ChatProjectFilesPanel({
-  projectName = '个人工作台',
+  projectName = '未归属项目',
   searchQuery,
   error,
   knowledgeDocs,

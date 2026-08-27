@@ -1,5 +1,5 @@
 export { ProjectsPage } from './ProjectsPage';
-export type { CreateProjectViewModel, ProjectListItemViewModel, ProjectsPageProps } from './ProjectsPage';
+export type { CreateProjectViewModel, ProjectListItemViewModel, ProjectsPageProps, ProjectTemplateListItemViewModel } from './ProjectsPage';
 export { ProjectDetailPage, formatProjectConversationDate } from './ProjectDetailPage';
 export type { ProjectConversationViewModel, ProjectDetailPageProps, ProjectDetailViewModel, ProjectDocumentViewModel } from './ProjectDetailPage';
 export { ProjectDocumentEditor } from './ProjectDocumentEditor';
@@ -11,6 +11,12 @@ export type {
   ProjectDocumentTemplateOption,
   ProjectDocumentTypeOption,
 } from './ProjectDocumentCreateModal';
+export { ProjectDocumentTagPicker } from './ProjectDocumentTagPicker';
+export type {
+  ProjectDocumentTagOption,
+  ProjectDocumentTagPickerProps,
+  ProjectDocumentTagSelection,
+} from './ProjectDocumentTagPicker';
 export { ProjectDocumentAttachments } from './ProjectDocumentAttachments';
 export type { ProjectDocumentAttachmentViewModel, ProjectDocumentAttachmentsProps } from './ProjectDocumentAttachments';
 export { ProjectDocumentMetadata } from './ProjectDocumentMetadata';
@@ -22,6 +28,10 @@ export type {
 } from './ProjectDocumentPreview';
 export { ProjectDocumentPreviewContent } from './ProjectDocumentPreviewContent';
 export type { ProjectDocumentPreviewContentProps } from './ProjectDocumentPreviewContent';
+export { ProjectDocumentTemplateCard } from './ProjectDocumentTemplateCard';
+export type { ProjectDocumentTemplateCardProps, ProjectDocumentTemplateCardViewModel } from './ProjectDocumentTemplateCard';
+export { ProjectDocumentTemplateWorkspace } from './ProjectDocumentTemplateWorkspace';
+export type { ProjectDocumentTemplateWorkspaceProps } from './ProjectDocumentTemplateWorkspace';
 export { ProjectMemberManagementModal } from './ProjectMemberManagementModal';
 export type { ProjectMemberDirectoryItem, ProjectMemberManagementModalProps, ProjectMemberPermission, ProjectMemberViewModel } from './ProjectMemberManagementModal';
 export { ExperimentDetailPage } from './ExperimentDetailPage';

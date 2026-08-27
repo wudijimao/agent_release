@@ -109,6 +109,7 @@ export const chatuiTailwindPreset: Omit<Config, 'content'> = {
         authToastSurface: 'var(--chatui-color-auth-toast-surface)',
         authToastBorder: 'var(--chatui-color-auth-toast-border)',
         authToastText: 'var(--chatui-color-auth-toast-text)',
+        toastOverlay: 'var(--chatui-color-toast-overlay)',
         primary: 'var(--chatui-color-brand-primary)',
         'primary-hover': 'var(--chatui-color-brand-primary-hover)',
         'primary-soft': 'var(--chatui-color-brand-primary-soft)',

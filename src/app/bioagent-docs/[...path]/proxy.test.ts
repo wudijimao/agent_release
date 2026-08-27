@@ -3,10 +3,10 @@ import test from "node:test";
 
 import { proxyStorageRequest, resolveStorageProxyConfig } from "./proxy";
 
-test("storage proxy uses the confirmed service host during local development", () => {
+test("storage proxy uses the stable service domain by default", () => {
   assert.deepEqual(resolveStorageProxyConfig({}), {
-    storageUrl: "http://39.106.18.219",
-    publicHost: "39.106.18.219",
+    storageUrl: "https://helialab.cn",
+    publicHost: "helialab.cn",
   });
 });
 

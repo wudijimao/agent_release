@@ -1,4 +1,4 @@
-const DEFAULT_SERVICE_URL = "http://39.106.18.219";
+const DEFAULT_SERVICE_URL = "https://helialab.cn";
 
 const REQUEST_HEADERS = [
   "accept",

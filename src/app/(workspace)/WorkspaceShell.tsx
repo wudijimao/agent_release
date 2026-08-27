@@ -25,7 +25,9 @@ import {
   renameChatSession,
   setChatSessionPinned,
   touchAppShellChat,
+  upsertAppShellChat,
 } from "@/adapters/chat-history";
+import type { ChatStreamViewState } from "@/adapters/chat-session";
 import {
   loadAiUsageReminder,
   shouldShowAiUsageReminder,
@@ -52,6 +54,17 @@ interface ChatShellContextValue {
   refreshChats(): Promise<void>;
   refreshProjects(): Promise<void>;
   touchChat(sessionId: string): void;
+  upsertChat(chat: AppShellChat): void;
+  chatStreamHandoff?: ChatStreamHandoff;
+  publishChatStreamHandoff(handoff: ChatStreamHandoff): void;
+  clearChatStreamHandoff(sessionId: string): void;
+}
+
+interface ChatStreamHandoff {
+  sessionId: string;
+  state: ChatStreamViewState;
+  isStreaming: boolean;
+  notice?: string;
 }
 
 const ChatShellContext = createContext<ChatShellContextValue | null>(null);
@@ -97,14 +110,29 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   );
   const [notice, setNotice] = useState("");
   const [aiUsageWarningActive, setAiUsageWarningActive] = useState(false);
+  const [chatStreamHandoff, setChatStreamHandoff] =
+    useState<ChatStreamHandoff>();
   const chatRefreshRequestIdRef = useRef(0);
+  const optimisticChatsRef = useRef(new Map<string, AppShellChat>());
+
+  const mergeOptimisticChats = useCallback((items: AppShellChat[]) => {
+    let merged = items;
+    optimisticChatsRef.current.forEach((chat, sessionId) => {
+      if (items.some((item) => item.id === sessionId)) {
+        optimisticChatsRef.current.delete(sessionId);
+        return;
+      }
+      merged = upsertAppShellChat(merged, chat);
+    });
+    return merged;
+  }, []);
 
   const refreshChats = useCallback(async () => {
     const requestId = ++chatRefreshRequestIdRef.current;
     try {
       const items = await loadAppShellChats(api);
       if (requestId !== chatRefreshRequestIdRef.current) return;
-      setChats(items);
+      setChats(mergeOptimisticChats(items));
       setNotice("");
     } catch (loadError) {
       if (requestId !== chatRefreshRequestIdRef.current) return;
@@ -114,7 +142,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     } finally {
       setHistoryStatus("ready");
     }
-  }, [api]);
+  }, [api, mergeOptimisticChats]);
 
   const refreshProjects = useCallback(async () => {
     const payload = await loadProjectsBootstrap(api);
@@ -133,7 +161,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     loadAppShellChats(api, { signal: controller.signal })
       .then((items) => {
         if (controller.signal.aborted) return;
-        setChats(items);
+        setChats(mergeOptimisticChats(items));
         setNotice("");
         setHistoryStatus("ready");
       })
@@ -146,7 +174,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       });
 
     return () => controller.abort();
-  }, [api, navigation, pathname, status]);
+  }, [api, mergeOptimisticChats, navigation, pathname, status]);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -216,15 +244,37 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     [navigation],
   );
 
-  const contextValue = useMemo<Omit<ChatShellContextValue, "isSidebarOpen" | "openSidebar" | "chats" | "touchChat">>(
+  const publishChatStreamHandoff = useCallback((handoff: ChatStreamHandoff) => {
+    setChatStreamHandoff(handoff);
+  }, []);
+
+  const clearChatStreamHandoff = useCallback((sessionId: string) => {
+    setChatStreamHandoff((current) =>
+      current?.sessionId === sessionId ? undefined : current,
+    );
+  }, []);
+
+  const contextValue = useMemo<Omit<ChatShellContextValue, "isSidebarOpen" | "openSidebar" | "chats" | "touchChat" | "upsertChat">>(
     () => ({
       projects,
       defaultProjectId,
       openChat,
       refreshChats,
       refreshProjects,
+      chatStreamHandoff,
+      publishChatStreamHandoff,
+      clearChatStreamHandoff,
     }),
-    [defaultProjectId, openChat, projects, refreshChats, refreshProjects],
+    [
+      chatStreamHandoff,
+      clearChatStreamHandoff,
+      defaultProjectId,
+      openChat,
+      projects,
+      publishChatStreamHandoff,
+      refreshChats,
+      refreshProjects,
+    ],
   );
 
   const shellUser = useMemo(
@@ -265,10 +315,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       await deleteChatSession(api, sessionId);
       await refreshChats();
     } catch (mutationError) {
-      setNotice(
-        mutationError instanceof Error ? mutationError.message : "对话删除失败",
-      );
       await refreshChats();
+      throw mutationError;
     }
   }, [api, refreshChats]);
 
@@ -347,7 +395,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         onLogout={() => void signOut()}
         onRenameChat={(sessionId, title) => void handleRenameChat(sessionId, title)}
         onTogglePinChat={(sessionId, isPinned) => void handleTogglePinChat(sessionId, isPinned)}
-        onDeleteChat={(sessionId) => void handleDeleteChat(sessionId)}
+        onDeleteChat={handleDeleteChat}
       >
         {({ chats: shellChats, isSidebarOpen, setIsSidebarOpen, setChats: setShellChats }) => (
           <ChatShellContext.Provider value={{
@@ -357,6 +405,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             openSidebar: () => setIsSidebarOpen(true),
             touchChat: (sessionId) => {
               setShellChats((current) => touchAppShellChat(current, sessionId));
+            },
+            upsertChat: (chat) => {
+              optimisticChatsRef.current.set(chat.id, chat);
+              setChats((current) => upsertAppShellChat(current, chat));
+              setShellChats((current) => upsertAppShellChat(current, chat));
             },
           }}>
             <div className="relative flex h-full w-full">

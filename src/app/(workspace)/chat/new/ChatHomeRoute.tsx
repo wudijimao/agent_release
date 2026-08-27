@@ -31,6 +31,7 @@ import {
   uploadChatAttachments,
   validateChatAttachmentFile,
 } from "@/adapters/chat-attachments";
+import { formatChatSessionDate } from "@/adapters/chat-history";
 import { resolveChatSendScope } from "@/adapters/chat-resources";
 import { createAgentSession } from "@/adapters/chat-sessions";
 import { createProject } from "@/adapters/projects";
@@ -78,9 +79,11 @@ export function ChatHomeRoute({
     isSidebarOpen,
     openChat,
     openSidebar,
+    publishChatStreamHandoff,
     projects,
     refreshChats,
     refreshProjects,
+    upsertChat,
   } = useChatShell();
   const { catalog: resourceCatalog, error: resourceError } =
     useChatResourceCatalog();
@@ -98,8 +101,13 @@ export function ChatHomeRoute({
     [projects],
   );
   const streamControllerRef = useRef<AbortController | null>(null);
+  const handedOffSessionIdRef = useRef<string | null>(null);
 
-  useEffect(() => () => streamControllerRef.current?.abort(), []);
+  useEffect(() => () => {
+    if (!handedOffSessionIdRef.current) {
+      streamControllerRef.current?.abort();
+    }
+  }, []);
 
   const runNewChat = useCallback(
     async (payload: InputSendPayload) => {
@@ -108,7 +116,7 @@ export function ChatHomeRoute({
       const targetProjectId = selectedProjectId ?? defaultProjectId;
       if (!targetProjectId) {
         setNoticeRole("alert");
-        setNotice("未能加载个人工作台，请刷新后重试");
+        setNotice("未能加载未归属项目，请刷新后重试");
         return;
       }
 
@@ -130,7 +138,7 @@ export function ChatHomeRoute({
         references: payload.references,
       });
       let uploadCompleted = payload.attachments.length === 0;
-      let hasRequestedInitialChatRefresh = false;
+      let hasStagedCreatedChat = false;
       setStreamState(nextState);
 
       try {
@@ -183,9 +191,31 @@ export function ChatHomeRoute({
           setStreamState(nextState);
           if (nextState.error) throw new Error(nextState.error);
 
-          if (nextState.sessionId && !hasRequestedInitialChatRefresh) {
-            hasRequestedInitialChatRefresh = true;
-            void refreshChats();
+          if (nextState.sessionId && !hasStagedCreatedChat) {
+            hasStagedCreatedChat = true;
+            const createdAt = new Date();
+            const updatedAt = createdAt.toISOString();
+            upsertChat({
+              id: nextState.sessionId,
+              title: "新对话",
+              date: formatChatSessionDate(updatedAt, createdAt),
+              count: 0,
+              updatedAt,
+              projectId: targetProjectId,
+            });
+            handedOffSessionIdRef.current = nextState.sessionId;
+            publishChatStreamHandoff({
+              sessionId: nextState.sessionId,
+              state: nextState,
+              isStreaming: true,
+            });
+            openChat(nextState.sessionId, { replace: true });
+          } else if (nextState.sessionId) {
+            publishChatStreamHandoff({
+              sessionId: nextState.sessionId,
+              state: nextState,
+              isStreaming: true,
+            });
           }
         }
 
@@ -198,8 +228,12 @@ export function ChatHomeRoute({
           signal: controller.signal,
         });
         setLastPayload(null);
-        await refreshChats();
-        await openChat(nextState.sessionId, { replace: true });
+        publishChatStreamHandoff({
+          sessionId: nextState.sessionId,
+          state: nextState,
+          isStreaming: false,
+        });
+        void refreshChats();
       } catch (streamError) {
         if (controller.signal.aborted) return;
         let reportedError = streamError;
@@ -213,8 +247,12 @@ export function ChatHomeRoute({
               signal: controller.signal,
             });
             setLastPayload(null);
-            await refreshChats();
-            await openChat(nextState.sessionId, { replace: true });
+            publishChatStreamHandoff({
+              sessionId: nextState.sessionId,
+              state: nextState,
+              isStreaming: false,
+            });
+            void refreshChats();
             return;
           } catch (recoveryError) {
             if (controller.signal.aborted) return;
@@ -222,9 +260,8 @@ export function ChatHomeRoute({
           }
         }
         const errorMessage = getChatStreamErrorMessage(reportedError);
-        setStreamState((current) => {
-          if (!current) return current;
-          const interrupted = interruptChatStream(current);
+        const interruptedState = (() => {
+          const interrupted = interruptChatStream(nextState);
           return uploadCompleted
             ? interrupted
             : updateLatestUserMessageAttachments(
@@ -235,7 +272,16 @@ export function ChatHomeRoute({
                   errorMessage,
                 })),
               );
-        });
+        })();
+        setStreamState(interruptedState);
+        if (interruptedState.sessionId) {
+          publishChatStreamHandoff({
+            sessionId: interruptedState.sessionId,
+            state: interruptedState,
+            isStreaming: false,
+            notice: errorMessage,
+          });
+        }
         setNotice(errorMessage);
         setNoticeRole("alert");
       } finally {
@@ -252,9 +298,11 @@ export function ChatHomeRoute({
       isStreaming,
       navigation,
       openChat,
+      publishChatStreamHandoff,
       refreshChats,
       resourceCatalog,
       selectedProjectId,
+      upsertChat,
     ],
   );
 
@@ -295,14 +343,24 @@ export function ChatHomeRoute({
       try {
         const targetProjectId = selectedProjectId ?? defaultProjectId;
         if (!targetProjectId) {
-          throw new Error("未能加载个人工作台，请刷新后重试");
+          throw new Error("未能加载未归属项目，请刷新后重试");
         }
         const created = await createAgentSession(api, {
           agentType: scenario.agentType,
           projectId: targetProjectId,
         });
-        await refreshChats();
-        await openChat(created.sessionId);
+        const createdAt = new Date();
+        const updatedAt = createdAt.toISOString();
+        upsertChat({
+          id: created.sessionId,
+          title: scenario.label,
+          date: formatChatSessionDate(updatedAt, createdAt),
+          count: 0,
+          updatedAt,
+          projectId: targetProjectId,
+        });
+        openChat(created.sessionId);
+        void refreshChats();
       } catch (createError) {
         setNoticeRole("alert");
         setNotice(
@@ -322,6 +380,7 @@ export function ChatHomeRoute({
       openChat,
       refreshChats,
       selectedProjectId,
+      upsertChat,
     ],
   );
 

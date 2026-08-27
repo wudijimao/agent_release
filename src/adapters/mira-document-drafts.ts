@@ -162,6 +162,7 @@ export function mapMiraDocumentDraftPreview(
       id: action.actionId,
       title: action.title,
       markdown: action.markdown,
+      tags: [],
       createdByName: "Helia",
       updatedByName: "Helia",
       updatedAt: "刚刚",

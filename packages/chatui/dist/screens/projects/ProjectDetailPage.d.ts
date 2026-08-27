@@ -32,7 +32,7 @@ export interface ProjectDetailPageProps {
     onDeleteConversation?(conversationId: string): void | Promise<void>;
     onCreateDocument?(): void;
     onCreateConversation?(): void;
-    onImportDocuments(files: File[]): void | Promise<void>;
+    onImportDocuments(files: File[]): void | readonly string[] | Promise<void | readonly string[]>;
     documentImportAccept?: string;
     documentImportMaxSize?: number;
     documentImportDescription?: React.ReactNode;

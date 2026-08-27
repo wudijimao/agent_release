@@ -106,13 +106,13 @@ export default function ScheduledTasksOverview({
       {
         title: '任务名称',
         dataIndex: 'name',
-        width: '20%',
+        width: '19%',
         render: (name) => <span className="truncate text-primaryText">{String(name)}</span>,
       },
       {
         title: '任务内容',
         dataIndex: 'prompt',
-        width: '40%',
+        width: '36%',
         render: (prompt) => (
           <span className="whitespace-pre-line break-all text-secondaryText">
             {buildTaskPromptPreview(String(prompt ?? ''))}
@@ -122,7 +122,7 @@ export default function ScheduledTasksOverview({
       {
         title: '下次运行',
         dataIndex: 'nextRun',
-        width: '14%',
+        width: '16%',
         render: (nextRun, task) => (
           <span>
             <span className="block text-secondaryText">{String(nextRun)}</span>
@@ -133,7 +133,7 @@ export default function ScheduledTasksOverview({
       {
         title: '触发方式',
         dataIndex: 'trigger',
-        width: '16%',
+        width: '14%',
         render: (trigger) => <span className="text-secondaryText">{String(trigger)}</span>,
       },
       {
@@ -153,7 +153,7 @@ export default function ScheduledTasksOverview({
       {
         title: '操作',
         dataIndex: 'id',
-        width: '3%',
+        width: '8%',
         align: 'right',
         render: (_, task) => {
           const actionItems: BaseActionMenuItem[] = [
@@ -260,7 +260,7 @@ export default function ScheduledTasksOverview({
                   </div>
                 )}
                 <div className="border-b border-borderGray bg-white">
-                  <BaseTable className="task-table-scroll w-full [&_table]:min-w-[940px]" columns={taskTableColumns} dataSource={tasks} rowKey="id" striped={false} loading={loading} />
+                  <BaseTable className="task-table-scroll w-full [&_table]:min-w-[1080px] [&_table]:table-fixed" columns={taskTableColumns} dataSource={tasks} rowKey="id" striped={false} loading={loading} />
                 </div>
               </div>
             ) : (

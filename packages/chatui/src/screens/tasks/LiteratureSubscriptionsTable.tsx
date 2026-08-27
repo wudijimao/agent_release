@@ -100,7 +100,7 @@ export function LiteratureSubscriptionsTable({
   return (
     <section>
       <div className="border-b border-borderGray bg-white">
-        <BaseTable className="task-table-scroll w-full [&_table]:min-w-[1080px]" columns={columns}
+        <BaseTable className="task-table-scroll w-full [&_table]:min-w-[1080px] [&_table]:table-fixed" columns={columns}
           dataSource={items} rowKey="id" striped={false} loading={loading} />
       </div>
     </section>

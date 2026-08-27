@@ -41,7 +41,7 @@ export function ChatConversationFixture() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [isTyping, setIsTyping] = useState(false);
   const [currentPath, setCurrentPath] = useState('/chat/chat-fixture');
-  const replyTimerRef = useRef<number>();
+  const replyTimerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => () => {
     if (replyTimerRef.current) window.clearTimeout(replyTimerRef.current);

@@ -21,16 +21,19 @@ import {
 import { createTable } from '@milkdown/kit/preset/gfm';
 import { trailingConfig } from '@milkdown/kit/plugin/trailing';
 import React, { useEffect, useRef, useState } from 'react';
+import { MoreHorizontal } from 'lucide-react';
 
-import { BaseButton } from '../../components/common';
+import { BaseActionMenu, BaseButton } from '../../components/common';
 import {
   ProjectDocumentAttachments,
   type ProjectDocumentAttachmentViewModel,
+  type ProjectDocumentAttachmentUploadViewModel,
 } from './ProjectDocumentAttachments';
 import {
   ProjectDocumentMetadata,
   type ProjectDocumentIndexViewModel,
 } from './ProjectDocumentMetadata';
+import { PROJECT_DOCUMENT_TAG_CANDIDATES, ProjectDocumentTagPicker } from './ProjectDocumentTagPicker';
 import markdownStyles from './ProjectDocumentMarkdown.module.css';
 import styles from './ProjectDocumentEditor.module.css';
 
@@ -58,6 +61,9 @@ const crepeTheme = {
   '--crepe-shadow-1': 'var(--chatui-shadow-sm)',
   '--crepe-shadow-2': 'var(--chatui-shadow-md)',
 } as React.CSSProperties;
+
+const DOCUMENT_TAG_OPTIONS = PROJECT_DOCUMENT_TAG_CANDIDATES.map((tag) => ({ value: tag, label: tag }));
+const DOCUMENT_TAG_OPTION_VALUES = new Set<string>(PROJECT_DOCUMENT_TAG_CANDIDATES);
 
 const addIconClass = (icon: string, className: string) =>
   icon.replace('<svg', `<svg class="${className}"`);
@@ -154,17 +160,22 @@ export interface ProjectDocumentEditorProps {
   updatedByName?: string;
   updatedAt?: string;
   index?: ProjectDocumentIndexViewModel;
+  tags?: string[];
   attachments?: ProjectDocumentAttachmentViewModel[];
+  attachmentUploads?: ProjectDocumentAttachmentUploadViewModel[];
   attachmentAccept?: string;
   attachmentUnavailableHint?: string;
   saving?: boolean;
   saveError?: string;
   layout?: 'page' | 'panel';
   showHeaderActions?: boolean;
+  showMetadata?: boolean;
+  showTags?: boolean;
   onTitleChange(title: string): void;
   onMarkdownChange(markdown: string): void;
+  onTagsChange?(tags: string[]): void;
   onDownloadAttachment?(attachmentId: string): void;
-  onUploadAttachments?(files: File[]): void | Promise<void>;
+  onUploadAttachments?(files: File[], onReady?: () => void): void | Promise<void>;
   onDeleteAttachment?(attachmentId: string): void | Promise<void>;
   onSave(): void;
   onClose(): void;
@@ -177,15 +188,20 @@ export function ProjectDocumentEditor({
   updatedByName,
   updatedAt,
   index,
+  tags = [],
   attachments = [],
+  attachmentUploads = [],
   attachmentAccept,
   attachmentUnavailableHint,
   saving = false,
   saveError,
   layout = 'page',
   showHeaderActions = true,
+  showMetadata = false,
+  showTags = true,
   onTitleChange,
   onMarkdownChange,
+  onTagsChange,
   onDownloadAttachment,
   onUploadAttachments,
   onDeleteAttachment,
@@ -199,9 +215,13 @@ export function ProjectDocumentEditor({
   const contentScrollTimerRef = useRef<number | null>(null);
   const [isContentScrolling, setIsContentScrolling] = useState(false);
   const [uploadingAttachments, setUploadingAttachments] = useState(false);
+  const [pendingAttachmentUploads, setPendingAttachmentUploads] = useState<ProjectDocumentAttachmentUploadViewModel[]>([]);
+  const [showActionMenu, setShowActionMenu] = useState(false);
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null);
   const [attachmentError, setAttachmentError] = useState('');
+  const attachmentUploadTimersRef = useRef<Record<string, number>>({});
   const contentInset = layout === 'page' ? 'px-[120px]' : 'px-6 md:px-8';
+  const visibleAttachmentUploads = attachmentUploads.length ? attachmentUploads : pendingAttachmentUploads;
 
   useEffect(() => {
     onMarkdownChangeRef.current = onMarkdownChange;
@@ -215,6 +235,10 @@ export function ProjectDocumentEditor({
     },
     [],
   );
+
+  useEffect(() => () => {
+    Object.values(attachmentUploadTimersRef.current).forEach((timer) => window.clearInterval(timer));
+  }, []);
 
   const handleContentScroll = () => {
     setIsContentScrolling(true);
@@ -1780,11 +1804,33 @@ export function ProjectDocumentEditor({
     event.target.value = '';
     if (!files.length || !onUploadAttachments) return;
 
+    const batchId = Date.now();
+    const uploads = files.map((file, index) => ({
+      id: `${batchId}-${index}-${file.name}`,
+      name: file.name,
+      progress: 0,
+    }));
+    setPendingAttachmentUploads(uploads);
+    uploads.forEach((upload) => {
+      attachmentUploadTimersRef.current[upload.id] = window.setInterval(() => {
+        setPendingAttachmentUploads((current) => current.map((item) => item.id === upload.id
+          ? { ...item, progress: Math.min(92, item.progress + Math.max(3, Math.ceil((92 - item.progress) / 5))) }
+          : item));
+      }, 180);
+    });
+
     setUploadingAttachments(true);
     setAttachmentError('');
+    const finishUploadProgress = () => {
+      Object.values(attachmentUploadTimersRef.current).forEach((timer) => window.clearInterval(timer));
+      attachmentUploadTimersRef.current = {};
+      setPendingAttachmentUploads([]);
+    };
     try {
-      await onUploadAttachments(files);
+      await onUploadAttachments(files, finishUploadProgress);
+      finishUploadProgress();
     } catch (error) {
+      finishUploadProgress();
       setAttachmentError(
         error instanceof Error ? error.message : '附件上传失败',
       );
@@ -1810,6 +1856,16 @@ export function ProjectDocumentEditor({
 
   return (
     <section className={styles.shell} aria-label="项目文档编辑器">
+      {showHeaderActions && onUploadAttachments && (
+        <input
+          ref={attachmentInputRef}
+          type="file"
+          multiple
+          accept={attachmentAccept}
+          className="hidden"
+          onChange={(event) => void handleAttachmentSelection(event)}
+        />
+      )}
       {showHeaderActions && (
         <header className={styles.header}>
           <div className={styles.headerActions}>
@@ -1831,14 +1887,29 @@ export function ProjectDocumentEditor({
             >
               {saving ? '保存中…' : '保存'}
             </BaseButton>
+            {onUploadAttachments && (
+              <BaseActionMenu
+                open={showActionMenu}
+                onOpenChange={setShowActionMenu}
+                placement="bottom-end"
+                width={140}
+                trigger={<span className="inline-flex rounded-md p-1.5 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText"><MoreHorizontal size={20} /></span>}
+                items={[{ key: 'uploadAttachment', label: uploadingAttachments ? '上传中…' : '上传附件', disabled: uploadingAttachments }]}
+                onItemClick={() => {
+                  setShowActionMenu(false);
+                  attachmentInputRef.current?.click();
+                }}
+              />
+            )}
           </div>
         </header>
       )}
 
       <div
-        className={`${styles.viewport} min-h-0 px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10`}
+        className={`${styles.viewport} min-h-0 ${showHeaderActions ? 'px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10' : 'p-0'}`}
       >
         {saveError && <div className={styles.saveError}>{saveError}</div>}
+        {attachmentError && <div className={styles.saveError}>{attachmentError}</div>}
         <div className={styles.editorCanvas}>
           <section className={`mb-4 shrink-0 ${contentInset}`}>
             <input
@@ -1848,12 +1919,31 @@ export function ProjectDocumentEditor({
               className={styles.titleInput}
               aria-label="文档标题"
             />
-            <ProjectDocumentMetadata
-              createdByName={createdByName}
-              updatedByName={updatedByName}
-              updatedAt={updatedAt}
-              index={index}
-            />
+            {showMetadata && (
+              <ProjectDocumentMetadata
+                createdByName={createdByName}
+                updatedByName={updatedByName}
+                updatedAt={updatedAt}
+                index={index}
+              />
+            )}
+            {showTags && (onTagsChange ? (
+              <div className="mt-4">
+                <ProjectDocumentTagPicker
+                  label=""
+                  options={DOCUMENT_TAG_OPTIONS}
+                  value={{
+                    optionValues: tags.filter((tag) => DOCUMENT_TAG_OPTION_VALUES.has(tag)),
+                    customTags: tags.filter((tag) => !DOCUMENT_TAG_OPTION_VALUES.has(tag)),
+                  }}
+                  onChange={(selection) => onTagsChange([...selection.optionValues, ...selection.customTags])}
+                />
+              </div>
+            ) : (
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                {tags.length ? tags.map((tag) => <span key={tag} className="inline-flex h-8 items-center rounded-md bg-bgLight px-2.5 text-sm text-secondaryText">{tag}</span>) : <span className="text-xs text-tertiaryText">暂无标签</span>}
+              </div>
+            ))}
             <div className="mt-4 h-px bg-lineSubtle" />
           </section>
 
@@ -1867,35 +1957,19 @@ export function ProjectDocumentEditor({
               style={crepeTheme}
             />
 
-            {onUploadAttachments && (
-              <input
-                ref={attachmentInputRef}
-                type="file"
-                multiple
-                accept={attachmentAccept}
-                className="hidden"
-                onChange={(event) => void handleAttachmentSelection(event)}
-              />
-            )}
-            <ProjectDocumentAttachments
+            {(attachments.length > 0 || visibleAttachmentUploads.length > 0) && <ProjectDocumentAttachments
               attachments={attachments}
+              uploads={visibleAttachmentUploads}
               className={`${layout === 'page' ? 'mx-[120px]' : 'mx-6 md:mx-8'} mb-6 mt-8 border-t border-lineSubtle pt-6`}
-              uploading={uploadingAttachments}
               deletingAttachmentId={deletingAttachmentId}
               unavailableHint={attachmentUnavailableHint}
-              error={attachmentError}
               onDownloadAttachment={onDownloadAttachment}
-              onRequestUpload={
-                onUploadAttachments
-                  ? () => attachmentInputRef.current?.click()
-                  : undefined
-              }
               onDeleteAttachment={
                 onDeleteAttachment
                   ? (attachmentId) => void handleDeleteAttachment(attachmentId)
                   : undefined
               }
-            />
+            />}
           </section>
         </div>
       </div>

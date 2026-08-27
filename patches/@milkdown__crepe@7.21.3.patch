@@ -1,0 +1,1052 @@
+diff --git a/lib/cjs/feature/block-edit/index.js b/lib/cjs/feature/block-edit/index.js
+index c96e6119af47097729d42934350e1f8896c30314..fc1742d3f91bd8cbd648606bbae018338068375b 100644
+--- a/lib/cjs/feature/block-edit/index.js
++++ b/lib/cjs/feature/block-edit/index.js
+@@ -479,7 +479,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const paragraph = commonmark.paragraphSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: paragraph
+           });
+@@ -493,7 +493,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -510,7 +510,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -527,7 +527,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -544,7 +544,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -561,7 +561,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -578,7 +578,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -595,7 +595,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const blockquote = commonmark.blockquoteSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: blockquote
+           });
+@@ -609,7 +609,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const hr = commonmark.hrSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: hr
+           });
+@@ -629,7 +629,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const bulletList = commonmark.bulletListSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: bulletList
+           });
+@@ -643,7 +643,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const orderedList = commonmark.orderedListSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: orderedList
+           });
+@@ -657,7 +657,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const listItem = commonmark.listItemSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: listItem,
+             attrs: { checked: false }
+@@ -678,7 +678,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const imageBlock$1 = imageBlock.imageBlockSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: imageBlock$1
+           });
+@@ -692,7 +692,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const codeBlock = commonmark.codeBlockSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: codeBlock
+           });
+@@ -706,7 +706,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const view = ctx2.get(core.editorViewCtx);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           const { from } = view.state.selection;
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: gfm.createTable(ctx2, 3, 3)
+@@ -724,7 +724,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const codeBlock = commonmark.codeBlockSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: codeBlock,
+             attrs: { language: "LaTeX" }
+@@ -990,6 +990,11 @@ class MenuView {
+       content: __privateGet$1(this, _content$1),
+       debounce: 20,
+       shouldShow(view2) {
++        const pos = __privateGet$1(self, _programmaticallyPos);
++        if (typeof pos === "number") {
++          filter.value = "";
++          return true;
++        }
+         if (isInCodeBlock(view2.state.selection) || isInList(view2.state.selection))
+           return false;
+         const currentText = this.getContent(
+@@ -1000,17 +1005,7 @@ class MenuView {
+         if (!isSelectionAtEndOfNode(view2.state.selection)) {
+           return false;
+         }
+-        const pos = __privateGet$1(self, _programmaticallyPos);
+         filter.value = currentText.startsWith("/") ? currentText.slice(1) : currentText;
+-        if (typeof pos === "number") {
+-          const maxSize = view2.state.doc.nodeSize - 2;
+-          const validPos = Math.min(pos, maxSize);
+-          if (view2.state.doc.resolve(validPos).node() !== view2.state.doc.resolve(view2.state.selection.from).node()) {
+-            __privateSet$1(self, _programmaticallyPos, null);
+-            return false;
+-          }
+-          return true;
+-        }
+         if (!currentText.startsWith("/")) return false;
+         return true;
+       },
+@@ -1116,6 +1111,22 @@ class BlockHandleView {
+       const active = __privateGet(this, _provider).active;
+       if (!active) return;
+       const $pos = active.$pos;
++      if (config == null ? void 0 : config.addOnCurrentBlock) {
++        let pos2 = $pos.pos + 1;
++        if (!active.node.isTextblock) {
++          active.node.descendants((node, relativePos) => {
++            if (!node.isTextblock) return true;
++            pos2 = $pos.pos + relativePos + 2;
++            return false;
++          });
++        }
++        pos2 = Math.min(pos2, state$1.doc.content.size);
++        const tr2 = state$1.tr.setSelection(state.TextSelection.near(state$1.doc.resolve(pos2)));
++        dispatch(tr2.scrollIntoView());
++        __privateGet(this, _provider).hide();
++        ctx.get(menuAPI.key).show(tr2.selection.from);
++        return;
++      }
+       const pos = $pos.pos + active.node.nodeSize;
+       let tr = state$1.tr.insert(pos, commonmark.paragraphSchema.type(ctx).create());
+       tr = tr.setSelection(state.TextSelection.near(tr.doc.resolve(pos)));
+diff --git a/lib/cjs/index.js b/lib/cjs/index.js
+index a22e17f22585210ae39166cfea9186644a4c06d3..9d1e952a5c0fff5026ed4df52f54981760e62c99 100644
+--- a/lib/cjs/index.js
++++ b/lib/cjs/index.js
+@@ -2241,7 +2241,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const paragraph = commonmark.paragraphSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: paragraph
+           });
+@@ -2255,7 +2255,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2272,7 +2272,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2289,7 +2289,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2306,7 +2306,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2323,7 +2323,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2340,7 +2340,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const heading = commonmark.headingSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2357,7 +2357,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const blockquote = commonmark.blockquoteSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: blockquote
+           });
+@@ -2371,7 +2371,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const hr = commonmark.hrSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: hr
+           });
+@@ -2391,7 +2391,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const bulletList = commonmark.bulletListSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: bulletList
+           });
+@@ -2405,7 +2405,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const orderedList = commonmark.orderedListSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: orderedList
+           });
+@@ -2419,7 +2419,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const listItem = commonmark.listItemSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.wrapInBlockTypeCommand.key, {
+             nodeType: listItem,
+             attrs: { checked: false }
+@@ -2440,7 +2440,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const imageBlock = imageBlock$1.imageBlockSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: imageBlock
+           });
+@@ -2454,7 +2454,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const codeBlock = commonmark.codeBlockSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.setBlockTypeCommand.key, {
+             nodeType: codeBlock
+           });
+@@ -2468,7 +2468,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const view = ctx2.get(core.editorViewCtx);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           const { from } = view.state.selection;
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: gfm.createTable(ctx2, 3, 3)
+@@ -2486,7 +2486,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(core.commandsCtx);
+           const codeBlock = commonmark.codeBlockSchema.type(ctx2);
+-          commands.call(commonmark.clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(commonmark.clearTextInCurrentBlockCommand.key);
+           commands.call(commonmark.addBlockTypeCommand.key, {
+             nodeType: codeBlock,
+             attrs: { language: "LaTeX" }
+@@ -2752,6 +2752,11 @@ class MenuView {
+       content: __privateGet$5(this, _content$3),
+       debounce: 20,
+       shouldShow(view2) {
++        const pos = __privateGet$5(self, _programmaticallyPos);
++        if (typeof pos === "number") {
++          filter.value = "";
++          return true;
++        }
+         if (isInCodeBlock(view2.state.selection) || isInList(view2.state.selection))
+           return false;
+         const currentText = this.getContent(
+@@ -2762,17 +2767,7 @@ class MenuView {
+         if (!isSelectionAtEndOfNode(view2.state.selection)) {
+           return false;
+         }
+-        const pos = __privateGet$5(self, _programmaticallyPos);
+         filter.value = currentText.startsWith("/") ? currentText.slice(1) : currentText;
+-        if (typeof pos === "number") {
+-          const maxSize = view2.state.doc.nodeSize - 2;
+-          const validPos = Math.min(pos, maxSize);
+-          if (view2.state.doc.resolve(validPos).node() !== view2.state.doc.resolve(view2.state.selection.from).node()) {
+-            __privateSet$5(self, _programmaticallyPos, null);
+-            return false;
+-          }
+-          return true;
+-        }
+         if (!currentText.startsWith("/")) return false;
+         return true;
+       },
+@@ -2878,6 +2873,22 @@ class BlockHandleView {
+       const active = __privateGet$4(this, _provider$1).active;
+       if (!active) return;
+       const $pos = active.$pos;
++      if (config == null ? void 0 : config.addOnCurrentBlock) {
++        let pos2 = $pos.pos + 1;
++        if (!active.node.isTextblock) {
++          active.node.descendants((node, relativePos) => {
++            if (!node.isTextblock) return true;
++            pos2 = $pos.pos + relativePos + 2;
++            return false;
++          });
++        }
++        pos2 = Math.min(pos2, state$1.doc.content.size);
++        const tr2 = state$1.tr.setSelection(state.TextSelection.near(state$1.doc.resolve(pos2)));
++        dispatch(tr2.scrollIntoView());
++        __privateGet$4(this, _provider$1).hide();
++        ctx.get(menuAPI.key).show(tr2.selection.from);
++        return;
++      }
+       const pos = $pos.pos + active.node.nodeSize;
+       let tr = state$1.tr.insert(pos, commonmark.paragraphSchema.type(ctx).create());
+       tr = tr.setSelection(state.TextSelection.near(tr.doc.resolve(pos)));
+diff --git a/lib/esm/feature/block-edit/index.js b/lib/esm/feature/block-edit/index.js
+index 9c2c10919aadb63591f5287f6d0d1ed059968748..ae2e25154d63d3e913fd115b3af2bb2bc21b1eba 100644
+--- a/lib/esm/feature/block-edit/index.js
++++ b/lib/esm/feature/block-edit/index.js
+@@ -477,7 +477,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const paragraph = paragraphSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: paragraph
+           });
+@@ -491,7 +491,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -508,7 +508,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -525,7 +525,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -542,7 +542,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -559,7 +559,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -576,7 +576,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -593,7 +593,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const blockquote = blockquoteSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: blockquote
+           });
+@@ -607,7 +607,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const hr = hrSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: hr
+           });
+@@ -627,7 +627,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const bulletList = bulletListSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: bulletList
+           });
+@@ -641,7 +641,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const orderedList = orderedListSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: orderedList
+           });
+@@ -655,7 +655,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const listItem = listItemSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: listItem,
+             attrs: { checked: false }
+@@ -676,7 +676,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const imageBlock = imageBlockSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: imageBlock
+           });
+@@ -690,7 +690,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const codeBlock = codeBlockSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: codeBlock
+           });
+@@ -704,7 +704,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const view = ctx2.get(editorViewCtx);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           const { from } = view.state.selection;
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: createTable(ctx2, 3, 3)
+@@ -722,7 +722,7 @@ function getGroups(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const codeBlock = codeBlockSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: codeBlock,
+             attrs: { language: "LaTeX" }
+@@ -988,6 +988,11 @@ class MenuView {
+       content: __privateGet$1(this, _content$1),
+       debounce: 20,
+       shouldShow(view2) {
++        const pos = __privateGet$1(self, _programmaticallyPos);
++        if (typeof pos === "number") {
++          filter.value = "";
++          return true;
++        }
+         if (isInCodeBlock(view2.state.selection) || isInList(view2.state.selection))
+           return false;
+         const currentText = this.getContent(
+@@ -998,17 +1003,7 @@ class MenuView {
+         if (!isSelectionAtEndOfNode(view2.state.selection)) {
+           return false;
+         }
+-        const pos = __privateGet$1(self, _programmaticallyPos);
+         filter.value = currentText.startsWith("/") ? currentText.slice(1) : currentText;
+-        if (typeof pos === "number") {
+-          const maxSize = view2.state.doc.nodeSize - 2;
+-          const validPos = Math.min(pos, maxSize);
+-          if (view2.state.doc.resolve(validPos).node() !== view2.state.doc.resolve(view2.state.selection.from).node()) {
+-            __privateSet$1(self, _programmaticallyPos, null);
+-            return false;
+-          }
+-          return true;
+-        }
+         if (!currentText.startsWith("/")) return false;
+         return true;
+       },
+@@ -1114,6 +1109,22 @@ class BlockHandleView {
+       const active = __privateGet(this, _provider).active;
+       if (!active) return;
+       const $pos = active.$pos;
++      if (config == null ? void 0 : config.addOnCurrentBlock) {
++        let pos2 = $pos.pos + 1;
++        if (!active.node.isTextblock) {
++          active.node.descendants((node, relativePos) => {
++            if (!node.isTextblock) return true;
++            pos2 = $pos.pos + relativePos + 2;
++            return false;
++          });
++        }
++        pos2 = Math.min(pos2, state.doc.content.size);
++        const tr2 = state.tr.setSelection(TextSelection.near(state.doc.resolve(pos2)));
++        dispatch(tr2.scrollIntoView());
++        __privateGet(this, _provider).hide();
++        ctx.get(menuAPI.key).show(tr2.selection.from);
++        return;
++      }
+       const pos = $pos.pos + active.node.nodeSize;
+       let tr = state.tr.insert(pos, paragraphSchema.type(ctx).create());
+       tr = tr.setSelection(TextSelection.near(tr.doc.resolve(pos)));
+diff --git a/lib/esm/index.js b/lib/esm/index.js
+index 831ee397eefd8ca0da3c557fc3be5dcf55167edc..0ae7f379b2a0446e24b6d4d684c9ec8cad995ce9 100644
+--- a/lib/esm/index.js
++++ b/lib/esm/index.js
+@@ -2239,7 +2239,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const paragraph = paragraphSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: paragraph
+           });
+@@ -2253,7 +2253,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2270,7 +2270,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2287,7 +2287,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2304,7 +2304,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2321,7 +2321,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2338,7 +2338,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const heading = headingSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -2355,7 +2355,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const blockquote = blockquoteSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: blockquote
+           });
+@@ -2369,7 +2369,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const hr = hrSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: hr
+           });
+@@ -2389,7 +2389,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const bulletList = bulletListSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: bulletList
+           });
+@@ -2403,7 +2403,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const orderedList = orderedListSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: orderedList
+           });
+@@ -2417,7 +2417,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const listItem = listItemSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: listItem,
+             attrs: { checked: false }
+@@ -2438,7 +2438,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const imageBlock = imageBlockSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: imageBlock
+           });
+@@ -2452,7 +2452,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const codeBlock = codeBlockSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: codeBlock
+           });
+@@ -2466,7 +2466,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const view = ctx2.get(editorViewCtx);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           const { from } = view.state.selection;
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: createTable(ctx2, 3, 3)
+@@ -2484,7 +2484,7 @@ function getGroups$2(filter, config, ctx) {
+         onRun: (ctx2) => {
+           const commands = ctx2.get(commandsCtx);
+           const codeBlock = codeBlockSchema.type(ctx2);
+-          commands.call(clearTextInCurrentBlockCommand.key);
++          if (!(config == null ? void 0 : config.preserveCurrentBlockContent)) commands.call(clearTextInCurrentBlockCommand.key);
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: codeBlock,
+             attrs: { language: "LaTeX" }
+@@ -2750,6 +2750,11 @@ class MenuView {
+       content: __privateGet$5(this, _content$3),
+       debounce: 20,
+       shouldShow(view2) {
++        const pos = __privateGet$5(self, _programmaticallyPos);
++        if (typeof pos === "number") {
++          filter.value = "";
++          return true;
++        }
+         if (isInCodeBlock(view2.state.selection) || isInList(view2.state.selection))
+           return false;
+         const currentText = this.getContent(
+@@ -2760,17 +2765,7 @@ class MenuView {
+         if (!isSelectionAtEndOfNode(view2.state.selection)) {
+           return false;
+         }
+-        const pos = __privateGet$5(self, _programmaticallyPos);
+         filter.value = currentText.startsWith("/") ? currentText.slice(1) : currentText;
+-        if (typeof pos === "number") {
+-          const maxSize = view2.state.doc.nodeSize - 2;
+-          const validPos = Math.min(pos, maxSize);
+-          if (view2.state.doc.resolve(validPos).node() !== view2.state.doc.resolve(view2.state.selection.from).node()) {
+-            __privateSet$5(self, _programmaticallyPos, null);
+-            return false;
+-          }
+-          return true;
+-        }
+         if (!currentText.startsWith("/")) return false;
+         return true;
+       },
+@@ -2876,6 +2871,22 @@ class BlockHandleView {
+       const active = __privateGet$4(this, _provider$1).active;
+       if (!active) return;
+       const $pos = active.$pos;
++      if (config == null ? void 0 : config.addOnCurrentBlock) {
++        let pos2 = $pos.pos + 1;
++        if (!active.node.isTextblock) {
++          active.node.descendants((node, relativePos) => {
++            if (!node.isTextblock) return true;
++            pos2 = $pos.pos + relativePos + 2;
++            return false;
++          });
++        }
++        pos2 = Math.min(pos2, state.doc.content.size);
++        const tr2 = state.tr.setSelection(TextSelection.near(state.doc.resolve(pos2)));
++        dispatch(tr2.scrollIntoView());
++        __privateGet$4(this, _provider$1).hide();
++        ctx.get(menuAPI.key).show(tr2.selection.from);
++        return;
++      }
+       const pos = $pos.pos + active.node.nodeSize;
+       let tr = state.tr.insert(pos, paragraphSchema.type(ctx).create());
+       tr = tr.setSelection(TextSelection.near(tr.doc.resolve(pos)));
+diff --git a/lib/types/feature/block-edit/index.d.ts b/lib/types/feature/block-edit/index.d.ts
+index e089f289eddf219db498a2d6406e93130fbd98ab..d600d5d040b256c325bf38918030b805eb7386f0 100644
+--- a/lib/types/feature/block-edit/index.d.ts
++++ b/lib/types/feature/block-edit/index.d.ts
+@@ -6,6 +6,8 @@ import type { SlashMenuItem } from './menu/utils';
+ interface BlockEditConfig {
+     handleAddIcon: string;
+     handleDragIcon: string;
++    addOnCurrentBlock: boolean;
++    preserveCurrentBlockContent: boolean;
+     buildMenu: (builder: GroupBuilder<SlashMenuItem>) => void;
+     blockHandle: Pick<BlockProviderOptions, 'shouldShow' | 'getOffset' | 'getPosition' | 'getPlacement' | 'middleware' | 'floatingUIOptions' | 'root'>;
+     textGroup: {
+diff --git a/src/feature/block-edit/handle/index.ts b/src/feature/block-edit/handle/index.ts
+index 28a80af28f1ff15e122f3cf59f3d399867fbfd81..f9cadbfba9c0c4451245be50a4e35fe179748c9d 100644
+--- a/src/feature/block-edit/handle/index.ts
++++ b/src/feature/block-edit/handle/index.ts
+@@ -86,6 +86,24 @@ class BlockHandleView implements PluginView {
+     if (!active) return
+ 
+     const $pos = active.$pos
++    if (config?.addOnCurrentBlock) {
++      let pos = $pos.pos + 1
++      if (!active.node.isTextblock) {
++        active.node.descendants((node, relativePos) => {
++          if (!node.isTextblock) return true
++          pos = $pos.pos + relativePos + 2
++          return false
++        })
++      }
++      pos = Math.min(pos, state.doc.content.size)
++      const tr = state.tr.setSelection(TextSelection.near(state.doc.resolve(pos)))
++      dispatch(tr.scrollIntoView())
++
++      this.#provider.hide()
++      ctx.get(menuAPI.key).show(tr.selection.from)
++      return
++    }
++
+     const pos = $pos.pos + active.node.nodeSize
+     let tr = state.tr.insert(pos, paragraphSchema.type(ctx).create())
+     tr = tr.setSelection(TextSelection.near(tr.doc.resolve(pos)))
+diff --git a/src/feature/block-edit/index.ts b/src/feature/block-edit/index.ts
+index 528a3641f84f270c9aacae60101a8048aaf85afc..55c845acb3ad925a949d4ea93e94d8205eca71fe 100644
+--- a/src/feature/block-edit/index.ts
++++ b/src/feature/block-edit/index.ts
+@@ -13,6 +13,8 @@ import { configureMenu, menu, menuAPI } from './menu'
+ interface BlockEditConfig {
+   handleAddIcon: string
+   handleDragIcon: string
++  addOnCurrentBlock: boolean
++  preserveCurrentBlockContent: boolean
+   buildMenu: (builder: GroupBuilder<SlashMenuItem>) => void
+ 
+   blockHandle: Pick<
+diff --git a/src/feature/block-edit/menu/config.ts b/src/feature/block-edit/menu/config.ts
+index 150aab494d8f0b6103f5404c56fcd62ba7f3e6c6..0bfe86f99ee31a6d300f525b830974ab258a7e87 100644
+--- a/src/feature/block-edit/menu/config.ts
++++ b/src/feature/block-edit/menu/config.ts
+@@ -68,7 +68,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const paragraph = paragraphSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: paragraph,
+           })
+@@ -84,7 +84,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const heading = headingSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -103,7 +103,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const heading = headingSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -122,7 +122,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const heading = headingSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -141,7 +141,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const heading = headingSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -160,7 +160,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const heading = headingSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -179,7 +179,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const heading = headingSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: heading,
+             attrs: {
+@@ -198,7 +198,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const blockquote = blockquoteSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: blockquote,
+           })
+@@ -214,7 +214,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const hr = hrSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: hr,
+           })
+@@ -236,7 +236,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const bulletList = bulletListSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: bulletList,
+           })
+@@ -252,7 +252,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const orderedList = orderedListSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: orderedList,
+           })
+@@ -268,7 +268,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const listItem = listItemSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(wrapInBlockTypeCommand.key, {
+             nodeType: listItem,
+             attrs: { checked: false },
+@@ -292,7 +292,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const imageBlock = imageBlockSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: imageBlock,
+           })
+@@ -308,7 +308,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const codeBlock = codeBlockSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(setBlockTypeCommand.key, {
+             nodeType: codeBlock,
+           })
+@@ -324,7 +324,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const view = ctx.get(editorViewCtx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+ 
+           // record the position before the table is inserted
+           const { from } = view.state.selection
+@@ -347,7 +347,7 @@ export function getGroups(
+           const commands = ctx.get(commandsCtx)
+           const codeBlock = codeBlockSchema.type(ctx)
+ 
+-          commands.call(clearTextInCurrentBlockCommand.key)
++          if (!config?.preserveCurrentBlockContent) commands.call(clearTextInCurrentBlockCommand.key)
+           commands.call(addBlockTypeCommand.key, {
+             nodeType: codeBlock,
+             attrs: { language: 'LaTeX' },
+diff --git a/src/feature/block-edit/menu/index.ts b/src/feature/block-edit/menu/index.ts
+index 7b133fe81d4dfea0e31667c9f7e50105b20c30e5..2327989f5d5fb0ed3850b62299b26de6e43549c3 100644
+--- a/src/feature/block-edit/menu/index.ts
++++ b/src/feature/block-edit/menu/index.ts
+@@ -70,6 +70,12 @@ class MenuView implements PluginView {
+       content: this.#content,
+       debounce: 20,
+       shouldShow(this: SlashProvider, view: EditorView) {
++        const pos = self.#programmaticallyPos
++        if (typeof pos === 'number') {
++          filter.value = ''
++          return true
++        }
++
+         if (
+           isInCodeBlock(view.state.selection) ||
+           isInList(view.state.selection)
+@@ -86,27 +92,10 @@ class MenuView implements PluginView {
+           return false
+         }
+ 
+-        const pos = self.#programmaticallyPos
+-
+         filter.value = currentText.startsWith('/')
+           ? currentText.slice(1)
+           : currentText
+ 
+-        if (typeof pos === 'number') {
+-          const maxSize = view.state.doc.nodeSize - 2
+-          const validPos = Math.min(pos, maxSize)
+-          if (
+-            view.state.doc.resolve(validPos).node() !==
+-            view.state.doc.resolve(view.state.selection.from).node()
+-          ) {
+-            self.#programmaticallyPos = null
+-
+-            return false
+-          }
+-
+-          return true
+-        }
+-
+         if (!currentText.startsWith('/')) return false
+ 
+         return true

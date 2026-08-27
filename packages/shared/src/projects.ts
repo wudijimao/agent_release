@@ -107,6 +107,7 @@ export interface ProjectKnowledgeSummary {
   sourceKbNodeId?: string | null;
   sourceLinkId?: string | null;
   sourceKind?: ProjectKnowledgeSourceKind | null;
+  tags?: string[];
   updatedAt: string;
   createdAt: string;
 }

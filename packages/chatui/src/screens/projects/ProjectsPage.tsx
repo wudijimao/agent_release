@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Menu, Plus } from 'lucide-react';
+import React, { useCallback, useRef, useState } from 'react';
+import { LayoutTemplate, Menu, Plus } from 'lucide-react';
 import { BaseButton, BaseInput, BaseModal } from '../../components/common';
+import { ProjectDocumentTemplateCard, type ProjectDocumentTemplateCardViewModel } from './ProjectDocumentTemplateCard';
 
 export interface ProjectListItemViewModel extends Record<string, unknown> {
   id: string;
@@ -15,6 +16,8 @@ export interface CreateProjectViewModel {
   description: string;
 }
 
+export type ProjectTemplateListItemViewModel = ProjectDocumentTemplateCardViewModel;
+
 export interface ProjectsPageProps {
   projects: ProjectListItemViewModel[];
   isSidebarOpen: boolean;
@@ -23,6 +26,15 @@ export interface ProjectsPageProps {
   onOpenSidebar(): void;
   onOpenProject(projectId: string): void;
   onCreateProject(input: CreateProjectViewModel): void | Promise<void>;
+  templates?: ProjectTemplateListItemViewModel[];
+  templatesLoading?: boolean;
+  templatesError?: string;
+  templatesVisible?: boolean;
+  onTemplatesVisibleChange?(visible: boolean): void;
+  onOpenTemplates?(): void;
+  onRetryTemplates?(): void;
+  onOpenTemplate?(templateId: string): void;
+  onCreateTemplate?(): void;
   onRetry?(): void;
 }
 
@@ -34,6 +46,15 @@ export function ProjectsPage({
   onOpenSidebar,
   onOpenProject,
   onCreateProject,
+  templates = [],
+  templatesLoading = false,
+  templatesError = '',
+  templatesVisible,
+  onTemplatesVisibleChange,
+  onOpenTemplates,
+  onRetryTemplates,
+  onOpenTemplate,
+  onCreateTemplate,
   onRetry,
 }: ProjectsPageProps) {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -41,6 +62,12 @@ export function ProjectsPage({
   const [projectDescription, setProjectDescription] = useState('');
   const [createError, setCreateError] = useState('');
   const [creating, setCreating] = useState(false);
+  const [uncontrolledTemplatesVisible, setUncontrolledTemplatesVisible] = useState(false);
+  const templatesScrollTopRef = useRef(0);
+  const showTemplatesModal = templatesVisible ?? uncontrolledTemplatesVisible;
+  const setTemplatesScrollElement = useCallback((element: HTMLDivElement | null) => {
+    if (element) element.scrollTop = templatesScrollTopRef.current;
+  }, []);
 
   const openCreateModal = () => {
     setProjectName('');
@@ -75,6 +102,15 @@ export function ProjectsPage({
       setCreating(false);
     }
   };
+  const openTemplates = () => {
+    if (templatesVisible === undefined) setUncontrolledTemplatesVisible(true);
+    onTemplatesVisibleChange?.(true);
+    onOpenTemplates?.();
+  };
+  const closeTemplates = () => {
+    if (templatesVisible === undefined) setUncontrolledTemplatesVisible(false);
+    onTemplatesVisibleChange?.(false);
+  };
 
   return (
     <div className="flex h-full w-full flex-col bg-white">
@@ -89,9 +125,10 @@ export function ProjectsPage({
             <span className="font-medium text-primaryText">项目</span>
           </div>
         </div>
-        <BaseButton type="primary" size="small" rounded="large" icon={<Plus size={14} />} className="shrink-0" onClick={openCreateModal}>
-          创建新项目
-        </BaseButton>
+        <div className="flex shrink-0 items-center gap-2">
+          {onOpenTemplates && <BaseButton type="secondary" size="small" rounded="large" icon={<LayoutTemplate size={14} />} onClick={openTemplates}>文档模板</BaseButton>}
+          <BaseButton type="primary" size="small" rounded="large" icon={<Plus size={14} />} onClick={openCreateModal}>创建新项目</BaseButton>
+        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10">
@@ -128,7 +165,7 @@ export function ProjectsPage({
         </div>
       </div>
 
-      <BaseModal visible={showCreateModal} title="创建新项目" width={560} maskClosable={false}
+      <BaseModal visible={showCreateModal} title="创建新项目" width={560}
         okText={creating ? '创建中…' : '创建'} cancelText="取消" onCancel={closeCreateModal} onConfirm={() => void submitProject()}
         okButtonProps={{ disabled: creating }} bodyClassName="!px-6 !py-5">
         <div className="space-y-4">
@@ -145,6 +182,31 @@ export function ProjectsPage({
           {createError && <div role="alert" className="text-sm text-danger">{createError}</div>}
         </div>
       </BaseModal>
+
+      <BaseModal
+        visible={showTemplatesModal}
+        title="项目模板"
+        width={1040}
+        footer={null}
+        onCancel={closeTemplates}
+        bodyClassName="!h-[720px] !overflow-hidden !p-0"
+      >
+        <div className="flex h-full min-h-0 flex-col px-6 py-5">
+          <div
+            ref={setTemplatesScrollElement}
+            onScroll={(event) => { templatesScrollTopRef.current = event.currentTarget.scrollTop; }}
+            className="min-h-0 flex-1 overflow-y-auto"
+          >
+            {templatesLoading ? <div className="py-16 text-center text-sm text-tertiaryText">正在加载模板…</div> : templatesError ? <div className="rounded-lg border border-danger bg-danger-soft p-4 text-sm text-danger">{templatesError}{onRetryTemplates && <button type="button" className="ml-3 font-medium underline" onClick={onRetryTemplates}>重新加载</button>}</div> : (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {onCreateTemplate && <ProjectDocumentTemplateCard create onOpen={onCreateTemplate} />}
+                {templates.map((template) => <ProjectDocumentTemplateCard key={template.id} template={template} onOpen={() => onOpenTemplate?.(template.id)} />)}
+              </div>
+            )}
+          </div>
+        </div>
+      </BaseModal>
+
     </div>
   );
 }

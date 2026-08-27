@@ -32,6 +32,7 @@ const node: KbNodeDetail = {
   content: {
     type: "kb-doc",
     version: 2,
+    properties: { tags: ["实验目标"] },
     content: [
       { id: "h1", type: "heading", props: { level: 2 }, content: "实验目的" },
       {
@@ -234,6 +235,7 @@ test("document detail mapper exposes only preview data", () => {
   assert.equal(result.createdByName, "王平");
   assert.equal(result.updatedByName, "李华");
   assert.equal(result.updatedAt, "2026.06.02 10:20");
+  assert.deepEqual(result.tags, ["实验目标"]);
   assert.equal(result.attachments[0]?.status, "ready");
   assert.equal(result.attachments[0]?.sizeLabel, "2 KB");
   assert.equal(result.attachments[1]?.status, "ready");
@@ -256,6 +258,7 @@ test("document update sends the Wiki2 node contract", async () => {
       kbNodeId: "node / 1",
       title: "更新后的标题",
       markdown: "# 更新后的标题\n\n正文",
+      tags: ["结果验证"],
     },
   );
 
@@ -263,11 +266,12 @@ test("document update sends the Wiki2 node contract", async () => {
   const body = calls[0]?.body as {
     title: string;
     changeSummary: string;
-    content: { type: string; content: Array<{ type: string; content?: string }> };
+    content: { type: string; properties: { tags: string[] }; content: Array<{ type: string; content?: string }> };
   };
   assert.equal(body.title, "更新后的标题");
   assert.equal(body.changeSummary, "编辑项目文档");
   assert.equal(body.content.type, "kb-doc");
+  assert.deepEqual(body.content.properties.tags, ["结果验证"]);
   assert.deepEqual(
     body.content.content.map((block) => [block.type, block.content]),
     [

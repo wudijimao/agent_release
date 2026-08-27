@@ -63,12 +63,27 @@
     box-shadow: var(--chatui-shadow-md);
   }
 
-  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-selected:not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
-    background: var(--chatui-color-brand-primary);
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-selected:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
+    color: var(--chatui-color-static-white) !important;
+    background: var(--chatui-color-brand-primary) !important;
   }
 
-  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-in-range:not(.ant-picker-cell-disabled)::before {
-    background: var(--chatui-color-brand-primary-soft);
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-in-range:not(.ant-picker-cell-disabled)::before,
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-disabled)::before,
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-disabled)::before {
+    background: var(--chatui-color-brand-primary-soft) !important;
+  }
+
+  .task-period-picker-popup .ant-picker-cell-in-view.ant-picker-cell-today:not(.ant-picker-cell-disabled) .ant-picker-cell-inner::before {
+    border-color: var(--chatui-color-brand-primary) !important;
+  }
+
+  .task-run-time-picker-popup .ant-picker-time-panel-cell-selected:not(.ant-picker-time-panel-cell-disabled) .ant-picker-time-panel-cell-inner {
+    color: var(--chatui-color-brand-primary) !important;
+    background: var(--chatui-color-brand-primary-soft-strong) !important;
+    font-weight: 500;
   }
 
   .task-repeat-cascader-popup .ant-cascader-menu-item-expand-icon { display: none; }
@@ -313,6 +328,7 @@
   --chatui-color-auth-toast-surface: #ffffffe6;
   --chatui-color-auth-toast-border: #f3f4f6;
   --chatui-color-auth-toast-text: #1f2937;
+  --chatui-color-toast-overlay: #000000b3;
   --chatui-color-auth-particle-active: #14b886e6;
   --chatui-color-auth-particle-idle: #14b88666;
   --chatui-color-auth-particle-line: #14b886;

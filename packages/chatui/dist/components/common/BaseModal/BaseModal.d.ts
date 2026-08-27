@@ -15,6 +15,7 @@ export interface BaseModalProps {
     okButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
     cancelButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
     onConfirm?: () => void | Promise<void>;
+    onDisabledConfirm?: () => void;
     onCancel?: () => void;
     onClose?: () => void;
     onOk?: () => void | Promise<void>;

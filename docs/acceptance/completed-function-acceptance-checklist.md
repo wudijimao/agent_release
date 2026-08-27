@@ -6,7 +6,7 @@
 - 主仓库基线：`67b2333`
 - 正式前端：`packages/nextjs`
 - 共享 UI：`@bioagent/chatui`
-- 服务端默认地址：`http://39.106.18.219`
+- 服务端默认地址：`https://helialab.cn`
 - 发布仓库：`agent_release`
 - 推荐验收浏览器：Chrome 111+
 

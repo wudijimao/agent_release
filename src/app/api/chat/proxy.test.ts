@@ -15,7 +15,7 @@ test("resolveChatBackendUrl uses explicit configuration before the shared defaul
   );
   assert.equal(
     resolveChatBackendUrl({}),
-    "http://39.106.18.219/api/chat",
+    "https://helialab.cn/api/chat",
   );
 });
 

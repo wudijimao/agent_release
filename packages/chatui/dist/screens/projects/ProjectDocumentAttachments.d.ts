@@ -7,16 +7,20 @@ export interface ProjectDocumentAttachmentViewModel extends Record<string, unkno
     status: 'ready' | 'processing' | 'failed';
     statusLabel: string;
 }
+export interface ProjectDocumentAttachmentUploadViewModel {
+    id: string;
+    name: string;
+    progress: number;
+}
 export interface ProjectDocumentAttachmentsProps {
     attachments: ProjectDocumentAttachmentViewModel[];
+    uploads?: ProjectDocumentAttachmentUploadViewModel[];
     className?: string;
-    uploading?: boolean;
     deletingAttachmentId?: string | null;
     unavailableHint?: string;
     error?: string;
-    onRequestUpload?(): void;
     onDownloadAttachment?(attachmentId: string): void;
     onDeleteAttachment?(attachmentId: string): void;
 }
-export declare function ProjectDocumentAttachments({ attachments, className, uploading, deletingAttachmentId, unavailableHint, error, onRequestUpload, onDownloadAttachment, onDeleteAttachment, }: ProjectDocumentAttachmentsProps): React.JSX.Element;
+export declare function ProjectDocumentAttachments({ attachments, uploads, className, deletingAttachmentId, unavailableHint, error, onDownloadAttachment, onDeleteAttachment, }: ProjectDocumentAttachmentsProps): React.JSX.Element;
 //# sourceMappingURL=ProjectDocumentAttachments.d.ts.map

@@ -13,6 +13,7 @@ import {
   renameChatSession,
   setChatSessionPinned,
   touchAppShellChat,
+  upsertAppShellChat,
 } from "./chat-history";
 
 const now = new Date("2026-07-16T12:00:00+08:00");
@@ -139,6 +140,40 @@ test("touching an existing chat moves it to the newest local position", () => {
   ]);
   assert.equal(touched[0]?.date, "今天 11:45");
   assert.equal(touched[0]?.updatedAt, "2026-07-16T03:45:00.000Z");
+});
+
+test("upserting a newly created chat inserts it first without duplicates", () => {
+  const existing = {
+    id: "session-existing",
+    title: "已有对话",
+    date: "今天 10:00",
+    count: 0,
+    updatedAt: "2026-07-16T10:00:00+08:00",
+  };
+  const created = {
+    id: "session-created",
+    title: "新对话",
+    date: "今天 11:45",
+    count: 0,
+    updatedAt: "2026-07-16T11:45:00+08:00",
+    projectId: "project-1",
+  };
+
+  const inserted = upsertAppShellChat([existing], created);
+  const replaced = upsertAppShellChat(inserted, {
+    ...created,
+    title: "服务端标题",
+  });
+
+  assert.deepEqual(inserted.map((chat) => chat.id), [
+    "session-created",
+    "session-existing",
+  ]);
+  assert.deepEqual(replaced.map((chat) => chat.id), [
+    "session-created",
+    "session-existing",
+  ]);
+  assert.equal(replaced[0]?.title, "服务端标题");
 });
 
 test("chat history mutations use the agent session API", async () => {

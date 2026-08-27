@@ -1,4 +1,4 @@
-const DEFAULT_SERVER_API_URL = "http://39.106.18.219";
+const DEFAULT_SERVER_API_URL = "https://helialab.cn";
 
 export function normalizeApiBaseUrl(value: string) {
   return value.trim().replace(/\/+$/, "");

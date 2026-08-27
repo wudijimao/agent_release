@@ -17,11 +17,12 @@ import {
   ScheduledTaskDeleteModal,
   ScheduledTaskEditorModal,
   ScheduledTasksOverview,
+  BaseToast,
   type LiteratureTaskEditorValue,
   type ScheduledTaskTemplateViewModel,
 } from "@bioagent/chatui";
 import type { ScheduledTaskDto } from "@bioagent/shared";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   createScheduledTask,
@@ -89,15 +90,19 @@ export function ToolsRoute() {
   const [loadError, setLoadError] = useState("");
   const [actionError, setActionError] = useState("");
   const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
+  const [statusToast, setStatusToast] = useState("");
+  const statusToastTimerRef = useRef<number | null>(null);
   const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
   const [editorDraft, setEditorDraft] = useState<ScheduledTaskEditorDraft | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editorVisible, setEditorVisible] = useState(false);
   const [editorPending, setEditorPending] = useState(false);
   const [subscriptions, setSubscriptions] = useState<LiteratureSubscription[]>([]);
   const [literatureProjects, setLiteratureProjects] = useState<Array<{ id: string; name: string }>>([]);
   const [literatureLoading, setLiteratureLoading] = useState(true);
   const [literatureDraft, setLiteratureDraft] = useState<LiteratureTaskEditorValue | null>(null);
   const [editingSubscriptionId, setEditingSubscriptionId] = useState<string | null>(null);
+  const [literatureEditorVisible, setLiteratureEditorVisible] = useState(false);
   const [pendingLiteratureId, setPendingLiteratureId] = useState<string | null>(null);
   const [deleteSubscriptionId, setDeleteSubscriptionId] = useState<string | null>(null);
 
@@ -186,6 +191,23 @@ export function ToolsRoute() {
     [projects],
   );
 
+  const showStatusToast = useCallback((message: string) => {
+    setStatusToast(message);
+    if (statusToastTimerRef.current !== null) {
+      window.clearTimeout(statusToastTimerRef.current);
+    }
+    statusToastTimerRef.current = window.setTimeout(() => {
+      setStatusToast("");
+      statusToastTimerRef.current = null;
+    }, 2200);
+  }, []);
+
+  useEffect(() => () => {
+    if (statusToastTimerRef.current !== null) {
+      window.clearTimeout(statusToastTimerRef.current);
+    }
+  }, []);
+
   const toggleTask = async (taskId: string) => {
     const task = tasks.find((item) => item.id === taskId);
     if (!task || task.status === "running") return;
@@ -199,6 +221,9 @@ export function ToolsRoute() {
       setTasks((current) => current.map((item) => (
         item.id === taskId ? updated : item
       )));
+      showStatusToast(
+        `已成功${task.status === "active" ? "关闭" : "开启"}任务「${task.name}」`,
+      );
     } catch (error) {
       setActionError(errorMessage(error, "定时任务状态更新失败"));
     } finally {
@@ -240,6 +265,7 @@ export function ToolsRoute() {
     setActionError("");
     setEditingTaskId(null);
     setEditorDraft(draft);
+    setEditorVisible(true);
   };
 
   const openEditEditor = (taskId: string) => {
@@ -253,6 +279,7 @@ export function ToolsRoute() {
     setActionError("");
     setEditingTaskId(taskId);
     setEditorDraft(draft);
+    setEditorVisible(true);
   };
 
   const confirmEditor = async () => {
@@ -272,8 +299,7 @@ export function ToolsRoute() {
       setTasks((current) => editingTaskId
         ? current.map((task) => task.id === editingTaskId ? saved : task)
         : [...current, saved]);
-      setEditorDraft(null);
-      setEditingTaskId(null);
+      setEditorVisible(false);
 
       try {
         const refreshedTasks = await listScheduledTasks(api);
@@ -292,6 +318,7 @@ export function ToolsRoute() {
     setActionError("");
     setEditingSubscriptionId(null);
     setLiteratureDraft({ ...EMPTY_LITERATURE_SUBSCRIPTION });
+    setLiteratureEditorVisible(true);
   };
 
   const openEditLiterature = async (subscriptionId: string) => {
@@ -304,6 +331,7 @@ export function ToolsRoute() {
         await loadLiteratureSubscriptionDraft(api, subscription),
       );
       setEditingSubscriptionId(subscriptionId);
+      setLiteratureEditorVisible(true);
     } catch (error) {
       setActionError(errorMessage(error, "文献订阅信息加载失败"));
     } finally {
@@ -325,8 +353,7 @@ export function ToolsRoute() {
       } else {
         await createLiteratureSubscriptions(api, literatureDraft);
       }
-      setLiteratureDraft(null);
-      setEditingSubscriptionId(null);
+      setLiteratureEditorVisible(false);
       await loadSubscriptions();
     } catch (error) {
       setActionError(
@@ -342,6 +369,7 @@ export function ToolsRoute() {
 
   return (
     <>
+      <BaseToast visible={Boolean(statusToast)} message={statusToast} />
       <ScheduledTasksOverview
         templates={TASK_TEMPLATES}
         tasks={viewTasks}
@@ -398,6 +426,9 @@ export function ToolsRoute() {
                 ? { ...item, ...updated, enabled: !subscription.enabled }
                 : item
             )));
+            showStatusToast(
+              `已成功${subscription.enabled ? "关闭" : "开启"}文献订阅「${subscription.name}」`,
+            );
           } catch (error) {
             setActionError(errorMessage(error, "文献订阅状态修改失败"));
           } finally {
@@ -412,7 +443,7 @@ export function ToolsRoute() {
       />
       {editorDraft && (
         <ScheduledTaskEditorModal
-          visible
+          visible={editorVisible}
           kind="schedule"
           editing={Boolean(editingTaskId)}
           literatureValue={{ ...EMPTY_LITERATURE_SUBSCRIPTION, topic: editorDraft.name }}
@@ -426,15 +457,14 @@ export function ToolsRoute() {
             : current)}
           onCancel={() => {
             if (editorPending) return;
-            setEditorDraft(null);
-            setEditingTaskId(null);
+            setEditorVisible(false);
           }}
           onConfirm={() => void confirmEditor()}
         />
       )}
       {literatureDraft && (
         <ScheduledTaskEditorModal
-          visible
+          visible={literatureEditorVisible}
           kind="literature"
           editing={Boolean(editingSubscriptionId)}
           literatureValue={literatureDraft}
@@ -444,8 +474,7 @@ export function ToolsRoute() {
           onScheduleChange={() => undefined}
           onCancel={() => {
             if (editorPending) return;
-            setLiteratureDraft(null);
-            setEditingSubscriptionId(null);
+            setLiteratureEditorVisible(false);
           }}
           onConfirm={() => void confirmLiteratureEditor()}
         />

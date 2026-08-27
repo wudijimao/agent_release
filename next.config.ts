@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import path from "node:path";
 
-const DEFAULT_BACKEND_URL = "http://39.106.18.219";
+const DEFAULT_BACKEND_URL = "https://helialab.cn";
 
 export const applicationSecurityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -33,6 +33,9 @@ export function buildBackendRewrites(backendUrl = DEFAULT_BACKEND_URL) {
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  ...(process.env.NODE_ENV === "development"
+    ? { allowedDevOrigins: ["local.helialab.cn", "helialab.cn"] }
+    : {}),
   experimental: {
     proxyClientMaxBodySize: "128mb",
   },

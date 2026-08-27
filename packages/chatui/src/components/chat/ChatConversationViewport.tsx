@@ -91,8 +91,8 @@ export function ChatConversationViewport({
   const internalScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const messageElementsRef = useRef(new Map<number, HTMLDivElement>());
-  const positionedTurnKeyRef = useRef<string>();
-  const replyStartedAtRef = useRef<number>();
+  const positionedTurnKeyRef = useRef<string | undefined>(undefined);
+  const replyStartedAtRef = useRef<number | undefined>(undefined);
   const shouldFollowBottomRef = useRef(true);
   const [reservedTurn, setReservedTurn] = useState<ReservedTurnLayout>();
   const [replyElapsedSeconds, setReplyElapsedSeconds] = useState(0);

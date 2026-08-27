@@ -73,6 +73,30 @@ function scheduleBoundary(date: string, boundary: "start" | "end") {
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
+function scheduleTimeInput(
+  config: ScheduledTaskApiScheduleConfig,
+  timezone: string,
+) {
+  const value = config.time ?? config.timeOfDay ?? config.runAt;
+  if (typeof value !== "string" || !value.trim()) return "09:00";
+
+  const timeMatch = value.trim().match(/^(\d{1,2}):(\d{2})/);
+  if (timeMatch) return `${timeMatch[1].padStart(2, "0")}:${timeMatch[2]}`;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "09:00";
+  try {
+    return new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+      timeZone: timezone,
+    }).format(date);
+  } catch {
+    return "09:00";
+  }
+}
+
 export function createEmptyScheduledTaskDraft(now = new Date()): ScheduledTaskEditorDraft {
   return {
     name: "",
@@ -124,7 +148,7 @@ export function scheduledTaskToEditorDraft(task: ScheduledTaskDto): ScheduledTas
             : null),
         task.timezone,
       ),
-      runAt: String(task.scheduleConfig.time ?? "09:00"),
+      runAt: scheduleTimeInput(task.scheduleConfig, task.timezone),
       taskPrompt: task.prompt,
       projectId: task.projectId,
     },

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Folder, Clock3, Settings, Search, ChevronDown, ChevronRight, PanelLeftClose, SquarePen, MoreHorizontal, Pencil, Share2, Trash2, Pin, AlertTriangle } from 'lucide-react';
-import { BaseActionMenu, BaseEmpty, BaseModal } from '../../components/common';
+import { BaseActionMenu, BaseDeleteConfirmModal, BaseEmpty, BaseModal } from '../../components/common';
 import type { BaseActionMenuItem, BaseActionMenuProps } from '../../components/common';
 
 export interface AppShellChat {
@@ -61,7 +61,7 @@ export interface AppShellProps {
   onRenameChat?(chatId: string, title: string): void;
   onTogglePinChat?(chatId: string, isPinned: boolean): void;
   onShareChat?(chatId: string): void;
-  onDeleteChat?(chatId: string): void;
+  onDeleteChat?(chatId: string): void | Promise<void>;
 }
 
 const MAX_RECENT_CHATS = 10;
@@ -111,6 +111,9 @@ export default function AppShell({
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
   const [editingChatTitle, setEditingChatTitle] = useState('');
   const [showAllChatsModal, setShowAllChatsModal] = useState(false);
+  const [chatPendingDeletion, setChatPendingDeletion] = useState<AppShellChat | null>(null);
+  const [deletingChat, setDeletingChat] = useState(false);
+  const [chatDeleteError, setChatDeleteError] = useState('');
   const [allChatsKeyword, setAllChatsKeyword] = useState('');
   const [isAllChatsModalScrolling, setIsAllChatsModalScrolling] = useState(false);
   const [internalAiUsageWarningActive, setAiUsageWarningActive] = useState(initialAiUsageWarningActive);
@@ -129,20 +132,37 @@ export default function AppShell({
     setExpandedProjects(prev => ({ ...prev, [projectId]: !prev[projectId] }));
   };
 
-  const handleDeleteChat = (chatId: string) => {
-    setChats((prev) => prev.filter((chat) => chat.id !== chatId));
+  const requestDeleteChat = (chat: AppShellChat) => {
     setChatMenuOpenId(null);
+    setAllChatsMenuOpenId(null);
+    setChatDeleteError('');
+    setChatPendingDeletion(chat);
+  };
 
-    if (editingChatId === chatId) {
-      setEditingChatId(null);
-      setEditingChatTitle('');
-    }
+  const confirmDeleteChat = async () => {
+    if (!chatPendingDeletion || deletingChat) return;
+    const chatId = chatPendingDeletion.id;
+    setDeletingChat(true);
+    setChatDeleteError('');
+    try {
+      await onDeleteChat?.(chatId);
+      setChats((prev) => prev.filter((chat) => chat.id !== chatId));
 
-    onDeleteChat?.(chatId);
+      if (editingChatId === chatId) {
+        setEditingChatId(null);
+        setEditingChatTitle('');
+      }
 
-    const activeChatId = currentPath.match(/^\/chat\/([^/]+)$/)?.[1];
-    if (activeChatId === chatId) {
-      onNavigate('/chat/new', { replace: true });
+      const activeChatId = currentPath.match(/^\/chat\/([^/]+)$/)?.[1];
+      if (activeChatId === chatId) {
+        onNavigate('/chat/new', { replace: true });
+      }
+
+      setChatPendingDeletion(null);
+    } catch (error) {
+      setChatDeleteError(error instanceof Error ? error.message : '对话删除失败');
+    } finally {
+      setDeletingChat(false);
     }
   };
 
@@ -487,7 +507,7 @@ export default function AppShell({
               return;
             }
             if (item.key === 'delete') {
-              handleDeleteChat(chat.id);
+              requestDeleteChat(chat);
               setOpenMenuId(null);
               return;
             }
@@ -1002,6 +1022,16 @@ export default function AppShell({
           )}
         </div>
       </BaseModal>
+
+      <BaseDeleteConfirmModal
+        visible={Boolean(chatPendingDeletion)}
+        title="删除对话"
+        description={<>删除后，对话“{chatPendingDeletion?.title}”将无法恢复。确认删除当前对话吗？</>}
+        loading={deletingChat}
+        error={chatDeleteError}
+        onCancel={() => { setChatPendingDeletion(null); setChatDeleteError(''); }}
+        onConfirm={confirmDeleteChat}
+      />
     </div>
   );
 }

@@ -100,6 +100,29 @@ test("project document adapter preserves empty Milkdown tables", () => {
   }
 });
 
+test("project document adapter accepts short Milkdown dividers in populated tables", () => {
+  const document = markdownToKnowledgeDocument(
+    [
+      "| 123 | | |",
+      "| :-- | :----- | :----- |",
+      "| 123 | | |",
+      "| 321 | | |",
+    ].join("\n"),
+  );
+
+  assert.equal(document.content.length, 1);
+  assert.equal(document.content[0]?.type, "table");
+  assert.deepEqual(document.content[0]?.content, {
+    type: "tableContent",
+    headerRows: 1,
+    rows: [
+      { cells: ["123", "", ""] },
+      { cells: ["123", "", ""] },
+      { cells: ["321", "", ""] },
+    ],
+  });
+});
+
 test("project document creation uses the atomic Wiki2 project contract", async () => {
   const calls: Array<{ method: string; path: string; body?: unknown }> = [];
   const api = {
@@ -117,6 +140,7 @@ test("project document creation uses the atomic Wiki2 project contract", async (
     section: "experiment",
     title: "实验记录",
     markdown: "实验记录\n\n正文",
+    tags: ["实验记录"],
   });
 
   assert.equal(calls.length, 1);
@@ -131,6 +155,7 @@ test("project document creation uses the atomic Wiki2 project contract", async (
   assert.equal(body.projectKnowledgeSection, "experiment");
   assert.equal(body.projectVisibility, "project_default");
   assert.equal((body.content as { type?: string }).type, "kb-doc");
+  assert.deepEqual((body.content as { properties: { tags: string[] } }).properties.tags, ["实验记录"]);
 });
 
 test("project document import validates the Wiki2 recognition formats", () => {

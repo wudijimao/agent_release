@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Plus } from 'lucide-react';
 import { BaseActionMenu, BaseButton, BaseInput } from '../../components/common';
 import type { BaseActionMenuItem, BaseActionMenuProps } from '../../components/common';
@@ -52,6 +53,7 @@ export default function ChatHomePage({
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
   const [showCreateProjectPopover, setShowCreateProjectPopover] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
+  const [createProjectPopoverPosition, setCreateProjectPopoverPosition] = useState<{ left: number; bottom: number } | null>(null);
   const projectSelectorRef = useRef<HTMLDivElement | null>(null);
   const createProjectPopoverRef = useRef<HTMLDivElement | null>(null);
 
@@ -129,6 +131,30 @@ export default function ChatHomePage({
     return () => document.removeEventListener('mousedown', handleDocumentMouseDown);
   }, [showCreateProjectPopover]);
 
+  useLayoutEffect(() => {
+    if (!showCreateProjectPopover) {
+      setCreateProjectPopoverPosition(null);
+      return;
+    }
+
+    const updatePosition = () => {
+      const rect = projectSelectorRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const popoverWidth = 300;
+      const panelWidth = 260;
+      const panelGap = 8;
+      const viewportMargin = 12;
+      setCreateProjectPopoverPosition({
+        left: Math.max(viewportMargin, Math.min(rect.left + panelWidth + panelGap, window.innerWidth - popoverWidth - viewportMargin)),
+        bottom: window.innerHeight - rect.top + panelGap,
+      });
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    return () => window.removeEventListener('resize', updatePosition);
+  }, [showCreateProjectPopover]);
+
   const content = (
     <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center overflow-y-auto px-6">
           <h1 className="mb-10 text-5xl tracking-wider text-primaryText">
@@ -136,40 +162,40 @@ export default function ChatHomePage({
           </h1>
 
           <div className="mx-auto mb-6 w-full max-w-[840px]">
-            <div ref={projectSelectorRef} className="relative">
-              {showCreateProjectPopover && (
-                <div
-                  ref={createProjectPopoverRef}
-                  className="absolute bottom-[calc(100%+8px)] left-[272px] z-[1301] w-[300px] rounded-xl border border-chatPopupBorder bg-white p-4 shadow-chatPopup"
-                >
-                  <div className="space-y-3">
-                    <div>
-                      <div className="mb-1.5 text-sm font-semibold text-primaryText">新建项目</div>
-                      <BaseInput
-                        value={newProjectName}
-                        onChange={(event) => setNewProjectName(event.target.value)}
-                        placeholder="请输入项目名称"
-                        size="medium"
-                        containerClassName="!px-3"
-                      />
-                    </div>
-                    <div className="flex items-center justify-end gap-2">
-                      <BaseButton type="secondary" size="small" onClick={closeCreateProject}>
-                        取消
-                      </BaseButton>
-                      <BaseButton
-                        type="primary"
-                        size="small"
-                        onClick={handleConfirmCreateProject}
-                        disabled={!newProjectName.trim()}
-                      >
-                        确认
-                      </BaseButton>
-                    </div>
+            {showCreateProjectPopover && createProjectPopoverPosition && createPortal(
+              <div
+                ref={createProjectPopoverRef}
+                className="fixed z-[1301] w-[300px] rounded-xl border border-chatPopupBorder bg-white p-4 shadow-chatPopup"
+                style={createProjectPopoverPosition}
+              >
+                <div className="space-y-3">
+                  <div>
+                    <div className="mb-1.5 text-sm font-semibold text-primaryText">新建项目</div>
+                    <BaseInput
+                      value={newProjectName}
+                      onChange={(event) => setNewProjectName(event.target.value)}
+                      placeholder="请输入项目名称"
+                      size="medium"
+                      containerClassName="!px-3"
+                    />
+                  </div>
+                  <div className="flex items-center justify-end gap-2">
+                    <BaseButton type="secondary" size="small" onClick={closeCreateProject}>
+                      取消
+                    </BaseButton>
+                    <BaseButton
+                      type="primary"
+                      size="small"
+                      onClick={handleConfirmCreateProject}
+                      disabled={!newProjectName.trim()}
+                    >
+                      确认
+                    </BaseButton>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>,
+              document.body,
+            )}
 
             <InputArea
               onSend={onSend}
@@ -181,30 +207,32 @@ export default function ChatHomePage({
               validateUploadFile={validateUploadFile}
               onUploadValidationError={onUploadValidationError}
               leadingControls={(
-                <BaseActionMenu
-                  open={showProjectDropdown}
-                  onOpenChange={(open) => {
-                    if (!open && showCreateProjectPopover) return;
-                    setShowProjectDropdown(open);
-                    if (!open) closeCreateProject();
-                    else setShowCreateProjectPopover(false);
-                  }}
-                  placement="top-start"
-                  width={260}
-                  trigger={(
-                    <span className="flex items-center gap-1.5 rounded-full border border-borderGray bg-white px-4 py-1.5 text-[14px] text-tertiaryText transition-colors hover:bg-bgLight">
-                      <span className="max-w-[120px] truncate">
-                        {selectedProject ? selectedProject.name : '工作项目'}
+                <div ref={projectSelectorRef} className="inline-flex">
+                  <BaseActionMenu
+                    open={showProjectDropdown}
+                    onOpenChange={(open) => {
+                      if (!open && showCreateProjectPopover) return;
+                      setShowProjectDropdown(open);
+                      if (!open) closeCreateProject();
+                      else setShowCreateProjectPopover(false);
+                    }}
+                    placement="top-start"
+                    width={260}
+                    trigger={(
+                      <span className="flex items-center gap-1.5 rounded-full border border-borderGray bg-white px-4 py-1.5 text-[14px] text-tertiaryText transition-colors hover:bg-bgLight">
+                        <span className="max-w-[120px] truncate">
+                          {selectedProject ? selectedProject.name : '工作项目'}
+                        </span>
+                        <ChevronDown size={14} />
                       </span>
-                      <ChevronDown size={14} />
-                    </span>
-                  )}
-                  items={projectMenuItems}
-                  footerItems={projectMenuFooterItems}
-                  onItemClick={handleProjectMenuItemClick}
-                  className="!inline-flex"
-                  listClassName="max-h-[220px] overflow-y-auto"
-                />
+                    )}
+                    items={projectMenuItems}
+                    footerItems={projectMenuFooterItems}
+                    onItemClick={handleProjectMenuItemClick}
+                    className="!inline-flex"
+                    listClassName="max-h-[220px] overflow-y-auto"
+                  />
+                </div>
               )}
             />
           </div>

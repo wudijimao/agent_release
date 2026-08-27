@@ -298,7 +298,7 @@ export default function MemberManagementPage({
         </button>
       </BaseModal>
 
-      <BaseModal visible={showEditModal && !!selectedMember} title="编辑成员信息" width={560} maskClosable={false} cancelText="取消" okText="保存修改" confirmLoading={pendingAction === 'edit'} onCancel={() => setShowEditModal(false)} onConfirm={submitEdit} bodyClassName="!px-6 !py-5">
+      <BaseModal visible={showEditModal && !!selectedMember} title="编辑成员信息" width={560} maskClosable={pendingAction !== 'edit'} cancelText="取消" okText="保存修改" confirmLoading={pendingAction === 'edit'} onCancel={() => { if (pendingAction !== 'edit') setShowEditModal(false); }} onConfirm={submitEdit} bodyClassName="!px-6 !py-5">
         <div className="space-y-4">
           <div>
             <div className="mb-2 text-sm font-medium text-primaryText">团队角色</div>

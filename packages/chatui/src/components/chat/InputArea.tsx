@@ -732,9 +732,14 @@ export const InputArea = ({
                       <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded bg-chatAttachmentIconSurface text-[10px] font-semibold leading-none text-chatMenuIcon">
                         {skill.badge}
                       </span>
-                      <span className="min-w-0 flex flex-1 items-center gap-1">
-                        <span className="text-[13px] font-semibold text-primaryText">{skill.id}</span>
-                        <span className="truncate text-[12px] text-tertiaryText">{skill.description}</span>
+                      <span className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
+                        <span
+                          className="max-w-full shrink-0 truncate whitespace-nowrap text-[13px] font-semibold text-primaryText"
+                          title={skill.id}
+                        >
+                          {skill.id}
+                        </span>
+                        <span className="min-w-0 flex-1 truncate text-[12px] text-tertiaryText">{skill.description}</span>
                       </span>
                       <span className="shrink-0 text-[11px] text-tertiaryText">
                         {skill.disabledReason || skill.source}

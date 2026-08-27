@@ -89,6 +89,16 @@ export function touchAppShellChat(
   );
 }
 
+export function upsertAppShellChat(
+  chats: readonly AppShellChat[],
+  chat: AppShellChat,
+) {
+  return sortChatsByUpdatedAt([
+    chat,
+    ...chats.filter((item) => item.id !== chat.id),
+  ]);
+}
+
 export async function renameChatSession(
   api: ApiClient,
   sessionId: string,

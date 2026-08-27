@@ -54,7 +54,7 @@ export interface AppShellProps {
     onRenameChat?(chatId: string, title: string): void;
     onTogglePinChat?(chatId: string, isPinned: boolean): void;
     onShareChat?(chatId: string): void;
-    onDeleteChat?(chatId: string): void;
+    onDeleteChat?(chatId: string): void | Promise<void>;
 }
 export default function AppShell({ currentPath, projects, initialChats, logoUrl, user, children, initialAiUsageWarningActive, aiUsageWarningActive: controlledAiUsageWarningActive, canViewAiUsage, canManageMembers, chatActions, onNavigate, onLogout, onChatsChange, onRenameChat, onTogglePinChat, onShareChat, onDeleteChat, }: AppShellProps): React.JSX.Element;
 //# sourceMappingURL=AppShell.d.ts.map

@@ -24,11 +24,11 @@ test("backend rewrites expose health separately from API routes in every environ
   assert.deepEqual(buildBackendRewrites(), [
     {
       source: "/api/health",
-      destination: "http://39.106.18.219/health",
+      destination: "https://helialab.cn/health",
     },
     {
       source: "/api/:path*",
-      destination: "http://39.106.18.219/api/:path*",
+      destination: "https://helialab.cn/api/:path*",
     },
   ]);
 });

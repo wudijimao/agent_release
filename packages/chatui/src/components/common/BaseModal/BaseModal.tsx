@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { BaseButton } from '../BaseButton';
 import styles from './BaseModal.module.css';
@@ -19,6 +19,7 @@ export interface BaseModalProps {
   okButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   cancelButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   onConfirm?: () => void | Promise<void>;
+  onDisabledConfirm?: () => void;
   onCancel?: () => void;
   onClose?: () => void;
   onOk?: () => void | Promise<void>;
@@ -31,11 +32,18 @@ export interface BaseModalProps {
 
 export const BaseModal: React.FC<BaseModalProps> = ({
   visible, open = visible, show = open, title, width = 520, centered = true,
-  destroyOnClose = false, mask = true, maskClosable = true, okText = '确认',
+  mask = true, maskClosable = true, okText = '确认',
   cancelText = '取消', confirmLoading = false, okButtonProps, cancelButtonProps,
-  onConfirm, onCancel, onClose, onOk, onDismiss, children, footer, className, bodyClassName,
+  onConfirm, onDisabledConfirm, onCancel, onClose, onOk, onDismiss, children, footer, className, bodyClassName,
 }) => {
   const isVisible = show ?? false;
+  const [shouldRender, setShouldRender] = useState(isVisible);
+  const isExiting = shouldRender && !isVisible;
+
+  useEffect(() => {
+    if (isVisible) setShouldRender(true);
+  }, [isVisible]);
+
   const handleConfirm = useCallback(async () => {
     try {
       if (onConfirm) await onConfirm();
@@ -54,29 +62,41 @@ export const BaseModal: React.FC<BaseModalProps> = ({
     if (footer) return footer;
     const { type: _cancelType, ...safeCancelProps } = cancelButtonProps ?? {};
     const { type: _okType, ...safeOkProps } = okButtonProps ?? {};
+    const confirmButton = (
+      <BaseButton type="primary" size="medium" isLoading={confirmLoading} onClick={handleConfirm} {...safeOkProps}>{confirmLoading ? '加载中...' : okText}</BaseButton>
+    );
     return (
       <div className="flex justify-end gap-2 border-t border-lineSoft px-5 py-3">
         <BaseButton type="secondary" size="medium" onClick={handleCancel} {...safeCancelProps}>{cancelText}</BaseButton>
-        <BaseButton type="primary" size="medium" isLoading={confirmLoading} onClick={handleConfirm} {...safeOkProps}>{confirmLoading ? '加载中...' : okText}</BaseButton>
+        {safeOkProps.disabled && onDisabledConfirm
+          ? <span className="inline-flex cursor-not-allowed" onClick={onDisabledConfirm}>{confirmButton}</span>
+          : confirmButton}
       </div>
     );
-  }, [cancelButtonProps, cancelText, confirmLoading, footer, handleCancel, handleConfirm, okButtonProps, okText]);
+  }, [cancelButtonProps, cancelText, confirmLoading, footer, handleCancel, handleConfirm, okButtonProps, okText, onDisabledConfirm]);
 
-  if (!isVisible && destroyOnClose) return null;
-  if (!isVisible) return null;
+  if (!shouldRender) return null;
 
   return (
     <>
-      {mask && <div className={classNames('fixed inset-0 z-[1000] bg-overlayMask', styles.maskAnimation)} onClick={() => maskClosable && handleCancel()} role="presentation" />}
+      {mask && <div className={classNames('fixed inset-0 z-[1000] bg-overlayMask', isExiting ? styles.maskExitAnimation : styles.maskAnimation)} onClick={() => !isExiting && maskClosable && handleCancel()} role="presentation" />}
       <div
         className={classNames(
           'fixed left-1/2 top-1/2 z-[1001] max-h-[90vh] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-md bg-surface shadow-lg',
-          centered && 'left-1/2 top-1/2', styles.modalAnimation, className,
+          centered && 'left-1/2 top-1/2',
+          isExiting ? styles.modalExitAnimation : styles.modalAnimation,
+          isExiting && 'pointer-events-none',
+          className,
         )}
         style={{ width }}
         role="dialog"
         aria-modal="true"
+        aria-hidden={isExiting}
         aria-labelledby="modal-title"
+        onAnimationEnd={(event) => {
+          if (event.currentTarget !== event.target) return;
+          if (isExiting) setShouldRender(false);
+        }}
       >
         {title && (
           <div className="flex items-center justify-between border-b border-lineSoft px-5 py-4">

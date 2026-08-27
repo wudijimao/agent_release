@@ -214,6 +214,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const api = useApiClient();
   const {
     chats,
+    chatStreamHandoff,
+    clearChatStreamHandoff,
     defaultProjectId,
     isSidebarOpen,
     openSidebar,
@@ -223,6 +225,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     touchChat,
   } = useChatShell();
   const currentChat = chats.find((chat) => chat.id === sessionId);
+  const activeChatStreamHandoff =
+    chatStreamHandoff?.sessionId === sessionId
+      ? chatStreamHandoff
+      : undefined;
   const currentProject = projects.find(
     (project) => project.id === currentChat?.projectId,
   );
@@ -232,13 +238,17 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const { status, error: authError, refreshSession } = useAuth();
   const { catalog: resourceCatalog, error: resourceError } =
     useChatResourceCatalog(status === "authenticated");
-  const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
-  const [title, setTitle] = useState("新对话");
-  const [streamState, setStreamState] = useState<ChatStreamViewState>(() => ({
-    ...initialStreamState,
-    messages: [],
-    statusVisible: false,
-  }));
+  const [pageStatus, setPageStatus] = useState<PageStatus>(
+    activeChatStreamHandoff ? "ready" : "loading",
+  );
+  const [title, setTitle] = useState(currentChat?.title ?? "新对话");
+  const [streamState, setStreamState] = useState<ChatStreamViewState>(() =>
+    activeChatStreamHandoff?.state ?? {
+      ...initialStreamState,
+      messages: [],
+      statusVisible: false,
+    },
+  );
   const [miraDraftActions, setMiraDraftActions] = useState<
     Record<string, MiraDocumentDraftAction>
   >({});
@@ -254,7 +264,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const [pendingDocumentPreviewKey, setPendingDocumentPreviewKey] =
     useState<string>();
   const [isStreaming, setIsStreaming] = useState(false);
-  const [isRemoteReplying, setIsRemoteReplying] = useState(false);
+  const [isRemoteReplying, setIsRemoteReplying] = useState(
+    activeChatStreamHandoff?.isStreaming ?? false,
+  );
   const [pageError, setPageError] = useState("");
   const [streamNotice, setStreamNotice] = useState("");
   const [streamErrorReport, setStreamErrorReport] = useState("");
@@ -463,15 +475,47 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   }, [chats, currentChat, navigation, status]);
 
   useEffect(() => {
-    if (status !== "authenticated" || !currentChatId) return;
+    if (!activeChatStreamHandoff) return;
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setStreamState(activeChatStreamHandoff.state);
+      setIsRemoteReplying(activeChatStreamHandoff.isStreaming);
+      setStreamNotice(activeChatStreamHandoff.notice ?? "");
+      setPageStatus("ready");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeChatStreamHandoff]);
+
+  useEffect(() => {
+    if (
+      status !== "authenticated" ||
+      !currentChatId ||
+      activeChatStreamHandoff?.isStreaming
+    ) {
+      return;
+    }
     const controller = new AbortController();
     queueMicrotask(() => {
       if (!controller.signal.aborted) {
-        void loadPage(controller.signal);
+        void loadPage(controller.signal).finally(() => {
+          if (!controller.signal.aborted && activeChatStreamHandoff) {
+            clearChatStreamHandoff(sessionId);
+          }
+        });
       }
     });
     return () => controller.abort();
-  }, [currentChatId, loadPage, status]);
+  }, [
+    activeChatStreamHandoff,
+    clearChatStreamHandoff,
+    currentChatId,
+    loadPage,
+    sessionId,
+    status,
+  ]);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -498,7 +542,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     if (
       status !== "authenticated" ||
       !isRemoteReplying ||
-      isStreaming
+      isStreaming ||
+      activeChatStreamHandoff?.isStreaming
     ) {
       return;
     }
@@ -548,6 +593,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     };
   }, [
     api,
+    activeChatStreamHandoff?.isStreaming,
     currentProject?.name,
     isRemoteReplying,
     isStreaming,
@@ -1191,6 +1237,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           kbNodeId: item.document.id,
           title: edit.title,
           markdown: edit.markdown,
+          tags: item.document.tags,
         });
         const document = await loadProjectDocumentDetail(api, item.document.id);
         setPreviewTabs((current) =>
@@ -1548,7 +1595,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               projectName={
                 projectWorkspace?.projectName
                 ?? currentProject?.name
-                ?? "个人工作台"
+                ?? "未归属项目"
               }
               searchQuery={fileSearchQuery}
               knowledgeDocs={displayedProjectContent.knowledgeDocs}
@@ -1666,7 +1713,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         visible={miraDraftTargetSelection !== null}
         title="选择文档保存项目"
         width={440}
-        maskClosable={false}
+        maskClosable={!pendingMiraActionKey}
         okText="保存到该项目"
         cancelText="取消"
         confirmLoading={Boolean(pendingMiraActionKey)}
@@ -1697,7 +1744,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         }}
       >
         <p className="mb-3 text-sm leading-6 text-secondaryText">
-          当前对话属于“个人工作台”，请选择文档最终保存的位置。
+          当前对话属于“未归属项目”，请选择文档最终保存的位置。
         </p>
         <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
           {projects.filter((project) => project.selectable !== false).length ? (

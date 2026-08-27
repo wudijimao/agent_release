@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Cascader, DatePicker, Radio, TimePicker } from 'antd';
 import dayjs from 'dayjs';
 import { Check, ChevronDown, Folder, Plus } from 'lucide-react';
-import { BaseActionMenu, BaseInput, BaseModal } from '../../components/common';
+import { BaseActionMenu, BaseInput, BaseModal, BaseToast } from '../../components/common';
 import type { BaseActionMenuItem, BaseActionMenuProps } from '../../components/common';
 
 const { RangePicker } = DatePicker;
@@ -76,7 +76,10 @@ export function ScheduledTaskEditorModal({
   onLiteratureChange, onScheduleChange, onCancel, onConfirm, onCreateProject,
 }: ScheduledTaskEditorModalProps) {
   const [projectMenuOpen, setProjectMenuOpen] = useState(false);
+  const [deadlineToastVisible, setDeadlineToastVisible] = useState(false);
+  const deadlineToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isLiterature = kind === 'literature';
+  const isScheduleEndDateMissing = !isLiterature && !scheduleValue.endDate;
   const selectedProject = projects.find((project) => project.id === scheduleValue.projectId) ?? null;
   const title = isLiterature
     ? editing ? '修改文献订阅任务' : '设置文献订阅任务'
@@ -96,14 +99,28 @@ export function ScheduledTaskEditorModal({
     if (item.key === 'create') return onCreateProject?.();
     onScheduleChange({ ...scheduleValue, projectId: item.key === 'none' ? null : item.key });
   };
+  const showDeadlineToast = () => {
+    setDeadlineToastVisible(true);
+    if (deadlineToastTimerRef.current) clearTimeout(deadlineToastTimerRef.current);
+    deadlineToastTimerRef.current = setTimeout(() => {
+      setDeadlineToastVisible(false);
+      deadlineToastTimerRef.current = null;
+    }, 2400);
+  };
+
+  useEffect(() => () => {
+    if (deadlineToastTimerRef.current) clearTimeout(deadlineToastTimerRef.current);
+  }, []);
 
   return (
+    <><BaseToast visible={deadlineToastVisible} tone="warning" message="请输入任务截止时间" />
     <BaseModal visible={visible} title={title} width={600} className="tools-task-modal"
       okText={editing ? '保存修改' : isLiterature ? '创建订阅' : '创建任务'} cancelText="取消" onCancel={onCancel} onConfirm={onConfirm}
+      onDisabledConfirm={isScheduleEndDateMissing ? showDeadlineToast : undefined}
       okButtonProps={{ disabled: !literatureValue.topic.trim() || (isLiterature
         ? !literatureValue.keywords.trim() || literatureValue.sourceTypes.length === 0
           || (literatureValue.sourceTypes.includes('pubmed') && literatureValue.pubmedMatchMode === 'advanced' && !literatureValue.advancedQuery.trim())
-        : !scheduleValue.taskPrompt.trim()) }}>
+        : !scheduleValue.taskPrompt.trim() || isScheduleEndDateMissing) }}>
       <div className="space-y-5">
         <div>
           <div className="mb-1.5 text-sm font-medium text-primaryText">任务名称</div>
@@ -139,7 +156,7 @@ export function ScheduledTaskEditorModal({
             <div className="mb-1.5 text-sm font-medium text-primaryText">提示词 (Prompt)<span className="text-danger"> *</span></div>
             <div className="relative">
               <textarea value={scheduleValue.taskPrompt} onChange={(event) => onScheduleChange({ ...scheduleValue, taskPrompt: event.target.value })}
-                placeholder="输入任何内容，使用 '/' 选择技能或 '@' 引用资源..." rows={5}
+                placeholder="输入任何内容..." rows={5}
                 className="w-full resize-none rounded-lg border border-borderGray px-3.5 pb-10 pt-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
               <div className="absolute bottom-4 left-3 z-20">
                 <BaseActionMenu open={projectMenuOpen} onOpenChange={setProjectMenuOpen} placement="top-start" width={260}
@@ -229,6 +246,6 @@ export function ScheduledTaskEditorModal({
           </label>
         </>}
       </div>
-    </BaseModal>
+    </BaseModal></>
   );
 }

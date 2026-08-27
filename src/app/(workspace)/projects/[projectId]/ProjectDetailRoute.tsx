@@ -43,6 +43,7 @@ import {
   uploadProjectDocumentAttachments,
 } from "@/adapters/project-documents";
 import {
+  createProjectDocumentTemplate,
   loadProjectDocumentTemplates,
   PROJECT_DOCUMENT_TYPE_OPTIONS,
   projectDocumentSectionForType,
@@ -65,12 +66,13 @@ import {
   PRODUCT_ANALYTICS_EVENTS,
   trackProductEvent,
 } from "@/lib/product-analytics";
-import { useApiClient } from "@/providers/AuthProvider";
+import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
 interface ProjectDocumentContentDraft {
   title: string;
   markdown: string;
+  tags: string[];
 }
 
 interface ProjectDocumentDraft extends ProjectDocumentContentDraft {
@@ -102,6 +104,8 @@ function RouteStatus({
 
 export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   const api = useApiClient();
+  const { user } = useAuth();
+  const currentUserId = user?.id || "";
   const navigation = useNavigation();
   const { activeLab } = useLab();
   const {
@@ -234,6 +238,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             templateId: documentDraft.templateId,
             knowledgeType: documentDraft.knowledgeType,
             section: documentDraft.section,
+            tags: documentDraft.tags,
           });
           trackProductEvent(PRODUCT_ANALYTICS_EVENTS.createDocument, {
             source: "project_detail",
@@ -247,6 +252,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             setDocumentEditDraft({
               title: latestDraft.title,
               markdown: latestDraft.markdown,
+              tags: latestDraft.tags,
             });
           }
           setDocumentDraft(null);
@@ -262,6 +268,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             kbNodeId: documentPreview.id,
             title,
             markdown: documentEditDraft.markdown,
+            tags: documentEditDraft.tags,
           });
           const preview = await loadProjectDocumentDetail(
             api,
@@ -298,7 +305,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
     ],
   );
 
-  const uploadEditorAttachments = async (files: File[]) => {
+  const uploadEditorAttachments = async (files: File[], onReady?: () => void) => {
     let preview = documentPreview;
     if (documentDraft || documentDirty) {
       preview = await saveDocument({
@@ -312,14 +319,18 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
       nodeId: preview.id,
       files,
     });
-    setDocumentPreview(await loadProjectDocumentDetail(api, preview.id));
+    const refreshedPreview = await loadProjectDocumentDetail(api, preview.id);
+    onReady?.();
+    setDocumentPreview(refreshedPreview);
   };
 
   const loadDocumentTemplates = useCallback(async () => {
     setDocumentTemplatesLoading(true);
     setDocumentTemplatesError("");
     try {
-      setDocumentTemplates(await loadProjectDocumentTemplates(api));
+      setDocumentTemplates(
+        await loadProjectDocumentTemplates(api, currentUserId),
+      );
     } catch (loadError) {
       setDocumentTemplatesError(
         loadError instanceof Error ? loadError.message : "文档模板加载失败",
@@ -327,7 +338,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
     } finally {
       setDocumentTemplatesLoading(false);
     }
-  }, [api]);
+  }, [api, currentUserId]);
 
   const openDocumentCreateModal = () => {
     setNotice("");
@@ -375,6 +386,12 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           );
           setDocumentDirty(true);
         }}
+        tags={documentDraft.tags}
+        onTagsChange={(tags) => {
+          documentRevisionRef.current += 1;
+          setDocumentDraft((current) => current ? { ...current, tags } : current);
+          setDocumentDirty(true);
+        }}
         onUploadAttachments={uploadEditorAttachments}
         onSave={() => {
           void saveDocument({
@@ -386,64 +403,6 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           if (documentSaving) return;
           setDocumentSaveError("");
           setDocumentDraft(null);
-          setDocumentDirty(false);
-        }}
-      />
-    );
-  }
-
-  if (documentPreview && documentEditDraft !== null) {
-    return (
-      <ProjectDocumentEditor
-        projectName={detail.name}
-        title={documentEditDraft.title}
-        initialMarkdown={documentEditDraft.markdown}
-        createdByName={documentPreview.createdByName}
-        updatedByName={documentPreview.updatedByName}
-        updatedAt={documentPreview.updatedAt}
-        index={documentPreview.index}
-        attachments={documentPreview.attachments}
-        attachmentAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
-        saving={documentSaving}
-        saveError={documentSaveError}
-        onTitleChange={(title) => {
-          documentRevisionRef.current += 1;
-          setDocumentEditDraft((current) =>
-            current ? { ...current, title } : current,
-          );
-          setDocumentDirty(true);
-        }}
-        onMarkdownChange={(markdown) => {
-          documentRevisionRef.current += 1;
-          setDocumentEditDraft((current) =>
-            current ? { ...current, markdown } : current,
-          );
-          setDocumentDirty(true);
-        }}
-        onDownloadAttachment={(attachmentId) => {
-          window.open(
-            getProjectDocumentAttachmentUrl(attachmentId),
-            "_blank",
-            "noopener,noreferrer",
-          );
-        }}
-        onUploadAttachments={uploadEditorAttachments}
-        onDeleteAttachment={async (attachmentId) => {
-          await deleteProjectDocumentAttachment(api, attachmentId);
-          setDocumentPreview(
-            await loadProjectDocumentDetail(api, documentPreview.id),
-          );
-        }}
-        onSave={() => {
-          void saveDocument({
-            keepEditing: false,
-            showNotice: true,
-          }).catch(() => undefined);
-        }}
-        onClose={() => {
-          if (documentSaving) return;
-          setDocumentSaveError("");
-          setDocumentEditDraft(null);
           setDocumentDirty(false);
         }}
       />
@@ -464,10 +423,11 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             source: "project_detail",
           });
           setDocumentSaveError("");
-          setDocumentEditDraft({
-            title: projectDocumentTitleForEdit(documentPreview.title),
-            markdown: documentPreview.markdown,
-          });
+            setDocumentEditDraft({
+              title: projectDocumentTitleForEdit(documentPreview.title),
+              markdown: documentPreview.markdown,
+              tags: documentPreview.tags,
+            });
           setDocumentDirty(false);
         }}
         onDelete={async () => {
@@ -477,11 +437,59 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           setDocumentPreview(null);
           setNotice("文档已删除");
         }}
+        onSaveAsTemplate={async () => {
+          setNotice("");
+          await createProjectDocumentTemplate(api, {
+            sourceNodeId: documentPreview.id,
+            name: projectDocumentTitleForSave(documentPreview.title),
+          });
+          setDocumentTemplates([]);
+        }}
+        onViewTemplates={() => navigation.push("/projects?templates=open")}
         onDownloadAttachment={(attachmentId) => {
           window.open(
             getProjectDocumentAttachmentUrl(attachmentId),
             "_blank",
             "noopener,noreferrer",
+          );
+        }}
+        editing={documentEditDraft !== null}
+        editTitle={documentEditDraft?.title}
+        editMarkdown={documentEditDraft?.markdown}
+        editTags={documentEditDraft?.tags}
+        saving={documentSaving}
+        saveError={documentSaveError}
+        attachmentAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
+        onTitleChange={(title) => {
+          documentRevisionRef.current += 1;
+          setDocumentEditDraft((current) =>
+            current ? { ...current, title } : current,
+          );
+          setDocumentDirty(true);
+        }}
+        onMarkdownChange={(markdown) => {
+          documentRevisionRef.current += 1;
+          setDocumentEditDraft((current) =>
+            current ? { ...current, markdown } : current,
+          );
+          setDocumentDirty(true);
+        }}
+        onTagsChange={(tags) => {
+          documentRevisionRef.current += 1;
+          setDocumentEditDraft((current) => current ? { ...current, tags } : current);
+          setDocumentDirty(true);
+        }}
+        onSave={async ({ keepEditing = false } = {}) => {
+          await saveDocument({
+            keepEditing,
+            showNotice: true,
+          });
+        }}
+        onUploadAttachments={uploadEditorAttachments}
+        onDeleteAttachment={async (attachmentId) => {
+          await deleteProjectDocumentAttachment(api, attachmentId);
+          setDocumentPreview(
+            await loadProjectDocumentDetail(api, documentPreview.id),
           );
         }}
       />
@@ -552,7 +560,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             throw new Error("当前项目尚未创建默认知识库，暂时无法导入文档");
           }
 
-          await importProjectDocuments(api, {
+          const importedDocuments = await importProjectDocuments(api, {
             projectId,
             parentNodeId,
             files,
@@ -563,6 +571,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
               ? `已导入 ${files.length} 个文档，正在后台识别内容`
               : "文档已导入，正在后台识别内容",
           );
+          return importedDocuments.map((document) => document.nodeId);
         }}
         onUpdateProjectName={(name) => updateField({ name })}
         onUpdateProjectDescription={(description) => updateField({ description })}
@@ -618,14 +627,12 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         templates={documentTemplates}
         loading={documentTemplatesLoading}
         error={documentTemplatesError}
-        defaultKnowledgeType="other"
-        defaultTemplateId="blank"
         onClose={() => {
           if (documentTemplatesLoading) return;
           setDocumentCreateModalOpen(false);
         }}
         onRetry={() => void loadDocumentTemplates()}
-        onContinue={({ knowledgeType, templateId }) => {
+        onContinue={({ knowledgeType, tags, templateId }) => {
           const template = documentTemplates.find(
             (item) => item.id === templateId,
           );
@@ -634,6 +641,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           setDocumentDraft({
             title: template.id === "blank" ? "" : template.title,
             markdown: template.markdown,
+            tags,
             templateId: template.id,
             knowledgeType: typedKnowledgeType,
             section: projectDocumentSectionForType(typedKnowledgeType),
