@@ -21,6 +21,7 @@ export interface BaseActionMenuProps {
   onItemClick?: (item: BaseActionMenuItem, event: React.MouseEvent<HTMLButtonElement>) => void;
   placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
   width?: number | string;
+  matchTriggerWidth?: boolean;
   portal?: boolean;
   className?: string;
   triggerClassName?: string;
@@ -29,7 +30,7 @@ export interface BaseActionMenuProps {
   footerClassName?: string;
 }
 
-export const BaseActionMenu: React.FC<BaseActionMenuProps> = ({ trigger, items, footerItems = [], open = false, onOpenChange, onTriggerClick, onItemClick, placement = 'bottom-start', width, portal = false, className, triggerClassName, menuClassName, listClassName, footerClassName }) => {
+export const BaseActionMenu: React.FC<BaseActionMenuProps> = ({ trigger, items, footerItems = [], open = false, onOpenChange, onTriggerClick, onItemClick, placement = 'bottom-start', width, matchTriggerWidth = false, portal = false, className, triggerClassName, menuClassName, listClassName, footerClassName }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [portalStyle, setPortalStyle] = useState<React.CSSProperties>({});
@@ -45,8 +46,9 @@ export const BaseActionMenu: React.FC<BaseActionMenuProps> = ({ trigger, items, 
       left: isEnd ? rect.right : rect.left,
       top: isAbove ? rect.top - panelHeight - 8 : rect.bottom,
       transform: isEnd ? 'translateX(-100%)' : undefined,
+      ...(matchTriggerWidth ? { width: rect.width } : {}),
     });
-  }, [isAbove, isEnd, open, portal, placement]);
+  }, [isAbove, isEnd, matchTriggerWidth, open, portal, placement]);
 
   useEffect(() => {
     if (!open || !onOpenChange) return;
@@ -59,7 +61,14 @@ export const BaseActionMenu: React.FC<BaseActionMenuProps> = ({ trigger, items, 
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [onOpenChange, open]);
 
-  const menuStyle = useMemo(() => width ? { width: typeof width === 'number' ? `${width}px` : width } : undefined, [width]);
+  const menuStyle = useMemo(
+    () => width
+      ? { width: typeof width === 'number' ? `${width}px` : width }
+      : matchTriggerWidth && !portal
+        ? { width: '100%' }
+        : undefined,
+    [matchTriggerWidth, portal, width],
+  );
   const renderItem = useCallback((item: BaseActionMenuItem) => (
     <button
       key={item.key}

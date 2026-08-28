@@ -23,6 +23,7 @@ export interface ProjectDocumentPreviewContentProps {
   onDownloadAttachment?(attachmentId: string): void;
   attachmentUploads?: ProjectDocumentAttachmentUploadViewModel[];
   showTags?: boolean;
+  showDocumentHeader?: boolean;
 }
 
 export function ProjectDocumentPreviewContent({
@@ -31,6 +32,7 @@ export function ProjectDocumentPreviewContent({
   onDownloadAttachment,
   attachmentUploads = [],
   showTags = true,
+  showDocumentHeader = true,
 }: ProjectDocumentPreviewContentProps) {
   const [isContentScrolling, setIsContentScrolling] = useState(false);
   const contentScrollTimerRef = useRef<number | null>(null);
@@ -48,19 +50,19 @@ export function ProjectDocumentPreviewContent({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <section className={`mb-4 shrink-0 ${contentInset}`}>
-        <h1 className="break-words text-2xl font-semibold text-primaryText">{document.title}</h1>
-        <ProjectDocumentMetadata
-          createdByName={document.createdByName}
-          updatedByName={document.updatedByName}
-          updatedAt={document.updatedAt}
-          index={document.index}
-        />
-        {showTags && <div className="mt-4 flex flex-wrap items-center gap-2">
-          {(document.tags?.length ?? 0) > 0 ? document.tags?.map((tag) => <span key={tag} className="inline-flex items-center rounded-full border border-lineSubtle bg-bgLight px-2.5 py-1 text-xs text-secondaryText">{tag}</span>) : <span className="text-xs text-tertiaryText">暂无标签</span>}
-        </div>}
-        <div className="mt-4 h-px bg-lineSubtle" />
-      </section>
+      {showDocumentHeader && <section className={`mb-4 shrink-0 ${contentInset}`}>
+          <h1 className="break-words text-2xl font-semibold text-primaryText">{document.title}</h1>
+          <ProjectDocumentMetadata
+            createdByName={document.createdByName}
+            updatedByName={document.updatedByName}
+            updatedAt={document.updatedAt}
+            index={document.index}
+          />
+          {showTags && <div className="mt-4 flex flex-wrap items-center gap-2">
+            {(document.tags?.length ?? 0) > 0 ? document.tags?.map((tag) => <span key={tag} className="inline-flex items-center rounded-full border border-lineSubtle bg-bgLight px-2.5 py-1 text-xs text-secondaryText">{tag}</span>) : <span className="text-xs text-tertiaryText">暂无标签</span>}
+          </div>}
+          <div className="mt-4 h-px bg-lineSubtle" />
+        </section>}
 
       <section
         onScroll={handleContentScroll}

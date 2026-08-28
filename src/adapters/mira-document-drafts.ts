@@ -28,6 +28,7 @@ export interface MiraDraftTarget {
   projectId: string;
   projectName: string;
   parentNodeId?: string | null;
+  tags?: string[];
 }
 
 export interface MappedMiraDocumentDraft {
@@ -124,6 +125,7 @@ export async function confirmMiraDocumentDraft(
         projectId: target.projectId,
         projectKnowledgeType: action.projectKnowledgeType || "other",
         projectKnowledgeSection: action.projectKnowledgeSection || "knowledge",
+        tags: target.tags ?? [],
       },
     },
   );
@@ -153,11 +155,6 @@ export function mapMiraDocumentDraftPreview(
     type: "draft",
     title: action.title,
     subtitle: `${projectName} · 待确认草稿`,
-    actions: [
-      { id: "cancel", label: "取消", tone: "secondary" },
-      { id: "edit", label: "编辑", tone: "secondary" },
-      { id: "confirm", label: "确认保存", tone: "primary" },
-    ],
     document: {
       id: action.actionId,
       title: action.title,
@@ -166,7 +163,7 @@ export function mapMiraDocumentDraftPreview(
       createdByName: "Helia",
       updatedByName: "Helia",
       updatedAt: "刚刚",
-      canEdit: true,
+      canEdit: false,
       attachments: [],
       index: {
         status: "disabled",

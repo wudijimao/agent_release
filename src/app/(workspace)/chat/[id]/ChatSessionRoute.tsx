@@ -2,7 +2,6 @@
 
 import {
   BaseButton,
-  BaseModal,
   ChatComposerDock,
   ChatConversationViewport,
   ChatPreviewPanel,
@@ -14,6 +13,8 @@ import {
   ChatWorkspaceHeaderAction,
   ChatWorkspaceSidePanel,
   InputArea,
+  MiraDraftPreviewContent,
+  MiraDraftSaveModal,
   useNavigation,
   type ChatMessage,
   type ChatPreviewItemViewModel,
@@ -259,6 +260,10 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     useState<MiraDraftTargetSelection | null>(null);
   const [selectedMiraTargetProjectId, setSelectedMiraTargetProjectId] =
     useState<string>();
+  const [selectedMiraDraftTags, setSelectedMiraDraftTags] = useState<string[]>([]);
+  const [savedMiraDraftProjectNames, setSavedMiraDraftProjectNames] = useState<
+    Record<string, string>
+  >({});
   const [pendingDisplayActionKey, setPendingDisplayActionKey] = useState<string>();
   const [pendingMiraActionKey, setPendingMiraActionKey] = useState<string>();
   const [pendingDocumentPreviewKey, setPendingDocumentPreviewKey] =
@@ -846,26 +851,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       editedContent?: DocumentEditState,
       selectedTargetProjectId?: string,
       previewItemKey?: string,
+      selectedTags: string[] = [],
     ) => {
       if (pendingMiraActionKey) return false;
       const sourceAction = miraDraftActions[actionKey];
       if (!sourceAction) return false;
-
-      const conversationProjectId = currentChat?.projectId;
-      const conversationIsUnassigned = isUnassignedProject(
-        conversationProjectId,
-        defaultProjectId,
-      );
-      if (conversationIsUnassigned && !selectedTargetProjectId) {
-        setSelectedMiraTargetProjectId(undefined);
-        setMiraDraftTargetSelection({
-          actionKey,
-          editedContent,
-          previewItemKey,
-        });
-        return false;
-      }
-      const projectId = selectedTargetProjectId ?? conversationProjectId;
+      const projectId = selectedTargetProjectId;
       if (!projectId) return false;
       const action = editedContent
         ? { ...sourceAction, ...editedContent }
@@ -888,28 +879,47 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       setPendingMiraActionKey(actionKey);
       setStreamNotice("");
       try {
-        const selectedProject = selectedTargetProjectId
-          ? await loadProjectDetail(api, selectedTargetProjectId)
-          : null;
+        const selectedProject = await loadProjectDetail(api, projectId);
+        const selectedProjectName =
+          selectedProject?.name
+          ?? projects.find((project) => project.id === projectId)?.name
+          ?? "当前项目";
         const confirmation = await confirmMiraDocumentDraft(api, action, {
           projectId,
-          projectName:
-            selectedProject?.name
-            ?? projectWorkspace?.projectName
-            ?? currentProject?.name
-            ?? "当前项目",
+          projectName: selectedProjectName,
           parentNodeId:
             selectedProject?.defaultKbNodeId
-            ?? projectWorkspace?.defaultKbNodeId,
+            ?? (projectId === currentChat?.projectId
+              ? projectWorkspace?.defaultKbNodeId
+              : undefined),
+          tags: selectedTags,
         });
         const documentId = confirmation.nodeId ?? confirmation.outputRef?.nodeId;
+        let tagUpdateFailed = false;
+        if (documentId && selectedTags.length > 0) {
+          try {
+            await updateProjectDocument(api, {
+              kbNodeId: documentId,
+              title: action.title,
+              markdown: action.markdown,
+              tags: selectedTags,
+            });
+          } catch {
+            tagUpdateFailed = true;
+          }
+        }
         updateDraftCard({
           status: "saved",
           errorMessage: undefined,
+          targetLabel: selectedProjectName,
           ...(documentId
             ? { documentId, previewable: true }
             : { previewable: false }),
         });
+        setSavedMiraDraftProjectNames((current) => ({
+          ...current,
+          [actionKey]: selectedProjectName,
+        }));
         setMiraDraftActions((current) => {
           const next = { ...current };
           delete next[actionKey];
@@ -917,8 +927,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         });
         trackProductEvent(PRODUCT_ANALYTICS_EVENTS.saveDraft, {
           source: previewItemKey ? "chat_preview" : "chat_message",
-          target_changed: selectedTargetProjectId ? 1 : 0,
+          target_changed: selectedTargetProjectId !== currentChat?.projectId ? 1 : 0,
         });
+        if (tagUpdateFailed) {
+          setStreamNotice("文档已保存，但标签更新失败，请稍后在文档中补充。");
+        }
         await Promise.all([loadProjectWorkspace(), refreshProjects()]);
         return true;
       } catch (error) {
@@ -935,15 +948,33 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     [
       api,
       currentChat,
-      currentProject,
-      defaultProjectId,
       loadProjectWorkspace,
       miraDraftActions,
       pendingMiraActionKey,
+      projects,
       projectWorkspace,
       refreshProjects,
     ],
   );
+
+  const openMiraDraftSaveDialog = useCallback((
+    actionKey: string,
+    editedContent?: DocumentEditState,
+    previewItemKey?: string,
+  ) => {
+    const conversationProjectId = currentChat?.projectId;
+    const defaultTargetProjectId = isUnassignedProject(
+      conversationProjectId,
+      defaultProjectId,
+    )
+      ? undefined
+      : projects.find((project) =>
+          project.id === conversationProjectId && project.selectable !== false
+        )?.id;
+    setSelectedMiraTargetProjectId(defaultTargetProjectId);
+    setSelectedMiraDraftTags([]);
+    setMiraDraftTargetSelection({ actionKey, editedContent, previewItemKey });
+  }, [currentChat?.projectId, defaultProjectId, projects]);
 
   const normalizedFileSearchQuery = fileSearchQuery.trim().toLowerCase();
   const displayedProjectContent = useMemo(() => {
@@ -1282,23 +1313,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       if (!edit) return;
       if (item.key.startsWith("draft:")) {
         const actionKey = item.key.slice("draft:".length);
-        void handleConfirmMiraDraft(
-          actionKey,
-          edit,
-          undefined,
-          item.key,
-        ).then((confirmed) => {
-          if (confirmed) closePreviewTab(item.key);
-        });
+        openMiraDraftSaveDialog(actionKey, edit, item.key);
         return;
       }
       void handleSaveProjectDocumentPreview(item, edit);
     },
     [
-      closePreviewTab,
       documentPreviewEdits,
-      handleConfirmMiraDraft,
       handleSaveProjectDocumentPreview,
+      openMiraDraftSaveDialog,
     ],
   );
 
@@ -1329,20 +1352,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         return;
       }
       if (!itemKey.startsWith("draft:")) return;
-      const actionKey = itemKey.slice("draft:".length);
-      if (actionId === "confirm") {
-        void handleConfirmMiraDraft(actionKey).then((confirmed) => {
-          if (confirmed) closePreviewTab(itemKey);
-        });
-      } else if (actionId === "cancel") {
-        void handleCancelMiraDraft(actionKey);
-      }
     },
     [
-      closePreviewTab,
       handleCancelDocumentPreviewEdit,
-      handleCancelMiraDraft,
-      handleConfirmMiraDraft,
       handleSaveDocumentPreviewEdit,
       previewTabs,
     ],
@@ -1369,10 +1381,23 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const renderPreviewContent = useCallback(
     (item: ChatPreviewItemViewModel) => {
       const edit = documentPreviewEdits[item.key];
-      if (!item.document || !edit) return undefined;
+      if (!item.document) return undefined;
       const isDraft = item.key.startsWith("draft:");
       const actionKey = isDraft ? item.key.slice("draft:".length) : undefined;
       const action = actionKey ? miraDraftActions[actionKey] : undefined;
+      if (isDraft && !edit) {
+        return (
+          <MiraDraftPreviewContent
+            document={item.document}
+            savedProjectName={actionKey ? savedMiraDraftProjectNames[actionKey] : undefined}
+            saving={Boolean(actionKey && pendingMiraActionKey === actionKey)}
+            onSave={actionKey && action
+              ? () => openMiraDraftSaveDialog(actionKey, undefined, item.key)
+              : undefined}
+          />
+        );
+      }
+      if (!edit) return undefined;
       if (isDraft && (!actionKey || !action)) return undefined;
 
       return (
@@ -1431,9 +1456,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       handleCancelDocumentPreviewEdit,
       handleSaveDocumentPreviewEdit,
       miraDraftActions,
+      openMiraDraftSaveDialog,
       pendingDocumentPreviewKey,
       pendingMiraActionKey,
       projectWorkspace?.projectName,
+      savedMiraDraftProjectNames,
     ],
   );
 
@@ -1709,22 +1736,19 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         </div>
       )}
 
-      <BaseModal
+      <MiraDraftSaveModal
         visible={miraDraftTargetSelection !== null}
-        title="选择文档保存项目"
-        width={440}
-        maskClosable={!pendingMiraActionKey}
-        okText="保存到该项目"
-        cancelText="取消"
-        confirmLoading={Boolean(pendingMiraActionKey)}
-        okButtonProps={{
-          disabled: !selectedMiraTargetProjectId || Boolean(pendingMiraActionKey),
-        }}
-        cancelButtonProps={{ disabled: Boolean(pendingMiraActionKey) }}
+        projects={projects}
+        selectedProjectId={selectedMiraTargetProjectId}
+        tags={selectedMiraDraftTags}
+        saving={Boolean(pendingMiraActionKey)}
+        onProjectChange={setSelectedMiraTargetProjectId}
+        onTagsChange={setSelectedMiraDraftTags}
         onCancel={() => {
           if (pendingMiraActionKey) return;
           setMiraDraftTargetSelection(null);
           setSelectedMiraTargetProjectId(undefined);
+          setSelectedMiraDraftTags([]);
         }}
         onConfirm={async () => {
           const selection = miraDraftTargetSelection;
@@ -1734,47 +1758,15 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             selection.actionKey,
             selection.editedContent,
             targetProjectId,
+            selection.previewItemKey,
+            selectedMiraDraftTags,
           );
           if (!confirmed) return;
           setMiraDraftTargetSelection(null);
           setSelectedMiraTargetProjectId(undefined);
-          if (selection.previewItemKey) {
-            closePreviewTab(selection.previewItemKey);
-          }
+          setSelectedMiraDraftTags([]);
         }}
-      >
-        <p className="mb-3 text-sm leading-6 text-secondaryText">
-          当前对话属于“未归属项目”，请选择文档最终保存的位置。
-        </p>
-        <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
-          {projects.filter((project) => project.selectable !== false).length ? (
-            projects
-              .filter((project) => project.selectable !== false)
-              .map((project) => {
-                const selected = selectedMiraTargetProjectId === project.id;
-                return (
-                  <button
-                    key={project.id}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => setSelectedMiraTargetProjectId(project.id)}
-                    className={`w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
-                      selected
-                        ? "border-primary bg-primary-soft text-primary"
-                        : "border-lineSubtle bg-surface text-primaryText hover:bg-surfaceMuted"
-                    }`}
-                  >
-                    <span className="block truncate font-medium">{project.name}</span>
-                  </button>
-                );
-              })
-          ) : (
-            <div className="rounded-lg bg-surfaceMuted px-4 py-3 text-sm text-secondaryText">
-              暂无可保存的项目，请先创建项目。
-            </div>
-          )}
-        </div>
-      </BaseModal>
+      />
     </ChatWorkspaceFrame>
   );
 }

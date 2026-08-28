@@ -61,6 +61,13 @@ export { MessageItem } from "./MessageItem";
 export type { MessageItemProps } from "./MessageItem";
 export { MiraDraftCard } from "./MiraDraftCard";
 export type { MiraDraftCardProps } from "./MiraDraftCard";
+export { MiraDraftPreviewContent } from "./MiraDraftPreviewContent";
+export type { MiraDraftPreviewContentProps } from "./MiraDraftPreviewContent";
+export { MiraDraftSaveModal } from "./MiraDraftSaveModal";
+export type {
+  MiraDraftSaveModalProps,
+  MiraDraftSaveProjectOption,
+} from "./MiraDraftSaveModal";
 export { MessageList } from "./MessageList";
 export type { MessageListProps } from "./MessageList";
 export { QuickPrompts, CHAT_QUICK_PROMPTS } from "./QuickPrompts";

@@ -61,12 +61,8 @@ test("mira draft preview reuses the project document preview view model", () => 
   assert.equal(preview.type, "draft");
   assert.equal(preview.document?.title, "CRISPR 论文分析");
   assert.equal(preview.document?.markdown, "# CRISPR 论文分析\n\n正文");
-  assert.equal(preview.document?.canEdit, true);
-  assert.deepEqual(preview.actions, [
-    { id: "cancel", label: "取消", tone: "secondary" },
-    { id: "edit", label: "编辑", tone: "secondary" },
-    { id: "confirm", label: "确认保存", tone: "primary" },
-  ]);
+  assert.equal(preview.document?.canEdit, false);
+  assert.equal(preview.actions, undefined);
 });
 
 test("completed mira draft exposes its persisted document for preview", () => {
@@ -126,6 +122,7 @@ test("mira draft confirmation patches the current project before confirming", as
     projectId: "project-1",
     projectName: "肿瘤项目",
     parentNodeId: "kb-root-1",
+    tags: ["文献研究", "基因编辑"],
   });
 
   assert.deepEqual(calls, [
@@ -142,6 +139,7 @@ test("mira draft confirmation patches the current project before confirming", as
           projectId: "project-1",
           projectKnowledgeType: "other",
           projectKnowledgeSection: "knowledge",
+          tags: ["文献研究", "基因编辑"],
         },
       },
     },
