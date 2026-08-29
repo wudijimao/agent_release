@@ -368,6 +368,32 @@
   --chatui-shadow-auth-card: 0 20px 40px #0000000d, 0 1px 3px #00000005;
   --chatui-shadow-shell-warning: 0 6px 20px #0f172a14;
   --chatui-shadow-segmented-active: 0 1px 3px #0000000f;
+  --chatui-layout-content-gutter-compact: 1rem;
+  --chatui-layout-content-gutter-medium: 2rem;
+  --chatui-layout-content-gutter-wide: 2.5rem;
+}
+
+.chatui-page-content-gutter,
+.chatui-chat-content-gutter {
+  padding-inline: var(--chatui-layout-content-gutter-compact);
+}
+
+@media (min-width: 640px) {
+  .chatui-chat-content-gutter {
+    padding-inline: var(--chatui-layout-content-gutter-medium);
+  }
+}
+
+@media (min-width: 768px) {
+  .chatui-page-content-gutter {
+    padding-inline: var(--chatui-layout-content-gutter-medium);
+  }
+}
+
+@media (min-width: 1024px) {
+  .chatui-page-content-gutter {
+    padding-inline: var(--chatui-layout-content-gutter-wide);
+  }
 }
 
 @layer base {

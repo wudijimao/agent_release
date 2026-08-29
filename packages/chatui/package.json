@@ -23,9 +23,13 @@
     }
   },
   "scripts": {
+    "predev": "npm run theme:generate",
     "dev": "vite --port 5174",
+    "prebuild": "npm run theme:generate",
     "build": "npm run styles:check && vite build && tsc -p tsconfig.build.json",
-    "styles:check": "node .codex/skills/check-chatui-styles/scripts/check-theme-colors.mjs && node .codex/skills/check-chatui-styles/scripts/check-prototype-boundaries.mjs",
+    "theme:generate": "node scripts/generate-antd-theme.mjs",
+    "theme:check": "node scripts/generate-antd-theme.mjs --check",
+    "styles:check": "npm run theme:check && node .codex/skills/check-chatui-styles/scripts/check-theme-colors.mjs && node .codex/skills/check-chatui-styles/scripts/check-prototype-boundaries.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

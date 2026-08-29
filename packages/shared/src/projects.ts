@@ -100,6 +100,7 @@ export interface ProjectKnowledgeSummary {
   projectId: string;
   kbNodeId: string;
   title: string;
+  tags: string[];
   knowledgeType: ProjectKnowledgeType;
   section: ProjectKnowledgeSection;
   visibility: ProjectKnowledgeVisibility;
@@ -107,7 +108,6 @@ export interface ProjectKnowledgeSummary {
   sourceKbNodeId?: string | null;
   sourceLinkId?: string | null;
   sourceKind?: ProjectKnowledgeSourceKind | null;
-  tags?: string[];
   updatedAt: string;
   createdAt: string;
 }

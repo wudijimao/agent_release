@@ -28,3 +28,5 @@ export { BaseEmpty } from './BaseEmpty';
 export type { BaseEmptyProps } from './BaseEmpty';
 export { BaseActionMenu } from './BaseActionMenu';
 export type { BaseActionMenuItem, BaseActionMenuProps } from './BaseActionMenu';
+export { ShareModal } from './ShareModal';
+export type { ShareModalProps } from './ShareModal';

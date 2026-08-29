@@ -118,9 +118,9 @@ export function ProjectDocumentTagPicker({
               key={`${tag.custom ? 'custom' : 'option'}-${tag.value}`}
               type="button"
               onClick={() => toggleTag(tag)}
-              className={`group grid h-8 grid-cols-1 items-center rounded-md border px-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary-soft-strong ${selected
-                ? 'border-primary bg-primary-soft text-primary'
-                : 'border-transparent bg-bgLight text-secondaryText hover:border-controlBorder hover:bg-surfaceMuted'
+              className={`group grid h-8 grid-cols-1 items-center rounded-md border border-transparent px-2.5 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary-soft-strong ${selected
+                ? 'bg-primary-soft text-primary'
+                : 'bg-bgLight text-secondaryText hover:bg-primary-soft hover:text-primary'
               }`}
               aria-pressed={selected}
             >

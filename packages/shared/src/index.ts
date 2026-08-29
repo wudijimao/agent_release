@@ -408,6 +408,7 @@ export interface KbNodeSummary {
   coverUrl?: string | null;
   sortOrder: number;
   excerpt: string;
+  tags: string[];
   childCount: number;
   sourceFeedItemId?: string | null;
   effectivePermission: KbPermission;

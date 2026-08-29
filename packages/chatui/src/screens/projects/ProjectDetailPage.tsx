@@ -273,7 +273,7 @@ export function ProjectDetailPage({
         </div>}
       </header>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10">
+      <div className="chatui-page-content-gutter flex-1 overflow-y-auto pb-12 pt-4 md:pb-12 md:pt-6">
         <div className="mx-auto max-w-[1240px]">
           {!project ? <div className="rounded-lg border border-dashed border-borderSoft"><BaseEmpty description="项目不存在或已被删除" /></div> : <section>
             {editingName ? <input type="text" value={nameDraft} onChange={(event) => setNameDraft(event.target.value)} onBlur={() => void saveName()}

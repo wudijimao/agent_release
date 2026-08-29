@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Menu, MoreHorizontal, Trash2 } from 'lucide-react';
-import { BaseActionMenu, BaseButton, BaseDeleteConfirmModal, BaseModal } from '../../components/common';
+import { BaseActionMenu, BaseButton, BaseDeleteConfirmModal, BaseModal, ShareModal } from '../../components/common';
 import type { ProjectDocumentAttachmentUploadViewModel, ProjectDocumentAttachmentViewModel } from './ProjectDocumentAttachments';
 import type { ProjectDocumentIndexViewModel } from './ProjectDocumentMetadata';
 import { ProjectDocumentEditor } from './ProjectDocumentEditor';
@@ -44,6 +44,7 @@ export interface ProjectDocumentPreviewProps {
   onUploadAttachments?(files: File[], onReady?: () => void): void | Promise<void>;
   onDeleteAttachment?(attachmentId: string): void | Promise<void>;
   onTagsChange?(tags: string[]): void;
+  shareUrl?: string;
   entityLabel?: '文档' | '模板';
   layout?: 'page' | 'compact';
   showTags?: boolean;
@@ -74,6 +75,7 @@ export function ProjectDocumentPreview({
   onUploadAttachments,
   onDeleteAttachment,
   onTagsChange,
+  shareUrl,
   entityLabel = '文档',
   layout = 'page',
   showTags = true,
@@ -85,6 +87,7 @@ export function ProjectDocumentPreview({
   const [templateError, setTemplateError] = useState('');
   const [showSaveTemplateSuccessModal, setShowSaveTemplateSuccessModal] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [uploadingAttachments, setUploadingAttachments] = useState(false);
   const [attachmentUploads, setAttachmentUploads] = useState<ProjectDocumentAttachmentUploadViewModel[]>([]);
   const [attachmentError, setAttachmentError] = useState('');
@@ -127,9 +130,18 @@ export function ProjectDocumentPreview({
     if (!editing || !onSave || saving) return;
     await onSave({ keepEditing: false });
   };
-  const saveAndKeepEditing = async () => {
-    if (!editing || !onSave || saving) return;
-    await onSave({ keepEditing: true });
+  const saveAndBackToProject = async () => {
+    if (!editing || !onSave) {
+      onBackToProject();
+      return;
+    }
+    if (saving) return;
+    try {
+      await onSave({ keepEditing: false });
+      onBackToProject();
+    } catch {
+      // 保存错误由宿主通过 saveError 展示，保留当前页面避免丢失编辑内容。
+    }
   };
   const uploadAttachments = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -205,7 +217,7 @@ export function ProjectDocumentPreview({
               <Menu size={20} />
             </button>
           )}
-          <button type="button" onClick={onBackToProject} className="inline-flex items-center gap-1 text-sm text-tertiaryText transition-colors hover:text-primaryText">
+          <button type="button" disabled={saving} onClick={() => void saveAndBackToProject()} className="inline-flex items-center gap-1 text-sm text-tertiaryText transition-colors hover:text-primaryText disabled:cursor-wait disabled:opacity-60">
             <ArrowLeft size={16} />
             返回
           </button>
@@ -216,11 +228,9 @@ export function ProjectDocumentPreview({
             <button type="button" disabled={saving} onClick={() => void switchToPreview()} className={`rounded-md px-3 py-1 text-sm transition-colors disabled:cursor-wait ${!editing ? 'bg-surface text-primaryText shadow-sm' : 'text-secondaryText hover:text-primaryText'}`}>浏览</button>
             <button type="button" disabled={saving} onClick={onEdit} className={`rounded-md px-3 py-1 text-sm transition-colors disabled:cursor-wait ${editing ? 'bg-surface text-primaryText shadow-sm' : 'text-secondaryText hover:text-primaryText'}`}>编辑</button>
           </div>
-          <div className="w-[88px] shrink-0">
-            {editing && <BaseButton type="primary" size="small" rounded="large" className="w-full" disabled={saving} onClick={() => void saveAndKeepEditing()}>{saving ? '保存中…' : '保存'}</BaseButton>}
-          </div>
+          {editing && saving && <span className="shrink-0 text-xs text-tertiaryText">保存中…</span>}
           {onDelete && <button type="button" disabled={saving} onClick={() => { setDeleteError(''); setShowDeleteConfirmModal(true); }} className="inline-flex rounded-md p-1.5 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText disabled:cursor-wait disabled:opacity-50" title="删除" aria-label={`删除${entityLabel}`}><Trash2 size={18} /></button>}
-          {(onSaveAsTemplate || onUploadAttachments) && <BaseActionMenu
+          {(onSaveAsTemplate || onUploadAttachments || shareUrl) && <BaseActionMenu
             open={showActionMenu}
             onOpenChange={setShowActionMenu}
             placement="bottom-end"
@@ -229,11 +239,13 @@ export function ProjectDocumentPreview({
             items={[
               ...(onUploadAttachments ? [{ key: 'uploadAttachment', label: uploadingAttachments ? '上传中…' : '上传附件', disabled: uploadingAttachments }] : []),
               ...(onSaveAsTemplate ? [{ key: 'saveAsTemplate', label: savingTemplate ? '保存中…' : '保存为模板', disabled: savingTemplate }] : []),
+              ...(shareUrl ? [{ key: 'share', label: '分享文档' }] : []),
             ]}
             onItemClick={(item) => {
               setShowActionMenu(false);
               if (item.key === 'uploadAttachment') attachmentInputRef.current?.click();
               if (item.key === 'saveAsTemplate') void saveAsTemplate();
+              if (item.key === 'share') setShowShareModal(true);
             }}
           />}
         </div>}
@@ -316,6 +328,13 @@ export function ProjectDocumentPreview({
         onCancel={() => { setAttachmentPendingDeletion(null); setAttachmentDeleteError(''); }}
         onConfirm={confirmAttachmentDeletion}
       />
+
+      {shareUrl && <ShareModal
+        visible={showShareModal}
+        title="分享文档"
+        shareUrl={shareUrl}
+        onClose={() => setShowShareModal(false)}
+      />}
 
       {onDelete && <BaseModal
         visible={showDeleteConfirmModal}

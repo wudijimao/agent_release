@@ -131,7 +131,7 @@ export function ProjectsPage({
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10">
+      <div className="chatui-page-content-gutter flex-1 overflow-y-auto pb-12 pt-4 md:pb-12 md:pt-6">
         <div className="mx-auto max-w-[1240px]">
           <section className="pb-0">
             <h2 className="text-2xl font-semibold text-primaryText">科研项目</h2>
@@ -189,7 +189,8 @@ export function ProjectsPage({
         width={1040}
         footer={null}
         onCancel={closeTemplates}
-        bodyClassName="!h-[720px] !overflow-hidden !p-0"
+        className="!overflow-hidden"
+        bodyClassName="!h-[min(720px,calc(90vh-57px))] !overflow-hidden !p-0"
       >
         <div className="flex h-full min-h-0 flex-col px-6 py-5">
           <div

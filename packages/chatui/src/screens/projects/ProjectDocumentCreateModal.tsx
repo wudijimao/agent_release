@@ -66,7 +66,6 @@ const ProjectDocumentTemplateCard = React.memo(function ProjectDocumentTemplateC
       <span className={`absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full border ${selected ? 'border-primary bg-primary text-white' : 'border-controlBorder bg-white text-transparent'}`}><Check size={13} strokeWidth={3} /></span>
       <div className="flex items-center gap-2 px-3 pt-3 pr-9">
         <span className="truncate text-sm font-semibold text-primaryText">{template.name}</span>
-        {template.source === 'workspace' && <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-xs text-primary">自定义</span>}
       </div>
       <div className="relative mx-3 mb-3 mt-2.5 aspect-[4/5] overflow-hidden rounded-md bg-white">
         <div className="pointer-events-none origin-top-left scale-[0.62] px-3 py-2.5" style={{ width: '161%' }}>

@@ -267,7 +267,7 @@ export function ChatConversationViewport({
         ref={setScrollContainer}
         data-chat-scroll-container
         onScroll={handleScroll}
-        className="flex h-full flex-col items-center overflow-y-auto px-4 py-8 pt-20 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden"
+        className="chatui-chat-content-gutter flex h-full flex-col items-center overflow-y-auto py-8 pt-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         <div
           ref={contentRef}

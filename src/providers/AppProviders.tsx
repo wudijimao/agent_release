@@ -1,6 +1,6 @@
 "use client";
 
-import { NavigationProvider } from "@bioagent/chatui";
+import { ChatUIThemeProvider, NavigationProvider } from "@bioagent/chatui";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, type ReactNode } from "react";
 
@@ -42,11 +42,13 @@ export function AppProviders({ children }: AppProvidersProps) {
   }, []);
 
   return (
-    <NavigationProvider adapter={navigation}>
-      <AuthProvider>
-        <FirebaseAnalyticsIdentity />
-        <LabProvider>{children}</LabProvider>
-      </AuthProvider>
-    </NavigationProvider>
+    <ChatUIThemeProvider>
+      <NavigationProvider adapter={navigation}>
+        <AuthProvider>
+          <FirebaseAnalyticsIdentity />
+          <LabProvider>{children}</LabProvider>
+        </AuthProvider>
+      </NavigationProvider>
+    </ChatUIThemeProvider>
   );
 }

@@ -212,7 +212,7 @@ export default function ScheduledTasksOverview({
         </BaseButton>
       </header>
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 pb-12 pt-4 md:px-8 md:pb-12 md:pt-6 lg:px-10">
+      <div className="chatui-page-content-gutter flex-1 overflow-y-auto overflow-x-hidden pb-12 pt-4 md:pb-12 md:pt-6">
         <div className="mx-auto max-w-[1240px]">
           <section>
             <h2 className="text-2xl font-semibold text-primaryText">定时任务</h2>

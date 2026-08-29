@@ -17,6 +17,7 @@ import type {
   ProjectKnowledgeType,
 } from "@bioagent/shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { loadLabMembers } from "@/adapters/lab-members";
 import {
@@ -107,6 +108,8 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   const { user } = useAuth();
   const currentUserId = user?.id || "";
   const navigation = useNavigation();
+  const searchParams = useSearchParams();
+  const sharedDocumentId = searchParams.get("documentId")?.trim() || "";
   const { activeLab } = useLab();
   const {
     isSidebarOpen,
@@ -135,14 +138,30 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   const [documentEditDraft, setDocumentEditDraft] =
     useState<ProjectDocumentContentDraft | null>(null);
   const [documentDirty, setDocumentDirty] = useState(false);
+  const applicationOrigin = typeof window === "undefined" ? "" : window.location.origin;
   const documentDraftRef = useRef<ProjectDocumentDraft | null>(null);
   const documentRevisionRef = useRef(0);
+  const openedSharedDocumentRef = useRef("");
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const activeLabId = activeLab?.id || "";
 
   useEffect(() => {
     documentDraftRef.current = documentDraft;
   }, [documentDraft]);
+
+  useEffect(() => {
+    if (!sharedDocumentId || openedSharedDocumentRef.current === sharedDocumentId) return;
+    openedSharedDocumentRef.current = sharedDocumentId;
+    setNotice("正在加载文档…");
+    loadProjectDocumentDetail(api, sharedDocumentId)
+      .then((preview) => {
+        setDocumentPreview(preview);
+        setNotice("");
+      })
+      .catch((loadError: unknown) => {
+        setNotice(loadError instanceof Error ? loadError.message : "文档加载失败");
+      });
+  }, [api, sharedDocumentId]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -492,6 +511,9 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             await loadProjectDocumentDetail(api, documentPreview.id),
           );
         }}
+        shareUrl={applicationOrigin
+          ? `${applicationOrigin}/projects/${encodeURIComponent(projectId)}?documentId=${encodeURIComponent(documentPreview.id)}&shared=1`
+          : undefined}
       />
     );
   }
