@@ -36,6 +36,17 @@ export interface ChatSessionViewModel {
   miraDraftActions: Record<string, MiraDocumentDraftAction>;
   deferredActions: Record<string, ChatDeferredAction>;
   isReplying: boolean;
+  liveStreamState?: Pick<
+    ChatStreamViewState,
+    | "statusPhase"
+    | "searchSteps"
+    | "hasReceivedAssistantChunk"
+    | "runStatus"
+    | "activeTaskTraceId"
+    | "lastTaskTraceSequence"
+    | "activeDisplay"
+    | "replyStartedAtMs"
+  >;
 }
 
 export type ChatDeferredAction =
@@ -65,9 +76,88 @@ export interface ChatStreamViewState {
   activeTaskTraceId?: string;
   lastTaskTraceSequence?: number;
   activeDisplay?: HomeAssistantDisplay;
+  replyStartedAtMs?: number;
   deferredActions?: Record<string, ChatDeferredAction>;
   miraDraftActions?: Record<string, MiraDocumentDraftAction>;
   error?: string;
+}
+
+interface ChatActiveRunSnapshotState {
+  content?: unknown;
+  reasoning?: unknown;
+  display?: unknown;
+  displayDone?: unknown;
+  traceSteps?: unknown;
+  attachments?: unknown;
+}
+
+interface ChatActiveRunState {
+  runId: string;
+  status: "streaming" | "reconciling";
+  phase: "thinking" | "executing" | "answering" | "reconciling";
+  assistantMessageId: string;
+  updatedAt: string;
+  snapshot: ChatActiveRunSnapshotState;
+}
+
+type ChatHistoryDetailWithActiveRun = ChatHistoryDetailResponse & {
+  activeRunState?: ChatActiveRunState | null;
+};
+
+function renderedChatMessageSignature(message: ChatMessage) {
+  return JSON.stringify({
+    role: message.role,
+    content: message.content,
+    reasoning: message.reasoning,
+    attachments: message.attachments?.map((attachment) => ({
+      id: attachment.id,
+      name: attachment.name,
+      mimeType: attachment.mimeType,
+      previewUrl: attachment.previewUrl,
+      status: attachment.status,
+      errorMessage: attachment.errorMessage,
+    })),
+    references: message.references,
+    miraDraft: message.miraDraft,
+    displayCard: message.displayCard,
+  });
+}
+
+export function settleChatStreamState(
+  current: ChatStreamViewState,
+  session: ChatSessionViewModel,
+): ChatStreamViewState {
+  let reusedEveryMessage = current.messages.length === session.messages.length;
+  const messages = session.messages.map((message, index) => {
+    const currentMessage = current.messages[index];
+    if (
+      currentMessage &&
+      renderedChatMessageSignature(currentMessage) ===
+        renderedChatMessageSignature(message)
+    ) {
+      return currentMessage;
+    }
+    reusedEveryMessage = false;
+    return message;
+  });
+
+  return {
+    sessionId: session.id,
+    messages: reusedEveryMessage ? current.messages : messages,
+    statusPhase: session.liveStreamState?.statusPhase ?? "analyzing",
+    statusVisible: session.isReplying,
+    searchSteps: session.liveStreamState?.searchSteps ?? [],
+    hasReceivedAssistantChunk:
+      session.liveStreamState?.hasReceivedAssistantChunk ?? false,
+    runStatus: session.liveStreamState?.runStatus,
+    activeTaskTraceId: session.liveStreamState?.activeTaskTraceId,
+    lastTaskTraceSequence: session.liveStreamState?.lastTaskTraceSequence,
+    activeDisplay: session.liveStreamState?.activeDisplay,
+    replyStartedAtMs: session.isReplying
+      ? session.liveStreamState?.replyStartedAtMs
+      : undefined,
+    deferredActions: session.deferredActions,
+  };
 }
 
 type AgentRunStatus =
@@ -488,8 +578,131 @@ export function mapChatContextRef(
   };
 }
 
+function mapActiveRunAttachment(value: unknown): ChatAttachment | null {
+  const attachment = asRecord(value);
+  if (
+    !attachment ||
+    typeof attachment.id !== "string" ||
+    typeof attachment.name !== "string" ||
+    typeof attachment.mimeType !== "string" ||
+    typeof attachment.kind !== "string"
+  ) {
+    return null;
+  }
+
+  return mapChatAttachmentRef(attachment as unknown as ChatAttachmentRefDto);
+}
+
+function mapActiveRunMessage(
+  activeRunState: ChatActiveRunState,
+  options: { projectName?: string },
+) {
+  const snapshot = activeRunState.snapshot;
+  const display = normalizeHomeAssistantDisplay(snapshot.display);
+  const mappedDraft = mapMiraDocumentDraft(
+    display,
+    activeRunState.assistantMessageId,
+    options.projectName,
+  );
+  const displayCard = mapChatDisplayCard(display);
+  const deferredAction = mapDisplayDeferredAction(display);
+  const attachments = Array.isArray(snapshot.attachments)
+    ? snapshot.attachments
+        .map(mapActiveRunAttachment)
+        .filter((attachment): attachment is ChatAttachment => attachment !== null)
+    : [];
+
+  return {
+    message: {
+      id: activeRunState.assistantMessageId,
+      role: "assistant" as const,
+      content: typeof snapshot.content === "string" ? snapshot.content : "",
+      attachments,
+      ...(typeof snapshot.reasoning === "string"
+        ? { reasoning: snapshot.reasoning }
+        : {}),
+      ...(mappedDraft ? { miraDraft: mappedDraft.card } : {}),
+      ...(displayCard ? { displayCard } : {}),
+    },
+    display,
+    draftAction: mappedDraft?.action,
+    deferredAction,
+  };
+}
+
+function mergeActiveRunMessage(
+  messages: ChatMessage[],
+  activeMessage: ChatMessage,
+) {
+  const index = messages.findIndex(
+    (message) =>
+      message.role === "assistant" && message.id === activeMessage.id,
+  );
+  if (index < 0) return [...messages, activeMessage];
+
+  return messages.map((message, messageIndex) =>
+    messageIndex === index ? { ...message, ...activeMessage } : message,
+  );
+}
+
+function mapActiveRunStreamState(
+  activeRunState: ChatActiveRunState,
+  message: ChatMessage,
+  display: HomeAssistantDisplay | null,
+  replyStartedAtMs?: number,
+): ChatSessionViewModel["liveStreamState"] {
+  const phaseBySnapshot: Record<ChatActiveRunState["phase"], StatusPhase> = {
+    thinking: "thinking",
+    executing: "executing",
+    answering: "generating",
+    reconciling: "generating",
+  };
+  let state: ChatStreamViewState = {
+    messages: [message],
+    statusPhase: phaseBySnapshot[activeRunState.phase],
+    statusVisible: true,
+    searchSteps: [],
+    hasReceivedAssistantChunk: Boolean(message.content),
+    runStatus: "running",
+    activeDisplay: display ?? undefined,
+    replyStartedAtMs,
+  };
+
+  if (Array.isArray(activeRunState.snapshot.traceSteps)) {
+    for (const step of activeRunState.snapshot.traceSteps) {
+      state = reduceChatStreamEvent(state, "task_trace", { step });
+    }
+  }
+
+  const snapshotPhase = phaseBySnapshot[activeRunState.phase];
+  const statusPhase =
+    activeRunState.phase === "answering" ||
+    activeRunState.phase === "reconciling" ||
+    activeRunState.phase === "thinking" ||
+    state.statusPhase === "analyzing"
+      ? snapshotPhase
+      : state.statusPhase;
+
+  return {
+    statusPhase,
+    searchSteps: state.searchSteps,
+    hasReceivedAssistantChunk: state.hasReceivedAssistantChunk,
+    runStatus: state.runStatus,
+    activeTaskTraceId: state.activeTaskTraceId,
+    lastTaskTraceSequence: state.lastTaskTraceSequence,
+    activeDisplay: state.activeDisplay,
+    replyStartedAtMs: state.replyStartedAtMs,
+  };
+}
+
+function parseChatRunStartedAt(value: string | undefined) {
+  if (!value) return undefined;
+  const startedAt = new Date(value).getTime();
+  return Number.isFinite(startedAt) ? startedAt : undefined;
+}
+
 export function mapChatHistoryDetail(
-  response: ChatHistoryDetailResponse,
+  response: ChatHistoryDetailWithActiveRun,
   options: { projectName?: string } = {},
 ): ChatSessionViewModel {
   const attachmentDetails = new Map<string, ChatAttachmentDto>(
@@ -497,7 +710,13 @@ export function mapChatHistoryDetail(
   );
   const latestRun = response.runs[0];
   const isReplying =
-    latestRun?.status === "queued" || latestRun?.status === "running";
+    Boolean(response.activeRunState) ||
+    latestRun?.status === "queued" ||
+    latestRun?.status === "running";
+  const activeHistoryRun = response.activeRunState
+    ? response.runs.find((run) => run.id === response.activeRunState?.runId)
+    : latestRun;
+  const replyStartedAtMs = parseChatRunStartedAt(activeHistoryRun?.createdAt);
 
   const miraDraftActions: Record<string, MiraDocumentDraftAction> = {};
   const deferredActions: Record<string, ChatDeferredAction> = {};
@@ -561,12 +780,19 @@ export function mapChatHistoryDetail(
     };
   });
 
-  return {
-    id: response.sessionId,
-    title: response.session.title?.trim() || "新对话",
-    messageIds: response.messages.map((message) => message.id),
-    messages: messages
-      .concat(
+  const activeRun = response.activeRunState
+    ? mapActiveRunMessage(response.activeRunState, options)
+    : null;
+  if (activeRun?.draftAction) {
+    miraDraftActions[activeRun.draftAction.actionKey] = activeRun.draftAction;
+  }
+  if (activeRun?.deferredAction) {
+    deferredActions[activeRun.deferredAction.actionKey] =
+      activeRun.deferredAction;
+  }
+  const liveMessages = activeRun
+    ? mergeActiveRunMessage(messages, activeRun.message)
+    : messages.concat(
         isReplying &&
           response.messages
             .filter(
@@ -576,11 +802,37 @@ export function mapChatHistoryDetail(
             .at(-1)?.role === "user"
           ? [{ role: "assistant" as const, content: "", attachments: [] }]
           : [],
-      )
-      .concat(pendingActionMessages),
+      );
+
+  return {
+    id: response.sessionId,
+    title: response.session.title?.trim() || "新对话",
+    messageIds: response.messages.map((message) => message.id),
+    messages: liveMessages.concat(pendingActionMessages),
     miraDraftActions,
     deferredActions,
     isReplying,
+    ...(response.activeRunState && activeRun
+      ? {
+          liveStreamState: mapActiveRunStreamState(
+            response.activeRunState,
+            activeRun.message,
+            activeRun.display,
+            replyStartedAtMs,
+          ),
+        }
+      : isReplying
+        ? {
+            liveStreamState: {
+              statusPhase:
+                latestRun?.status === "queued" ? "queued" : "analyzing",
+              searchSteps: [],
+              hasReceivedAssistantChunk: false,
+              runStatus: latestRun?.status === "queued" ? "queued" : "running",
+              replyStartedAtMs,
+            },
+          }
+      : {}),
   };
 }
 
@@ -589,7 +841,7 @@ async function fetchChatSessionDetail(
   sessionId: string,
   signal?: AbortSignal,
 ) {
-  return api.get<ChatHistoryDetailResponse>(
+  return api.get<ChatHistoryDetailWithActiveRun>(
     `/api/chat/history?sessionId=${encodeURIComponent(sessionId)}`,
     { signal },
   );

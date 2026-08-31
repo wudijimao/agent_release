@@ -42,6 +42,7 @@ import {
   mapChatAttachmentRef,
   reconcileChatStream,
   reduceChatStreamEvent,
+  settleChatStreamState,
   shouldReconcileChatStreamFailure,
   type ChatStreamViewState,
   updateLatestUserMessageAttachments,
@@ -403,12 +404,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (signal?.aborted) return;
         if (streamControllerRef.current) return;
         setTitle(session.title);
-        setStreamState({
-          ...initialStreamState,
-          messages: session.messages,
-          statusVisible: session.isReplying,
-          deferredActions: session.deferredActions,
-        });
+        setStreamState((current) => settleChatStreamState(current, session));
         setMiraDraftActions(session.miraDraftActions);
         setIsRemoteReplying(session.isReplying);
         setShowProjectPanel(false);
@@ -565,12 +561,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         if (controller.signal.aborted) return;
 
         setTitle(session.title);
-        setStreamState({
-          ...initialStreamState,
-          messages: session.messages,
-          statusVisible: session.isReplying,
-          deferredActions: session.deferredActions,
-        });
+        setStreamState((current) => settleChatStreamState(current, session));
         setMiraDraftActions(session.miraDraftActions);
         setIsRemoteReplying(session.isReplying);
         persistedMessageIdsRef.current = session.messageIds;
@@ -748,11 +739,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           projectName: currentProject?.name,
         });
         setTitle(reconciled.title);
-        setStreamState({
-          ...initialStreamState,
-          messages: reconciled.messages,
-          deferredActions: reconciled.deferredActions,
-        });
+        setStreamState((current) => settleChatStreamState(current, reconciled));
         setMiraDraftActions(reconciled.miraDraftActions);
         persistedMessageIdsRef.current = reconciled.messageIds;
         historyLoadedSessionIdRef.current = resolvedSessionId;
@@ -777,11 +764,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               },
             );
             setTitle(recovered.title);
-            setStreamState({
-              ...initialStreamState,
-              messages: recovered.messages,
-              deferredActions: recovered.deferredActions,
-            });
+            setStreamState((current) => settleChatStreamState(current, recovered));
             setMiraDraftActions(recovered.miraDraftActions);
             persistedMessageIdsRef.current = recovered.messageIds;
             historyLoadedSessionIdRef.current = recovered.id;
@@ -1651,6 +1634,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           statusVisible={streamState.statusVisible}
           searchSteps={streamState.searchSteps}
           hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
+          replyStartedAtMs={streamState.replyStartedAtMs}
           contentMaxWidth={showPreviewPanel ? "100%" : 800}
           scrollContainerRef={scrollContainerRef}
           onScroll={syncActiveTimelineByScroll}
@@ -1658,7 +1642,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
             messageElementRefs.current[index] = element;
           }}
           getMessageKey={(_message: ChatMessage, index: number) =>
-            _message.id ?? `${sessionId}-${index}`
+            `${sessionId}-${index}`
           }
           onConfirmMiraDraft={handleConfirmMiraDraft}
           onPreviewMiraDraft={handlePreviewMiraDraft}

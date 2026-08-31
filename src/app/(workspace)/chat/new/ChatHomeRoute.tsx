@@ -22,6 +22,7 @@ import {
   mapChatAttachmentRef,
   reconcileChatStream,
   reduceChatStreamEvent,
+  settleChatStreamState,
   shouldReconcileChatStreamFailure,
   type ChatStreamViewState,
   updateLatestUserMessageAttachments,
@@ -223,13 +224,15 @@ export function ChatHomeRoute({
           throw new Error("服务端未返回新会话标识，请重试");
         }
 
-        await reconcileChatStream(api, nextState.sessionId, {
+        const reconciled = await reconcileChatStream(api, nextState.sessionId, {
           userContent: payload.content,
           signal: controller.signal,
         });
+        nextState = settleChatStreamState(nextState, reconciled);
+        setStreamState(nextState);
         setLastPayload(null);
         publishChatStreamHandoff({
-          sessionId: nextState.sessionId,
+          sessionId: reconciled.id,
           state: nextState,
           isStreaming: false,
         });
@@ -242,13 +245,15 @@ export function ChatHomeRoute({
           shouldReconcileChatStreamFailure(streamError, nextState)
         ) {
           try {
-            await reconcileChatStream(api, nextState.sessionId, {
+            const recovered = await reconcileChatStream(api, nextState.sessionId, {
               userContent: payload.content,
               signal: controller.signal,
             });
+            nextState = settleChatStreamState(nextState, recovered);
+            setStreamState(nextState);
             setLastPayload(null);
             publishChatStreamHandoff({
-              sessionId: nextState.sessionId,
+              sessionId: recovered.id,
               state: nextState,
               isStreaming: false,
             });
@@ -429,6 +434,7 @@ export function ChatHomeRoute({
                 statusVisible={streamState.statusVisible}
                 searchSteps={streamState.searchSteps}
                 hasReceivedAssistantChunk={streamState.hasReceivedAssistantChunk}
+                replyStartedAtMs={streamState.replyStartedAtMs}
                 getMessageKey={(_message: ChatMessage, index: number) =>
                   `new-chat-${index}`
                 }

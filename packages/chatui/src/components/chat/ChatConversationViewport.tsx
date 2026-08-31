@@ -23,6 +23,8 @@ export interface ChatConversationViewportProps {
   statusVisible?: boolean;
   searchSteps?: readonly SearchStep[];
   hasReceivedAssistantChunk?: boolean;
+  /** 当前回复的开始时间戳，用于路由切换后延续计时。 */
+  replyStartedAtMs?: number;
   contentMaxWidth?: number | string;
   selection?: ChatConversationSelection;
   scrollbar?: ChatConversationScrollbar;
@@ -71,6 +73,7 @@ export function ChatConversationViewport({
   statusVisible,
   searchSteps = [],
   hasReceivedAssistantChunk = false,
+  replyStartedAtMs,
   contentMaxWidth = 800,
   selection,
   scrollbar,
@@ -147,8 +150,15 @@ export function ChatConversationViewport({
       return;
     }
 
-    replyStartedAtRef.current = Date.now();
-    setReplyElapsedSeconds(0);
+    const now = Date.now();
+    const startedAt =
+      typeof replyStartedAtMs === 'number' &&
+      Number.isFinite(replyStartedAtMs) &&
+      replyStartedAtMs <= now
+        ? replyStartedAtMs
+        : now;
+    replyStartedAtRef.current = startedAt;
+    setReplyElapsedSeconds(Math.floor((now - startedAt) / 1000));
 
     const timer = window.setInterval(() => {
       const startedAt = replyStartedAtRef.current;
@@ -157,7 +167,7 @@ export function ChatConversationViewport({
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [isTyping]);
+  }, [isTyping, replyStartedAtMs]);
 
   const setScrollContainer = useCallback(
     (element: HTMLDivElement | null) => {

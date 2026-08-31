@@ -20,6 +20,7 @@ import {
   mapChatHistoryDetail,
   reconcileChatStream,
   reduceChatStreamEvent,
+  settleChatStreamState,
   shouldReconcileChatStreamFailure,
   updateLatestUserMessageAttachments,
 } from "./chat-session";
@@ -160,6 +161,172 @@ test("mapChatHistoryDetail produces the UI view model and hides system messages"
     deferredActions: {},
     isReplying: false,
   });
+});
+
+test("mapChatHistoryDetail restores an active assistant snapshot after returning to a chat", () => {
+  const result = mapChatHistoryDetail({
+    ...detail,
+    messages: detail.messages.slice(0, 2),
+    runs: [
+      {
+        id: "run-active-1",
+        sessionId: "session-1",
+        status: "running",
+        createdAt: "2026-08-31T09:58:30Z",
+      },
+    ],
+    activeRunState: {
+      runId: "run-active-1",
+      status: "streaming",
+      phase: "executing",
+      assistantMessageId: "assistant-active-1",
+      updatedAt: "2026-08-31T10:00:00Z",
+      snapshot: {
+        content: "正在检索相关文献",
+        reasoning: "先确认检索范围",
+        attachments: [
+          {
+            id: "snapshot-file-1",
+            name: "result.csv",
+            mimeType: "text/csv",
+            kind: "csv",
+          },
+        ],
+        traceSteps: [
+          {
+            id: "tool:literature-search",
+            title: "检索近期文献",
+            category: "retrieval",
+            status: "running",
+            sequence: 3,
+          },
+        ],
+        display: {
+          schemaVersion: "home-display.v1",
+          intentClass: "general_answer",
+          cardType: "answer",
+          title: "检索进度",
+          state: "streaming",
+          payload: { markdown: "正在检索相关文献" },
+        },
+      },
+    },
+  });
+
+  assert.equal(result.isReplying, true);
+  assert.equal(result.messages.length, 2);
+  assert.deepEqual(result.messages.at(-1), {
+    id: "assistant-active-1",
+    role: "assistant",
+    content: "正在检索相关文献",
+    reasoning: "先确认检索范围",
+    attachments: [
+      {
+        id: "snapshot-file-1",
+        name: "result.csv",
+        mimeType: "text/csv",
+        status: "ready",
+      },
+    ],
+  });
+  assert.equal(result.liveStreamState?.statusPhase, "searching");
+  assert.equal(result.liveStreamState?.hasReceivedAssistantChunk, true);
+  assert.equal(
+    result.liveStreamState?.replyStartedAtMs,
+    new Date("2026-08-31T09:58:30Z").getTime(),
+  );
+  assert.equal(result.liveStreamState?.activeDisplay?.title, "检索进度");
+  assert.deepEqual(result.liveStreamState?.searchSteps, [
+    {
+      id: "tool:literature-search",
+      type: "knowledge",
+      label: "检索近期文献",
+      status: "running",
+    },
+  ]);
+
+  const settled = settleChatStreamState(
+    {
+      messages: [],
+      statusPhase: "analyzing",
+      statusVisible: false,
+      searchSteps: [],
+      hasReceivedAssistantChunk: false,
+    },
+    result,
+  );
+  assert.equal(settled.statusVisible, true);
+  assert.equal(settled.statusPhase, "searching");
+  assert.equal(settled.hasReceivedAssistantChunk, true);
+  assert.deepEqual(settled.searchSteps, result.liveStreamState?.searchSteps);
+});
+
+test("mapChatHistoryDetail replaces a persisted assistant with its active snapshot", () => {
+  const result = mapChatHistoryDetail({
+    ...detail,
+    activeRunState: {
+      runId: "run-active-2",
+      status: "reconciling",
+      phase: "reconciling",
+      assistantMessageId: "assistant-1",
+      updatedAt: "2026-08-31T10:00:01Z",
+      snapshot: { content: "回答（仍在整理）" },
+    },
+  });
+
+  assert.equal(result.messages.length, 2);
+  assert.equal(result.messages.at(-1)?.id, "assistant-1");
+  assert.equal(result.messages.at(-1)?.content, "回答（仍在整理）");
+  assert.equal(result.liveStreamState?.statusPhase, "generating");
+});
+
+test("settling a chat stream reuses messages when only persisted ids changed", () => {
+  const session = mapChatHistoryDetail(detail);
+  const streamedMessages = session.messages.map((message) => ({
+    ...message,
+    id: undefined,
+  }));
+  const current = {
+    messages: streamedMessages,
+    statusPhase: "generating" as const,
+    statusVisible: false,
+    searchSteps: [],
+    hasReceivedAssistantChunk: true,
+    deferredActions: {},
+  };
+
+  const settled = settleChatStreamState(current, session);
+
+  assert.equal(settled.messages, streamedMessages);
+  assert.equal(settled.messages[0], streamedMessages[0]);
+  assert.equal(settled.messages[1], streamedMessages[1]);
+});
+
+test("settling a chat stream only replaces messages whose rendered content changed", () => {
+  const session = mapChatHistoryDetail(detail);
+  const current = {
+    messages: session.messages.map((message) => ({
+      ...message,
+      id: undefined,
+    })),
+    statusPhase: "generating" as const,
+    statusVisible: false,
+    searchSteps: [],
+    hasReceivedAssistantChunk: true,
+    deferredActions: {},
+  };
+  const changedSession = {
+    ...session,
+    messages: session.messages.map((message, index) =>
+      index === 1 ? { ...message, content: "更新后的回答" } : message,
+    ),
+  };
+
+  const settled = settleChatStreamState(current, changedSession);
+
+  assert.notEqual(settled.messages, current.messages);
+  assert.equal(settled.messages[0], current.messages[0]);
+  assert.equal(settled.messages[1], changedSession.messages[1]);
 });
 
 test("mapChatHistoryDetail restores MCP confirmation actions from history", () => {
@@ -323,6 +490,10 @@ test("mapChatHistoryDetail restores a pending assistant turn for an active run",
     content: "",
     attachments: [],
   });
+  assert.equal(
+    result.liveStreamState?.replyStartedAtMs,
+    new Date("2026-07-16T00:00:03Z").getTime(),
+  );
 });
 
 test("mapChatHistoryDetail treats only the latest queued or running run as replying", () => {
@@ -493,6 +664,7 @@ test("loadChatSession calls the real history detail endpoint", async () => {
 
 test("stream reducer accumulates live reasoning before answer text", () => {
   let state = beginChatStream([], { role: "user", content: "问题" });
+  assert.equal(state.replyStartedAtMs, undefined);
 
   state = reduceChatStreamEvent(state, "reasoning", { content: "先分析" });
   state = reduceChatStreamEvent(state, "reasoning", { content: "，再判断" });

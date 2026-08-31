@@ -82,6 +82,8 @@ interface ProjectDocumentDraft extends ProjectDocumentContentDraft {
   section: ProjectKnowledgeSection;
 }
 
+const PROJECT_DOCUMENT_PROCESSING_POLL_MS = 5_000;
+
 function RouteStatus({
   message,
   onRetry,
@@ -162,6 +164,71 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         setNotice(loadError instanceof Error ? loadError.message : "文档加载失败");
       });
   }, [api, sharedDocumentId]);
+
+  const processingDocumentId = documentPreview?.attachments.some(
+    (attachment) => attachment.status === "processing",
+  )
+    ? documentPreview.id
+    : "";
+  const documentEditing = documentEditDraft !== null;
+
+  useEffect(() => {
+    if (!processingDocumentId) return;
+
+    let cancelled = false;
+    let timer: number | undefined;
+    const pollDocumentProcessing = async () => {
+      try {
+        const preview = await loadProjectDocumentDetail(
+          api,
+          processingDocumentId,
+        );
+        if (cancelled) return;
+
+        setDocumentPreview((current) =>
+          current?.id === processingDocumentId ? preview : current,
+        );
+        if (documentEditing && !documentDirty) {
+          setDocumentEditDraft((current) =>
+            current
+              ? {
+                  title: projectDocumentTitleForEdit(preview.title),
+                  markdown: preview.markdown,
+                  tags: preview.tags,
+                }
+              : current,
+          );
+        }
+
+        if (
+          preview.attachments.some(
+            (attachment) => attachment.status === "processing",
+          )
+        ) {
+          timer = window.setTimeout(
+            pollDocumentProcessing,
+            PROJECT_DOCUMENT_PROCESSING_POLL_MS,
+          );
+        }
+      } catch {
+        if (!cancelled) {
+          timer = window.setTimeout(
+            pollDocumentProcessing,
+            PROJECT_DOCUMENT_PROCESSING_POLL_MS,
+          );
+        }
+      }
+    };
+
+    timer = window.setTimeout(
+      pollDocumentProcessing,
+      PROJECT_DOCUMENT_PROCESSING_POLL_MS,
+    );
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [api, documentDirty, documentEditing, processingDocumentId]);
 
   const load = useCallback(async () => {
     setLoading(true);
