@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { MoreHorizontal, Pencil, RefreshCw, Trash2 } from 'lucide-react';
+import { MessageCircle, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { BaseActionMenu, BaseTable, BaseToggle } from '../../components/common';
 import type { BaseActionMenuItem, BaseTableColumn } from '../../components/common';
 
@@ -8,10 +8,12 @@ export interface LiteratureSubscriptionListItemViewModel extends Record<string, 
   name: string;
   source: string;
   keywords: string;
-  schedule: string;
-  lastFetch: string;
+  nextRun: string;
+  scheduleEnd?: string;
+  trigger: string;
   itemStats: string;
   projectStats: string;
+  mainSessionId?: string;
   isEnabled: boolean;
 }
 
@@ -19,7 +21,7 @@ export interface LiteratureSubscriptionsTableProps {
   items: LiteratureSubscriptionListItemViewModel[];
   loading?: boolean;
   pendingId?: string | null;
-  onFetch(id: string): void;
+  onOpenChat(sessionId: string): void;
   onToggle(id: string): void;
   onEdit(id: string): void;
   onDelete(id: string): void;
@@ -29,7 +31,7 @@ export function LiteratureSubscriptionsTable({
   items,
   loading = false,
   pendingId,
-  onFetch,
+  onOpenChat,
   onToggle,
   onEdit,
   onDelete,
@@ -45,24 +47,20 @@ export function LiteratureSubscriptionsTable({
     {
       title: '关键词',
       dataIndex: 'keywords',
-      width: '22%',
-      render: (value) => <span className="line-clamp-2 break-all text-secondaryText">{String(value) || '未设置'}</span>,
+      width: '36%',
+      render: (value, item) => <div><span className="line-clamp-2 break-all text-secondaryText">{String(value) || '未设置'}</span><div className="mt-1 text-xs text-tertiaryText">{item.itemStats} · {item.projectStats}</div></div>,
     },
     {
-      title: '抓取设置',
-      dataIndex: 'schedule',
-      width: '14%',
-      render: (value) => <span className="text-secondaryText">{String(value)}</span>,
-    },
-    {
-      title: '内容统计',
-      dataIndex: 'itemStats',
+      title: '下次运行',
+      dataIndex: 'nextRun',
       width: '16%',
-      render: (value, item) => <div><div className="text-secondaryText">{String(value)}</div><div className="mt-1 text-xs text-tertiaryText">{item.projectStats}</div></div>,
+      render: (value, item) => <span><span className="block text-secondaryText">{String(value)}</span>
+        {item.scheduleEnd && <span className="mt-1 block text-xs text-tertiaryText">{item.scheduleEnd}</span>}
+      </span>,
     },
     {
-      title: '最近抓取',
-      dataIndex: 'lastFetch',
+      title: '触发方式',
+      dataIndex: 'trigger',
       width: '14%',
       render: (value) => <span className="text-secondaryText">{String(value)}</span>,
     },
@@ -80,7 +78,7 @@ export function LiteratureSubscriptionsTable({
       align: 'right',
       render: (_, item) => {
         const actions: BaseActionMenuItem[] = [
-          { key: 'fetch', label: '立即抓取', icon: <RefreshCw size={14} /> },
+          { key: 'chat', label: '打开对话', icon: <MessageCircle size={14} />, disabled: !item.mainSessionId },
           { key: 'edit', label: '编辑', icon: <Pencil size={14} /> },
           { key: 'delete', label: '删除', icon: <Trash2 size={14} />, danger: true },
         ];
@@ -89,13 +87,13 @@ export function LiteratureSubscriptionsTable({
           trigger={<span className="inline-flex rounded-md p-1 text-secondaryText transition-colors hover:bg-bgLight hover:text-primaryText"><MoreHorizontal size={16} /></span>}
           items={actions} onItemClick={(action) => {
             setActionMenuId(null);
-            if (action.key === 'fetch') onFetch(item.id);
+            if (action.key === 'chat' && item.mainSessionId) onOpenChat(item.mainSessionId);
             else if (action.key === 'edit') onEdit(item.id);
             else onDelete(item.id);
           }} />;
       },
     },
-  ], [actionMenuId, onDelete, onEdit, onFetch, onToggle, pendingId]);
+  ], [actionMenuId, onDelete, onEdit, onOpenChat, onToggle, pendingId]);
 
   return (
     <section>

@@ -4,7 +4,6 @@ import {
   createLiteratureSubscriptions,
   deleteLiteratureSubscription,
   EMPTY_LITERATURE_SUBSCRIPTION,
-  fetchLiteratureSubscription,
   listLiteratureProjects,
   listLiteratureSubscriptions,
   loadLiteratureSubscriptionDraft,
@@ -398,18 +397,7 @@ export function ToolsRoute() {
         onOpenTaskChat={(sessionId) => void openChat(sessionId)}
         onRetry={loadError ? () => void loadTasks() : undefined}
         onCreateLiterature={openCreateLiterature}
-        onFetchLiterature={async (subscriptionId) => {
-          setPendingLiteratureId(subscriptionId);
-          setActionError("");
-          try {
-            await fetchLiteratureSubscription(api, subscriptionId);
-            await loadSubscriptions();
-          } catch (error) {
-            setActionError(errorMessage(error, "文献抓取失败"));
-          } finally {
-            setPendingLiteratureId(null);
-          }
-        }}
+        onOpenLiteratureChat={(sessionId) => void openChat(sessionId)}
         onToggleLiterature={async (subscriptionId) => {
           const subscription = subscriptions.find((item) => item.id === subscriptionId);
           if (!subscription) return;

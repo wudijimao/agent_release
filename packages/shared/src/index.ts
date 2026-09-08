@@ -200,12 +200,19 @@ export interface Subscription {
     url?: string;
     frequency: 'hourly' | 'daily' | 'weekly';
     lookbackDays?: number;
+    scheduleStartAt?: string;
+    scheduleEndAt?: string;
+    scheduleTime?: string;
+    scheduleWeekday?: number;
+    timezone?: string;
     maxHighPerProject?: number;
     maxCounterSignalsPerProject?: number;
     [key: string]: unknown;
   };
   enabled: boolean;
   lastFetchAt?: string;
+  scheduledTaskId?: string | null;
+  mainSessionId?: string | null;
   createdBy: string;
   createdAt: string;
 }

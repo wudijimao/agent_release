@@ -43,7 +43,7 @@ export interface ScheduledTasksOverviewProps {
   onDeleteTask(taskId: string): void;
   onOpenTaskChat?(sessionId: string): void;
   onCreateLiterature?(): void;
-  onFetchLiterature?(subscriptionId: string): void;
+  onOpenLiteratureChat?(sessionId: string): void;
   onToggleLiterature?(subscriptionId: string): void;
   onEditLiterature?(subscriptionId: string): void;
   onDeleteLiterature?(subscriptionId: string): void;
@@ -84,7 +84,7 @@ export default function ScheduledTasksOverview({
   onDeleteTask,
   onOpenTaskChat,
   onCreateLiterature,
-  onFetchLiterature,
+  onOpenLiteratureChat,
   onToggleLiterature,
   onEditLiterature,
   onDeleteLiterature,
@@ -94,7 +94,7 @@ export default function ScheduledTasksOverview({
   const [activeTab, setActiveTab] = useState<'scheduled' | 'literature'>('scheduled');
   const hasLiteratureSection = Boolean(
     onCreateLiterature &&
-    onFetchLiterature &&
+    onOpenLiteratureChat &&
     onToggleLiterature &&
     onEditLiterature &&
     onDeleteLiterature,
@@ -264,13 +264,13 @@ export default function ScheduledTasksOverview({
                 </div>
               </div>
             ) : (
-              onCreateLiterature && onFetchLiterature && onToggleLiterature && onEditLiterature && onDeleteLiterature && (
+              onCreateLiterature && onOpenLiteratureChat && onToggleLiterature && onEditLiterature && onDeleteLiterature && (
                 <div role="tabpanel">
                   <LiteratureSubscriptionsTable
                     items={literatureSubscriptions}
                     loading={literatureLoading}
                     pendingId={pendingLiteratureId}
-                    onFetch={onFetchLiterature}
+                    onOpenChat={onOpenLiteratureChat}
                     onToggle={onToggleLiterature}
                     onEdit={onEditLiterature}
                     onDelete={onDeleteLiterature}

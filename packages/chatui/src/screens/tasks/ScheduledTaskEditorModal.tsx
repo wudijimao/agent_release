@@ -16,6 +16,10 @@ export type ScheduledTaskRepeatMode = 'daily' | 'weekly' | 'monthly';
 export interface LiteratureTaskEditorValue {
   topic: string;
   frequency: ScheduledTaskFetchFrequency;
+  startDate: string;
+  endDate: string;
+  scheduleTime: string;
+  scheduleWeekday: number;
   sourceTypes: ScheduledTaskSourceType[];
   lookbackDays: number;
   keywords: string;
@@ -52,9 +56,6 @@ export interface ScheduledTaskEditorModalProps {
   onCreateProject?(): void;
 }
 
-const frequencyOptions: Array<{ value: ScheduledTaskFetchFrequency; label: string }> = [
-  { value: 'hourly', label: '每小时' }, { value: 'daily', label: '每天' }, { value: 'weekly', label: '每周' },
-];
 const sourceTypeMeta: Record<ScheduledTaskSourceType, { label: string; desc: string }> = {
   pubmed: { label: 'PubMed 文献', desc: '追踪正式发表论文' },
   biorxiv: { label: 'bioRxiv 预印本', desc: '追踪早期研究进展' },
@@ -65,6 +66,14 @@ const pubmedMatchOptions: Array<{ value: ScheduledTaskPubMedMatchMode; label: st
 const weekdayOptions = [
   ['mon', '周一'], ['tue', '周二'], ['wed', '周三'], ['thu', '周四'], ['fri', '周五'], ['sat', '周六'], ['sun', '周日'],
 ].map(([value, label]) => ({ value, label }));
+const literatureWeekdayOptions = [
+  ['1', '周一'], ['2', '周二'], ['3', '周三'], ['4', '周四'], ['5', '周五'], ['6', '周六'], ['0', '周日'],
+].map(([value, label]) => ({ value, label }));
+const literatureRepeatOptions = [
+  { value: 'daily', label: '每天' },
+  { value: 'weekly', label: '每周', children: literatureWeekdayOptions },
+  { value: 'hourly', label: '每小时' },
+];
 const repeatOptions = [
   { value: 'daily', label: '每天' },
   { value: 'weekly', label: '每周', children: weekdayOptions },
@@ -80,23 +89,40 @@ export function ScheduledTaskEditorModal({
   const deadlineToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isLiterature = kind === 'literature';
   const isScheduleEndDateMissing = !isLiterature && !scheduleValue.endDate;
-  const selectedProject = projects.find((project) => project.id === scheduleValue.projectId) ?? null;
+  const isLiteraturePeriodInvalid = isLiterature && (
+    !literatureValue.startDate ||
+    !literatureValue.endDate ||
+    literatureValue.endDate < literatureValue.startDate
+  );
+  const availableProjects = isLiterature ? literatureProjects : projects;
+  const selectedProjectId = isLiterature ? literatureValue.projectNodeIds[0] : scheduleValue.projectId;
+  const selectedProject = availableProjects.find((project) => project.id === selectedProjectId) ?? null;
   const title = isLiterature
     ? editing ? '修改文献订阅任务' : '设置文献订阅任务'
     : editing ? '修改定时任务' : '新建定时任务';
   const repeatValue = scheduleValue.repeatMode === 'weekly' || scheduleValue.repeatMode === 'monthly'
     ? [scheduleValue.repeatMode, scheduleValue.repeatSubValue || (scheduleValue.repeatMode === 'weekly' ? 'mon' : '1')]
     : [scheduleValue.repeatMode];
+  const literatureRepeatValue = literatureValue.frequency === 'weekly'
+    ? ['weekly', String(literatureValue.scheduleWeekday)]
+    : [literatureValue.frequency];
   const projectItems = useMemo<BaseActionMenuItem[]>(() => [
     { key: 'none', label: '不选择项目', active: !selectedProject },
-    ...projects.map((project) => ({ key: project.id, label: <span className="truncate">{project.name}</span>, active: selectedProject?.id === project.id })),
-  ], [projects, selectedProject]);
+    ...availableProjects.map((project) => ({ key: project.id, label: <span className="truncate">{project.name}</span>, active: selectedProject?.id === project.id })),
+  ], [availableProjects, selectedProject]);
   const projectFooterItems = useMemo<BaseActionMenuItem[]>(() => (
     onCreateProject ? [{ key: 'create', label: '新建项目', icon: <Plus size={16} /> }] : []
   ), [onCreateProject]);
   const handleProjectClick: BaseActionMenuProps['onItemClick'] = (item) => {
     setProjectMenuOpen(false);
     if (item.key === 'create') return onCreateProject?.();
+    if (isLiterature) {
+      onLiteratureChange({
+        ...literatureValue,
+        projectNodeIds: item.key === 'none' ? [] : [item.key],
+      });
+      return;
+    }
     onScheduleChange({ ...scheduleValue, projectId: item.key === 'none' ? null : item.key });
   };
   const showDeadlineToast = () => {
@@ -119,6 +145,7 @@ export function ScheduledTaskEditorModal({
       onDisabledConfirm={isScheduleEndDateMissing ? showDeadlineToast : undefined}
       okButtonProps={{ disabled: !literatureValue.topic.trim() || (isLiterature
         ? !literatureValue.keywords.trim() || literatureValue.sourceTypes.length === 0
+          || isLiteraturePeriodInvalid
           || (literatureValue.sourceTypes.includes('pubmed') && literatureValue.pubmedMatchMode === 'advanced' && !literatureValue.advancedQuery.trim())
         : !scheduleValue.taskPrompt.trim() || isScheduleEndDateMissing) }}>
       <div className="space-y-5">
@@ -167,20 +194,29 @@ export function ScheduledTaskEditorModal({
           </div>
         </> : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <div className="mb-1.5 text-sm font-medium text-primaryText">抓取频率</div>
-            <div className="relative">
-              <select value={literatureValue.frequency} onChange={(event) => onLiteratureChange({ ...literatureValue, frequency: event.target.value as ScheduledTaskFetchFrequency })}
-                className="h-9 w-full appearance-none rounded-lg border border-borderGray bg-white px-3 pr-10 text-sm text-primaryText outline-none transition-colors focus:border-primary">
-                {frequencyOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-              <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-tertiaryText" />
-            </div>
+            <div className="mb-1.5 text-sm font-medium text-primaryText">任务周期</div>
+            <RangePicker format="YYYY/MM/DD" className="task-period-picker w-full" classNames={{ popup: { root: 'task-period-picker-popup' } }}
+              value={[literatureValue.startDate ? dayjs(literatureValue.startDate, 'YYYY-MM-DD') : null, literatureValue.endDate ? dayjs(literatureValue.endDate, 'YYYY-MM-DD') : null]}
+              onChange={(_, [startDate, endDate]) => onLiteratureChange({ ...literatureValue, startDate, endDate })} />
           </div>
           <div>
-            <div className="mb-1.5 text-sm font-medium text-primaryText">回看天数</div>
-            <input type="number" min={1} max={365} value={String(literatureValue.lookbackDays)}
-              onChange={(event) => onLiteratureChange({ ...literatureValue, lookbackDays: Math.max(1, Math.min(365, Number(event.target.value) || 1)) })}
-              className="h-9 w-full rounded-lg border border-borderGray bg-white px-3.5 text-sm text-primaryText outline-none transition-colors focus:border-primary" />
+            <div className="mb-1.5 text-sm font-medium text-primaryText">触发时间</div>
+            <div className={`grid gap-2.5 ${literatureValue.frequency === 'hourly' ? 'grid-cols-1' : 'grid-cols-2'}`}>
+              <Cascader value={literatureRepeatValue} options={literatureRepeatOptions} className="task-repeat-cascader w-full"
+                classNames={{ popup: { root: 'task-repeat-cascader-popup' } }} placeholder="请选择重复方式"
+                onChange={(value) => {
+                  const frequency = String(value[0] ?? 'daily') as ScheduledTaskFetchFrequency;
+                  const scheduleWeekday = frequency === 'weekly'
+                    ? Number(value[1] ?? literatureValue.scheduleWeekday ?? 1)
+                    : literatureValue.scheduleWeekday;
+                  onLiteratureChange({ ...literatureValue, frequency, scheduleWeekday });
+                }} />
+              {literatureValue.frequency !== 'hourly' && (
+                <TimePicker value={dayjs(literatureValue.scheduleTime, 'HH:mm')} format="HH:mm" minuteStep={1} allowClear={false}
+                  onChange={(value) => onLiteratureChange({ ...literatureValue, scheduleTime: value ? value.format('HH:mm') : literatureValue.scheduleTime })}
+                  className="task-run-time-picker w-full" classNames={{ popup: { root: 'task-run-time-picker-popup' } }} />
+              )}
+            </div>
           </div>
         </div>}
         {isLiterature && <>
@@ -221,29 +257,13 @@ export function ScheduledTaskEditorModal({
                 className="w-full resize-y rounded-lg border border-borderGray px-3.5 py-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
             </div>
           )}
-          <div>
-            <div className="mb-2 text-sm font-medium text-primaryText">关联项目</div>
-            <div className="max-h-[150px] space-y-1 overflow-y-auto rounded-lg border border-borderGray p-2">
-              {literatureProjects.length > 0 ? literatureProjects.map((project) => {
-                const active = literatureValue.projectNodeIds.includes(project.id);
-                return <label key={project.id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-primaryText hover:bg-bgLight">
-                  <input type="checkbox" checked={active}
-                    onChange={() => onLiteratureChange({ ...literatureValue, projectNodeIds: active
-                      ? literatureValue.projectNodeIds.filter((id) => id !== project.id)
-                      : [...literatureValue.projectNodeIds, project.id] })}
-                    className="h-4 w-4 accent-primary" />
-                  <span className="truncate">{project.name}</span>
-                </label>;
-              }) : <div className="px-2 py-3 text-sm text-tertiaryText">暂无可关联的知识追踪项目</div>}
-            </div>
+          <div className="sm:w-1/2">
+            <div className="mb-1.5 text-sm font-medium text-primaryText">关联项目</div>
+            <BaseActionMenu open={projectMenuOpen} onOpenChange={setProjectMenuOpen} placement="bottom-start" width="100%"
+              trigger={<span className="flex h-9 w-full items-center justify-between rounded-lg border border-borderGray bg-white px-3 text-sm text-primaryText transition-colors hover:border-borderSoft"><span className="flex min-w-0 items-center gap-2"><Folder size={14} className="shrink-0 text-secondaryText" /><span className="truncate">{selectedProject?.name ?? '不选择项目'}</span></span><ChevronDown size={14} className="shrink-0 text-tertiaryText" /></span>}
+              items={projectItems} onItemClick={handleProjectClick} className="!block w-full" triggerClassName="!w-full"
+              listClassName="max-h-[220px] overflow-y-auto" />
           </div>
-          <label className="flex items-start gap-3 rounded-lg border border-borderGray px-3.5 py-3">
-            <input type="checkbox" checked={literatureValue.enabled}
-              onChange={(event) => onLiteratureChange({ ...literatureValue, enabled: event.target.checked })}
-              className="mt-0.5 h-4 w-4 accent-primary" />
-            <span><span className="block text-sm font-medium text-primaryText">启用订阅</span>
-              <span className="mt-0.5 block text-[13px] text-secondaryText">关闭后保留历史内容，但不参与后续抓取。</span></span>
-          </label>
         </>}
       </div>
     </BaseModal></>
