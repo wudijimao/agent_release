@@ -238,8 +238,16 @@ export function ScheduledTaskEditorModal({
           </div>
           <div>
             <div className="mb-1.5 text-sm font-medium text-primaryText">关键词</div>
-            <input value={literatureValue.keywords} onChange={(event) => onLiteratureChange({ ...literatureValue, keywords: event.target.value })}
-              placeholder="例：CRISPR, prime editing, base editor" className="w-full rounded-lg border border-borderGray px-3.5 py-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
+            <div className="relative">
+              <textarea value={literatureValue.keywords} onChange={(event) => onLiteratureChange({ ...literatureValue, keywords: event.target.value })}
+                placeholder="例：CRISPR, prime editing, base editor" rows={5}
+                className="w-full resize-none rounded-lg border border-borderGray px-3.5 pb-10 pt-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
+              <div className="absolute bottom-4 left-3 z-20">
+                <BaseActionMenu open={projectMenuOpen} onOpenChange={setProjectMenuOpen} placement="top-start" width={260}
+                  trigger={<span className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-secondaryText transition-colors hover:bg-bgLight"><Folder size={14} /><span className="max-w-[140px] truncate">{selectedProject?.name ?? '工作项目'}</span><ChevronDown size={14} /></span>}
+                  items={projectItems} onItemClick={handleProjectClick} className="!inline-flex" listClassName="max-h-[220px] overflow-y-auto" footerItems={projectFooterItems} />
+              </div>
+            </div>
           </div>
           {literatureValue.sourceTypes.includes('pubmed') && <div>
             <div className="mb-2 text-sm font-medium text-primaryText">PubMed 匹配方式</div>
@@ -257,13 +265,6 @@ export function ScheduledTaskEditorModal({
                 className="w-full resize-y rounded-lg border border-borderGray px-3.5 py-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
             </div>
           )}
-          <div className="sm:w-1/2">
-            <div className="mb-1.5 text-sm font-medium text-primaryText">关联项目</div>
-            <BaseActionMenu open={projectMenuOpen} onOpenChange={setProjectMenuOpen} placement="bottom-start" width="100%"
-              trigger={<span className="flex h-9 w-full items-center justify-between rounded-lg border border-borderGray bg-white px-3 text-sm text-primaryText transition-colors hover:border-borderSoft"><span className="flex min-w-0 items-center gap-2"><Folder size={14} className="shrink-0 text-secondaryText" /><span className="truncate">{selectedProject?.name ?? '不选择项目'}</span></span><ChevronDown size={14} className="shrink-0 text-tertiaryText" /></span>}
-              items={projectItems} onItemClick={handleProjectClick} className="!block w-full" triggerClassName="!w-full"
-              listClassName="max-h-[220px] overflow-y-auto" />
-          </div>
         </>}
       </div>
     </BaseModal></>
