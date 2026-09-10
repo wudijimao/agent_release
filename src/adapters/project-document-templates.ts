@@ -90,10 +90,6 @@ export async function loadProjectDocumentTemplates(
     "/api/knowledge/wiki2/templates",
   );
   return templates
-    .filter(
-      (template) =>
-        template.source === "system" || template.createdBy === currentUserId,
-    )
     .map((template) => ({
       id: template.id,
       name: template.name,
@@ -105,8 +101,16 @@ export async function loadProjectDocumentTemplates(
       structure: template.structure,
       markdown: knowledgeContentToMarkdown(template.content),
       tags: readTemplateTags(template.content),
-      scope: template.source === "workspace" ? ("personal" as const) : undefined,
-      createdByName: template.source === "system" ? "系统" : "我",
+      scope:
+        template.source === "workspace" && template.createdBy === currentUserId
+          ? ("personal" as const)
+          : undefined,
+      createdByName:
+        template.source === "system"
+          ? "系统"
+          : template.createdBy === currentUserId
+            ? "我"
+            : undefined,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     }))

@@ -42,7 +42,10 @@ export function LiteratureSubscriptionsTable({
       title: '订阅名称',
       dataIndex: 'name',
       width: '19%',
-      render: (value, item) => <div className="min-w-0"><div className="truncate font-medium text-primaryText">{String(value)}</div><div className="mt-1 text-xs text-tertiaryText">{item.source}</div></div>,
+      render: (value, item) => {
+        const title = String(value);
+        return <div className="w-full min-w-0 overflow-hidden"><div className="truncate font-medium text-primaryText" title={title}>{title}</div><div className="mt-1 text-xs text-tertiaryText">{item.source}</div></div>;
+      },
     },
     {
       title: '关键词',

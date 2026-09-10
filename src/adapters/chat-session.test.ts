@@ -252,6 +252,7 @@ test("mapChatHistoryDetail restores an active assistant snapshot after returning
       statusVisible: false,
       searchSteps: [],
       hasReceivedAssistantChunk: false,
+      replyStartedAtMs: new Date("2026-08-31T09:59:00Z").getTime(),
     },
     result,
   );
@@ -259,6 +260,33 @@ test("mapChatHistoryDetail restores an active assistant snapshot after returning
   assert.equal(settled.statusPhase, "searching");
   assert.equal(settled.hasReceivedAssistantChunk, true);
   assert.deepEqual(settled.searchSteps, result.liveStreamState?.searchSteps);
+  assert.equal(
+    settled.replyStartedAtMs,
+    new Date("2026-08-31T09:58:30Z").getTime(),
+  );
+});
+
+test("settling an active reply keeps the local timer until the server start time is available", () => {
+  const localStartedAtMs = new Date("2026-08-31T09:59:00Z").getTime();
+  const session = {
+    ...mapChatHistoryDetail(detail),
+    isReplying: true,
+    liveStreamState: undefined,
+  };
+
+  const settled = settleChatStreamState(
+    {
+      messages: session.messages,
+      statusPhase: "generating",
+      statusVisible: true,
+      searchSteps: [],
+      hasReceivedAssistantChunk: true,
+      replyStartedAtMs: localStartedAtMs,
+    },
+    session,
+  );
+
+  assert.equal(settled.replyStartedAtMs, localStartedAtMs);
 });
 
 test("mapChatHistoryDetail replaces a persisted assistant with its active snapshot", () => {
@@ -663,8 +691,11 @@ test("loadChatSession calls the real history detail endpoint", async () => {
 });
 
 test("stream reducer accumulates live reasoning before answer text", () => {
+  const startedAfterMs = Date.now();
   let state = beginChatStream([], { role: "user", content: "问题" });
-  assert.equal(state.replyStartedAtMs, undefined);
+  assert.ok(state.replyStartedAtMs !== undefined);
+  assert.ok(state.replyStartedAtMs >= startedAfterMs);
+  assert.ok(state.replyStartedAtMs <= Date.now());
 
   state = reduceChatStreamEvent(state, "reasoning", { content: "先分析" });
   state = reduceChatStreamEvent(state, "reasoning", { content: "，再判断" });

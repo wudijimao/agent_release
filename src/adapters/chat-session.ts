@@ -154,7 +154,9 @@ export function settleChatStreamState(
     lastTaskTraceSequence: session.liveStreamState?.lastTaskTraceSequence,
     activeDisplay: session.liveStreamState?.activeDisplay,
     replyStartedAtMs: session.isReplying
-      ? session.liveStreamState?.replyStartedAtMs
+      ? (session.liveStreamState?.replyStartedAtMs ??
+        current.replyStartedAtMs ??
+        Date.now())
       : undefined,
     deferredActions: session.deferredActions,
   };
@@ -974,6 +976,7 @@ export function beginChatStream(
     statusVisible: true,
     searchSteps: [],
     hasReceivedAssistantChunk: false,
+    replyStartedAtMs: Date.now(),
   };
 }
 

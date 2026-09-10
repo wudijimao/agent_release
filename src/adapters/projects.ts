@@ -141,6 +141,9 @@ export function mapProjectsToShell(
     id: project.id,
     name: projectNameForDisplay(project),
     selectable: !project.isDefaultUnassigned,
+    ...(project.defaultKbNodeId !== undefined
+      ? { defaultKbNodeId: project.defaultKbNodeId }
+      : {}),
   }));
 }
 

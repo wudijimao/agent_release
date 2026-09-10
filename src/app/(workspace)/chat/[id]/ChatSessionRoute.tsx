@@ -216,21 +216,22 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
   const api = useApiClient();
   const {
     chats,
-    chatStreamHandoff,
+    cancelChatStream,
+    chatStreamHandoffs,
     clearChatStreamHandoff,
     defaultProjectId,
     isSidebarOpen,
     openSidebar,
     projects,
+    publishChatStreamHandoff,
     refreshChats,
     refreshProjects,
+    registerChatStreamController,
+    releaseChatStreamController,
     touchChat,
   } = useChatShell();
   const currentChat = chats.find((chat) => chat.id === sessionId);
-  const activeChatStreamHandoff =
-    chatStreamHandoff?.sessionId === sessionId
-      ? chatStreamHandoff
-      : undefined;
+  const activeChatStreamHandoff = chatStreamHandoffs[sessionId];
   const currentProject = projects.find(
     (project) => project.id === currentChat?.projectId,
   );
@@ -481,6 +482,12 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     queueMicrotask(() => {
       if (cancelled) return;
       setStreamState(activeChatStreamHandoff.state);
+      if (activeChatStreamHandoff.state.miraDraftActions) {
+        setMiraDraftActions((current) => ({
+          ...current,
+          ...activeChatStreamHandoff.state.miraDraftActions,
+        }));
+      }
       setIsRemoteReplying(activeChatStreamHandoff.isStreaming);
       setStreamNotice(activeChatStreamHandoff.notice ?? "");
       setPageStatus("ready");
@@ -494,7 +501,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     if (
       status !== "authenticated" ||
       !currentChatId ||
-      activeChatStreamHandoff?.isStreaming
+      activeChatStreamHandoff?.isStreaming ||
+      (!activeChatStreamHandoff &&
+        historyLoadedSessionIdRef.current === sessionId)
     ) {
       return;
     }
@@ -528,8 +537,6 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
     });
     return () => controller.abort();
   }, [loadProjectWorkspace, status]);
-
-  useEffect(() => () => streamControllerRef.current?.abort(), []);
 
   useEffect(() => {
     return () => {
@@ -638,6 +645,8 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       streamControllerRef.current?.abort();
       const controller = new AbortController();
       streamControllerRef.current = controller;
+      // The workspace owns active controllers so route changes do not abort SSE.
+      registerChatStreamController(sessionId, controller);
       setLastAttempt({ payload, baseMessages });
       setPageError("");
       setStreamNotice("");
@@ -661,6 +670,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       let streamStarted = false;
       let uploadCompleted = payload.attachments.length === 0;
       setStreamState(nextState);
+      publishChatStreamHandoff({
+        sessionId,
+        state: nextState,
+        isStreaming: true,
+      });
 
       try {
         if (historyLoadedSessionIdRef.current !== sessionId) {
@@ -692,6 +706,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         );
 
         setStreamState(nextState);
+        publishChatStreamHandoff({
+          sessionId,
+          state: nextState,
+          isStreaming: true,
+        });
         streamStarted = true;
         const sendScope = resolveChatSendScope(
           payload.references,
@@ -723,6 +742,11 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           nextState = reduceChatStreamEvent(nextState, event.type, event.data);
           if (nextState.sessionId) resolvedSessionId = nextState.sessionId;
           setStreamState(nextState);
+          publishChatStreamHandoff({
+            sessionId,
+            state: nextState,
+            isStreaming: true,
+          });
           if (nextState.miraDraftActions) {
             setMiraDraftActions((current) => ({
               ...current,
@@ -738,8 +762,14 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
           signal: controller.signal,
           projectName: currentProject?.name,
         });
+        nextState = settleChatStreamState(nextState, reconciled);
         setTitle(reconciled.title);
-        setStreamState((current) => settleChatStreamState(current, reconciled));
+        setStreamState(nextState);
+        publishChatStreamHandoff({
+          sessionId,
+          state: nextState,
+          isStreaming: false,
+        });
         setMiraDraftActions(reconciled.miraDraftActions);
         persistedMessageIdsRef.current = reconciled.messageIds;
         historyLoadedSessionIdRef.current = resolvedSessionId;
@@ -764,7 +794,13 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
               },
             );
             setTitle(recovered.title);
-            setStreamState((current) => settleChatStreamState(current, recovered));
+            nextState = settleChatStreamState(nextState, recovered);
+            setStreamState(nextState);
+            publishChatStreamHandoff({
+              sessionId,
+              state: nextState,
+              isStreaming: false,
+            });
             setMiraDraftActions(recovered.miraDraftActions);
             persistedMessageIdsRef.current = recovered.messageIds;
             historyLoadedSessionIdRef.current = recovered.id;
@@ -782,21 +818,27 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
         }
         const errorMessage = getChatStreamErrorMessage(reportedError);
         setStreamErrorReport(formatChatErrorReport(reportedError, sessionId));
-        setStreamState((current) => {
-          const interrupted = interruptChatStream(current);
-          return uploadCompleted
-            ? interrupted
-            : updateLatestUserMessageAttachments(
-                interrupted,
-                payload.attachments.map((attachment) => ({
-                  ...attachment,
-                  status: "error",
-                  errorMessage,
-                })),
-              );
+        const interrupted = interruptChatStream(nextState);
+        nextState = uploadCompleted
+          ? interrupted
+          : updateLatestUserMessageAttachments(
+              interrupted,
+              payload.attachments.map((attachment) => ({
+                ...attachment,
+                status: "error",
+                errorMessage,
+              })),
+            );
+        setStreamState(nextState);
+        publishChatStreamHandoff({
+          sessionId,
+          state: nextState,
+          isStreaming: false,
+          notice: errorMessage,
         });
         setPageError(errorMessage);
       } finally {
+        releaseChatStreamController(sessionId, controller);
         if (streamControllerRef.current === controller) {
           streamControllerRef.current = null;
           setIsStreaming(false);
@@ -810,6 +852,9 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       isRemoteReplying,
       isStreaming,
       navigation,
+      publishChatStreamHandoff,
+      registerChatStreamController,
+      releaseChatStreamController,
       resourceCatalog,
       sessionId,
       refreshChats,
@@ -820,13 +865,23 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
 
   const handleCancel = useCallback(() => {
     const controller = streamControllerRef.current;
-    if (!controller) return;
+    const cancelled = cancelChatStream(sessionId);
+    if (!controller && !cancelled) return;
 
-    controller.abort();
-    setStreamState(interruptChatStream);
-    setStreamNotice("已停止生成，你可以重新发送或重试。");
+    controller?.abort();
+    const notice = "已停止生成，你可以重新发送或重试。";
+    const interrupted = interruptChatStream(streamState);
+    setStreamState(interrupted);
+    publishChatStreamHandoff({
+      sessionId,
+      state: interrupted,
+      isStreaming: false,
+      notice,
+    });
+    setStreamNotice(notice);
     setIsStreaming(false);
-  }, []);
+    setIsRemoteReplying(false);
+  }, [cancelChatStream, publishChatStreamHandoff, sessionId, streamState]);
 
   const handleConfirmMiraDraft = useCallback(
     async (

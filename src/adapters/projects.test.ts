@@ -294,7 +294,7 @@ test("project detail mapper exposes only high-fidelity view models", () => {
 
 test("projects view mapper keeps server counts and derives chat counts", () => {
   const projects = [
-    project(),
+    project({ defaultKbNodeId: "project-node-1" }),
     project({
       id: "project-2",
       description: "",
@@ -313,6 +313,7 @@ test("projects view mapper keeps server counts and derives chat counts", () => {
       id: "project-1",
       name: "肿瘤免疫项目",
       selectable: true,
+      defaultKbNodeId: "project-node-1",
     },
     {
       id: "project-2",

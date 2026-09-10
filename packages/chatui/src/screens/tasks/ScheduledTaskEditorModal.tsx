@@ -39,7 +39,11 @@ export interface ScheduleTaskEditorValue {
   projectId: string | null;
 }
 
-export interface ScheduledTaskEditorProject { id: string; name: string }
+export interface ScheduledTaskEditorProject {
+  id: string;
+  name: string;
+  literatureBindingId?: string | null;
+}
 
 export interface ScheduledTaskEditorModalProps {
   visible: boolean;
@@ -48,7 +52,6 @@ export interface ScheduledTaskEditorModalProps {
   literatureValue: LiteratureTaskEditorValue;
   scheduleValue: ScheduleTaskEditorValue;
   projects?: ScheduledTaskEditorProject[];
-  literatureProjects?: ScheduledTaskEditorProject[];
   onLiteratureChange(value: LiteratureTaskEditorValue): void;
   onScheduleChange(value: ScheduleTaskEditorValue): void;
   onCancel(): void;
@@ -80,8 +83,32 @@ const repeatOptions = [
   { value: 'monthly', label: '每月', children: Array.from({ length: 28 }, (_, index) => ({ value: String(index + 1), label: `${index + 1}号` })) },
 ];
 
+interface TaskProjectSelectorProps {
+  open: boolean;
+  selectedProject: ScheduledTaskEditorProject | null;
+  items: BaseActionMenuItem[];
+  footerItems: BaseActionMenuItem[];
+  onOpenChange(open: boolean): void;
+  onItemClick: BaseActionMenuProps['onItemClick'];
+}
+
+function TaskProjectSelector({
+  open,
+  selectedProject,
+  items,
+  footerItems,
+  onOpenChange,
+  onItemClick,
+}: TaskProjectSelectorProps) {
+  return (
+    <BaseActionMenu open={open} onOpenChange={onOpenChange} placement="top-start" width={260}
+      trigger={<span className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-secondaryText transition-colors hover:bg-bgLight"><Folder size={14} /><span className="max-w-[140px] truncate">{selectedProject?.name ?? '工作项目'}</span><ChevronDown size={14} /></span>}
+      items={items} onItemClick={onItemClick} className="!inline-flex" listClassName="max-h-[220px] overflow-y-auto" footerItems={footerItems} />
+  );
+}
+
 export function ScheduledTaskEditorModal({
-  visible, kind, editing = false, literatureValue, scheduleValue, projects = [], literatureProjects = [],
+  visible, kind, editing = false, literatureValue, scheduleValue, projects = [],
   onLiteratureChange, onScheduleChange, onCancel, onConfirm, onCreateProject,
 }: ScheduledTaskEditorModalProps) {
   const [projectMenuOpen, setProjectMenuOpen] = useState(false);
@@ -94,9 +121,14 @@ export function ScheduledTaskEditorModal({
     !literatureValue.endDate ||
     literatureValue.endDate < literatureValue.startDate
   );
-  const availableProjects = isLiterature ? literatureProjects : projects;
+  const availableProjects = isLiterature
+    ? projects.filter((project) => Boolean(project.literatureBindingId))
+    : projects;
   const selectedProjectId = isLiterature ? literatureValue.projectNodeIds[0] : scheduleValue.projectId;
-  const selectedProject = availableProjects.find((project) => project.id === selectedProjectId) ?? null;
+  const projectValue = (project: ScheduledTaskEditorProject) => (
+    isLiterature ? project.literatureBindingId ?? '' : project.id
+  );
+  const selectedProject = availableProjects.find((project) => projectValue(project) === selectedProjectId) ?? null;
   const title = isLiterature
     ? editing ? '修改文献订阅任务' : '设置文献订阅任务'
     : editing ? '修改定时任务' : '新建定时任务';
@@ -108,8 +140,8 @@ export function ScheduledTaskEditorModal({
     : [literatureValue.frequency];
   const projectItems = useMemo<BaseActionMenuItem[]>(() => [
     { key: 'none', label: '不选择项目', active: !selectedProject },
-    ...availableProjects.map((project) => ({ key: project.id, label: <span className="truncate">{project.name}</span>, active: selectedProject?.id === project.id })),
-  ], [availableProjects, selectedProject]);
+    ...availableProjects.map((project) => ({ key: projectValue(project), label: <span className="truncate">{project.name}</span>, active: selectedProject?.id === project.id })),
+  ], [availableProjects, isLiterature, selectedProject]);
   const projectFooterItems = useMemo<BaseActionMenuItem[]>(() => (
     onCreateProject ? [{ key: 'create', label: '新建项目', icon: <Plus size={16} /> }] : []
   ), [onCreateProject]);
@@ -186,9 +218,8 @@ export function ScheduledTaskEditorModal({
                 placeholder="输入任何内容..." rows={5}
                 className="w-full resize-none rounded-lg border border-borderGray px-3.5 pb-10 pt-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
               <div className="absolute bottom-4 left-3 z-20">
-                <BaseActionMenu open={projectMenuOpen} onOpenChange={setProjectMenuOpen} placement="top-start" width={260}
-                  trigger={<span className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-secondaryText transition-colors hover:bg-bgLight"><Folder size={14} /><span className="max-w-[140px] truncate">{selectedProject?.name ?? '工作项目'}</span><ChevronDown size={14} /></span>}
-                  items={projectItems} onItemClick={handleProjectClick} className="!inline-flex" listClassName="max-h-[220px] overflow-y-auto" footerItems={projectFooterItems} />
+                <TaskProjectSelector open={projectMenuOpen} onOpenChange={setProjectMenuOpen} selectedProject={selectedProject}
+                  items={projectItems} onItemClick={handleProjectClick} footerItems={projectFooterItems} />
               </div>
             </div>
           </div>
@@ -243,9 +274,8 @@ export function ScheduledTaskEditorModal({
                 placeholder="例：CRISPR, prime editing, base editor" rows={5}
                 className="w-full resize-none rounded-lg border border-borderGray px-3.5 pb-10 pt-2.5 text-sm text-primaryText outline-none transition-colors placeholder:text-tertiaryText focus:border-primary" />
               <div className="absolute bottom-4 left-3 z-20">
-                <BaseActionMenu open={projectMenuOpen} onOpenChange={setProjectMenuOpen} placement="top-start" width={260}
-                  trigger={<span className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-secondaryText transition-colors hover:bg-bgLight"><Folder size={14} /><span className="max-w-[140px] truncate">{selectedProject?.name ?? '工作项目'}</span><ChevronDown size={14} /></span>}
-                  items={projectItems} onItemClick={handleProjectClick} className="!inline-flex" listClassName="max-h-[220px] overflow-y-auto" footerItems={projectFooterItems} />
+                <TaskProjectSelector open={projectMenuOpen} onOpenChange={setProjectMenuOpen} selectedProject={selectedProject}
+                  items={projectItems} onItemClick={handleProjectClick} footerItems={projectFooterItems} />
               </div>
             </div>
           </div>

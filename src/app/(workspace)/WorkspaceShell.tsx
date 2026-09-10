@@ -22,12 +22,12 @@ import {
 import {
   deleteChatSession,
   loadAppShellChats,
+  mergeAppShellChatRefresh,
   renameChatSession,
   setChatSessionPinned,
   touchAppShellChat,
   upsertAppShellChat,
 } from "@/adapters/chat-history";
-import type { ChatStreamViewState } from "@/adapters/chat-session";
 import {
   loadAiUsageReminder,
   shouldShowAiUsageReminder,
@@ -37,6 +37,13 @@ import {
   canAccessWorkspacePath,
   getWorkspaceAccess,
 } from "@/adapters/workspace-access";
+import {
+  ChatStreamControllerRegistry,
+  removeChatStreamMemorySnapshot,
+  storeChatStreamMemorySnapshot,
+  type ChatStreamMemorySnapshot,
+  type ChatStreamMemorySnapshots,
+} from "@/lib/chat-stream-memory";
 import { useApiClient, useAuth } from "@/providers/AuthProvider";
 import { useLab } from "@/providers/LabProvider";
 
@@ -55,16 +62,18 @@ interface ChatShellContextValue {
   refreshProjects(): Promise<void>;
   touchChat(sessionId: string): void;
   upsertChat(chat: AppShellChat): void;
-  chatStreamHandoff?: ChatStreamHandoff;
-  publishChatStreamHandoff(handoff: ChatStreamHandoff): void;
+  chatStreamHandoffs: ChatStreamMemorySnapshots;
+  publishChatStreamHandoff(handoff: ChatStreamMemorySnapshot): void;
   clearChatStreamHandoff(sessionId: string): void;
-}
-
-interface ChatStreamHandoff {
-  sessionId: string;
-  state: ChatStreamViewState;
-  isStreaming: boolean;
-  notice?: string;
+  registerChatStreamController(
+    sessionId: string,
+    controller: AbortController,
+  ): void;
+  releaseChatStreamController(
+    sessionId: string,
+    controller: AbortController,
+  ): void;
+  cancelChatStream(sessionId: string): boolean;
 }
 
 const ChatShellContext = createContext<ChatShellContextValue | null>(null);
@@ -110,19 +119,23 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   );
   const [notice, setNotice] = useState("");
   const [aiUsageWarningActive, setAiUsageWarningActive] = useState(false);
-  const [chatStreamHandoff, setChatStreamHandoff] =
-    useState<ChatStreamHandoff>();
+  const [chatStreamHandoffs, setChatStreamHandoffs] =
+    useState<ChatStreamMemorySnapshots>({});
   const chatRefreshRequestIdRef = useRef(0);
   const optimisticChatsRef = useRef(new Map<string, AppShellChat>());
+  const localChatActivityRef = useRef(new Map<string, string>());
+  const chatStreamControllersRef = useRef(new ChatStreamControllerRegistry());
 
   const mergeOptimisticChats = useCallback((items: AppShellChat[]) => {
-    let merged = items;
-    optimisticChatsRef.current.forEach((chat, sessionId) => {
-      if (items.some((item) => item.id === sessionId)) {
-        optimisticChatsRef.current.delete(sessionId);
-        return;
+    const merged = mergeAppShellChatRefresh(
+      items,
+      optimisticChatsRef.current,
+      localChatActivityRef.current,
+    );
+    items.forEach((item) => {
+      if (!localChatActivityRef.current.has(item.id)) {
+        optimisticChatsRef.current.delete(item.id);
       }
-      merged = upsertAppShellChat(merged, chat);
     });
     return merged;
   }, []);
@@ -244,14 +257,52 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     [navigation],
   );
 
-  const publishChatStreamHandoff = useCallback((handoff: ChatStreamHandoff) => {
-    setChatStreamHandoff(handoff);
+  const publishChatStreamHandoff = useCallback((handoff: ChatStreamMemorySnapshot) => {
+    if (handoff.isStreaming) {
+      if (!localChatActivityRef.current.has(handoff.sessionId)) {
+        const startedAt = handoff.state.replyStartedAtMs;
+        localChatActivityRef.current.set(
+          handoff.sessionId,
+          typeof startedAt === "number" && Number.isFinite(startedAt)
+            ? new Date(startedAt).toISOString()
+            : new Date().toISOString(),
+        );
+      }
+    } else {
+      localChatActivityRef.current.delete(handoff.sessionId);
+    }
+    setChatStreamHandoffs((current) =>
+      storeChatStreamMemorySnapshot(current, handoff),
+    );
   }, []);
 
   const clearChatStreamHandoff = useCallback((sessionId: string) => {
-    setChatStreamHandoff((current) =>
-      current?.sessionId === sessionId ? undefined : current,
+    setChatStreamHandoffs((current) =>
+      removeChatStreamMemorySnapshot(current, sessionId),
     );
+  }, []);
+
+  const registerChatStreamController = useCallback(
+    (sessionId: string, controller: AbortController) => {
+      chatStreamControllersRef.current.register(sessionId, controller);
+    },
+    [],
+  );
+
+  const releaseChatStreamController = useCallback(
+    (sessionId: string, controller: AbortController) => {
+      chatStreamControllersRef.current.release(sessionId, controller);
+    },
+    [],
+  );
+
+  const cancelChatStream = useCallback((sessionId: string) => {
+    return chatStreamControllersRef.current.cancel(sessionId);
+  }, []);
+
+  useEffect(() => {
+    const controllers = chatStreamControllersRef.current;
+    return () => controllers.abortAll();
   }, []);
 
   const contextValue = useMemo<Omit<ChatShellContextValue, "isSidebarOpen" | "openSidebar" | "chats" | "touchChat" | "upsertChat">>(
@@ -261,12 +312,16 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       openChat,
       refreshChats,
       refreshProjects,
-      chatStreamHandoff,
+      chatStreamHandoffs,
       publishChatStreamHandoff,
       clearChatStreamHandoff,
+      registerChatStreamController,
+      releaseChatStreamController,
+      cancelChatStream,
     }),
     [
-      chatStreamHandoff,
+      cancelChatStream,
+      chatStreamHandoffs,
       clearChatStreamHandoff,
       defaultProjectId,
       openChat,
@@ -274,6 +329,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       publishChatStreamHandoff,
       refreshChats,
       refreshProjects,
+      registerChatStreamController,
+      releaseChatStreamController,
     ],
   );
 
@@ -404,7 +461,12 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             isSidebarOpen,
             openSidebar: () => setIsSidebarOpen(true),
             touchChat: (sessionId) => {
-              setShellChats((current) => touchAppShellChat(current, sessionId));
+              const now = new Date();
+              localChatActivityRef.current.set(sessionId, now.toISOString());
+              setChats((current) => touchAppShellChat(current, sessionId, now));
+              setShellChats((current) =>
+                touchAppShellChat(current, sessionId, now),
+              );
             },
             upsertChat: (chat) => {
               optimisticChatsRef.current.set(chat.id, chat);

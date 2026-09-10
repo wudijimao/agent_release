@@ -20,6 +20,7 @@ export interface AppShellProject {
   id: string;
   name: string;
   selectable?: boolean;
+  defaultKbNodeId?: string | null;
 }
 
 export interface AppShellUser {

@@ -121,7 +121,7 @@ test("project document templates keep metadata and expose editable markdown", as
   assert.deepEqual(templates[0]?.structure, ["基本信息", "实验结果"]);
 });
 
-test("personal templates are merged with system templates and sorted by creation time", async () => {
+test("all server-returned templates are preserved and sorted by creation time", async () => {
   const api = {
     async get<T>() {
       return [
@@ -179,12 +179,20 @@ test("personal templates are merged with system templates and sorted by creation
 
   assert.deepEqual(
     templates.map((template) => template.id),
-    ["blank", "newer-workspace-template", "older-workspace-template", "system-template"],
+    [
+      "blank",
+      "other-member-template",
+      "newer-workspace-template",
+      "older-workspace-template",
+      "system-template",
+    ],
   );
-  assert.equal(templates[1]?.scope, "personal");
-  assert.equal(templates[1]?.createdByName, "我");
-  assert.equal(templates[3]?.scope, undefined);
-  assert.equal(templates[3]?.createdByName, "系统");
+  assert.equal(templates[1]?.scope, undefined);
+  assert.equal(templates[1]?.createdByName, undefined);
+  assert.equal(templates[2]?.scope, "personal");
+  assert.equal(templates[2]?.createdByName, "我");
+  assert.equal(templates[4]?.scope, undefined);
+  assert.equal(templates[4]?.createdByName, "系统");
 });
 
 test("workspace template mutations use encoded template endpoints", async () => {

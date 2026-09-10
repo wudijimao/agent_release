@@ -4,7 +4,6 @@ import {
   createLiteratureSubscriptions,
   deleteLiteratureSubscription,
   EMPTY_LITERATURE_SUBSCRIPTION,
-  listLiteratureProjects,
   listLiteratureSubscriptions,
   loadLiteratureSubscriptionDraft,
   mapLiteratureSubscriptions,
@@ -97,7 +96,6 @@ export function ToolsRoute() {
   const [editorVisible, setEditorVisible] = useState(false);
   const [editorPending, setEditorPending] = useState(false);
   const [subscriptions, setSubscriptions] = useState<LiteratureSubscription[]>([]);
-  const [literatureProjects, setLiteratureProjects] = useState<Array<{ id: string; name: string }>>([]);
   const [literatureLoading, setLiteratureLoading] = useState(true);
   const [literatureDraft, setLiteratureDraft] = useState<LiteratureTaskEditorValue | null>(null);
   const [editingSubscriptionId, setEditingSubscriptionId] = useState<string | null>(null);
@@ -139,12 +137,7 @@ export function ToolsRoute() {
   const loadSubscriptions = useCallback(async () => {
     setLiteratureLoading(true);
     try {
-      const [items, projectOptions] = await Promise.all([
-        listLiteratureSubscriptions(api),
-        listLiteratureProjects(api),
-      ]);
-      setSubscriptions(items);
-      setLiteratureProjects(projectOptions);
+      setSubscriptions(await listLiteratureSubscriptions(api));
     } catch (error) {
       setActionError(errorMessage(error, "文献订阅加载失败"));
     } finally {
@@ -154,14 +147,10 @@ export function ToolsRoute() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      listLiteratureSubscriptions(api),
-      listLiteratureProjects(api),
-    ])
-      .then(([items, projectOptions]) => {
+    listLiteratureSubscriptions(api)
+      .then((items) => {
         if (cancelled) return;
         setSubscriptions(items);
-        setLiteratureProjects(projectOptions);
       })
       .catch((error: unknown) => {
         if (!cancelled) {
@@ -186,7 +175,11 @@ export function ToolsRoute() {
     () =>
       projects
         .filter((project) => project.selectable !== false)
-        .map((project) => ({ id: project.id, name: project.name })),
+        .map((project) => ({
+          id: project.id,
+          name: project.name,
+          literatureBindingId: project.defaultKbNodeId,
+        })),
     [projects],
   );
 
@@ -457,7 +450,7 @@ export function ToolsRoute() {
           editing={Boolean(editingSubscriptionId)}
           literatureValue={literatureDraft}
           scheduleValue={createEmptyScheduledTaskDraft().schedule}
-          literatureProjects={literatureProjects}
+          projects={scheduledTaskProjects}
           onLiteratureChange={setLiteratureDraft}
           onScheduleChange={() => undefined}
           onCancel={() => {

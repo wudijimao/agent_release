@@ -107,7 +107,10 @@ export default function ScheduledTasksOverview({
         title: '任务名称',
         dataIndex: 'name',
         width: '19%',
-        render: (name) => <span className="truncate text-primaryText">{String(name)}</span>,
+        render: (name) => {
+          const title = String(name);
+          return <span className="block w-full min-w-0 truncate text-primaryText" title={title}>{title}</span>;
+        },
       },
       {
         title: '任务内容',

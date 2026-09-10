@@ -99,6 +99,31 @@ export function upsertAppShellChat(
   ]);
 }
 
+export function mergeAppShellChatRefresh(
+  serverChats: readonly AppShellChat[],
+  optimisticChats: ReadonlyMap<string, AppShellChat>,
+  localActivity: ReadonlyMap<string, string>,
+  now = new Date(),
+) {
+  const serverIds = new Set(serverChats.map((chat) => chat.id));
+  const merged = serverChats.map((chat) => {
+    const localUpdatedAt = localActivity.get(chat.id);
+    return localUpdatedAt
+      ? {
+          ...chat,
+          updatedAt: localUpdatedAt,
+          date: formatChatSessionDate(localUpdatedAt, now),
+        }
+      : chat;
+  });
+
+  optimisticChats.forEach((chat, sessionId) => {
+    if (!serverIds.has(sessionId)) merged.push(chat);
+  });
+
+  return sortChatsByUpdatedAt(merged);
+}
+
 export async function renameChatSession(
   api: ApiClient,
   sessionId: string,

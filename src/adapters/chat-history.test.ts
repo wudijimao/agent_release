@@ -10,6 +10,7 @@ import {
   formatChatSessionDate,
   loadAppShellChats,
   mapChatSessionToAppShell,
+  mergeAppShellChatRefresh,
   renameChatSession,
   setChatSessionPinned,
   touchAppShellChat,
@@ -174,6 +175,47 @@ test("upserting a newly created chat inserts it first without duplicates", () =>
     "session-existing",
   ]);
   assert.equal(replaced[0]?.title, "服务端标题");
+});
+
+test("chat refresh keeps local activity order while a conversation is running", () => {
+  const serverChats = [
+    {
+      id: "session-other",
+      title: "其他对话",
+      date: "今天 11:00",
+      count: 0,
+      updatedAt: "2026-07-16T11:00:00+08:00",
+    },
+    {
+      id: "session-running",
+      title: "服务端新标题",
+      date: "今天 09:00",
+      count: 0,
+      updatedAt: "2026-07-16T09:00:00+08:00",
+    },
+  ];
+  const optimisticChat = {
+    id: "session-pending",
+    title: "新对话",
+    date: "今天 11:30",
+    count: 0,
+    updatedAt: "2026-07-16T11:30:00+08:00",
+  };
+
+  const merged = mergeAppShellChatRefresh(
+    serverChats,
+    new Map([[optimisticChat.id, optimisticChat]]),
+    new Map([["session-running", "2026-07-16T12:00:00+08:00"]]),
+    now,
+  );
+
+  assert.deepEqual(merged.map((chat) => chat.id), [
+    "session-running",
+    "session-pending",
+    "session-other",
+  ]);
+  assert.equal(merged[0]?.title, "服务端新标题");
+  assert.equal(merged[0]?.updatedAt, "2026-07-16T12:00:00+08:00");
 });
 
 test("chat history mutations use the agent session API", async () => {

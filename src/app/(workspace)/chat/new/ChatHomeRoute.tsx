@@ -13,7 +13,7 @@ import {
   type InputSendPayload,
 } from "@bioagent/chatui";
 import type { HomeAgentType } from "@bioagent/shared";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import {
   beginChatStream,
@@ -37,6 +37,7 @@ import { resolveChatSendScope } from "@/adapters/chat-resources";
 import { createAgentSession } from "@/adapters/chat-sessions";
 import { createProject } from "@/adapters/projects";
 import { streamChat } from "@/lib/api";
+import { createClientId } from "@/lib/client-id";
 import {
   PRODUCT_ANALYTICS_EVENTS,
   trackProductEvent,
@@ -84,6 +85,8 @@ export function ChatHomeRoute({
     projects,
     refreshChats,
     refreshProjects,
+    registerChatStreamController,
+    releaseChatStreamController,
     upsertChat,
   } = useChatShell();
   const { catalog: resourceCatalog, error: resourceError } =
@@ -102,13 +105,6 @@ export function ChatHomeRoute({
     [projects],
   );
   const streamControllerRef = useRef<AbortController | null>(null);
-  const handedOffSessionIdRef = useRef<string | null>(null);
-
-  useEffect(() => () => {
-    if (!handedOffSessionIdRef.current) {
-      streamControllerRef.current?.abort();
-    }
-  }, []);
 
   const runNewChat = useCallback(
     async (payload: InputSendPayload) => {
@@ -123,7 +119,9 @@ export function ChatHomeRoute({
 
       streamControllerRef.current?.abort();
       const controller = new AbortController();
+      let registeredStreamKey = createClientId("pending-chat-stream");
       streamControllerRef.current = controller;
+      registerChatStreamController(registeredStreamKey, controller);
       setLastPayload(payload);
       setNotice("");
       setNoticeRole("status");
@@ -204,7 +202,9 @@ export function ChatHomeRoute({
               updatedAt,
               projectId: targetProjectId,
             });
-            handedOffSessionIdRef.current = nextState.sessionId;
+            releaseChatStreamController(registeredStreamKey, controller);
+            registeredStreamKey = nextState.sessionId;
+            registerChatStreamController(nextState.sessionId, controller);
             publishChatStreamHandoff({
               sessionId: nextState.sessionId,
               state: nextState,
@@ -290,6 +290,7 @@ export function ChatHomeRoute({
         setNotice(errorMessage);
         setNoticeRole("alert");
       } finally {
+        releaseChatStreamController(registeredStreamKey, controller);
         if (streamControllerRef.current === controller) {
           streamControllerRef.current = null;
           setIsStreaming(false);
@@ -305,6 +306,8 @@ export function ChatHomeRoute({
       openChat,
       publishChatStreamHandoff,
       refreshChats,
+      registerChatStreamController,
+      releaseChatStreamController,
       resourceCatalog,
       selectedProjectId,
       upsertChat,

@@ -1,7 +1,6 @@
 import type {
   LiteratureSubscriptionListItemViewModel,
   LiteratureTaskEditorValue,
-  ScheduledTaskEditorProject,
 } from "@bioagent/chatui";
 import type { Subscription, SubscriptionType } from "@bioagent/shared";
 
@@ -22,10 +21,6 @@ export interface LiteratureSubscription
     queryMode?: "and" | "or" | "advanced";
     advancedQuery?: string;
   };
-}
-
-interface TrackingProjectsResponse {
-  items: Array<{ id: string; title: string }>;
 }
 
 interface SubscriptionProjectsResponse {
@@ -98,15 +93,6 @@ export const EMPTY_LITERATURE_SUBSCRIPTION: LiteratureTaskEditorValue = {
 
 export async function listLiteratureSubscriptions(api: LiteratureApi) {
   return api.get<LiteratureSubscription[]>("/api/knowledge/subscriptions");
-}
-
-export async function listLiteratureProjects(
-  api: LiteratureApi,
-): Promise<ScheduledTaskEditorProject[]> {
-  const payload = await api.get<TrackingProjectsResponse>(
-    "/api/knowledge/tracking/projects?limit=50",
-  );
-  return payload.items.map((item) => ({ id: item.id, name: item.title }));
 }
 
 export async function loadLiteratureSubscriptionDraft(
