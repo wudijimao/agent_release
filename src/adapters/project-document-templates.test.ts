@@ -115,10 +115,46 @@ test("project document templates keep metadata and expose editable markdown", as
   const templates = await loadProjectDocumentTemplates(api, "user-1");
 
   assert.deepEqual(calls, ["/api/knowledge/wiki2/templates"]);
-  assert.equal(templates[0]?.title, "通用实验记录");
-  assert.equal(templates[0]?.markdown, "## 基本信息\n\n填写实验信息");
-  assert.deepEqual(templates[0]?.tags, ["experiment", "record"]);
-  assert.deepEqual(templates[0]?.structure, ["基本信息", "实验结果"]);
+  const experimentRecord = templates.find(
+    (template) => template.id === "experiment-record",
+  );
+  assert.equal(experimentRecord?.title, "通用实验记录");
+  assert.equal(experimentRecord?.markdown, "## 基本信息\n\n填写实验信息");
+  assert.deepEqual(experimentRecord?.tags, ["experiment", "record"]);
+  assert.deepEqual(experimentRecord?.structure, ["基本信息", "实验结果"]);
+});
+
+test("missing blank document template is inserted first", async () => {
+  const api = {
+    async get<T>() {
+      return [
+        {
+          id: "server-template",
+          name: "服务端模板",
+          description: "",
+          title: "服务端模板",
+          source: "system",
+          content: {},
+        },
+      ] as T;
+    },
+  };
+
+  const templates = await loadProjectDocumentTemplates(api, "user-1");
+
+  assert.deepEqual(
+    templates.map((template) => template.id),
+    ["blank", "server-template"],
+  );
+  assert.deepEqual(templates[0], {
+    id: "blank",
+    name: "空白文档",
+    description: "从空白文档开始",
+    title: "",
+    source: "system",
+    markdown: "",
+    tags: [],
+  });
 });
 
 test("all server-returned templates are preserved and sorted by creation time", async () => {

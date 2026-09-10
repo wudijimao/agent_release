@@ -52,6 +52,16 @@ export interface ProjectDocumentTemplate {
   updatedAt?: string;
 }
 
+const BLANK_PROJECT_DOCUMENT_TEMPLATE: ProjectDocumentTemplate = {
+  id: "blank",
+  name: "空白文档",
+  description: "从空白文档开始",
+  title: "",
+  source: "system",
+  markdown: "",
+  tags: [],
+};
+
 export const PROJECT_DOCUMENT_TYPE_OPTIONS: Array<{
   value: ProjectKnowledgeType;
   label: string;
@@ -89,8 +99,8 @@ export async function loadProjectDocumentTemplates(
   const templates = await api.get<KbTemplate[]>(
     "/api/knowledge/wiki2/templates",
   );
-  return templates
-    .map((template) => ({
+  const mappedTemplates: ProjectDocumentTemplate[] = templates.map(
+    (template) => ({
       id: template.id,
       name: template.name,
       description: template.description,
@@ -113,19 +123,25 @@ export async function loadProjectDocumentTemplates(
             : undefined,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
-    }))
-    .sort((left, right) => {
-      if (left.id === "blank" || right.id === "blank") {
-        return left.id === "blank" ? -1 : 1;
-      }
-      if (left.source !== right.source) {
-        return left.source === "workspace" ? -1 : 1;
-      }
-      if (left.source !== "workspace") return 0;
-      const rightTime = Date.parse(right.createdAt || right.updatedAt || "") || 0;
-      const leftTime = Date.parse(left.createdAt || left.updatedAt || "") || 0;
-      return rightTime - leftTime;
-    });
+    }),
+  );
+
+  if (!mappedTemplates.some((template) => template.id === "blank")) {
+    mappedTemplates.unshift({ ...BLANK_PROJECT_DOCUMENT_TEMPLATE });
+  }
+
+  return mappedTemplates.sort((left, right) => {
+    if (left.id === "blank" || right.id === "blank") {
+      return left.id === "blank" ? -1 : 1;
+    }
+    if (left.source !== right.source) {
+      return left.source === "workspace" ? -1 : 1;
+    }
+    if (left.source !== "workspace") return 0;
+    const rightTime = Date.parse(right.createdAt || right.updatedAt || "") || 0;
+    const leftTime = Date.parse(left.createdAt || left.updatedAt || "") || 0;
+    return rightTime - leftTime;
+  });
 }
 
 export async function createProjectDocumentTemplate(
