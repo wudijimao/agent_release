@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM node:24.19.0-bookworm-slim AS base
 
 ENV PNPM_HOME=/pnpm
@@ -15,7 +16,9 @@ COPY packages/chatui/package.json packages/chatui/package.json
 COPY packages/shared/package.json packages/shared/package.json
 COPY patches/@milkdown__crepe@7.21.3.patch patches/@milkdown__crepe@7.21.3.patch
 
-RUN corepack pnpm@11.23.0 install \
+RUN --mount=type=cache,id=bioagent-pnpm-store,target=/pnpm/store,sharing=locked \
+    corepack pnpm@11.23.0 install \
+    --store-dir=/pnpm/store \
     --frozen-lockfile \
     --filter @bioagent/nextjs...
 

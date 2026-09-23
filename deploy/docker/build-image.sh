@@ -40,7 +40,7 @@ SOURCE_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD 2>/dev/null || echo unknow
 echo "Building ${IMAGE}"
 echo "Backend baked into image: ${API_URL}"
 
-docker build \
+DOCKER_BUILDKIT=1 docker build \
   --file "${SCRIPT_DIR}/Dockerfile" \
   --build-arg "BIOAGENT_API_URL=${API_URL}" \
   --label "org.opencontainers.image.source=agent_release" \
