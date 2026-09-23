@@ -1304,6 +1304,7 @@ export function ChatSessionRoute({ sessionId }: { sessionId: string }) {
       try {
         await updateProjectDocument(api, {
           kbNodeId: item.document.id,
+          expectedRevision: item.document.revision,
           title: edit.title,
           markdown: edit.markdown,
           tags: item.document.tags,

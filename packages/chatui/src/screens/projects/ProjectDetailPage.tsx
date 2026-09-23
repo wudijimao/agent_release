@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, Menu, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
+import { ArrowLeft, Check, Menu, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react';
 import { BaseActionMenu, BaseButton, BaseDeleteConfirmModal, BaseDocumentUpload, BaseEmpty, BaseModal } from '../../components/common';
 
 type ProjectDetailTab = 'documents' | 'chats';
@@ -40,7 +40,7 @@ export interface ProjectDetailPageProps {
   onDeleteConversation?(conversationId: string): void | Promise<void>;
   onCreateDocument?(): void;
   onCreateConversation?(): void;
-  onImportDocuments(files: File[]): void | readonly string[] | Promise<void | readonly string[]>;
+  onImportDocuments(files: File[], mode?: 'separate' | 'merge'): void | readonly string[] | Promise<void | readonly string[]>;
   documentImportAccept?: string;
   documentImportMaxSize?: number;
   documentImportDescription?: React.ReactNode;
@@ -107,6 +107,7 @@ export function ProjectDetailPage({
   const [showTagToggle, setShowTagToggle] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [importMode, setImportMode] = useState<'separate' | 'merge'>('separate');
   const [importError, setImportError] = useState('');
   const [importing, setImporting] = useState(false);
   const [newlyImportedDocumentIds, setNewlyImportedDocumentIds] = useState<string[]>([]);
@@ -196,8 +197,8 @@ export function ProjectDetailPage({
     if (!selectedFiles.length) return setImportError('请先选择至少一个文件');
     setImporting(true); setImportError('');
     try {
-      const importedDocumentIds = await onImportDocuments(selectedFiles);
-      setShowImportModal(false); setSelectedFiles([]);
+      const importedDocumentIds = await onImportDocuments(selectedFiles, selectedFiles.length > 1 ? importMode : 'separate');
+      setShowImportModal(false); setSelectedFiles([]); setImportMode('separate');
       if (importedDocumentIds?.length) {
         setNewlyImportedDocumentIds((current) => [
           ...new Set([...current, ...importedDocumentIds]),
@@ -358,8 +359,21 @@ export function ProjectDetailPage({
       </div>
 
       <BaseModal visible={showImportModal} title="导入文档" width={500} cancelText="取消" okText={importing ? '导入中…' : '导入'}
-        onCancel={() => { if (!importing) { setShowImportModal(false); setSelectedFiles([]); setImportError(''); } }} onConfirm={() => void submitImport()} okButtonProps={{ disabled: importing }} bodyClassName="!px-6 !py-5">
-        <div className="space-y-4"><BaseDocumentUpload value={selectedFiles} accept={documentImportAccept} maxCount={5} maxSize={documentImportMaxSize ?? 20 * 1024 * 1024} uploadDescription={documentImportDescription} disabled={importing} onChange={setSelectedFiles} onError={(error) => setImportError(error.message)} />{importError && <div role="alert" className="text-sm text-danger">{importError}</div>}</div>
+        onCancel={() => { if (!importing) { setShowImportModal(false); setSelectedFiles([]); setImportMode('separate'); setImportError(''); } }} onConfirm={() => void submitImport()} okButtonProps={{ disabled: importing }} maskClosable={false} bodyClassName={selectedFiles.length > 1 ? '!px-6 !pt-5 !pb-0' : '!px-6 !py-5'}>
+        <div className="space-y-4">
+          <BaseDocumentUpload value={selectedFiles} accept={documentImportAccept} maxCount={5} maxSize={documentImportMaxSize ?? 20 * 1024 * 1024} uploadDescription={documentImportDescription} disabled={importing} onChange={(files) => { setSelectedFiles(files); setImportError(''); }} onError={(error) => setImportError(error.message)} />
+          {selectedFiles.length > 1 && <section className="-mx-6 flex flex-wrap items-center justify-between gap-4 border-t border-lineSoft bg-bgLight px-6 py-3">
+            <div className="shrink-0 text-sm font-medium text-primaryText">文件导入方式</div>
+            <div className="flex items-center gap-4">
+              {(['separate', 'merge'] as const).map((mode) => <label key={mode} className="inline-flex cursor-pointer items-center gap-2 text-sm text-primaryText">
+                <input type="radio" name="document-import-mode" checked={importMode === mode} disabled={importing} onChange={() => setImportMode(mode)} className="peer sr-only" />
+                <span className="inline-flex h-[18px] w-[18px] items-center justify-center rounded-full border border-borderSoft bg-surface text-transparent peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-primary"><Check size={11} strokeWidth={3} /></span>
+                {mode === 'separate' ? '分别导入为文档' : '合并为一个文档'}
+              </label>)}
+            </div>
+          </section>}
+          {importError && <div role="alert" className="pb-3 text-sm text-danger">{importError}</div>}
+        </div>
       </BaseModal>
 
       <BaseModal

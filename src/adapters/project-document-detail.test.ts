@@ -249,6 +249,7 @@ test("document update sends the Wiki2 node contract", async () => {
   const calls: Array<{ path: string; body: unknown }> = [];
   await updateProjectDocument(
     {
+      get: async <T>() => ({ node, attachments: [] }) as T,
       put: async <T>(path: string, body?: unknown) => {
         calls.push({ path, body });
         return node as T;

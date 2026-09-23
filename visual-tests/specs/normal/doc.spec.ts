@@ -33,14 +33,13 @@ test.describe("正常状态 / 项目文档", () => {
     await page.context().clearCookies();
   });
 
-  test("DOC-01 文档详情展示面包屑与元信息", async ({ page }) => {
+  test("DOC-01 文档详情展示标题与元信息", async ({ page }) => {
     await openDocumentPreview(page);
-    await expect(page.getByText("项目", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText("视觉测试项目", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "返回" })).toBeVisible();
     await expect(page.getByText("CRISPR 综述", { exact: true }).last()).toBeVisible();
     await expect(page.getByText("创建人: 视觉测试员")).toBeVisible();
     await expect(page.getByText("最近修改: 视觉测试员")).toBeVisible();
-    await expect(page.getByText("索引已完成")).toBeVisible();
+    await expect(page.getByText("索引已完成")).toHaveCount(0);
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-01-detail.png", { fullPage: true });
   });
@@ -95,7 +94,7 @@ test.describe("正常状态 / 项目文档", () => {
     await expect(page.getByText("附件", { exact: true })).toBeVisible();
     await expect(page.getByText("实验数据.csv")).toBeVisible();
     await expect(page.locator('[title="内容识别完成"]')).toBeVisible();
-    await expect(page.getByText("凝胶图.png")).toBeVisible();
+    await expect(page.getByText("凝胶图.png", { exact: true })).toBeVisible();
     await expect(page.locator('[title="正在识别内容"]')).toBeVisible();
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-04-attachments.png", { fullPage: true });
@@ -122,14 +121,14 @@ test.describe("正常状态 / 项目文档", () => {
     await page.goto("/projects/proj-visual-test");
     await page.getByText("CRISPR 综述").click();
     await expect(page.getByText("附件", { exact: true })).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText("暂无附件")).toBeVisible();
+    await expect(page.getByRole("button", { name: "上传附件" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "下载附件 实验数据.csv" })).toHaveCount(0);
   });
 
   test("DOC-05 编辑默认态标题与正文分离", async ({ page }) => {
     await openDocumentPreview(page);
     const previewBodyLeft = await page
-      .locator(".auto-hide-scrollbar h1")
-      .first()
+      .getByRole("heading", { name: "CRISPR 技术综述" })
       .evaluate((element) => {
         const range = document.createRange();
         range.selectNodeContents(element);
@@ -197,8 +196,8 @@ test.describe("正常状态 / 项目文档", () => {
         const { top, left, right } = element.getBoundingClientRect();
         return { top, left, right };
       });
-    expect(uploadButtonRect.top).toBe(attachmentTitleRect.top);
-    expect(uploadButtonRect.left).toBeGreaterThan(attachmentTitleRect.right);
+    expect(uploadButtonRect.top).toBeGreaterThan(attachmentTitleRect.top);
+    expect(uploadButtonRect.left).toBe(attachmentTitleRect.left);
   });
 
   test("DOC-06 悬浮加号弹出当前块菜单", async ({ page }) => {
@@ -257,11 +256,9 @@ test.describe("正常状态 / 项目文档", () => {
 
     const toolbar = page.locator('.milkdown-toolbar[data-show="true"]');
     await expect(toolbar).toBeVisible();
-    const iconColor = await toolbar
-      .locator(".toolbar-item svg")
-      .first()
-      .evaluate((element) => getComputedStyle(element).color);
-    expect(iconColor).toBe("rgb(31, 31, 31)");
+    const icon = toolbar.locator(".toolbar-item svg").first();
+    await expect(icon).toBeVisible();
+    await expect.poll(() => icon.evaluate((element) => getComputedStyle(element).color)).toBe("rgb(31, 31, 31)");
   });
 
   test("DOC-06B 选中文本菜单可切换当前块类型", async ({ page }) => {
@@ -389,7 +386,7 @@ test.describe("正常状态 / 项目文档", () => {
     await expect
       .poll(() => putRequests.length, { timeout: 8000 })
       .toBeGreaterThan(0);
-    await expect(page.getByRole("button", { name: "保存" })).toBeVisible();
+    await expect(page.getByLabel("文档标题")).toHaveValue("自动保存标题");
   });
 
   test("DOC-08 新建文档进入编辑器", async ({ page }) => {
@@ -404,7 +401,7 @@ test.describe("正常状态 / 项目文档", () => {
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-08-create-modal.png", { fullPage: true });
 
-    await dialog.getByRole("button", { name: "继续编辑" }).click();
+    await dialog.getByRole("button", { name: "新建文档" }).click();
     const editor = page.locator('section[aria-label="项目文档编辑器"]');
     await expect(editor).toBeVisible({ timeout: 10000 });
     await expect(page.getByLabel("文档标题")).toHaveValue("");
@@ -438,6 +435,7 @@ test.describe("正常状态 / 项目文档", () => {
       buffer: CSV_BYTES,
     });
     await expect(page.getByText("实验数据.csv")).toBeVisible({ timeout: 10000 });
+    await page.getByRole("button", { name: "确认添加" }).click();
     await expect(page.locator('[title="附件可下载"]')).toBeVisible({ timeout: 10000 });
     await expect(
       page.getByRole("button", { name: "下载附件 实验数据.csv" }),
@@ -465,7 +463,7 @@ test.describe("正常状态 / 项目文档", () => {
     await expect(page.getByText("文档已删除")).toBeVisible({ timeout: 10000 });
   });
 
-  test("DOC-13 空正文与未启用索引状态", async ({ page }) => {
+  test("DOC-13 空正文不展示索引状态", async ({ page }) => {
     // 空正文 + 未启用索引
     await openDocumentPreview(page, {
       indexState: "disabled",
@@ -496,13 +494,13 @@ test.describe("正常状态 / 项目文档", () => {
       },
     });
     await expect(page.getByText("空文档", { exact: true }).last()).toBeVisible();
-    await expect(page.getByText("索引未启用")).toBeVisible();
+    await expect(page.getByText("索引未启用")).toHaveCount(0);
     await waitForVisualReady(page);
     await expect(page).toHaveScreenshot("doc-13-empty-disabled.png", { fullPage: true });
 
-    // 等待建立索引
+    // 等待建立索引时也不展示索引状态
     await openDocumentPreview(page, { indexState: "enabled-pending" });
-    await expect(page.getByText("等待建立索引")).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("等待建立索引")).toHaveCount(0);
   });
 
   test("DOC-14 超长文档可滚动且无横向溢出", async ({ page }) => {

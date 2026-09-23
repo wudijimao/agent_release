@@ -41,8 +41,8 @@ import {
   PROJECT_DOCUMENT_IMPORT_ACCEPT,
   PROJECT_DOCUMENT_IMPORT_DESCRIPTION,
   PROJECT_DOCUMENT_IMPORT_MAX_BYTES,
-  uploadProjectDocumentAttachments,
 } from "@/adapters/project-documents";
+import { appendProjectDocumentFiles, importMergedProjectDocument, resumeProjectDocumentImports, validateDocumentFiles, type DocumentFileDestination } from "@/adapters/project-document-imports";
 import {
   createProjectDocumentTemplate,
   loadProjectDocumentTemplates,
@@ -134,7 +134,11 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
     useState(false);
   const [documentTemplatesError, setDocumentTemplatesError] = useState("");
   const [documentSaving, setDocumentSaving] = useState(false);
+  const [documentUploading, setDocumentUploading] = useState(false);
+  const uploadInFlightRef = useRef(false);
+  const documentEditBaseRef = useRef<string | undefined>(undefined);
   const [documentSaveError, setDocumentSaveError] = useState("");
+  const [documentSyncError, setDocumentSyncError] = useState("");
   const [documentPreview, setDocumentPreview] =
     useState<ProjectDocumentPreviewViewModel | null>(null);
   const [documentEditDraft, setDocumentEditDraft] =
@@ -165,70 +169,39 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
       });
   }, [api, sharedDocumentId]);
 
-  const processingDocumentId = documentPreview?.attachments.some(
-    (attachment) => attachment.status === "processing",
-  )
-    ? documentPreview.id
-    : "";
-  const documentEditing = documentEditDraft !== null;
+  const openedDocumentId = documentPreview?.id ?? "";
+  const contentProcessing = Boolean(documentPreview?.contentProcessing);
 
   useEffect(() => {
-    if (!processingDocumentId) return;
-
+    if (!openedDocumentId || documentUploading) return;
     let cancelled = false;
     let timer: number | undefined;
-    const pollDocumentProcessing = async () => {
+    let running = false;
+    const poll = async () => {
+      if (running || cancelled) return;
+      running = true;
+      if (timer !== undefined) window.clearTimeout(timer);
       try {
-        const preview = await loadProjectDocumentDetail(
-          api,
-          processingDocumentId,
-        );
-        if (cancelled) return;
-
-        setDocumentPreview((current) =>
-          current?.id === processingDocumentId ? preview : current,
-        );
-        if (documentEditing && !documentDirty) {
-          setDocumentEditDraft((current) =>
-            current
-              ? {
-                  title: projectDocumentTitleForEdit(preview.title),
-                  markdown: preview.markdown,
-                  tags: preview.tags,
-                }
-              : current,
-          );
-        }
-
-        if (
-          preview.attachments.some(
-            (attachment) => attachment.status === "processing",
-          )
-        ) {
-          timer = window.setTimeout(
-            pollDocumentProcessing,
-            PROJECT_DOCUMENT_PROCESSING_POLL_MS,
-          );
-        }
-      } catch {
+        const preview = await resumeProjectDocumentImports(api, openedDocumentId);
         if (!cancelled) {
-          timer = window.setTimeout(
-            pollDocumentProcessing,
-            PROJECT_DOCUMENT_PROCESSING_POLL_MS,
-          );
+          setDocumentPreview((current) => current?.id === openedDocumentId ? preview : current);
+          setDocumentSyncError("");
         }
+      } catch (cause) {
+        if (!cancelled) setDocumentSyncError(cause instanceof Error ? cause.message : "文件处理状态暂时无法同步");
+      } finally {
+        running = false;
+        if (!cancelled) timer = window.setTimeout(poll, PROJECT_DOCUMENT_PROCESSING_POLL_MS);
       }
     };
-
-    timer = window.setTimeout(
-      pollDocumentProcessing,
-      PROJECT_DOCUMENT_PROCESSING_POLL_MS,
-    );
+    void poll();
+    window.addEventListener("focus", poll);
     return () => {
       cancelled = true;
       if (timer !== undefined) window.clearTimeout(timer);
+      window.removeEventListener("focus", poll);
     };
-  }, [api, documentDirty, documentEditing, processingDocumentId]);
+  }, [api, openedDocumentId, documentUploading]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -300,6 +273,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
       keepEditing: boolean;
       showNotice: boolean;
     }) => {
+      if (contentProcessing) throw new Error("文件正在识别并追加正文，请稍后再保存");
       if (documentSaving) {
         throw new Error("文档正在保存，请稍后重试");
       }
@@ -331,6 +305,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             document_type: documentDraft.knowledgeType,
           });
           const preview = await loadProjectDocumentDetail(api, created.id);
+          documentEditBaseRef.current = preview.revision;
           setDetail(await loadProjectDetail(api, projectId));
           if (keepEditing) {
             const latestDraft = documentDraftRef.current ?? documentDraft;
@@ -352,6 +327,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
           const title = projectDocumentTitleForSave(documentEditDraft.title);
           await updateProjectDocument(api, {
             kbNodeId: documentPreview.id,
+            expectedRevision: documentEditBaseRef.current,
             title,
             markdown: documentEditDraft.markdown,
             tags: documentEditDraft.tags,
@@ -361,6 +337,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
             documentPreview.id,
           );
           setDetail(await loadProjectDetail(api, projectId));
+          documentEditBaseRef.current = preview.revision;
           setDocumentPreview(preview);
           if (!keepEditing) {
             setDocumentEditDraft(null);
@@ -387,27 +364,42 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
       documentEditDraft,
       documentPreview,
       documentSaving,
+      contentProcessing,
       projectId,
     ],
   );
 
-  const uploadEditorAttachments = async (files: File[], onReady?: () => void) => {
+  const uploadEditorAttachments = async (files: File[], onReady?: () => void, destinations: DocumentFileDestination[] = files.map(() => "attachment")) => {
+    if (uploadInFlightRef.current || contentProcessing) throw new Error("文件正在处理中，请稍后重试");
+    validateDocumentFiles(files, destinations);
+    uploadInFlightRef.current = true;
+    setDocumentUploading(true);
     let preview = documentPreview;
-    if (documentDraft || documentDirty) {
-      preview = await saveDocument({
-        keepEditing: true,
-        showNotice: false,
-      });
+    try {
+      if (documentDraft || documentDirty) {
+        preview = await saveDocument({ keepEditing: true, showNotice: false });
+      }
+      if (!preview) throw new Error("文档尚未保存，无法上传附件");
+      await appendProjectDocumentFiles(api, { nodeId: preview.id, files, destinations });
+      setDocumentEditDraft(null);
+      setDocumentDirty(false);
+      setDocumentPreview({ ...preview, contentProcessing: destinations.includes("body") });
+      try {
+        setDocumentPreview(await loadProjectDocumentDetail(api, preview.id));
+      } catch {
+        // The uploads already succeeded. Do not offer to upload them again just
+        // because refreshing failed; the status poll will recover the view.
+        setDocumentSyncError("文件已添加，正在重新同步处理状态");
+      }
+      setDocumentSaveError("");
+      onReady?.();
+    } catch (cause) {
+      setDocumentSaveError(cause instanceof Error ? cause.message : "文件添加失败");
+      throw cause;
+    } finally {
+      uploadInFlightRef.current = false;
+      setDocumentUploading(false);
     }
-    if (!preview) throw new Error("文档尚未保存，无法上传附件");
-
-    await uploadProjectDocumentAttachments(api, {
-      nodeId: preview.id,
-      files,
-    });
-    const refreshedPreview = await loadProjectDocumentDetail(api, preview.id);
-    onReady?.();
-    setDocumentPreview(refreshedPreview);
   };
 
   const loadDocumentTemplates = useCallback(async () => {
@@ -434,7 +426,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
   };
 
   useEffect(() => {
-    if (!documentDirty || documentSaving) return;
+    if (!documentDirty || documentSaving || documentUploading || contentProcessing || documentSaveError) return;
     const timer = window.setTimeout(() => {
       void saveDocument({
         keepEditing: true,
@@ -442,7 +434,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
       }).catch(() => undefined);
     }, 3000);
     return () => window.clearTimeout(timer);
-  }, [documentDirty, documentSaving, saveDocument]);
+  }, [documentDirty, documentSaving, documentUploading, contentProcessing, documentSaveError, saveDocument]);
 
   if (loading) return <RouteStatus message="正在加载项目…" />;
   if (!detail || !view) {
@@ -455,7 +447,7 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         projectName={detail.name}
         title={documentDraft.title}
         initialMarkdown={documentDraft.markdown}
-        attachmentAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
+        disabled={documentUploading}
         saving={documentSaving}
         saveError={documentSaveError}
         onTitleChange={(title) => {
@@ -505,6 +497,8 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         onBackToProjects={() => navigation.push("/projects")}
         onBackToProject={() => setDocumentPreview(null)}
         onEdit={() => {
+          if (documentUploading || contentProcessing) return;
+          documentEditBaseRef.current = documentPreview.revision;
           trackProductEvent(PRODUCT_ANALYTICS_EVENTS.editDocument, {
             source: "project_detail",
           });
@@ -544,8 +538,16 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         editMarkdown={documentEditDraft?.markdown}
         editTags={documentEditDraft?.tags}
         saving={documentSaving}
-        saveError={documentSaveError}
-        attachmentAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
+        busy={documentUploading}
+        saveError={documentSaveError || documentSyncError}
+        onReload={() => {
+          void resumeProjectDocumentImports(api, documentPreview.id).then((preview) => {
+            setDocumentPreview(preview);
+            setDocumentEditDraft(null);
+            setDocumentDirty(false);
+            setDocumentSaveError("");
+          }).catch((cause) => setDocumentSaveError(cause instanceof Error ? cause.message : "正文加载失败"));
+        }}
         onTitleChange={(title) => {
           documentRevisionRef.current += 1;
           setDocumentEditDraft((current) =>
@@ -643,20 +645,22 @@ export function ProjectDetailRoute({ projectId }: { projectId: string }) {
         documentImportAccept={PROJECT_DOCUMENT_IMPORT_ACCEPT}
         documentImportMaxSize={PROJECT_DOCUMENT_IMPORT_MAX_BYTES}
         documentImportDescription={PROJECT_DOCUMENT_IMPORT_DESCRIPTION}
-        onImportDocuments={async (files) => {
+        onImportDocuments={async (files, mode = "separate") => {
           const parentNodeId = detail.defaultKbNodeId;
           if (!parentNodeId) {
             throw new Error("当前项目尚未创建默认知识库，暂时无法导入文档");
           }
 
-          const importedDocuments = await importProjectDocuments(api, {
+          const importedDocuments = mode === "merge"
+            ? [{ nodeId: (await importMergedProjectDocument(api, { projectId, parentNodeId, files })).id }]
+            : await importProjectDocuments(api, {
             projectId,
             parentNodeId,
             files,
           });
           await refreshDetail();
           setNotice(
-            files.length > 1
+            mode === "merge" ? "已合并导入为一个文档，正在后台识别内容" : files.length > 1
               ? `已导入 ${files.length} 个文档，正在后台识别内容`
               : "文档已导入，正在后台识别内容",
           );

@@ -3,8 +3,9 @@ import type { ProjectDocumentPreviewViewModel } from "@bioagent/chatui";
 
 import type { ApiClient } from "@/lib/api";
 import { markdownToKnowledgeDocument } from "./project-documents";
+import { isDocumentContentProcessing, withDocumentMutationLock } from "./project-document-import-state";
 
-interface ProjectDocumentDetailPayload {
+export interface ProjectDocumentDetailPayload {
   node: KbNodeDetail;
   attachments: KbAttachment[];
   versions: KbVersion[];
@@ -17,7 +18,7 @@ interface ProjectDocumentDetailPayload {
 }
 
 type ProjectDocumentDetailApi = Pick<ApiClient, "get">;
-type ProjectDocumentUpdateApi = Pick<ApiClient, "put">;
+type ProjectDocumentUpdateApi = Pick<ApiClient, "get" | "put">;
 type ProjectDocumentDeleteApi = Pick<ApiClient, "delete">;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -225,9 +226,11 @@ export function mapProjectDocumentDetail(
     createdByName,
     updatedByName,
     updatedAt: formatUpdatedAt(payload.node.updatedAt),
+    revision: payload.node.updatedAt,
     canEdit:
       payload.node.effectivePermission === "edit" ||
       payload.node.effectivePermission === "admin",
+    contentProcessing: isDocumentContentProcessing(payload.node.content, payload.attachments),
     attachments: payload.attachments.map((attachment) => {
       const conversionRequested = Boolean(
         attachment.convertStatus !== "pending" ||
@@ -253,7 +256,7 @@ export function mapProjectDocumentDetail(
               : "附件可下载"
             : status === "failed"
               ? attachment.convertError || "内容识别失败"
-              : "正在识别内容",
+              : `正在识别内容${typeof attachment.convertProgress === "number" ? ` ${Math.round(attachment.convertProgress * 100)}%` : ""}`,
       };
     }),
     index,
@@ -277,16 +280,28 @@ export async function updateProjectDocument(
     title: string;
     markdown: string;
     tags: string[];
+    expectedRevision?: string;
   },
 ) {
-  return api.put<KbNodeDetail>(
-    `/api/knowledge/wiki2/nodes/${encodeURIComponent(input.kbNodeId)}`,
-    {
-      title: input.title,
-      content: markdownToKnowledgeDocument(input.markdown, input.tags),
-      changeSummary: "编辑项目文档",
-    },
-  );
+  return withDocumentMutationLock(input.kbNodeId, async () => {
+    const latest = await api.get<ProjectDocumentDetailPayload>(
+      `/api/knowledge/wiki2/nodes/${encodeURIComponent(input.kbNodeId)}`,
+    );
+    if (isDocumentContentProcessing(latest.node.content, latest.attachments)) {
+      throw new Error("文档正在识别并追加正文，请完成后再编辑保存");
+    }
+    if (input.expectedRevision && latest.node.updatedAt !== input.expectedRevision) {
+      throw new Error("文档已在其他页面更新，本地修改尚未保存。请复制需要保留的内容后重新加载正文。");
+    }
+    return api.put<KbNodeDetail>(
+      `/api/knowledge/wiki2/nodes/${encodeURIComponent(input.kbNodeId)}`,
+      {
+        title: input.title,
+        content: markdownToKnowledgeDocument(input.markdown, input.tags),
+        changeSummary: "编辑项目文档",
+      },
+    );
+  });
 }
 
 export async function deleteProjectDocument(

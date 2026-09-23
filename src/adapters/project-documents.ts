@@ -334,7 +334,7 @@ export async function createProjectDocument(
   return created;
 }
 
-async function uploadProjectDocumentAttachment(
+export async function uploadProjectDocumentAttachment(
   api: ProjectDocumentImportApi,
   nodeId: string,
   file: File,
