@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Download, FileText, Loader2, Plus, Trash2, X } from 'lucide-react';
 
 export type ProjectDocumentFileDestination = 'body' | 'attachment';
@@ -47,10 +47,23 @@ export function ProjectDocumentAttachments({
   onDeleteAttachment,
 }: ProjectDocumentAttachmentsProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const pendingPanelRef = useRef<HTMLDivElement>(null);
   const [pending, setPending] = useState<Array<{ file: File; destination: ProjectDocumentFileDestination }>>([]);
+  const [selectionBatch, setSelectionBatch] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const busy = disabled || uploading;
+  useEffect(() => {
+    if (!selectionBatch) return;
+    const frame = window.requestAnimationFrame(() => {
+      pendingPanelRef.current?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'end',
+        inline: 'nearest',
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectionBatch]);
   const confirm = async () => {
     if (busy || !pending.length || !onUploadAttachments) return;
     setUploading(true);
@@ -75,7 +88,9 @@ export function ProjectDocumentAttachments({
               const files = Array.from(event.target.files ?? []);
               event.target.value = '';
               if (files.length + pending.length > 5) { setUploadError('单次最多添加 5 个文件'); return; }
+              if (!files.length) return;
               setPending((current) => [...current, ...files.map((file) => ({ file, destination: (file.type.startsWith('image/') ? 'body' : 'attachment') as ProjectDocumentFileDestination }))]);
+              setSelectionBatch((current) => current + 1);
               setUploadError('');
             }} />
             <button type="button" disabled={busy} onClick={() => inputRef.current?.click()} className="inline-flex items-center gap-1.5 rounded-full border border-lineSubtle bg-surface px-3 py-1.5 text-sm text-secondaryText hover:border-primary disabled:cursor-wait disabled:opacity-50">
@@ -146,8 +161,8 @@ export function ProjectDocumentAttachments({
         </div>
       ) : null}
 
-      {pending.length > 0 && <div className="mt-3 overflow-hidden rounded-xl border border-lineSubtle bg-surface">
-        {pending.map((entry, index) => <div key={index} className="flex flex-wrap items-center gap-3 border-b border-lineSubtle px-3 py-2.5" aria-label={`待添加 ${entry.file.name}`}>
+      {pending.length > 0 && <div key={selectionBatch} ref={pendingPanelRef} className="mt-3 overflow-hidden rounded-xl border border-lineSubtle bg-surface">
+        {pending.map((entry, index) => <div key={index} className="document-attachment-choice-flash flex flex-wrap items-center gap-3 border-b border-lineSubtle px-3 py-2.5" aria-label={`待添加 ${entry.file.name}`}>
           <span className="rounded bg-bgLight px-1.5 py-0.5 text-xs text-tertiaryText">{entry.file.name.split('.').pop()?.toUpperCase()}</span>
           <span className="min-w-0 flex-1 truncate text-sm text-primaryText">{entry.file.name}</span>
           <span className="text-xs text-tertiaryText">{entry.file.size < 1024 * 1024 ? `${Math.max(1, Math.round(entry.file.size / 1024))} KB` : `${(entry.file.size / 1024 / 1024).toFixed(1)} MB`}</span>

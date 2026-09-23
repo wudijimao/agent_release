@@ -630,3 +630,28 @@
 .diagram-block-body .mermaid svg {
   margin: 0 auto;
 }
+
+@keyframes document-attachment-choice-flash {
+  0%, 100% {
+    background-color: var(--chatui-color-surface);
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  30% {
+    background-color: var(--chatui-color-brand-primary-soft-strong);
+    box-shadow: inset 0 0 0 2px var(--chatui-color-brand-primary);
+  }
+  65% {
+    background-color: var(--chatui-color-brand-primary-soft);
+    box-shadow: inset 0 0 0 1px var(--chatui-color-brand-primary);
+  }
+}
+
+.document-attachment-choice-flash {
+  animation: document-attachment-choice-flash 1.1s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .document-attachment-choice-flash {
+    animation: none;
+  }
+}

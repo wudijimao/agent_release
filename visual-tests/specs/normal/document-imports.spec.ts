@@ -50,6 +50,35 @@ test("重新打开的页面根据服务端识别状态锁定正文", async ({ pa
   await expect(page.getByRole("button", { name: "编辑", exact: true })).toBeDisabled();
 });
 
+test("追加正文识别时显示简洁且醒目的状态提示", async ({ page }) => {
+  await mockProjectDetailPageExtended(page, { documentAttachments: [{
+    id: "recognizing", originalName: "处理中.pdf", mimeType: "application/pdf", fileSize: 1024,
+    convertStatus: "processing", convertProgress: 0.42, convertInsertMode: "replace_placeholder",
+  }] });
+  await page.goto("/projects/proj-visual-test");
+  await page.getByText("CRISPR 综述", { exact: true }).click();
+  const status = page.getByRole("status", { name: "正文识别状态" });
+  await expect(status).toHaveText("正在识别并追加正文，完成后可继续编辑。");
+  await expect(status).toHaveCSS("background-color", "rgb(240, 249, 246)");
+  await expect(page.getByRole("button", { name: "编辑", exact: true })).toBeDisabled();
+  await page.screenshot({ path: "visual-tests/.artifacts/document-processing-status.png", fullPage: true });
+});
+
+test("选完附件后自动展示用途选择并轻闪绿色", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 500 });
+  await mockProjectDetailPageExtended(page);
+  await page.goto("/projects/proj-visual-test");
+  await page.getByText("CRISPR 综述", { exact: true }).click();
+  const scrollArea = page.locator(".document-preview-scrollbar");
+  await scrollArea.evaluate((element) => { element.scrollTop = 0; });
+  await page.getByLabel("选择文档附件").setInputFiles({ name: "实验数据.zip", mimeType: "application/zip", buffer: Buffer.from("archive") });
+  const staged = page.getByLabel("待添加 实验数据.zip");
+  const choice = staged.getByRole("group", { name: "实验数据.zip 的用途" });
+  await expect(choice).toBeInViewport();
+  await expect(page.getByRole("button", { name: "确认添加" })).toBeInViewport();
+  await expect(staged).toHaveCSS("animation-name", "document-attachment-choice-flash");
+});
+
 test("有未保存修改时先保存成功，再上传附件", async ({ page }) => {
   await mockProjectDetailPageExtended(page);
   const steps: string[] = [];

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Menu, MoreHorizontal, Trash2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Menu, MoreHorizontal, Trash2 } from 'lucide-react';
 import { BaseActionMenu, BaseButton, BaseDeleteConfirmModal, BaseModal, ShareModal } from '../../components/common';
 import type { ProjectDocumentUploadHandler, ProjectDocumentAttachmentViewModel } from './ProjectDocumentAttachments';
 import type { ProjectDocumentIndexViewModel } from './ProjectDocumentMetadata';
@@ -203,7 +203,14 @@ export function ProjectDocumentPreview({
         </div>}
       </header>
 
-      {locked && <div role="status" className="px-6 py-2 text-sm text-secondaryText">{busy ? '正在保存并添加文件，暂时无法编辑…' : '正在识别并追加正文，完成后可继续编辑。可关闭页面，重新打开后会继续同步。'}</div>}
+      {locked && <div className="shrink-0 px-4 pt-2 md:px-8 lg:px-10">
+        <div className={`mx-auto w-full ${layout === 'compact' ? 'max-w-[840px]' : 'max-w-[1240px]'}`}>
+          <div role="status" aria-label={busy ? '文件上传状态' : '正文识别状态'} className={`flex items-center gap-3 rounded-xl border border-lineSubtle border-l-4 border-l-primary bg-primary-soft px-4 py-3 text-sm font-medium text-primaryText shadow-sm ${layout === 'compact' ? 'mx-6 md:mx-8' : 'mx-[120px]'}`}>
+            <Loader2 size={18} className="shrink-0 animate-spin text-primary" aria-hidden="true" />
+            <span>{busy ? '正在保存并添加文件，暂时无法编辑…' : '正在识别并追加正文，完成后可继续编辑。'}</span>
+          </div>
+        </div>
+      </div>}
       {saveError && <div role="alert" className="px-6 py-2 text-sm text-danger">{saveError}{onReload && <button type="button" disabled={busy || saving} onClick={onReload} className="ml-3 underline">放弃本地修改并重新加载正文</button>}</div>}
       <div className="min-h-0 flex-1 overflow-hidden px-4 pb-8 pt-4 md:px-8 md:pt-6 lg:px-10">
         <div className={`mx-auto flex h-full min-h-0 w-full flex-col ${layout === 'compact' ? 'max-w-[840px]' : 'max-w-[1240px]'}`}>
